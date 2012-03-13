@@ -102,6 +102,7 @@
 
 * github: [TWI library in C]
   (https://github.com/arduino/Arduino/tree/master/libraries/Wire/utility)
+  : (arduino / Arduino / libraries / Wire / utility)
 
 * zip: [PJRC: usb_keyboard]
   (http://pjrc.com/teensy/usb_keyboard.zip)
