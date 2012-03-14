@@ -28,11 +28,11 @@
 
 /* ----------------------------------------------------------------------------
  * Pinouts and Pin assignments
- * ===========================
  * - '+' indicates pin
  * - 'o' indicates unused pin
  * - '-'s inserted between some of the pin names for readability
  * - 'OC**' pins enclosed in parenthesis had lines over them in the pinout
+ * ----------------------------------------------------------------------------
  * ----------------------------------------------------------------------------
  *  Teensy 2.0
  *  ==========               GND +---.....---+ VCC
@@ -94,11 +94,22 @@
  *             column4      GPB4 +07       22+ GPA2   row2
  *             column5      GPB5 +08       21+ GPA1   row1
  *             column6      GPB6 +09       20+ GPA0   row0
- *                               o10       19+ INTA   ?TODO
- *      power_positive  Vdd(Vcc) +11       18+ INTB   ?TODO
+ *                               o10       19o
+ *      power_positive  Vdd(Vcc) +11       18o
  *                 I2C       SCL +12       17o
- *                 I2C       SDA +13       16+ RESET  ?TODO
- *                               o14-------15+ ADDR   ?TODO
+ *                 I2C       SDA +13       16+ RESET  (see note)
+ *                               o14-------15+ ADDR   (see note)
+ *
+ *  notes:
+ *  - ADDR (pin15): Set to 0b000 via
+ *        Vdd(Vcc) -- R1 -- V2 (on ADDR) -- R2 -- Vss(GND)
+ *    where
+ *        Vdd = +5V
+ *         R1 = ?TODO:\
+ *         V2 = ?TODO: | (see mcp23018 datasheet, pg 11)
+ *         R2 = ?TODO:/
+ *  - RESET (pin16): Not used by software.  Might want to have it available
+ *    somewhere physically just in case though?
  * ------------------------------------------------------------------------- */
 
 
@@ -175,5 +186,4 @@ uint8_t kb_maps[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
 void main() {
 	init();
 }
-
 

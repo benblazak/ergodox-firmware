@@ -23,6 +23,9 @@
 	  -> [powering LEDs]
 	     (http://wolfstone.halloweenhost.com/Lighting/litlpo_PoweringLEDs.html)
 
+* [Vcc, Vdd, Vss, etc.]
+  (http://encyclobeamia.solarbotics.net/articles/vxx.html)
+
 
 ## Noob C Stuff
 
