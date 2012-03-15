@@ -1,11 +1,19 @@
 ## Noob Electronics Stuff
 
-* [Resistor Color Codes (picture)]
+* [Resistor Color Codes]
   (http://www.ladyada.net/wiki/lib/exe/fetch.php?hash=a2c6a9&w=501&h=785&media=http%3A%2F%2Fwww.ladyada.net%2Fimages%2Fmetertutorial%2Frescolorcode.jpg)
+  : image
 
 	* from [the Multimeter Tutorial]
 	  (http://www.ladyada.net/learn/multimeter/resistance.html)
 	  (on <http://ladyada.net/>)
+
+* [Schematic Symbols]
+  (http://img.docstoccdn.com/thumb/orig/28066054.png)
+  : image
+
+* [Vcc, Vdd, Vss, etc.]
+  (http://encyclobeamia.solarbotics.net/articles/vxx.html)
 
 * [Very Basic Circuits]
   (http://www.seattlerobotics.org/encoder/mar97/basics.html)
@@ -23,8 +31,8 @@
 	  -> [powering LEDs]
 	     (http://wolfstone.halloweenhost.com/Lighting/litlpo_PoweringLEDs.html)
 
-* [Vcc, Vdd, Vss, etc.]
-  (http://encyclobeamia.solarbotics.net/articles/vxx.html)
+* [All About Circuits : Reference]
+  (http://www.allaboutcircuits.com/vol_5/index.html)
 
 
 ## Noob C Stuff

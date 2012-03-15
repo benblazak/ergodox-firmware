@@ -1,10 +1,16 @@
 /* ----------------------------------------------------------------------------
- * ergoDOX specific stuff
+ * ergoDOX keyboard specific stuff
+ * - public things are prefixed by `kb_` or `KB_`
  * ----------------------------------------------------------------------------
  * Copyright (c) 2012 Ben Blazak
  * Released under The MIT License (MIT) (see "license.md") at
  * <https://github.com/benblazak/ergodox-firmware>
  * ------------------------------------------------------------------------- */
+
+
+// ----------------------------------------------------------------------------
+// documentation
+// ----------------------------------------------------------------------------
 
 /* ----------------------------------------------------------------------------
  * Matrix [row.column] assignments
@@ -27,12 +33,21 @@
  * ------------------------------------------------------------------------- */
 
 
-#define KB_LAYERS   1
-#define KB_ROWS    12  // don't change
-#define KB_COLUMNS  7  // don't change
+#include "ergodox.h"
 
 
-uint8_t is_pressed[KB_ROWS][KB_COLUMNS] = {
+// ----------------------------------------------------------------------------
+// macros
+// ----------------------------------------------------------------------------
+
+// TODO
+
+
+// ----------------------------------------------------------------------------
+// variables
+// ----------------------------------------------------------------------------
+
+uint8_t kb_is_pressed[KB_ROWS][KB_COLUMNS] = {
 // --- right hand ---
 // column 0    1    2    3    4    5    6
 	  0,   0,   0,   0,   0,   0,   0, //row 0x0
@@ -41,7 +56,6 @@ uint8_t is_pressed[KB_ROWS][KB_COLUMNS] = {
 	  0,   0,   0,   0,   0,   0,   0, //row 0x3
 	  0,   0,   0,   0,   0,   0,   0, //row 0x4
 	  0,   0,   0,   0,   0,   0,   0, //row 0x5
-
 // --- left hand ---
 // column 0    1    2    3    4    5    6
 	  0,   0,   0,   0,   0,   0,   0, //row 0x6
@@ -54,7 +68,8 @@ uint8_t is_pressed[KB_ROWS][KB_COLUMNS] = {
 
 // TODO: this belongs in program space
 uint8_t kb_maps[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
-// --- layer: default ---
+// ------- layer: default -------
+// --- right hand ---
 // column 0    1    2    3    4    5    6
 	  0,   0,   0,   0,   0,   0,   0, //row 0x0
 	  0,   0,   0,   0,   0,   0,   0, //row 0x1
@@ -62,11 +77,26 @@ uint8_t kb_maps[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
 	  0,   0,   0,   0,   0,   0,   0, //row 0x3
 	  0,   0,   0,   0,   0,   0,   0, //row 0x4
 	  0,   0,   0,   0,   0,   0,   0, //row 0x5
+// --- left hand ---
+// column 0    1    2    3    4    5    6
 	  0,   0,   0,   0,   0,   0,   0, //row 0x6
 	  0,   0,   0,   0,   0,   0,   0, //row 0x7
 	  0,   0,   0,   0,   0,   0,   0, //row 0x8
 	  0,   0,   0,   0,   0,   0,   0, //row 0x9
 	  0,   0,   0,   0,   0,   0,   0, //row 0xA
 	  0,   0,   0,   0,   0,   0,   0, //row 0xB
+}
+
+// ----------------------------------------------------------------------------
+// functions
+// ----------------------------------------------------------------------------
+
+// TODO
+void kb_init() {
+}
+
+// TODO
+// - cycle through row=HIGH and read each column
+void kb_update() {
 }
 

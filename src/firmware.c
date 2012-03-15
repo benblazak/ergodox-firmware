@@ -7,8 +7,8 @@
  * ------------------------------------------------------------------------- */
 
 
-#include "keyboard/ergodox.h"
-#include "controller/teensy-2-0.h"
+#include "hardware/ergodox.h"
+
 #include "lib/twi.h"
 #include "lib/print.h"
 
@@ -18,5 +18,9 @@ void main() {
 }
 
 void init() {
+	controller_init();  // must be first
+	kb_init();          // must be second
+
+	// TODO: other stuff?
 }
 
