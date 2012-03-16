@@ -73,6 +73,9 @@
   (http://svn.savannah.nongnu.org/viewvc/trunk/avr-libc/include/avr/iom32u4.h?revision=2288&root=avr-libc&view=markup)
   : list of registers and associated bit numbers for ATmega32U4
 
+* [A Brief Tutorial on Programming the AVR without Arduino] by Chris Kuethe
+  (https://www.mainframe.cx/~ckuethe/avr-c-tutorial/)
+
 
 ## Articles / Tutorials
 

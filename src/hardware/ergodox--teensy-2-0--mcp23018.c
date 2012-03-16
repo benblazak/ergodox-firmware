@@ -8,9 +8,9 @@
  * ------------------------------------------------------------------------- */
 
 
-// ----------------------------------------------------------------------------
-// documentation
-// ----------------------------------------------------------------------------
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * ~~~ documentation ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
 /* ----------------------------------------------------------------------------
  * Pinouts and Pin assignments
@@ -68,6 +68,12 @@
  *                 column4   PD3 +           + PB4   column0
  *                 column1   PC6 +           + PD7   column5
  *                 column2   PC7 +-o-o-o-o-o-o
+ *
+ *  notes:
+ *  - SCL and SDA: Need external pull-up resistors.  Sometimes the internal
+ *    pull-ups are enough (see datasheet section 20.5.1), but i think for this
+ *    project we'll want external ones, in case people want to separate the
+ *    halves very far.
  * ----------------------------------------------------------------------------
  *  MCP32018 Pin Assignments
  *  ========================
@@ -91,10 +97,51 @@
  *    - note: The user-defined bits are the three least significant
  * ------------------------------------------------------------------------- */
 
+/* ----------------------------------------------------------------------------
+ * Registers
+ * ----------------------------------------------------------------------------
+ * General I/O (see datasheet section 10.2.1)
+ *
+ *     DDRxn  function  PINxn  function
+ *     1      output    1      drive high
+ *                      0      drive low
+ *     0      input     1      internal pull-up on
+ *                      0      internal pull-up off
+ *
+ *  notes:
+ *  - Unused pins should be set as input with internal pullup enabled (see
+ *    datasheet section 10.2.6).
+ * ----------------------------------------------------------------------------
+ * PWM on ports OC1(A|B|C) (see datasheet section 14.10)
+ *
+ *  notes:
+ *  - PWM pins should be set as outputs.
+ *  - we want Waveform Generation Mode 15
+ *    (fast PWM, TOP = OCRnA)
+ *    (see table 14-5)
+ *    - set (TCCRB[4,3],TCCRA[1,0]) to (1,1,1,1)
+ *  - we want "Compare Output Mode, Fast PWM" to be 0b10
+ *    "Clear OCnA/OCnB/OCnC on compare match, set OCnA/OCnB/OCnC at TOP"
+ *    (see table 14-3)
+ *    this way higher values of OCR1(A|B|C) will mean longer 'on' times for the
+ *    LEDs
+ *    - when in a fast PWM mode, set (TCCR1A[7,6,5,4,3,2]) to (1,0,1,0,1,0)
+ *  - we want "Clock Select Bit Description" to be 0b001
+ *    "clkI/O/1 (No prescaling)"
+ *    (see table 14-6)
+ *    - set (TCCR1B[2,1,0]) to (0,0,1)
+ *  - LEDs will be at minimum brightness until OCR1(A|B|C) are changed (since
+ *    the default value of all the bits in those registers is 0)
+ *
+ *  abbreviations:
+ *  - OC = Output Compare
+ *  - TCCR = Timer/Counter Control Register
+ * ------------------------------------------------------------------------- */
 
-// ----------------------------------------------------------------------------
-// macros
-// ----------------------------------------------------------------------------
+
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * ~~~ macros ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
 // processor frequency (from <http://www.pjrc.com/teensy/prescaler.html>)
 #define CPU_PRESCALE(n) (CLKPR = 0x80, CLKPR = (n))
@@ -108,6 +155,20 @@
 #define CPU_125kHz      0x07
 #define CPU_62kHz       0x08
 
+// pins
+#define CONTROLLER_LED1_ON             (OCR1A = 0xFFFF)
+#define CONTROLLER_LED1_OFF            (OCR1A = 0)
+#define CONTROLLER_LED1_SET(n)         (OCR1A = (n))
+#define CONTROLLER_LED1_SET_PERCENT(n) (OCR1A = (n) * 0xFFFF)
+#define CONTROLLER_LED2_ON             (OCR1B = 0xFFFF)
+#define CONTROLLER_LED2_OFF            (OCR1B = 0)
+#define CONTROLLER_LED2_SET(n)         (OCR1B = (n))
+#define CONTROLLER_LED2_SET_PERCENT(n) (OCR1B = (n) * 0xFFFF)
+#define CONTROLLER_LED3_ON             (OCR1C = 0xFFFF)
+#define CONTROLLER_LED3_OFF            (OCR1C = 0)
+#define CONTROLLER_LED3_SET(n)         (OCR1C = (n))
+#define CONTROLLER_LED3_SET_PERCENT(n) (OCR1C = (n) * 0xFFFF)
+
 // teensy pins
 // TODO
 // I2C         SCL  PD0
@@ -115,6 +176,12 @@
 // LED1        OC1A PB5
 // LED2        OC1B PB6
 // LED3        OC1C PB7
+// ROW_0       PF0
+// ROW_1       PF1
+// ROW_2       PF4
+// ROW_3       PF5
+// ROW_4       PF6
+// ROW_5       PF7
 // COLUMN_0_RH PB4
 // COLUMN_1_RH PC6
 // COLUMN_2_RH PC7
@@ -122,17 +189,17 @@
 // COLUMN_4_RH PD3
 // COLUMN_5_RH PD7
 // COLUMN_6_RH PB0
-// ROW_0       PF0
-// ROW_1       PF1
-// ROW_2       PF4
-// ROW_3       PF5
-// ROW_4       PF6
-// ROW_5       PF7
 
 // mcp23018 pins
 // TODO
 // I2C         SCL 
 // I2C         SDA 
+// ROW_6       GPA0 
+// ROW_7       GPA1 
+// ROW_8       GPA2 
+// ROW_9       GPA3 
+// ROW_A       GPA4 
+// ROW_B       GPA5 
 // COLUMN_0_LH GPB0 
 // COLUMN_1_LH GPB1 
 // COLUMN_2_LH GPB2 
@@ -140,57 +207,43 @@
 // COLUMN_4_LH GPB4 
 // COLUMN_5_LH GPB5 
 // COLUMN_6_LH GPB6 
-// ROW_6       GPA0 
-// ROW_7       GPA1 
-// ROW_8       GPA2 
-// ROW_9       GPA3 
-// ROW_A       GPA4 
-// ROW_B       GPA5 
-
-// pins logically common to both
-// TODO
-// (i don't think we're going to use these this way...)
-// COLUMN_0 GPB0 
-// COLUMN_0 PB4
-// COLUMN_1 GPB1 
-// COLUMN_1 PC6
-// COLUMN_2 GPB2 
-// COLUMN_2 PC7
-// COLUMN_3 GPB3 
-// COLUMN_3 PD2
-// COLUMN_4 GPB4 
-// COLUMN_4 PD3
-// COLUMN_5 GPB5 
-// COLUMN_5 PD7
-// COLUMN_6 GPB6 
-// COLUMN_6 PB0
 
 
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * ~~~ functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
-// ----------------------------------------------------------------------------
-// functions
-// ----------------------------------------------------------------------------
+void controller_init() {
+	teensy_init();
+	mcp23018_init();
+}
 
 // TODO
 // - set internal brown-out detection circuit?
-void controller_init() {
-	// teensy
-	// --- processor frequency
+void teensy_init() {
 	CPU_PRESCALE(CPU_16MHz);  // speed should match F_CPU in makefile
 
-	// --- pins
-	// --- --- unused: set as input with internal pullup enabled (see
-	//         teensy 2.0 datasheet section 10.2.6)
+	// unused pins
 	DDRB  &= ~0b00001110;  // set B(1,2,3) as input
 	PORTB |=  0b00001110;  // set B(1,2,3) internal pullup enabled
 	DDRD  &= ~0b01110000;  // set D(4,5,6) as input
 	PORTD |=  0b01110000;  // set D(4,5,6) internal pullup enabled
 	DDRE  &= ~0b01000000;  // set E(6)     as input
 	PORTE |=  0b01000000;  // set E(6)     internal pullup enabled
-	// --- --- [used]
-	// TODO
 
-	// mcp32018
-	// TODO
+	// LEDs with PWM
+	DDRB   |= 0b11100000;  // set B(5,6,7) as output
+	TCCR1A  = 0b10101011;  // set and configure fast PWM
+	TCCR1B |= 0b00011001;  // set and configure fast PWM
+	// --- --- rows
+	// TODO: set to high output
+	// --- --- columns
+	// TODO: set to input with pullup enabled
+	// --- --- I2C (TWI)
+	// TODO: use twi library
+}
+
+// TODO
+void mcp23018_init() {
 }
 
