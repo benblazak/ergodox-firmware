@@ -49,6 +49,9 @@
   (http://www.cprogramming.com/tutorial/bitwise_operators.html)
   (on <http://cprogramming.com/>)
 
+* [AVR Tutorials - \[TUT\] \[C\] Bit manipulation (AKA "Programming 101")]
+  (http://www.avrfreaks.net/index.php?name=PNphpBB2&file=printview&t=37871&start=0)
+
 * [In C++ is "const" after type ID acceptable?]
   (http://stackoverflow.com/questions/988069/in-c-is-const-after-type-id-acceptable)
   (on <http://stackoverflow.com/>)
@@ -62,6 +65,10 @@
 
 * [Markdown: Syntax]
   (http://daringfireball.net/projects/markdown/syntax)
+
+* [Keyboard Scan Rates]
+  (http://geekhack.org/showwiki.php?title=Keyboard+scan+rates)
+  list (on <http://geekhack.org/>)
 
 
 ## AVR C stuff

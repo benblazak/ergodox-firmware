@@ -1,6 +1,6 @@
 /* ----------------------------------------------------------------------------
- * ergoDOX keyboard specific stuff
- * - public things are prefixed by `kb_` or `KB_`
+ * ergoDOX layout specific stuff
+ * - public things are prefixed by `layout_` or `LAYOUT_`
  * ----------------------------------------------------------------------------
  * Copyright (c) 2012 Ben Blazak
  * Released under The MIT License (MIT) (see "license.md") at
@@ -33,7 +33,7 @@
  * ------------------------------------------------------------------------- */
 
 
-#include "ergodox.h"
+#include "layout.h"
 
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

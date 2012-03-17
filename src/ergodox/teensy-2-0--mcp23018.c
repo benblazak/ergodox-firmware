@@ -16,7 +16,7 @@
  * Pinouts and Pin assignments
  * - '+' indicates pin
  * - 'o' indicates unused pin
- * - '-'s inserted between some of the pin names for readability
+ * - '-'s inserted between some of the pin functions for readability
  * - 'OC**' pins enclosed in parenthesis had lines over them in the pinout
  * ----------------------------------------------------------------------------
  * ----------------------------------------------------------------------------
@@ -39,16 +39,16 @@
  * ----------------------------------------------------------------------------
  *  MCP23018
  *  ========            Vss(GND) +01---.---28+ NC
- *                          GPNC +02       27+ GPAC
+ *                            NC +02       27+ GPA7
  *                          GPB0 +03       26+ GPA6
- *                          GPB1 +04       25+ GPAC
- *                          GPB2 +05       24+ GPAC
- *                          GPB3 +06       23+ GPAC
- *                          GPB4 +07       22+ GPAC
- *                          GPB5 +08       21+ GPAC
- *                          GPB6 +09       20+ GPAC
- *                          GPB7 +10       19+ INTC
- *                      Vdd(Vcc) +11       18+ INTC
+ *                          GPB1 +04       25+ GPA5
+ *                          GPB2 +05       24+ GPA4
+ *                          GPB3 +06       23+ GPA3
+ *                          GPB4 +07       22+ GPA2
+ *                          GPB5 +08       21+ GPA1
+ *                          GPB6 +09       20+ GPA0
+ *                          GPB7 +10       19+ INTA
+ *                      Vdd(Vcc) +11       18+ INTB
  *                           SCL +12       17+ NC
  *                           SDA +13       16+ RESET
  *                            NC +14-------15+ ADDR
@@ -93,12 +93,12 @@
  *                               o14-------15+ ADDR   (see note)
  *
  *  notes:
- *  - ADDR (pin15): Set slave address to 0b0100000 by connecting to Vss(GND)
- *    - note: The user-defined bits are the three least significant
+ *  - ADDR (pin15): Set slave address to 0b0100000 by connecting to Vss(GND).
+ *    (The user-defined bits are the three least significant).
  * ------------------------------------------------------------------------- */
 
 /* ----------------------------------------------------------------------------
- * Registers
+ * Notes about Registers
  * ----------------------------------------------------------------------------
  * General I/O (see datasheet section 10.2.1)
  *
@@ -134,9 +134,14 @@
  *    the default value of all the bits in those registers is 0)
  *
  *  abbreviations:
- *  - OC = Output Compare
+ *  - OCR = Output Compare Register
  *  - TCCR = Timer/Counter Control Register
  * ------------------------------------------------------------------------- */
+
+
+#include "lib/twi.h"
+
+#include "teensy-2-0--mcp23018.h"
 
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -155,40 +160,13 @@
 #define CPU_125kHz      0x07
 #define CPU_62kHz       0x08
 
-// pins
-#define CONTROLLER_LED1_ON             (OCR1A = 0xFFFF)
-#define CONTROLLER_LED1_OFF            (OCR1A = 0)
-#define CONTROLLER_LED1_SET(n)         (OCR1A = (n))
-#define CONTROLLER_LED1_SET_PERCENT(n) (OCR1A = (n) * 0xFFFF)
-#define CONTROLLER_LED2_ON             (OCR1B = 0xFFFF)
-#define CONTROLLER_LED2_OFF            (OCR1B = 0)
-#define CONTROLLER_LED2_SET(n)         (OCR1B = (n))
-#define CONTROLLER_LED2_SET_PERCENT(n) (OCR1B = (n) * 0xFFFF)
-#define CONTROLLER_LED3_ON             (OCR1C = 0xFFFF)
-#define CONTROLLER_LED3_OFF            (OCR1C = 0)
-#define CONTROLLER_LED3_SET(n)         (OCR1C = (n))
-#define CONTROLLER_LED3_SET_PERCENT(n) (OCR1C = (n) * 0xFFFF)
+// TWI frequency
+#define TWI_FREQ 400000  // (see lib/twi.(h|c))
 
-// teensy pins
-// TODO
-// I2C         SCL  PD0
-// I2C         SDA  PD1
-// LED1        OC1A PB5
-// LED2        OC1B PB6
-// LED3        OC1C PB7
-// ROW_0       PF0
-// ROW_1       PF1
-// ROW_2       PF4
-// ROW_3       PF5
-// ROW_4       PF6
-// ROW_5       PF7
-// COLUMN_0_RH PB4
-// COLUMN_1_RH PC6
-// COLUMN_2_RH PC7
-// COLUMN_3_RH PD2
-// COLUMN_4_RH PD3
-// COLUMN_5_RH PD7
-// COLUMN_6_RH PB0
+// pins
+// --- rows ?TODO
+// --- columns ?TODO
+
 
 // mcp23018 pins
 // TODO
@@ -214,33 +192,41 @@
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
 void controller_init() {
-	teensy_init();
-	mcp23018_init();
+	teensy_init();    // must be first
+	mcp23018_init();  // must be second
 }
 
-// TODO
-// - set internal brown-out detection circuit?
 void teensy_init() {
 	CPU_PRESCALE(CPU_16MHz);  // speed should match F_CPU in makefile
 
 	// unused pins
 	DDRB  &= ~0b00001110;  // set B(1,2,3) as input
-	PORTB |=  0b00001110;  // set B(1,2,3) internal pullup enabled
+	PORTB |=  0b00001110;  // set B(1,2,3) internal pull-up enabled
 	DDRD  &= ~0b01110000;  // set D(4,5,6) as input
-	PORTD |=  0b01110000;  // set D(4,5,6) internal pullup enabled
+	PORTD |=  0b01110000;  // set D(4,5,6) internal pull-up enabled
 	DDRE  &= ~0b01000000;  // set E(6)     as input
-	PORTE |=  0b01000000;  // set E(6)     internal pullup enabled
+	PORTE |=  0b01000000;  // set E(6)     internal pull-up enabled
 
-	// LEDs with PWM
+	// LEDs
 	DDRB   |= 0b11100000;  // set B(5,6,7) as output
 	TCCR1A  = 0b10101011;  // set and configure fast PWM
-	TCCR1B |= 0b00011001;  // set and configure fast PWM
-	// --- --- rows
-	// TODO: set to high output
-	// --- --- columns
-	// TODO: set to input with pullup enabled
-	// --- --- I2C (TWI)
-	// TODO: use twi library
+	TCCR1B  = 0b00011001;  // set and configure fast PWM
+
+	// rows
+	DDRF  |= 0b11110011;  // set F(0,1,4,5,6,7) as output
+	PORTF |= 0b11110011;  // set F(0,1,4,5,6,7) drive high
+
+	// columns
+	DDRB  &= ~0b00010001;  // set B(0,4)   as input
+	PORTB |=  0b00010001;  // set B(0,4)   internal pull-up enabled
+	DDRC  &= ~0b11000000;  // set C(6,7)   as input
+	PORTC |=  0b11000000;  // set C(6,7)   internal pull-up enabled
+	DDRD  &= ~0b10001100;  // set D(2,3,7) as input
+	PORTD |=  0b10001100;  // set D(2,3,7) internal pull-up enabled
+
+	// I2C (TWI)
+	twi_init();  // (on pins D(0,1))
+	twi_setAddress(0b0100000);
 }
 
 // TODO
