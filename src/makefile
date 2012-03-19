@@ -8,9 +8,12 @@
 # -----------------------------------------------------------------------------
 
 
-SRC = firmware.c
+SRC = $(shell find -name '*.c')
+EXTRAINCDIRS = .
 
-TEENSY_MAKE = $(MAKE) -f 'lib/teensy-makefile' SRC='$(SRC)'
+TEENSY_MAKE = $(MAKE) -f 'lib/pjrc/Makefile' \
+	      SRC='$(SRC)' \
+	      EXTRAINCDIRS='$(EXTRAINCDIRS)'
 
 
 .PHONY: all clean

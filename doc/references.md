@@ -125,6 +125,14 @@
   (https://github.com/arduino/Arduino/tree/master/libraries/Wire/utility)
   : (arduino / Arduino / libraries / Wire / utility)
 
+* forum: [Interfacing MCP23018 io expander via Arduino]
+  (http://www.arduino.cc/cgi-bin/yabb2/YaBB.pl?num=1282150189)
+  : contains a quick MCP23017 library in C++
+
+* github: [maniacbug / Arduino / libraries / MCP23018]
+  (https://github.com/maniacbug/Arduino/tree/master/libraries/MCP23018)
+  : library in C++
+
 * zip: [PJRC: usb_keyboard]
   (http://pjrc.com/teensy/usb_keyboard.zip)
 
@@ -181,4 +189,10 @@
 
 	* from [the PJRC website]
 	  (http://pjrc.com/teensy/datasheets.html)
+
+-------------------------------------------------------------------------------
+
+Copyright &copy; 2012 Ben Blazak  
+Released under The MIT License (MIT) (see "license.md") at
+<https://github.com/benblazak/ergodox-firmware>
 

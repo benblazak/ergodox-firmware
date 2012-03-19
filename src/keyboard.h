@@ -1,5 +1,6 @@
 /* ----------------------------------------------------------------------------
- * Firmware main file
+ * Keyboard specific stuff
+ * - public things are prefixed by `kb_` or `KB_`
  * ----------------------------------------------------------------------------
  * Copyright (c) 2012 Ben Blazak
  * Released under The MIT License (MIT) (see "license.md") at
@@ -7,13 +8,5 @@
  * ------------------------------------------------------------------------- */
 
 
-#include "lib/pjrc/print.h"
-
-#include "keyboard.h"
-
-
 // TODO
-// int main(void) {
-// 	return 0;
-// }
 

@@ -1,6 +1,5 @@
 /* ----------------------------------------------------------------------------
- * ergoDOX layout specific stuff
- * - public things are prefixed by `layout_` or `LAYOUT_`
+ * ergoDOX controller: MCP23018 specific exports
  * ----------------------------------------------------------------------------
  * Copyright (c) 2012 Ben Blazak
  * Released under The MIT License (MIT) (see "license.md") at
@@ -8,10 +7,15 @@
  * ------------------------------------------------------------------------- */
 
 
-#define KB_LAYERS   1
-#define KB_ROWS    12  // must match real life
-#define KB_COLUMNS  7  // must match real life
+#ifndef MCP23018_h
+#define MCP23018_h
 
 
-// TODO
+#define MCP23018_TWI_ADDRESS 0b0100000
+
+
+void mcp23018_init(void);
+
+
+#endif
 
