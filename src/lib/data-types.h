@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- * ergoDOX controller: MCP23018 specific exports
+ * Common data types
  * ----------------------------------------------------------------------------
  * Copyright (c) 2012 Ben Blazak <benblazak.dev@gmail.com>
  * Released under The MIT License (MIT) (see "license.md")
@@ -7,20 +7,16 @@
  * ------------------------------------------------------------------------- */
 
 
-#ifndef MCP23018_h
-	#define MCP23018_h
+#ifndef DATA_TYPES_h
+	#define DATA_TYPES_h
 
-	#include "lib/data-types.h"
+	// --------------------------------------------------------------------
+	#define bool _Bool
 
-	#ifdef MCP23018_h_INCLUDE_PRIVATE
+	#define true  ((bool)1)
+	#define false ((bool)0)
 
-		#define MCP23018_TWI_ADDRESS 0b0100000
-
-		extern bool mcp23018_ready;
-
-		uint8_t mcp23018_init(void);
-
-	#endif
+	// --------------------------------------------------------------------
 
 #endif
 

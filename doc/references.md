@@ -1,4 +1,4 @@
-## Noob Electronics Stuff
+## Electronics Stuff
 
 * [Resistor Color Codes]
   (http://www.ladyada.net/wiki/lib/exe/fetch.php?hash=a2c6a9&w=501&h=785&media=http%3A%2F%2Fwww.ladyada.net%2Fimages%2Fmetertutorial%2Frescolorcode.jpg)
@@ -34,8 +34,11 @@
 * [All About Circuits : Reference]
   (http://www.allaboutcircuits.com/vol_5/index.html)
 
+* [Effects of Varying I2C Pull-Up Resistors]
+  (http://dsscircuits.com/articles/effects-of-varying-i2c-pull-up-resistors.html) : article by Wayne Truchsess
 
-## Noob C Stuff
+
+## C Stuff
 
 * [C Library Reference]
   (http://www.cplusplus.com/reference/)
@@ -60,18 +63,11 @@
   (http://www.ibiblio.org/pub/languages/fortran/append-c.html)
   (on <http://www.ibiblio.org/>)
 
+* [C preprocessor and concatenation]
+  (http://stackoverflow.com/questions/1489932/c-preprocessor-and-concatenation)
+  (on <http://stackoverflow.com/>)
 
-## Noob Other Stuff
-
-* [Markdown: Syntax]
-  (http://daringfireball.net/projects/markdown/syntax)
-
-* [Keyboard Scan Rates]
-  (http://geekhack.org/showwiki.php?title=Keyboard+scan+rates)
-  list (on <http://geekhack.org/>)
-
-
-## AVR C stuff
+### For the AVR
 
 * [AVR Libc Library Reference]
   (http://www.nongnu.org/avr-libc/user-manual/modules.html)
@@ -83,13 +79,46 @@
 * [A Brief Tutorial on Programming the AVR without Arduino] by Chris Kuethe
   (https://www.mainframe.cx/~ckuethe/avr-c-tutorial/)
 
+## Protocol Stuff
 
-## Articles / Tutorials
+### I&sup2;C
 
 * [Arduino I&sup2;C Expansion IO]
   (http://www.neufeld.newton.ks.us/electronics/?p=241)
   (from [Keith's Electronics Blog]
   (http://www.neufeld.newton.ks.us/electronics/))
+
+* [Arduino Playground :: Wire Library, Explored]
+  (http://arduino.cc/playground/Main/WireLibraryDetailedReference)
+
+### USB
+
+* About Keyboard [Scan Codes]
+  (http://geekhack.org/showwiki.php?title=Scan+Codes)
+  (on <http://geekhack.org/>)
+
+* [USB 2.0 Specification]
+  (http://www.usb.org/developers/docs/usb_20_101111.zip)
+  : zip (from <http://www.usb.org/developers/docs/>)
+
+* [HID Device Class Definition]
+  (http://www.usb.org/developers/devclass_docs/HID1_11.pdf)
+  : pdf (from <http://www.usb.org/developers/hidpage>)
+  * HID = Human Interface Device
+
+* [HID Usage Tables]
+  (http://www.usb.org/developers/devclass_docs/Hut1_12v2.pdf)
+  : pdf (from <http://www.usb.org/developers/hidpage>)
+
+
+## Miscellaneous
+
+* [Markdown: Syntax]
+  (http://daringfireball.net/projects/markdown/syntax)
+
+* [Keyboard Scan Rates]
+  (http://geekhack.org/showwiki.php?title=Keyboard+scan+rates)
+  list (on <http://geekhack.org/>)
 
 
 ## Other Firmware / Code
@@ -192,7 +221,7 @@
 
 -------------------------------------------------------------------------------
 
-Copyright &copy; 2012 Ben Blazak  
-Released under The MIT License (MIT) (see "license.md") at
-<https://github.com/benblazak/ergodox-firmware>
+Copyright &copy; 2012 Ben Blazak <benblazak.dev@gmail.com>  
+Released under The MIT License (MIT) (see "license.md")
+Project located at <https://github.com/benblazak/ergodox-firmware>
 

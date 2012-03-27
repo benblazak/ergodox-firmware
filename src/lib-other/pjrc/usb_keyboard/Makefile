@@ -1,10 +1,5 @@
 # Hey Emacs, this is a -*- makefile -*-
 #----------------------------------------------------------------------------
-#----------------------------------------------------------------------------
-# Copied from <http://pjrc.com/teensy/blinky.zip>.  Modified slightly to work
-# with <https://github.com/benblazak/ergodox-firmware>.
-#----------------------------------------------------------------------------
-#----------------------------------------------------------------------------
 # WinAVR Makefile Template written by Eric B. Weddington, Jörg Wunsch, et al.
 #
 # Released to the Public Domain
@@ -46,11 +41,13 @@
 
 
 # Target file name (without extension).
-TARGET = ergodox-firmware
+TARGET = example
 
 
 # List C source files here. (C dependencies are automatically generated.)
-SRC = $(TARGET).c 
+SRC =	$(TARGET).c \
+	usb_keyboard.c
+
 
 # MCU name, you MUST set this to match the board you are using
 # type "make clean" after changing this, so all files will be rebuilt

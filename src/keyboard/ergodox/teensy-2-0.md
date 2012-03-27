@@ -41,10 +41,10 @@
                     column2   PC7 +-o-o-o-o-o-o
 
 * notes:
-  * SCL and SDA: Need external pull-up resistors.  Sometimes the internal
-    pull-ups are enough (see datasheet section 20.5.1), but i think for this
-    project we'll want external ones, in case people want to separate the
-    halves very far.
+  * SCL and SDA: Need external pull-up resistors.  Sometimes the Teensy
+    internal pull-ups are enough (see datasheet section 20.5.1), but i think
+    for this project we'll want external ones, in case people want to separate
+    the halves very far.
 
 ## Notes about Registers
 
@@ -94,7 +94,7 @@
 
 -------------------------------------------------------------------------------
 
-Copyright &copy; 2012 Ben Blazak  
-Released under The MIT License (MIT) (see "license.md") at
-<https://github.com/benblazak/ergodox-firmware>
+Copyright &copy; 2012 Ben Blazak <benblazak.dev@gmail.com>  
+Released under The MIT License (MIT) (see "license.md")
+Project located at <https://github.com/benblazak/ergodox-firmware>
 
