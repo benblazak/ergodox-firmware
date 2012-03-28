@@ -13,16 +13,16 @@
 	#include <avr/io.h>  // for the register macros
 
 	// LED control
-	#define KB_LED1_ON             (OCR1A = 0xFF)
-	#define KB_LED1_OFF            (OCR1A = 0x00)
+	#define KB_LED1_ON             (DDRB |=  (1<<5))
+	#define KB_LED1_OFF            (DDRB &= ~(1<<5))
 	#define KB_LED1_SET(n)         (OCR1A = (uint8_t)(n))
 	#define KB_LED1_SET_PERCENT(n) (OCR1A = (uint8_t)((n) * 0xFF))
-	#define KB_LED2_ON             (OCR1B = 0xFF)
-	#define KB_LED2_OFF            (OCR1B = 0x00)
+	#define KB_LED2_ON             (DDRB |=  (1<<6))
+	#define KB_LED2_OFF            (DDRB &= ~(1<<6))
 	#define KB_LED2_SET(n)         (OCR1B = (uint8_t)(n))
 	#define KB_LED2_SET_PERCENT(n) (OCR1B = (uint8_t)((n) * 0xFF))
-	#define KB_LED3_ON             (OCR1C = 0xFF)
-	#define KB_LED3_OFF            (OCR1C = 0x00)
+	#define KB_LED3_ON             (DDRB |=  (1<<7))
+	#define KB_LED3_OFF            (DDRB &= ~(1<<7))
 	#define KB_LED3_SET(n)         (OCR1C = (uint8_t)(n))
 	#define KB_LED3_SET_PERCENT(n) (OCR1C = (uint8_t)((n) * 0xFF))
 

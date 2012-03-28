@@ -33,7 +33,7 @@ uint8_t teensy_init(void) {
 	DDRB  &= ~0b00001110;  // set B(3,2,1) as input
 	PORTB |=  0b00001110;  // set B(3,2,1) internal pull-up enabled
 	DDRD  &= ~0b01110000;  // set D(6,5,4) as input
-	PORTD |=  0b01110000;  // set D(6,5,4) internal pull-up enabled
+	PORTD |=  0b00110000;  // set D(  5,4) internal pull-up enabled
 	DDRE  &= ~0b01000000;  // set E(6)     as input
 	PORTE |=  0b01000000;  // set E(6)     internal pull-up enabled
 

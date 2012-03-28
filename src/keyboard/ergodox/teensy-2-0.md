@@ -43,8 +43,7 @@
 * notes:
   * SCL and SDA: Need external pull-up resistors.  Sometimes the Teensy
     internal pull-ups are enough (see datasheet section 20.5.1), but i think
-    for this project we'll want external ones, in case people want to separate
-    the halves very far.
+    for this project we'll want external ones.
 
 ## Notes about Registers
 
@@ -62,14 +61,17 @@
 
 * notes:
   * Unused pins should be set as input with internal pullup enabled (see
-    datasheet section 10.2.6).
+    datasheet section 10.2.6) in order to give them a defined level.
+    * PD6 already has a defined level (low) since it's hooked up to the onboard
+      LED, so there's no reason to set internal pull-up enabled on it.  If we
+      do, it will source current to the LED, which is fine, but unnecessary.
   * We want the row pins 'drive high' initially, and the column pins set as
     input with internal pull-up.  We'll cycle through driving the row pins low,
     and checking the column pins in the update function.
 
 ### PWM on ports OC1(A|B|C) (see datasheet section 14.10)
 
-* notes:
+* notes: settings:
   * PWM pins should be set as outputs.
   * we want Waveform Generation Mode 5  
     (fast PWM, 8-bit)  
@@ -87,6 +89,13 @@
     * set `TCCR1B[2,1,0]` to `0,0,1`
     * LEDs will be at minimum brightness until OCR1(A|B|C) are changed (since
       the default value of all the bits in those registers is 0)
+
+* notes: behavior:
+  * The pins source current when on, and sink current when off.  They aren't
+    set to high impediance for either.
+  * In Fast PWM mode setting `OCR1(A|B|C)` to `0` does not make the output on
+    `OC1(A|B|C)` constant low; just close.  Per the datasheet, this isn't true
+    for every PWM mode.
 
 * abbreviations:
   * OCR = Output Compare Register
