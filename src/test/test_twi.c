@@ -1,57 +1,32 @@
 /* ----------------------------------------------------------------------------
- * ergoDOX controller: MCP23018 specific code
+ * Test for ACK on address write (with a Teensy 2.0 and I/O expander)
  * ----------------------------------------------------------------------------
  * Copyright (c) 2012 Ben Blazak <benblazak.dev@gmail.com>
  * Released under The MIT License (MIT) (see "license.md")
  * Project located at <https://github.com/benblazak/ergodox-firmware>
  * ------------------------------------------------------------------------- */
 
-// TODO: this is not working yet
-
-	// see if the device is ready
-	// - success: set `mcp23018_ready = true` and continue initializing
-	// - failure: return `error`; we can try again later
-
-	// set pin direction
-	// - unused  : input  : 1
-	// - rows    : output : 0
-	// - columns : input  : 1
-
-	// set pull-up
-	// - unused  : on : 1
-	// - rows    : on : 1
-	// - columns : on : 1
-
-	// set output pins high
-	// - rows  : high : 1
-	// - other : low  : 0 (or ignored)
-
-
-#include <util/twi.h>
-
-#define MCP23018_h_INCLUDE_PRIVATE
-#include "mcp23018.h"
-#include "teensy-2-0.h"
-#include "lib/data-types.h"
-
-
-// register addresses (see "mcp23018.md")
-#define IODIRA 0x00  // i/o direction register
-#define IODIRB 0x01
-#define GPPUA  0x0C  // GPIO pull-up resistor register
-#define GPPUB  0x0D
-#define GPIOA  0x12  // general purpose i/o port register
-#define GPIOB  0x13
-#define OLATA  0x14  // output latch register
-#define OLATB  0x15
-
-
-// ----------------------------------------------------------------------------
-// dbg
-// ----------------------------------------------------------------------------
-
 #include <avr/io.h>
+#include <util/twi.h>
 #include <util/delay.h>
+
+
+// processor frequency (from <http://www.pjrc.com/teensy/prescaler.html>)
+#define CPU_PRESCALE(n) (CLKPR = 0x80, CLKPR = (n))
+#define CPU_16MHz       0x00
+#define CPU_8MHz        0x01
+#define CPU_4MHz        0x02
+#define CPU_2MHz        0x03
+#define CPU_1MHz        0x04
+#define CPU_500kHz      0x05
+#define CPU_250kHz      0x06
+#define CPU_125kHz      0x07
+#define CPU_62kHz       0x08
+
+
+// ----------------------------------------------------------------------------
+// helper functions
+// ----------------------------------------------------------------------------
 
 #define blink_led(time1, time2) { \
 	/* Teensy 2.0 onboard LED on PD6
@@ -62,26 +37,12 @@
 	_delay_ms(time2); \
 }
 
-void blink_hex(uint8_t num) {
-	// initial blink (get ready)
-	blink_led(700, 200);
-	// 1st hex number
-	for (uint8_t i=0; i<(num/0x10); i++) {
-		blink_led(200, 100);
-	}
-	_delay_ms(400);
-	// 2nd hex number
-	for (uint8_t i=0; i<(num%0x10); i++) {
-		blink_led(200, 100);
-	}
-}
-
 // ---------------------------------------------------------------------------- // TWI
 // ----------------------------------------------------------------------------
 
 void twi_init(void) {
 	TWSR &= ~( (1<<TWPS1)|(1<<TWPS0) );
-	TWBR = ((F_CPU / 400000) - 16) / 2;
+	TWBR = ((F_CPU / 100000) - 16) / 2;
 // 	TWSR |= (1<<TWPS1)|(1<<TWPS0); //dbg
 // 	TWBR = 0xFF; //dbg
 }
@@ -107,21 +68,38 @@ uint8_t twi_send(uint8_t data) {
 }
 
 // ----------------------------------------------------------------------------
-// init function
+// main
 // ----------------------------------------------------------------------------
 
-uint8_t mcp23018_init(void) {
+void main(void) {
+	CPU_PRESCALE(CPU_16MHz);
 	uint8_t ret;
 
 	twi_init();
 
-	twi_start();
-	ret = twi_send( (MCP23018_TWI_ADDRESS<<1) | TW_WRITE );
-	ret = twi_send(IODIRA);
-	ret = twi_send(0);
-	ret = twi_send(0);
-	ret = twi_send(0);
+	for (uint8_t i=0;; i+=2) {  // try all even (write) addresses
+		twi_start();
+		ret = twi_send(i);  // i = address
+		twi_stop();
 
-	blink_hex(ret);
+		if (ret == 0x18)  // SLA+W sent; ACK received
+			break;
 
+		if (i == 0xFE)  // all done
+			break;
+	}
+
+	// blink the return value
+	// --- initial blink (get ready)
+	blink_led(700, 200);
+	// --- 1st hex number
+	for (uint8_t i=0; i<(ret/0x10); i++) {
+		blink_led(200, 100);
+	}
+	_delay_ms(400);
+	// --- 2nd hex number
+	for (uint8_t i=0; i<(ret%0x10); i++) {
+		blink_led(200, 100);
+	}
 }
+

@@ -8,26 +8,27 @@
 # -----------------------------------------------------------------------------
 
 
-TARGET = ergodox-firmware
-
-SRC = $(shell find -maxdepth 1 -name '*.c') \
-      $(shell find ./keyboard  -name '*.c') \
-      $(shell find ./lib       -name '*.c')
-      
+TARGET = test
 
 EXTRAINCDIRS = .
 
-TEENSY_MAKE = $(MAKE) -f 'lib-other/pjrc/blinky/Makefile' \
+TEENSY_MAKE = $(MAKE) -f '../lib-other/pjrc/blinky/Makefile' \
 	      TARGET='$(TARGET)' \
-	      SRC='$(SRC)' \
 	      EXTRAINCDIRS='$(EXTRAINCDIRS)'
 
+.PHONY: test_pwm test_twi
 
-.PHONY: all clean
+test_pwm:
+	$(TEENSY_MAKE) all \
+		SRC='test_pwm.c'
 
-all:
-	$(TEENSY_MAKE) all
+test_twi:
+	$(TEENSY_MAKE) all \
+		SRC='test_twi.c'
+
+.PHONY: clean
 
 clean:
-	$(TEENSY_MAKE) clean
+	$(TEENSY_MAKE) clean \
+		SRC='$(shell find -name '*.c')'
 

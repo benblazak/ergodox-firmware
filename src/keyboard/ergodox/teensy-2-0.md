@@ -1,5 +1,6 @@
 # Documentation : Teensy 2.0
 
+
 ## Pinouts and Pin assignments
 
 * `+` indicates pin
@@ -44,6 +45,7 @@
   * SCL and SDA: Need external pull-up resistors.  Sometimes the Teensy
     internal pull-ups are enough (see datasheet section 20.5.1), but i think
     for this project we'll want external ones.
+
 
 ## Notes about Registers
 
@@ -100,6 +102,30 @@
 * abbreviations:
   * OCR = Output Compare Register
   * TCCR = Timer/Counter Control Register
+
+
+## I&sup2;C Status Codes (for Master modes)
+
+### Master Transmitter
+
+* `0x08`  A START condition has been transmitted 
+* `0x10`  A repeated START condition has been transmitted
+* `0x18`  SLA+W has been transmitted; ACK has been received
+* `0x20`  SLA+W has been transmitted; NOT ACK has been received
+* `0x28`  Data byte has been transmitted; ACK has been received
+* `0x30`  Data byte has been transmitted; NOT ACK has been received
+* `0x38`  Arbitration lost in SLA+W or data bytes
+
+### Master Receiver
+
+* `0x08`  A START condition has been transmitted
+* `0x10`  A repeated START condition has been transmitted
+* `0x38`  Arbitration lost in SLA+R or NOT ACK bit
+* `0x40`  SLA+R has been transmitted; ACK has been received
+* `0x48`  SLA+R has been transmitted; NOT ACK has been received
+* `0x50`  Data byte has been received; ACK has been returned
+* `0x58`  Data byte has been received; NOT ACK has been returned
+
 
 -------------------------------------------------------------------------------
 
