@@ -1,3 +1,6 @@
+<!--
+TODO: move the links into references if they're going to disappear from here
+-->
 # src/lib-other
 Files taken from other projects
 

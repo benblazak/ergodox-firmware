@@ -1,6 +1,5 @@
 # Documentation : Teensy 2.0
 
-
 ## Pinouts and Pin assignments
 
 * `+` indicates pin
@@ -68,7 +67,7 @@
       LED, so there's no reason to set internal pull-up enabled on it.  If we
       do, it will source current to the LED, which is fine, but unnecessary.
   * We want the row pins 'drive high' initially, and the column pins set as
-    input with internal pull-up.  We'll cycle through driving the row pins low,
+    input with internal pull-up.  We'll cycle through driving the row pins low
     and checking the column pins in the update function.
 
 ### PWM on ports OC1(A|B|C) (see datasheet section 14.10)
@@ -102,30 +101,6 @@
 * abbreviations:
   * OCR = Output Compare Register
   * TCCR = Timer/Counter Control Register
-
-
-## I&sup2;C Status Codes (for Master modes)
-
-### Master Transmitter
-
-* `0x08`  A START condition has been transmitted 
-* `0x10`  A repeated START condition has been transmitted
-* `0x18`  SLA+W has been transmitted; ACK has been received
-* `0x20`  SLA+W has been transmitted; NOT ACK has been received
-* `0x28`  Data byte has been transmitted; ACK has been received
-* `0x30`  Data byte has been transmitted; NOT ACK has been received
-* `0x38`  Arbitration lost in SLA+W or data bytes
-
-### Master Receiver
-
-* `0x08`  A START condition has been transmitted
-* `0x10`  A repeated START condition has been transmitted
-* `0x38`  Arbitration lost in SLA+R or NOT ACK bit
-* `0x40`  SLA+R has been transmitted; ACK has been received
-* `0x48`  SLA+R has been transmitted; NOT ACK has been received
-* `0x50`  Data byte has been received; ACK has been returned
-* `0x58`  Data byte has been received; NOT ACK has been returned
-
 
 -------------------------------------------------------------------------------
 

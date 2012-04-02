@@ -15,7 +15,7 @@
 	#define KB_ROWS    12  // must match real life
 	#define KB_COLUMNS  7  // must match real life
 
-	extern bool kb_is_pressed[KB_ROWS][KB_COLUMNS] = {};
+	extern bool kb_is_pressed[KB_ROWS][KB_COLUMNS] = {false};
 
 #endif
 

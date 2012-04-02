@@ -26,6 +26,10 @@
 #define CPU_62kHz       0x08
 
 
+/* returns:
+ * - success: 0
+ * + will never return failure
+ */
 uint8_t teensy_init(void) {
 	CPU_PRESCALE(CPU_16MHz);  // speed should match F_CPU in makefile
 

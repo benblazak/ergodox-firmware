@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- * ergoDOX controller: MCP23018 specific exports
+ * Very simple Teensy 2.0 TWI library : exports
  * ----------------------------------------------------------------------------
  * Copyright (c) 2012 Ben Blazak <benblazak.dev@gmail.com>
  * Released under The MIT License (MIT) (see "license.md")
@@ -7,18 +7,19 @@
  * ------------------------------------------------------------------------- */
 
 
-#ifndef MCP23018_h
-	#define MCP23018_h
+#ifndef TWI_h
+	#define TWI_h
 
-	#ifdef MCP23018_h_INCLUDE_PRIVATE
-
-		#define MCP23018_TWI_ADDRESS 0b0100000
-
-		uint8_t mcp23018_init(void);
-		uint8_t mcp23018_update_matrix(
-				uint8_t matrix[KB_ROWS][KB_COLUMNS] );
-
+	#ifndef TWI_FREQ
+		#define TWI_FREQ 100000
 	#endif
+
+
+	void twi_init(void);
+	uint8_t twi_start(void);
+	void twi_stop(void);
+	uint8_t twi_send(uint8_t data);
+	uint8_t twi_read(uint8_t * data);
 
 #endif
 

@@ -40,6 +40,13 @@
 
 ## C Stuff
 
+* [comp.lang.c Frequently Asked Questions]
+  (http://c-faq.com/index.html)
+
+* [The C Preprocessor]
+  (http://gcc.gnu.org/onlinedocs/gcc-2.95.3/cpp_1.html#SEC1)
+  (on <http://gcc.gnu.org/>)
+
 * [C Library Reference]
   (http://www.cplusplus.com/reference/)
   (on <http://cplusplus.com>)
