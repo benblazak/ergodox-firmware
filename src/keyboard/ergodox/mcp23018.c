@@ -33,12 +33,6 @@
 #define TWI_ADDR_READ  ( (MCP23018_TWI_ADDRESS<<1) | TW_READ  )
 
 
-// error check
-#if KB_ROWS != 12 || KB_COLUMNS != 7
-	#error "Expecting different keyboard dimensions"
-#endif
-
-
 /*
  * returns:
  * - success: 0
@@ -69,36 +63,37 @@ uint8_t mcp23018_init(void) {
 	twi_send(0b11111111);  // IODIRB
 
 	// set pull-up
-	// - unused  : on : 1
-	// - rows    : on : 1
-	// - columns : on : 1
+	// - unused  : on  : 1
+	// - rows    : off : 0
+	// - columns : on  : 1
 	twi_start();
 	twi_send(TWI_ADDR_WRITE);
 	twi_send(GPPUA);
-	twi_send(0b11111111);  // GPPUA
+	twi_send(0b11000000);  // GPPUA
 	twi_send(0b11111111);  // GPPUB
 
-	// set output pins high
-	// - unused  : low  : 0
-	// - rows    : high : 1
-	// - columns : low  : 0
+	// set logical value (doesn't matter on inputs)
+	// - unused  : high (hi-Z) : 1
+	// - rows    : high (hi-Z) : 1
+	// - columns : high (hi-Z) : 1
 	twi_start();
 	twi_send(TWI_ADDR_WRITE);
 	twi_send(GPIOA);
-	twi_send(0b00111111);  //GPIOA
-	twi_send(0b00000000);  //GPIOB
+	twi_send(0b11111111);  //GPIOA
+	twi_send(0b11111111);  //GPIOB
 	
 	twi_stop();
+
+	return 0;  // success
 }
 
-/* args:
- * - `matrix[][]`: `KB_ROWS` and `KB_COLUMNS` must be what we're expecting (see
- *   'error check' in the `#include` section)
- *
- * returns:
+/* returns:
  * - success: 0
  * - failure: twi status code
  */
+#if KB_ROWS != 12 || KB_COLUMNS != 7
+	#error "Expecting different keyboard dimensions"
+#endif
 uint8_t mcp23018_update_matrix(uint8_t matrix[KB_ROWS][KB_COLUMNS]) {
 	uint8_t ret, data;
 
@@ -129,5 +124,7 @@ uint8_t mcp23018_update_matrix(uint8_t matrix[KB_ROWS][KB_COLUMNS]) {
 	}
 
 	twi_stop();
+
+	return 0;  // success
 }
 

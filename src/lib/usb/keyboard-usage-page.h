@@ -164,7 +164,7 @@
 #define KEY_LockingScrollLock       0x84  // -  -   √     -
 
 #define KEYPAD_Comma                0x85  // -  -   -     -
-#define KEYPAD_Equal                0x86  // -  -   -     -
+#define KEYPAD_EqualSign            0x86  // -  -   -     -
 
 #define KEY_International1          0x87  // -  -   -     -
 #define KEY_International2          0x88  // -  -   -     -

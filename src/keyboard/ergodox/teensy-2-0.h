@@ -12,6 +12,8 @@
 
 	#include <avr/io.h>  // for the register macros
 
+	#include "lib/data-types.h"
+
 	// LED control
 	#define KB_LED1_ON             (DDRB |=  (1<<5))
 	#define KB_LED1_OFF            (DDRB &= ~(1<<5))

@@ -9,6 +9,8 @@
 
 #include <avr/io.h>
 
+#include "lib/data-types.h"
+
 #define TEENSY_2_0_h_INCLUDE_PRIVATE
 #include "teensy-2-0.h"
 
@@ -26,6 +28,54 @@
 #define CPU_62kHz       0x08
 
 
+/* pin macros
+ * - note: you can move the `UNUSED`, `ROW`, and `COLUMN` pins around, but be
+ *   sure to keep the set of pins listed in those catagories constant.  other
+ *   pins are not movable, and either are referenced explicitly or have macros
+ *   defined for them elsewhere.
+ * - note: if you change pin assignments, please be sure to update
+ *   "teensy-2-0.md".
+ */
+// --- helpers
+#define TEENSYPIN_WRITE(register, operation, pin) \
+	_TEENSYPIN_WRITE(register, operation, pin)
+#define _TEENSYPIN_WRITE(register, operation, pin_letter, pin_number) \
+	((register##pin_letter) operation (1<<(pin_number)))
+
+#define TEENSYPIN_READ(pin) \
+	_TEENSYPIN_READ(pin)
+#define _TEENSYPIN_READ(pin_letter, pin_number) \
+	((PIN##pin_letter) & (1<<(pin_number)))
+
+#define SET |=
+#define CLEAR &=~
+
+// --- unused
+#define UNUSED_0 B, 1  // SPI pin
+#define UNUSED_1 B, 2  // SPI pin
+#define UNUSED_2 B, 3  // SPI pin
+#define UNUSED_3 D, 4  // hard to use with breadboard (on the end)
+#define UNUSED_4 D, 5  // hard to use with breadboard (on the end)
+#define UNUSED_5 E, 6  // hard to use with breadboard (internal)
+
+// --- rows
+#define ROW_0 F, 0
+#define ROW_1 F, 1
+#define ROW_2 F, 4
+#define ROW_3 F, 5
+#define ROW_4 F, 6
+#define ROW_5 F, 7
+
+// --- columns
+#define COLUMN_0 B, 4
+#define COLUMN_1 C, 6
+#define COLUMN_2 C, 7
+#define COLUMN_3 D, 2
+#define COLUMN_4 D, 3
+#define COLUMN_5 D, 7
+#define COLUMN_6 B, 0
+
+
 /* returns:
  * - success: 0
  * + will never return failure
@@ -33,34 +83,68 @@
 uint8_t teensy_init(void) {
 	CPU_PRESCALE(CPU_16MHz);  // speed should match F_CPU in makefile
 
-	// unused pins
-	DDRB  &= ~0b00001110;  // set B(3,2,1) as input
-	PORTB |=  0b00001110;  // set B(3,2,1) internal pull-up enabled
-	DDRD  &= ~0b01110000;  // set D(6,5,4) as input
-	PORTD |=  0b00110000;  // set D(  5,4) internal pull-up enabled
-	DDRE  &= ~0b01000000;  // set E(6)     as input
-	PORTE |=  0b01000000;  // set E(6)     internal pull-up enabled
+	// onboard LED
+	DDRD  &= ~(1<<6);  // set D(6) as input
+	PORTD &= ~(1<<6);  // set D(6) internal pull-up disabled
 
-	// LEDs (see "PWM on ports OC1(A|B|C)" in "teensy-2-0.md")
+	// keyboard LEDs (see "PWM on ports OC1(A|B|C)" in "teensy-2-0.md")
 	DDRB   |= 0b11100000;  // set B(7,6,5) as output
 	TCCR1A  = 0b10101001;  // set and configure fast PWM
 	TCCR1B  = 0b00001001;  // set and configure fast PWM
 
+	// I2C (TWI)
+	// on pins D(1,0); leave them alone here so the TWI library can do as
+	// it wishes
+
+	// unused pins
+	// --- set as input
+	TEENSYPIN_WRITE(DDR, CLEAR, UNUSED_0);
+	TEENSYPIN_WRITE(DDR, CLEAR, UNUSED_1);
+	TEENSYPIN_WRITE(DDR, CLEAR, UNUSED_2);
+	TEENSYPIN_WRITE(DDR, CLEAR, UNUSED_3);
+	TEENSYPIN_WRITE(DDR, CLEAR, UNUSED_4);
+	TEENSYPIN_WRITE(DDR, CLEAR, UNUSED_5);
+	// --- set internal pull-up enabled
+	TEENSYPIN_WRITE(PORT, SET, UNUSED_0);
+	TEENSYPIN_WRITE(PORT, SET, UNUSED_1);
+	TEENSYPIN_WRITE(PORT, SET, UNUSED_2);
+	TEENSYPIN_WRITE(PORT, SET, UNUSED_3);
+	TEENSYPIN_WRITE(PORT, SET, UNUSED_4);
+	TEENSYPIN_WRITE(PORT, SET, UNUSED_5);
+
 	// rows
-	DDRF  |=  0b11110011;  // set F(7,6,5,4,1,0) as output
-	PORTF |=  0b11110011;  // set F(7,6,5,4,1,0) drive high
+	// --- set as input (hi-Z)
+	TEENSYPIN_WRITE(DDR, CLEAR, ROW_0);
+	TEENSYPIN_WRITE(DDR, CLEAR, ROW_1);
+	TEENSYPIN_WRITE(DDR, CLEAR, ROW_2);
+	TEENSYPIN_WRITE(DDR, CLEAR, ROW_3);
+	TEENSYPIN_WRITE(DDR, CLEAR, ROW_4);
+	TEENSYPIN_WRITE(DDR, CLEAR, ROW_5);
+	// --- set internal pull-up disabled
+	TEENSYPIN_WRITE(PORT, CLEAR, ROW_0);
+	TEENSYPIN_WRITE(PORT, CLEAR, ROW_1);
+	TEENSYPIN_WRITE(PORT, CLEAR, ROW_2);
+	TEENSYPIN_WRITE(PORT, CLEAR, ROW_3);
+	TEENSYPIN_WRITE(PORT, CLEAR, ROW_4);
+	TEENSYPIN_WRITE(PORT, CLEAR, ROW_5);
 
 	// columns
-	DDRB  &= ~0b00010001;  // set B(4,0)   as input
-	PORTB |=  0b00010001;  // set B(4,0)   internal pull-up enabled
-	DDRC  &= ~0b11000000;  // set C(7,6)   as input
-	PORTC |=  0b11000000;  // set C(7,6)   internal pull-up enabled
-	DDRD  &= ~0b10001100;  // set D(7,3,2) as input
-	PORTD |=  0b10001100;  // set D(7,3,2) internal pull-up enabled
-
-	// I2C (TWI)
-	// on pins D(1,0); leave them alone here, so the TWI library can do as
-	// it wishes
+	// --- set as input
+	TEENSYPIN_WRITE(DDR, CLEAR, COLUMN_0);
+	TEENSYPIN_WRITE(DDR, CLEAR, COLUMN_1);
+	TEENSYPIN_WRITE(DDR, CLEAR, COLUMN_2);
+	TEENSYPIN_WRITE(DDR, CLEAR, COLUMN_3);
+	TEENSYPIN_WRITE(DDR, CLEAR, COLUMN_4);
+	TEENSYPIN_WRITE(DDR, CLEAR, COLUMN_5);
+	TEENSYPIN_WRITE(DDR, CLEAR, COLUMN_6);
+	// --- set internal pull-up enabled
+	TEENSYPIN_WRITE(PORT, SET, COLUMN_0);
+	TEENSYPIN_WRITE(PORT, SET, COLUMN_1);
+	TEENSYPIN_WRITE(PORT, SET, COLUMN_2);
+	TEENSYPIN_WRITE(PORT, SET, COLUMN_3);
+	TEENSYPIN_WRITE(PORT, SET, COLUMN_4);
+	TEENSYPIN_WRITE(PORT, SET, COLUMN_5);
+	TEENSYPIN_WRITE(PORT, SET, COLUMN_6);
 
 	return 0;  // success
 }

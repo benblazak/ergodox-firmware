@@ -30,4 +30,5 @@ all:
 
 clean:
 	$(TEENSY_MAKE) clean
+	git clean -X
 

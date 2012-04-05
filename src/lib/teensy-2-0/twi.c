@@ -42,6 +42,7 @@ uint8_t twi_start(void) {
 	if (! (TW_STATUS == TW_START) ||
 	      (TW_STATUS == TW_REP_START) )
 		return TW_STATUS;  // error
+	return 0;  // success
 }
 
 void twi_stop(void) {
@@ -63,6 +64,7 @@ uint8_t twi_send(uint8_t data) {
 	      (TW_STATUS == TW_MT_DATA_ACK)||
 	      (TW_STATUS == TW_MR_SLA_ACK) )
 		return TW_STATUS;  // error
+	return 0;  // success
 }
 
 uint8_t twi_read(uint8_t * data) {
@@ -71,9 +73,10 @@ uint8_t twi_read(uint8_t * data) {
 	// wait for transmission to complete
 	while (!(TWCR & (1<<TWINT)));
 	// set data variable
-	data = TWDR;
+	*data = TWDR;
 	// if it didn't work, return the status code (else return 0)
 	if (TW_STATUS != TW_MR_DATA_ACK)
 		return TW_STATUS;  // error
+	return 0;  // success
 }
 

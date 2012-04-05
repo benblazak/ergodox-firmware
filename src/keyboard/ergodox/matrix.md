@@ -1,11 +1,10 @@
 # Documentation : Keyboard Matrix
 
-## Matrix [row.column] assignments
+## Matrix [row##column] assignments
 
- * row and column numbers are in hex
- * coordinates without brackets are unused
- * left and right hands are mostly the same, except that `row += 6` for left
-   hand rows
+* row and column numbers are in hex
+* coordinates without brackets are unused
+* left and right hands are mostly the same except that `row += 6` for the left
 
     .......           rows x columns = positions;  assigned,  unassigned .......
     ....... per hand:    6 x 7       = 42;         38,        4          .......

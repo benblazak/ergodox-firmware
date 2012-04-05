@@ -10,13 +10,11 @@
 #ifndef DATA_TYPES_h
 	#define DATA_TYPES_h
 
-	// --------------------------------------------------------------------
-	#define bool _Bool
+	#include <stdint.h>
 
+	#define bool _Bool
 	#define true  ((bool)1)
 	#define false ((bool)0)
-
-	// --------------------------------------------------------------------
 
 #endif
 

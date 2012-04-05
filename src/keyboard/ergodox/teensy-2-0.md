@@ -28,12 +28,12 @@
 ### Teensy 2.0 Pin Assignments
 
               power_negative  GND +---.....---+ Vcc   power_positive
-                    column6   PB0 +           + PF0   row6
-                                  o           + PF1   row7
-                                  o           + PF4   row8
-                                  o  o     o  + PF5   row9
-                       LED3  OC1C +           + PF6   rowA
-                        I2C   SCL +           + PF7   rowB
+                    column6   PB0 +           + PF0   row0
+                                  o           + PF1   row1
+                                  o           + PF4   row2
+                                  o  o     o  + PF5   row3
+                       LED3  OC1C +           + PF6   row4
+                        I2C   SCL +           + PF7   row5
                         I2C   SDA +           + OC1B  LED2
                     column3   PD2 +           + OC1A  LED1
                     column4   PD3 +           + PB4   column0
@@ -63,12 +63,16 @@
 * notes:
   * Unused pins should be set as input with internal pullup enabled (see
     datasheet section 10.2.6) in order to give them a defined level.
-    * PD6 already has a defined level (low) since it's hooked up to the onboard
-      LED, so there's no reason to set internal pull-up enabled on it.  If we
-      do, it will source current to the LED, which is fine, but unnecessary.
-  * We want the row pins 'drive high' initially, and the column pins set as
-    input with internal pull-up.  We'll cycle through driving the row pins low
-    and checking the column pins in the update function.
+  * PD6 already has a defined level (low) since it's hooked up to the onboard
+    LED, so there's no reason to set internal pull-up enabled on it.  If we do,
+    it will source current to the LED, which is fine, but unnecessary.
+  * We want the row pins 'hi-Z' initially (set as input with pull-up disabled),
+    and the column pins set as input with internal pull-up enabled.  We'll
+    cycle through driving the row pins low (setting them as output) and
+    checking the column pins in the update function.
+    * Switching the row pins between hi-Z and drive low (treating them as if
+      they were open drain) seems just as good as, and a little safer than,
+      driving them high when the row's not active.
 
 ### PWM on ports OC1(A|B|C) (see datasheet section 14.10)
 
