@@ -108,10 +108,11 @@ uint8_t mcp23018_update_matrix(uint8_t matrix[KB_ROWS][KB_COLUMNS]) {
 
 	for (uint8_t row=0x6; row<=0xB; row++) {
 		// set row low : 0
+		// set other rows high : 1
 		twi_start();
 		twi_send(TWI_ADDR_WRITE);
 		twi_send(GPIOA);
-		twi_send( 0b00111111 & ~(1<<(row-6)) );  // GPIOA
+		twi_send( 0b11111111 & ~(1<<(row-6)) );  // GPIOA
 
 		// get column data
 		twi_start();
@@ -122,6 +123,12 @@ uint8_t mcp23018_update_matrix(uint8_t matrix[KB_ROWS][KB_COLUMNS]) {
 		for (uint8_t col=0; col<=6; col++)
 			matrix[row][col] = !( data & (1<<col) );
 	}
+
+	// set all rows high : 1
+	twi_start();
+	twi_send(TWI_ADDR_WRITE);
+	twi_send(GPIOA);
+	twi_send(0b11111111);
 
 	twi_stop();
 

@@ -32,6 +32,8 @@
 	#ifdef TEENSY_2_0_h_INCLUDE_PRIVATE
 
 		uint8_t teensy_init(void);
+		uint8_t teensy_update_matrix(
+				uint8_t matrix[KB_ROWS][KB_COLUMNS] );
 
 	#endif
 

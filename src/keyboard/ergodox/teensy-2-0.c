@@ -11,6 +11,7 @@
 
 #include "lib/data-types.h"
 
+#include "matrix.h"
 #define TEENSY_2_0_h_INCLUDE_PRIVATE
 #include "teensy-2-0.h"
 
@@ -30,9 +31,9 @@
 
 /* pin macros
  * - note: you can move the `UNUSED`, `ROW`, and `COLUMN` pins around, but be
- *   sure to keep the set of pins listed in those catagories constant.  other
- *   pins are not movable, and either are referenced explicitly or have macros
- *   defined for them elsewhere.
+ *   sure to keep the set of all the pins listed constant.  other pins are not
+ *   movable, and either are referenced explicitly or have macros defined for
+ *   them elsewhere.
  * - note: if you change pin assignments, please be sure to update
  *   "teensy-2-0.md".
  */
@@ -145,6 +146,51 @@ uint8_t teensy_init(void) {
 	TEENSYPIN_WRITE(PORT, SET, COLUMN_4);
 	TEENSYPIN_WRITE(PORT, SET, COLUMN_5);
 	TEENSYPIN_WRITE(PORT, SET, COLUMN_6);
+
+	return 0;  // success
+}
+
+/* returns:
+ * - success: 0
+ * + will never return failure
+ */
+#if KB_ROWS != 12 || KB_COLUMNS != 7
+	#error "Expecting different keyboard dimensions"
+#endif
+static inline void _update_columns(
+		uint8_t matrix[KB_ROWS][KB_COLUMNS], uint8_t row ) {
+	matrix[row][0] = ! TEENSYPIN_READ(COLUMN_0);
+	matrix[row][1] = ! TEENSYPIN_READ(COLUMN_1);
+	matrix[row][2] = ! TEENSYPIN_READ(COLUMN_2);
+	matrix[row][3] = ! TEENSYPIN_READ(COLUMN_3);
+	matrix[row][4] = ! TEENSYPIN_READ(COLUMN_4);
+	matrix[row][5] = ! TEENSYPIN_READ(COLUMN_5);
+	matrix[row][6] = ! TEENSYPIN_READ(COLUMN_6);
+}
+uint8_t teensy_update_matrix(uint8_t matrix[KB_ROWS][KB_COLUMNS]) {
+	TEENSYPIN_WRITE(DDR, CLEAR, ROW_0);  // set row low (as output)
+	_update_columns(matrix, 0);          // read col 0..6 and update matrix
+	TEENSYPIN_WRITE(DDR, SET, ROW_0);    // set row hi-Z (as input)
+
+	TEENSYPIN_WRITE(DDR, CLEAR, ROW_1);
+	_update_columns(matrix, 1);
+	TEENSYPIN_WRITE(DDR, SET, ROW_1);
+
+	TEENSYPIN_WRITE(DDR, CLEAR, ROW_2);
+	_update_columns(matrix, 2);
+	TEENSYPIN_WRITE(DDR, SET, ROW_2);
+
+	TEENSYPIN_WRITE(DDR, CLEAR, ROW_3);
+	_update_columns(matrix, 3);
+	TEENSYPIN_WRITE(DDR, SET, ROW_3);
+
+	TEENSYPIN_WRITE(DDR, CLEAR, ROW_4);
+	_update_columns(matrix, 4);
+	TEENSYPIN_WRITE(DDR, SET, ROW_4);
+
+	TEENSYPIN_WRITE(DDR, CLEAR, ROW_5);
+	_update_columns(matrix, 5);
+	TEENSYPIN_WRITE(DDR, SET, ROW_5);
 
 	return 0;  // success
 }
