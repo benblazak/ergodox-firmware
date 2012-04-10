@@ -12,8 +12,9 @@ TARGET = ergodox-firmware
 
 SRC = $(shell find -maxdepth 1 -name '*.c') \
       $(shell find ./keyboard  -name '*.c') \
-      $(shell find ./lib       -name '*.c')
-      
+      $(shell find ./lib       -name '*.c') \
+      './lib-other/pjrc/usb_keyboard/usb_keyboard.c'
+
 
 EXTRAINCDIRS = .
 
@@ -23,7 +24,7 @@ TEENSY_MAKE = $(MAKE) -f 'lib-other/pjrc/blinky/Makefile' \
 	      EXTRAINCDIRS='$(EXTRAINCDIRS)'
 
 
-.PHONY: all clean
+.PHONY: all clean debug
 
 all:
 	$(TEENSY_MAKE) all
@@ -31,4 +32,7 @@ all:
 clean:
 	$(TEENSY_MAKE) clean
 	git clean -X
+
+debug:
+	$(TEENSY_MAKE) debug
 

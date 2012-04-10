@@ -11,7 +11,7 @@
 	#define TWI_h
 
 	#ifndef TWI_FREQ
-		#define TWI_FREQ 100000
+		#define TWI_FREQ 100000  // in Hz
 	#endif
 
 

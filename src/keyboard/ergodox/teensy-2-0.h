@@ -14,6 +14,8 @@
 
 	#include "lib/data-types.h"
 
+	#include "matrix.h"
+
 	// LED control
 	#define KB_LED1_ON             (DDRB |=  (1<<5))
 	#define KB_LED1_OFF            (DDRB &= ~(1<<5))
@@ -29,11 +31,11 @@
 	#define KB_LED3_SET_PERCENT(n) (OCR1C = (uint8_t)((n) * 0xFF))
 
 
-	#ifdef TEENSY_2_0_h_INCLUDE_PRIVATE
+	#ifdef KEYBOARD_INCLUDE_PRIVATE
 
 		uint8_t teensy_init(void);
 		uint8_t teensy_update_matrix(
-				uint8_t matrix[KB_ROWS][KB_COLUMNS] );
+				bool matrix[KB_ROWS][KB_COLUMNS] );
 
 	#endif
 

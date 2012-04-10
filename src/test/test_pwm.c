@@ -8,19 +8,39 @@
 
 
 #include <util/delay.h>
-
-#define TEENSY_2_0_h_INCLUDE_PRIVATE
-#include "../keyboard/ergodox/teensy-2-0.h"
-#include "../keyboard/ergodox/teensy-2-0.c"
+#include <avr/io.h>
 
 
-#define bool uint8_t
+#define bool _Bool
 #define true  1
 #define false 0
 
+#define CPU_PRESCALE(n) (CLKPR = 0x80, CLKPR = (n))
 
-void main(void) {
-	teensy_init();
+// LED control
+#define KB_LED1_ON             (DDRB |=  (1<<5))
+#define KB_LED1_OFF            (DDRB &= ~(1<<5))
+#define KB_LED1_SET(n)         (OCR1A = (uint8_t)(n))
+#define KB_LED1_SET_PERCENT(n) (OCR1A = (uint8_t)((n) * 0xFF))
+#define KB_LED2_ON             (DDRB |=  (1<<6))
+#define KB_LED2_OFF            (DDRB &= ~(1<<6))
+#define KB_LED2_SET(n)         (OCR1B = (uint8_t)(n))
+#define KB_LED2_SET_PERCENT(n) (OCR1B = (uint8_t)((n) * 0xFF))
+#define KB_LED3_ON             (DDRB |=  (1<<7))
+#define KB_LED3_OFF            (DDRB &= ~(1<<7))
+#define KB_LED3_SET(n)         (OCR1C = (uint8_t)(n))
+#define KB_LED3_SET_PERCENT(n) (OCR1C = (uint8_t)((n) * 0xFF))
+
+
+int main(void) {
+	CPU_PRESCALE(0);  // set for 16MHz
+
+	// pwm init for keyboard LEDs
+	// (see "PWM on ports OC1(A|B|C)" in "teensy-2-0.md")
+	DDRB   |= 0b11100000;  // set B(7,6,5) as output
+	TCCR1A  = 0b10101001;  // set and configure fast PWM
+	TCCR1B  = 0b00001001;  // set and configure fast PWM
+
 
 	for (uint8_t i=0; i<3; i++) {
 		KB_LED1_SET(0x10);

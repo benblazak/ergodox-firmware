@@ -19,6 +19,8 @@ extern volatile uint8_t keyboard_leds;
 #define usb_debug_flush_output()
 
 
+#if 0  // removed in favor of equilivent code elsewhere ::Ben Blazak, 2012::
+
 #define KEY_CTRL	0x01
 #define KEY_SHIFT	0x02
 #define KEY_ALT		0x04
@@ -128,6 +130,8 @@ extern volatile uint8_t keyboard_leds;
 #define KEYPAD_9	97	
 #define KEYPAD_0	98		
 #define KEYPAD_PERIOD	99		
+
+#endif
 
 
 

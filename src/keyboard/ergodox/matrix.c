@@ -12,5 +12,9 @@
 #include "matrix.h"
 
 
-bool kb_is_pressed[KB_ROWS][KB_COLUMNS] = {{false}};
+static bool _kb_is_pressed[KB_ROWS][KB_COLUMNS];
+static bool _kb_was_pressed[KB_ROWS][KB_COLUMNS];
+
+bool (*kb_is_pressed)[KB_ROWS][KB_COLUMNS] = &_kb_is_pressed;
+bool (*kb_was_pressed)[KB_ROWS][KB_COLUMNS] = &_kb_was_pressed;
 

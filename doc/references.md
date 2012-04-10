@@ -70,11 +70,27 @@
   (http://www.ibiblio.org/pub/languages/fortran/append-c.html)
   (on <http://www.ibiblio.org/>)
 
+* [how to use array of function pointers?]
+  (http://stackoverflow.com/questions/252748/how-to-use-array-of-function-pointers)
+  (on <http://stackoverflow.com/>)
+
+* [The Function Pointer Tutorials]
+  (http://www.newty.de/fpt/index.html)
+
 * [C preprocessor and concatenation]
   (http://stackoverflow.com/questions/1489932/c-preprocessor-and-concatenation)
   (on <http://stackoverflow.com/>)
 
+* [The New C: Inline Functions]
+  (http://drdobbs.com/184401540)
+  by Randy Meyers
+  (on <http://drdobbs.com/>)
+
 ### For the AVR
+
+* [AVR Newbie guide]
+  (http://www.avrfreaks.net/index.php?name=PNphpBB2&file=viewtopic&t=70673)
+  by stu_san (on <http://www.avrfreaks.net/>)
 
 * [AVR Libc Library Reference]
   (http://www.nongnu.org/avr-libc/user-manual/modules.html)
@@ -83,8 +99,9 @@
   (http://svn.savannah.nongnu.org/viewvc/trunk/avr-libc/include/avr/iom32u4.h?revision=2288&root=avr-libc&view=markup)
   : list of registers and associated bit numbers for ATmega32U4
 
-* [A Brief Tutorial on Programming the AVR without Arduino] by Chris Kuethe
+* [A Brief Tutorial on Programming the AVR without Arduino]
   (https://www.mainframe.cx/~ckuethe/avr-c-tutorial/)
+  by Chris Kuethe
 
 ## Protocol Stuff
 
@@ -137,13 +154,22 @@
 	  (http://geekhack.org/showwiki.php?title=Island:26742)
 	  article (on <http://geekhack.org/>)
 
+* github: [tmk / tmk_keyboard]
+  (https://github.com/tmk/tmk_keyboard)
 
-* github: [Pyrolistical / tmk_keyboard]
-  (https://github.com/Pyrolistical/tmk_keyboard/tree/master/fourway)
+  * forked by [Pyrolistical / tmk_keyboard]
+    (https://github.com/Pyrolistical/tmk_keyboard/tree/master/fourway)
 
-	* mentioned in the [KeyPoard]
-	  (http://geekhack.org/showwiki.php?title=Island:26845)
-	  article (on <http://geekhack.org/>)
+    * mentioned in the [KeyPoard]
+      (http://geekhack.org/showwiki.php?title=Island:26845)
+      article on <http://geekhack.org/>
+
+  * forked by [riffautae / tmk_keyboard]
+    (https://github.com/riffautae/tmk_keyboard)
+
+    * mentioned on the [Teensy Keyboard Firmware Discussion]
+      (http://geekhack.org/showthread.php?26730-Teensy-Keyboard-Firmware-Discussion/page2)
+      thread on <http://geekhack.org/>
 
 * github: [humblehacker / keyboard]
   (https://github.com/humblehacker/keyboard)

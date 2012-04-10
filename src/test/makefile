@@ -10,13 +10,13 @@
 
 TARGET = test
 
-EXTRAINCDIRS = .
+EXTRAINCDIRS = ..
 
 TEENSY_MAKE = $(MAKE) -f '../lib-other/pjrc/blinky/Makefile' \
 	      TARGET='$(TARGET)' \
 	      EXTRAINCDIRS='$(EXTRAINCDIRS)'
 
-.PHONY: test_pwm test_twi
+.PHONY: test_pwm test_twi test_twi_2
 
 test_pwm:
 	$(TEENSY_MAKE) all \
@@ -25,6 +25,10 @@ test_pwm:
 test_twi:
 	$(TEENSY_MAKE) all \
 		SRC='test_twi.c'
+
+test_twi_2:
+	$(TEENSY_MAKE) all \
+		SRC='test_twi_2.c'
 
 .PHONY: clean
 

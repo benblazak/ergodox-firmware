@@ -12,13 +12,13 @@
 
 	#include "lib/data-types.h"
 
-	#ifdef MCP23018_h_INCLUDE_PRIVATE
+	#ifdef KEYBOARD_INCLUDE_PRIVATE
 
 		#define MCP23018_TWI_ADDRESS 0b0100000
 
 		uint8_t mcp23018_init(void);
 		uint8_t mcp23018_update_matrix(
-				uint8_t matrix[KB_ROWS][KB_COLUMNS] );
+				bool matrix[KB_ROWS][KB_COLUMNS] );
 
 	#endif
 

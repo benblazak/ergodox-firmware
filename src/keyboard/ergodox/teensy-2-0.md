@@ -1,6 +1,6 @@
 # Documentation : Teensy 2.0
 
-## Pinouts and Pin assignments
+## Pinout and Pin assignments
 
 * `+` indicates pin
 * `o` indicates unused pin
@@ -38,12 +38,13 @@
                     column3   PD2 +           + OC1A  LED1
                     column4   PD3 +           + PB4   column0
                     column1   PC6 +           + PD7   column5
-                    column2   PC7 +-o-o-o-o-o-o
+                    column2   PC7 +-o-o-o-o-o-+ PD6   onboardLED
 
 * notes:
   * SCL and SDA: Need external pull-up resistors.  Sometimes the Teensy
     internal pull-ups are enough (see datasheet section 20.5.1), but i think
-    for this project we'll want external ones.
+    for this project we'll want external ones.  The general recommendation for
+    400kHz I&sup2;C seems to be 2.2kΩ.
 
 
 ## Notes about Registers
@@ -61,11 +62,11 @@
            read     returns the logical value (1|0) of the pin
 
 * notes:
-  * Unused pins should be set as input with internal pullup enabled (see
-    datasheet section 10.2.6) in order to give them a defined level.
-  * PD6 already has a defined level (low) since it's hooked up to the onboard
-    LED, so there's no reason to set internal pull-up enabled on it.  If we do,
-    it will source current to the LED, which is fine, but unnecessary.
+  * Unused pins should be set as input, with internal pullup enabled in order
+    to give them a defined level (see datasheet section 10.2.6).
+  * PD6 (the onboard LED) already has a defined level (low), so there's no
+    reason to set internal pull-up enabled on it.  If we do, it will source
+    current to the LED, which is fine, but unnecessary.
   * We want the row pins 'hi-Z' initially (set as input with pull-up disabled),
     and the column pins set as input with internal pull-up enabled.  We'll
     cycle through driving the row pins low (setting them as output) and
@@ -86,7 +87,8 @@
     "Clear OCnA/OCnB/OCnC on compare match, set OCnA/OCnB/OCnC at TOP"  
     (see table 14-3)  
     this way higher values of `OCR1(A|B|C)` will mean longer 'on' times for the
-    LEDs
+    LEDs (provided they're hooked up to GND; other way around if they're hooked
+    up to Vcc)
     * when in a fast PWM mode, set `TCCR1A[7,6,5,4,3,2]` to `1,0,1,0,1,0`
   * we want "Clock Select Bit Description" to be `0b001`  
     "clkI/O/1 (No prescaling)"  

@@ -10,9 +10,11 @@
 #include <avr/io.h>
 
 #include "lib/data-types.h"
+#define TWI_FREQ 400000
+#include "lib/teensy-2-0/twi.h"
 
+#define KEYBOARD_INCLUDE_PRIVATE
 #include "matrix.h"
-#define TEENSY_2_0_h_INCLUDE_PRIVATE
 #include "teensy-2-0.h"
 
 
@@ -77,9 +79,8 @@
 #define COLUMN_6 B, 0
 
 
-/* returns:
+/* returns
  * - success: 0
- * + will never return failure
  */
 uint8_t teensy_init(void) {
 	CPU_PRESCALE(CPU_16MHz);  // speed should match F_CPU in makefile
@@ -93,9 +94,12 @@ uint8_t teensy_init(void) {
 	TCCR1A  = 0b10101001;  // set and configure fast PWM
 	TCCR1B  = 0b00001001;  // set and configure fast PWM
 
+	KB_LED1_SET_PERCENT(0.5); KB_LED1_OFF;
+	KB_LED2_SET_PERCENT(0.5); KB_LED2_OFF;
+	KB_LED3_SET_PERCENT(0.5); KB_LED3_OFF;
+
 	// I2C (TWI)
-	// on pins D(1,0); leave them alone here so the TWI library can do as
-	// it wishes
+	twi_init();  // on pins D(1,0)
 
 	// unused pins
 	// --- set as input
@@ -150,15 +154,14 @@ uint8_t teensy_init(void) {
 	return 0;  // success
 }
 
-/* returns:
+/* returns
  * - success: 0
- * + will never return failure
  */
 #if KB_ROWS != 12 || KB_COLUMNS != 7
 	#error "Expecting different keyboard dimensions"
 #endif
 static inline void _update_columns(
-		uint8_t matrix[KB_ROWS][KB_COLUMNS], uint8_t row ) {
+		bool matrix[KB_ROWS][KB_COLUMNS], uint8_t row ) {
 	matrix[row][0] = ! TEENSYPIN_READ(COLUMN_0);
 	matrix[row][1] = ! TEENSYPIN_READ(COLUMN_1);
 	matrix[row][2] = ! TEENSYPIN_READ(COLUMN_2);
@@ -167,30 +170,30 @@ static inline void _update_columns(
 	matrix[row][5] = ! TEENSYPIN_READ(COLUMN_5);
 	matrix[row][6] = ! TEENSYPIN_READ(COLUMN_6);
 }
-uint8_t teensy_update_matrix(uint8_t matrix[KB_ROWS][KB_COLUMNS]) {
-	TEENSYPIN_WRITE(DDR, CLEAR, ROW_0);  // set row low (as output)
+uint8_t teensy_update_matrix(bool matrix[KB_ROWS][KB_COLUMNS]) {
+	TEENSYPIN_WRITE(DDR, SET, ROW_0);    // set row low (set as output)
 	_update_columns(matrix, 0);          // read col 0..6 and update matrix
-	TEENSYPIN_WRITE(DDR, SET, ROW_0);    // set row hi-Z (as input)
+	TEENSYPIN_WRITE(DDR, CLEAR, ROW_0);  // set row hi-Z (set as input)
 
-	TEENSYPIN_WRITE(DDR, CLEAR, ROW_1);
-	_update_columns(matrix, 1);
 	TEENSYPIN_WRITE(DDR, SET, ROW_1);
+	_update_columns(matrix, 1);
+	TEENSYPIN_WRITE(DDR, CLEAR, ROW_1);
 
-	TEENSYPIN_WRITE(DDR, CLEAR, ROW_2);
-	_update_columns(matrix, 2);
 	TEENSYPIN_WRITE(DDR, SET, ROW_2);
+	_update_columns(matrix, 2);
+	TEENSYPIN_WRITE(DDR, CLEAR, ROW_2);
 
-	TEENSYPIN_WRITE(DDR, CLEAR, ROW_3);
-	_update_columns(matrix, 3);
 	TEENSYPIN_WRITE(DDR, SET, ROW_3);
+	_update_columns(matrix, 3);
+	TEENSYPIN_WRITE(DDR, CLEAR, ROW_3);
 
-	TEENSYPIN_WRITE(DDR, CLEAR, ROW_4);
-	_update_columns(matrix, 4);
 	TEENSYPIN_WRITE(DDR, SET, ROW_4);
+	_update_columns(matrix, 4);
+	TEENSYPIN_WRITE(DDR, CLEAR, ROW_4);
 
-	TEENSYPIN_WRITE(DDR, CLEAR, ROW_5);
-	_update_columns(matrix, 5);
 	TEENSYPIN_WRITE(DDR, SET, ROW_5);
+	_update_columns(matrix, 5);
+	TEENSYPIN_WRITE(DDR, CLEAR, ROW_5);
 
 	return 0;  // success
 }

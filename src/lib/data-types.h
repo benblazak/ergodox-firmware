@@ -10,6 +10,7 @@
 #ifndef DATA_TYPES_h
 	#define DATA_TYPES_h
 
+	#include <stddef.h>
 	#include <stdint.h>
 
 	#define bool _Bool
