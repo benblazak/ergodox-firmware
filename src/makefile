@@ -8,7 +8,7 @@
 # -----------------------------------------------------------------------------
 
 
-TARGET = ergodox-firmware
+TARGET = firmware
 
 SRC = $(shell find -maxdepth 1 -name '*.c') \
       $(shell find ./keyboard  -name '*.c') \

@@ -43,8 +43,10 @@ void kbfun_press(
 		uint8_t * row,     uint8_t * col ) {
 
 	for (uint8_t i=0; i<6; i++)
-		if (keyboard_keys[i] == 0)
+		if (keyboard_keys[i] == 0) {
 			keyboard_keys[i] = *keycode;
+			break;
+		}
 }
 
 void kbfun_release(
@@ -52,8 +54,10 @@ void kbfun_release(
 		uint8_t * row,     uint8_t * col ) {
 
 	for (uint8_t i=0; i<6; i++)
-		if (keyboard_keys[i] == *keycode)
+		if (keyboard_keys[i] == *keycode) {
 			keyboard_keys[i] = 0;
+			break;
+		}
 }
 
 void kbfun_mod_press(

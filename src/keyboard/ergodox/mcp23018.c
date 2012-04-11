@@ -6,11 +6,6 @@
  * Project located at <https://github.com/benblazak/ergodox-firmware>
  * ------------------------------------------------------------------------- */
 
-// TODO: still working on all this
-// - need to separate the 'check if everything's all right' function, i think
-// - do more error checking in update_matrix() ?
-// - does update_matrix() really need a helper function? can it be conditional?
-// - [and lots of stuff, just need to clean it up] :)
 
 #include <util/twi.h>
 
@@ -37,46 +32,28 @@
 #define TWI_ADDR_READ  ( (MCP23018_TWI_ADDRESS<<1) | TW_READ  )
 
 
-// ----------------------------------------------------------------------------
-
 /* returns:
  * - success: 0
  * - failure: twi status code
  *
  * notes:
- * - this checks whether the device is initialized by reading from it.  not the
- *   most efficient method, but easy and fairly reliable.
+ * - `twi_stop()` must be called *exactly once* for each twi block, the way
+ *   things are currently set up.  this may change in the future.
  */
-static uint8_t _init(bool release_twi_bus) {
-	static bool initialized;
-	uint8_t ret, data;
-
-	// check for errors and previous initialization
-
-	twi_start();
-	ret = twi_send(TWI_ADDR_WRITE);
-
-	if (ret) goto out;  // address write failed (no ACK)
-
-	twi_send(OLATA);
-	twi_start();
-	twi_send(TWI_ADDR_READ);
-	ret = twi_read(&data);
-
-	if (ret) goto out;  // read failed
-	if (data == 0xFF) goto out;  // already initialized (OLATA == 0xFF)
-
-	// initialize things, if we need to and we can
+uint8_t mcp23018_init(void) {
+	uint8_t ret;
 
 	// set pin direction
 	// - unused  : input  : 1
 	// - rows    : output : 0
 	// - columns : input  : 1
 	twi_start();
-	twi_send(TWI_ADDR_WRITE);
+	ret = twi_send(TWI_ADDR_WRITE);
+	if (ret) goto out;  // make sure we got an ACK
 	twi_send(IODIRA);
 	twi_send(0b11000000);  // IODIRA
 	twi_send(0b11111111);  // IODIRB
+	twi_stop();
 
 	// set pull-up
 	// - unused  : on  : 1
@@ -87,6 +64,7 @@ static uint8_t _init(bool release_twi_bus) {
 	twi_send(GPPUA);
 	twi_send(0b11000000);  // GPPUA
 	twi_send(0b11111111);  // GPPUB
+	twi_stop();
 
 	// set logical value (doesn't matter on inputs)
 	// - unused  : high (hi-Z) : 1
@@ -99,23 +77,8 @@ static uint8_t _init(bool release_twi_bus) {
 	twi_send(0b11111111);  //OLATB
 
 out:
-	if (release_twi_bus)
-		twi_stop();
-
-	if (ret) initialized = false;
-	else     initialized = true;
-
+	twi_stop();
 	return ret;
-}
-
-// ----------------------------------------------------------------------------
-
-/* returns:
- * - success: 0
- * - failure: twi status code
- */
-uint8_t mcp23018_init(void) {
-	return _init(true);
 }
 
 /* returns:
@@ -128,8 +91,11 @@ uint8_t mcp23018_init(void) {
 uint8_t mcp23018_update_matrix(bool matrix[KB_ROWS][KB_COLUMNS]) {
 	uint8_t ret, data;
 
-	// initialize things if necessary
-	ret = _init(false);
+	// initialize things, just to make sure
+	// - it's not appreciably faster to skip this, and it takes care of the
+	//   case when the i/o expander isn't plugged in during the first
+	//   init()
+	ret = mcp23018_init();
 
 	// if there was an error
 	if (ret) {
@@ -138,8 +104,6 @@ uint8_t mcp23018_update_matrix(bool matrix[KB_ROWS][KB_COLUMNS]) {
 			for (uint8_t col=0; col<=6; col++)
 				matrix[row][col] = 0;
 
-		// release the twi bus and return
-		twi_stop();
 		return ret;
 	}
 
@@ -150,14 +114,17 @@ uint8_t mcp23018_update_matrix(bool matrix[KB_ROWS][KB_COLUMNS]) {
 		twi_start();
 		twi_send(TWI_ADDR_WRITE);
 		twi_send(OLATA);
-		twi_send( 0b11111111 & ~(1<<(row-6)) );  // OLATA
+		twi_send( 0b11111111 & ~(1<<(row-6)) );
+		twi_stop();
 
-		// get column data
+		// read column data
 		twi_start();
 		twi_send(TWI_ADDR_WRITE);
 		twi_send(GPIOB);
+		twi_start();
 		twi_send(TWI_ADDR_READ);
-		twi_read(&data);  // GPIOB
+		twi_read(&data);
+		twi_stop();
 
 		// update matrix
 		for (uint8_t col=0; col<=6; col++)
@@ -169,9 +136,8 @@ uint8_t mcp23018_update_matrix(bool matrix[KB_ROWS][KB_COLUMNS]) {
 	twi_send(TWI_ADDR_WRITE);
 	twi_send(GPIOA);
 	twi_send(0b11111111);
-
-	// release the twi bus and return
 	twi_stop();
-	return 0;  // success
+
+	return ret;  // success
 }
 

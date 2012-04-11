@@ -135,16 +135,6 @@
   : pdf (from <http://www.usb.org/developers/hidpage>)
 
 
-## Miscellaneous
-
-* [Markdown: Syntax]
-  (http://daringfireball.net/projects/markdown/syntax)
-
-* [Keyboard Scan Rates]
-  (http://geekhack.org/showwiki.php?title=Keyboard+scan+rates)
-  list (on <http://geekhack.org/>)
-
-
 ## Other Firmware / Code
 
 * zip: [Phantom Firmware from PrinsValium]
@@ -208,7 +198,7 @@
 	  (http://pjrc.com/teensy/gcc.html)
 
 
-## Chip Documentation
+## Hardware Documentation
 
 * [Microchip: Analog & Interface Product Selector Guide]
   (http://ww1.microchip.com/downloads/en/DeviceDoc/21060z.pdf)
@@ -251,6 +241,20 @@
 
 	* from [the PJRC website]
 	  (http://pjrc.com/teensy/datasheets.html)
+
+* [Cherry MX Series Keyswitches : Specifications]
+  (http://www.cherrycorp.com/english/switches/key/mx.htm)
+
+
+## Miscellaneous
+
+* [Markdown: Syntax]
+  (http://daringfireball.net/projects/markdown/syntax)
+
+* [Keyboard Scan Rates]
+  (http://geekhack.org/showwiki.php?title=Keyboard+scan+rates)
+  list (on <http://geekhack.org/>)
+
 
 -------------------------------------------------------------------------------
 
