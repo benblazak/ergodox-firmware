@@ -4,7 +4,7 @@
 [ergodox keyboard]: http://geekhack.org/showthread.php?22780-Interest-Check-Custom-split-ergo-keyboard
 
 
-This project is definitely in beta, but I'll do my best to keep the 'stable'
+This project is definitely in beta, but I'll do my best to keep the 'master'
 branch working.  Please see the source (and especially the accompanying '*.md'
 files) for documentation.
 
