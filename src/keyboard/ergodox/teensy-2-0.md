@@ -9,7 +9,7 @@
 
 ### Teensy 2.0
 
-                              GND +---.....---+ VCC
+                              GND +---.....---+ Vcc
                            SS PB0 +           + PF0 ADC0
                          SCLK PB1 +           + PF1 ADC1
                          MOSI PB2 +           + PF4 ADC4
@@ -22,7 +22,7 @@
          OC3A (OC4A) -------- PC6 +           + PD7 ADC10 T0 -- OC4D
     ICP3 ----- OC4A --------- PC7 +-+-+-+-+-+-+ PD6 ADC9  T1 - (OC4D) onboardLED
                      CTS XCK1 PD5 --/ | | | \-- PD4 ADC8 ------------ ICP1
-                VCC ------------------/ | \-------------- RST
+                Vcc ------------------/ | \-------------- RST
                 GND --------------------/
 
 ### Teensy 2.0 Pin Assignments

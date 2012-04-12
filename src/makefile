@@ -18,7 +18,7 @@ SRC = $(shell find -maxdepth 1 -name '*.c') \
 
 EXTRAINCDIRS = .
 
-TEENSY_MAKE = $(MAKE) -f 'lib-other/pjrc/blinky/Makefile' \
+TEENSY_MAKE = $(MAKE) -f 'lib-other/pjrc/usb_keyboard/Makefile' \
 	      TARGET='$(TARGET)' \
 	      SRC='$(SRC)' \
 	      EXTRAINCDIRS='$(EXTRAINCDIRS)'

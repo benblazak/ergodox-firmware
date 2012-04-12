@@ -52,7 +52,7 @@ int main(void) {
 		if (counter == 0)
 			_toggle_led3();
 		counter++;
-		if (counter >= 1000)
+		if (counter >= 250)
 			counter = 0;
 		///
 		static uint8_t current_layer = 0;

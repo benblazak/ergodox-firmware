@@ -103,6 +103,7 @@
   (https://www.mainframe.cx/~ckuethe/avr-c-tutorial/)
   by Chris Kuethe
 
+
 ## Protocol Stuff
 
 ### I&sup2;C
@@ -135,7 +136,9 @@
   : pdf (from <http://www.usb.org/developers/hidpage>)
 
 
-## Other Firmware / Code
+## Other People's Code
+
+### Keyboard Firmware
 
 * zip: [Phantom Firmware from PrinsValium]
   (http://geekhack.org/attachment.php?attachmentid=38982&d=1327895092)
@@ -173,9 +176,16 @@
 	* mentioned on [the designer's blog]
 	  (http://humblehacker.com/blog/)
 
+### TWI Libraries
+
 * github: [TWI library in C]
   (https://github.com/arduino/Arduino/tree/master/libraries/Wire/utility)
   : (arduino / Arduino / libraries / Wire / utility)
+
+* zip: [i2cmaster]
+  (http://homepage.hispeed.ch/peterfleury/i2cmaster.zip)
+  (by Peter Fleury, on [his homepage]
+  (http://homepage.hispeed.ch/peterfleury/))
 
 * forum: [Interfacing MCP23018 io expander via Arduino]
   (http://www.arduino.cc/cgi-bin/yabb2/YaBB.pl?num=1282150189)
@@ -185,11 +195,15 @@
   (https://github.com/maniacbug/Arduino/tree/master/libraries/MCP23018)
   : library in C++
 
+### USB
+
 * zip: [PJRC: usb_keyboard]
   (http://pjrc.com/teensy/usb_keyboard.zip)
 
 	* mentioned on [the PJRC website]
 	  (http://pjrc.com/teensy/usb_keyboard.html)
+
+### Miscellaneous
 
 * zip: [PJRC: blinky]
   (http://pjrc.com/teensy/blinky.zip)
@@ -248,8 +262,38 @@
 
 ## Miscellaneous
 
+### Documentation and Design Tools
+
 * [Markdown: Syntax]
   (http://daringfireball.net/projects/markdown/syntax)
+
+* [KiCAD Tutorial]
+  (http://teholabs.com/knowledge/kicad.html)
+  (on <http://teholabs.com/>)
+
+  * mentioned on the [circuit/block-diagram drawing]
+    (http://stackoverflow.com/questions/6422603/circuit-block-diagram-drawing)
+    question (on <http://stackoverflow.com/>)
+
+* [Ti_k_Z and PGF]
+  (http://www.texample.net/tikz/)
+  : a TeX graphics package
+
+  * mentioned on the [circuit/block-diagram drawing]
+    (http://stackoverflow.com/questions/6422603/circuit-block-diagram-drawing)
+    question (on <http://stackoverflow.com/>)
+
+  * [Documentation (for version 2010-09-28)]
+    (http://www.texample.net/media/pgf/builds/pgfmanualCVS2010-09-28.pdf)
+    : pdf
+
+  * [Example: Block diagram line junctions]
+    (http://www.texample.net/tikz/examples/line-junctions/)
+
+* [Inkscape : Connector tool tutorial]
+  (http://wiki.inkscape.org/wiki/index.php/UsingTheConnectorTool)
+
+### Typical Keyboard Information
 
 * [Keyboard Scan Rates]
   (http://geekhack.org/showwiki.php?title=Keyboard+scan+rates)
