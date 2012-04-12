@@ -1,5 +1,6 @@
 /* ----------------------------------------------------------------------------
  * ergoDOX specific exports
+ * includes (for centralization) the public exports from all subfiles
  * ----------------------------------------------------------------------------
  * Copyright (c) 2012 Ben Blazak <benblazak.dev@gmail.com>
  * Released under The MIT License (MIT) (see "license.md")

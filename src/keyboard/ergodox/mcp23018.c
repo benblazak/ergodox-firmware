@@ -99,7 +99,7 @@ uint8_t mcp23018_update_matrix(bool matrix[KB_ROWS][KB_COLUMNS]) {
 
 	// if there was an error
 	if (ret) {
-		// clear the matrix
+		// clear our part of the matrix
 		for (uint8_t row=0x6; row<=0xB; row++)
 			for (uint8_t col=0; col<=6; col++)
 				matrix[row][col] = 0;

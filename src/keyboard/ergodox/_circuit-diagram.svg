@@ -12,7 +12,7 @@
    inkscape:version="0.48.2 r9819"
    version="1.1"
    id="svg2"
-   height="367.06873"
+   height="398.98083"
    width="950.8382"
    sodipodi:docname="_circuit-diagram.svg"
    inkscape:export-filename="/home/ben/Desktop/programs/20120227--ergodox-firmware--for-the-ergodox-keyboard/src/test - circuit diagram/inkscape/_circuit-diagram.png"
@@ -26,12 +26,12 @@
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
      inkscape:zoom="1.4142136"
-     inkscape:cx="422.63041"
-     inkscape:cy="176.46238"
+     inkscape:cx="477.26232"
+     inkscape:cy="197.75046"
      inkscape:document-units="px"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="layer4"
      showgrid="true"
-     inkscape:snap-global="true"
+     inkscape:snap-global="false"
      inkscape:snap-bbox="false"
      inkscape:snap-nodes="false"
      inkscape:bbox-nodes="false"
@@ -870,7 +870,7 @@
          sodipodi:cy="185.44926"
          sodipodi:rx="80.96373"
          sodipodi:ry="82.024384"
-         d="m 49.497478,185.44926 a 80.96373,82.024384 0 1 1 -161.927458,0 l 80.963729,0 z"
+         d="m 49.497478,185.44926 c 0,45.30082 -36.248696,82.02439 -80.963729,82.02439 -44.715034,0 -80.963729,-36.72357 -80.963729,-82.02439 0,0 0,0 0,0 l 80.963729,0 z"
          sodipodi:start="0"
          sodipodi:end="3.1415927"
          transform="matrix(0,-0.11858905,0.11219624,0,469.59545,178.62704)"
@@ -902,7 +902,7 @@
       <path
          inkscape:transform-center-y="-54.545454"
          inkscape:transform-center-x="22.727269"
-         d="m 53,237.36218 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+         d="m 53,237.36218 c 0,2.76143 -2.238576,5 -5,5 -2.761424,0 -5,-2.23857 -5,-5 0,-2.76142 2.238576,-5 5,-5 2.761424,0 5,2.23858 5,5 z"
          sodipodi:ry="5"
          sodipodi:rx="5"
          sodipodi:cy="237.36218"
@@ -915,7 +915,7 @@
       <path
          inkscape:transform-center-y="-54.545454"
          inkscape:transform-center-x="22.727269"
-         d="m 53,237.36218 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+         d="m 53,237.36218 c 0,2.76143 -2.238576,5 -5,5 -2.761424,0 -5,-2.23857 -5,-5 0,-2.76142 2.238576,-5 5,-5 2.761424,0 5,2.23858 5,5 z"
          sodipodi:ry="5"
          sodipodi:rx="5"
          sodipodi:cy="237.36218"
@@ -928,7 +928,7 @@
       <path
          inkscape:transform-center-y="-54.545454"
          inkscape:transform-center-x="22.727269"
-         d="m 53,237.36218 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+         d="m 53,237.36218 c 0,2.76143 -2.238576,5 -5,5 -2.761424,0 -5,-2.23857 -5,-5 0,-2.76142 2.238576,-5 5,-5 2.761424,0 5,2.23858 5,5 z"
          sodipodi:ry="5"
          sodipodi:rx="5"
          sodipodi:cy="237.36218"
@@ -941,7 +941,7 @@
       <path
          inkscape:transform-center-y="-54.545454"
          inkscape:transform-center-x="22.727269"
-         d="m 53,237.36218 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+         d="m 53,237.36218 c 0,2.76143 -2.238576,5 -5,5 -2.761424,0 -5,-2.23857 -5,-5 0,-2.76142 2.238576,-5 5,-5 2.761424,0 5,2.23858 5,5 z"
          sodipodi:ry="5"
          sodipodi:rx="5"
          sodipodi:cy="237.36218"
@@ -954,7 +954,7 @@
       <path
          inkscape:transform-center-y="-54.545454"
          inkscape:transform-center-x="22.727269"
-         d="m 53,237.36218 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+         d="m 53,237.36218 c 0,2.76143 -2.238576,5 -5,5 -2.761424,0 -5,-2.23857 -5,-5 0,-2.76142 2.238576,-5 5,-5 2.761424,0 5,2.23858 5,5 z"
          sodipodi:ry="5"
          sodipodi:rx="5"
          sodipodi:cy="237.36218"
@@ -967,7 +967,7 @@
       <path
          inkscape:transform-center-y="-54.545454"
          inkscape:transform-center-x="22.727269"
-         d="m 53,237.36218 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+         d="m 53,237.36218 c 0,2.76143 -2.238576,5 -5,5 -2.761424,0 -5,-2.23857 -5,-5 0,-2.76142 2.238576,-5 5,-5 2.761424,0 5,2.23858 5,5 z"
          sodipodi:ry="5"
          sodipodi:rx="5"
          sodipodi:cy="237.36218"
@@ -980,7 +980,7 @@
       <path
          inkscape:transform-center-y="-54.545454"
          inkscape:transform-center-x="22.727269"
-         d="m 53,237.36218 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+         d="m 53,237.36218 c 0,2.76143 -2.238576,5 -5,5 -2.761424,0 -5,-2.23857 -5,-5 0,-2.76142 2.238576,-5 5,-5 2.761424,0 5,2.23858 5,5 z"
          sodipodi:ry="5"
          sodipodi:rx="5"
          sodipodi:cy="237.36218"
@@ -993,7 +993,7 @@
       <path
          inkscape:transform-center-y="-54.545454"
          inkscape:transform-center-x="22.727269"
-         d="m 53,237.36218 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+         d="m 53,237.36218 c 0,2.76143 -2.238576,5 -5,5 -2.761424,0 -5,-2.23857 -5,-5 0,-2.76142 2.238576,-5 5,-5 2.761424,0 5,2.23858 5,5 z"
          sodipodi:ry="5"
          sodipodi:rx="5"
          sodipodi:cy="237.36218"
@@ -1006,7 +1006,7 @@
       <path
          inkscape:transform-center-y="-54.545454"
          inkscape:transform-center-x="22.727269"
-         d="m 53,237.36218 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+         d="m 53,237.36218 c 0,2.76143 -2.238576,5 -5,5 -2.761424,0 -5,-2.23857 -5,-5 0,-2.76142 2.238576,-5 5,-5 2.761424,0 5,2.23858 5,5 z"
          sodipodi:ry="5"
          sodipodi:rx="5"
          sodipodi:cy="237.36218"
@@ -1019,7 +1019,7 @@
       <path
          inkscape:transform-center-y="-54.545454"
          inkscape:transform-center-x="22.727269"
-         d="m 53,237.36218 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+         d="m 53,237.36218 c 0,2.76143 -2.238576,5 -5,5 -2.761424,0 -5,-2.23857 -5,-5 0,-2.76142 2.238576,-5 5,-5 2.761424,0 5,2.23858 5,5 z"
          sodipodi:ry="5"
          sodipodi:rx="5"
          sodipodi:cy="237.36218"
@@ -1032,7 +1032,7 @@
       <path
          inkscape:transform-center-y="-54.545454"
          inkscape:transform-center-x="22.727269"
-         d="m 53,237.36218 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+         d="m 53,237.36218 c 0,2.76143 -2.238576,5 -5,5 -2.761424,0 -5,-2.23857 -5,-5 0,-2.76142 2.238576,-5 5,-5 2.761424,0 5,2.23858 5,5 z"
          sodipodi:ry="5"
          sodipodi:rx="5"
          sodipodi:cy="237.36218"
@@ -1045,7 +1045,7 @@
       <path
          inkscape:transform-center-y="-54.545454"
          inkscape:transform-center-x="22.727269"
-         d="m 53,237.36218 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+         d="m 53,237.36218 c 0,2.76143 -2.238576,5 -5,5 -2.761424,0 -5,-2.23857 -5,-5 0,-2.76142 2.238576,-5 5,-5 2.761424,0 5,2.23858 5,5 z"
          sodipodi:ry="5"
          sodipodi:rx="5"
          sodipodi:cy="237.36218"
@@ -1058,7 +1058,7 @@
       <path
          inkscape:transform-center-y="-54.545454"
          inkscape:transform-center-x="22.727269"
-         d="m 53,237.36218 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+         d="m 53,237.36218 c 0,2.76143 -2.238576,5 -5,5 -2.761424,0 -5,-2.23857 -5,-5 0,-2.76142 2.238576,-5 5,-5 2.761424,0 5,2.23858 5,5 z"
          sodipodi:ry="5"
          sodipodi:rx="5"
          sodipodi:cy="237.36218"
@@ -1071,7 +1071,7 @@
       <path
          inkscape:transform-center-y="-54.545454"
          inkscape:transform-center-x="22.727269"
-         d="m 53,237.36218 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+         d="m 53,237.36218 c 0,2.76143 -2.238576,5 -5,5 -2.761424,0 -5,-2.23857 -5,-5 0,-2.76142 2.238576,-5 5,-5 2.761424,0 5,2.23858 5,5 z"
          sodipodi:ry="5"
          sodipodi:rx="5"
          sodipodi:cy="237.36218"
@@ -1084,7 +1084,7 @@
       <path
          inkscape:transform-center-y="-54.545454"
          inkscape:transform-center-x="22.727269"
-         d="m 53,237.36218 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+         d="m 53,237.36218 c 0,2.76143 -2.238576,5 -5,5 -2.761424,0 -5,-2.23857 -5,-5 0,-2.76142 2.238576,-5 5,-5 2.761424,0 5,2.23858 5,5 z"
          sodipodi:ry="5"
          sodipodi:rx="5"
          sodipodi:cy="237.36218"
@@ -1097,7 +1097,7 @@
       <path
          inkscape:transform-center-y="-54.545454"
          inkscape:transform-center-x="22.727269"
-         d="m 53,237.36218 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+         d="m 53,237.36218 c 0,2.76143 -2.238576,5 -5,5 -2.761424,0 -5,-2.23857 -5,-5 0,-2.76142 2.238576,-5 5,-5 2.761424,0 5,2.23858 5,5 z"
          sodipodi:ry="5"
          sodipodi:rx="5"
          sodipodi:cy="237.36218"
@@ -1110,7 +1110,7 @@
       <path
          inkscape:transform-center-y="-54.545454"
          inkscape:transform-center-x="22.727269"
-         d="m 53,237.36218 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+         d="m 53,237.36218 c 0,2.76143 -2.238576,5 -5,5 -2.761424,0 -5,-2.23857 -5,-5 0,-2.76142 2.238576,-5 5,-5 2.761424,0 5,2.23858 5,5 z"
          sodipodi:ry="5"
          sodipodi:rx="5"
          sodipodi:cy="237.36218"
@@ -1123,7 +1123,7 @@
       <path
          inkscape:transform-center-y="-54.545454"
          inkscape:transform-center-x="22.727269"
-         d="m 53,237.36218 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+         d="m 53,237.36218 c 0,2.76143 -2.238576,5 -5,5 -2.761424,0 -5,-2.23857 -5,-5 0,-2.76142 2.238576,-5 5,-5 2.761424,0 5,2.23858 5,5 z"
          sodipodi:ry="5"
          sodipodi:rx="5"
          sodipodi:cy="237.36218"
@@ -1136,7 +1136,7 @@
       <path
          inkscape:transform-center-y="-54.545454"
          inkscape:transform-center-x="22.727269"
-         d="m 53,237.36218 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+         d="m 53,237.36218 c 0,2.76143 -2.238576,5 -5,5 -2.761424,0 -5,-2.23857 -5,-5 0,-2.76142 2.238576,-5 5,-5 2.761424,0 5,2.23858 5,5 z"
          sodipodi:ry="5"
          sodipodi:rx="5"
          sodipodi:cy="237.36218"
@@ -1149,7 +1149,7 @@
       <path
          inkscape:transform-center-y="-54.545454"
          inkscape:transform-center-x="22.727269"
-         d="m 53,237.36218 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+         d="m 53,237.36218 c 0,2.76143 -2.238576,5 -5,5 -2.761424,0 -5,-2.23857 -5,-5 0,-2.76142 2.238576,-5 5,-5 2.761424,0 5,2.23858 5,5 z"
          sodipodi:ry="5"
          sodipodi:rx="5"
          sodipodi:cy="237.36218"
@@ -1162,7 +1162,7 @@
       <path
          inkscape:transform-center-y="-54.545454"
          inkscape:transform-center-x="22.727269"
-         d="m 53,237.36218 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+         d="m 53,237.36218 c 0,2.76143 -2.238576,5 -5,5 -2.761424,0 -5,-2.23857 -5,-5 0,-2.76142 2.238576,-5 5,-5 2.761424,0 5,2.23858 5,5 z"
          sodipodi:ry="5"
          sodipodi:rx="5"
          sodipodi:cy="237.36218"
@@ -1175,7 +1175,7 @@
       <path
          inkscape:transform-center-y="-54.545454"
          inkscape:transform-center-x="22.727269"
-         d="m 53,237.36218 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+         d="m 53,237.36218 c 0,2.76143 -2.238576,5 -5,5 -2.761424,0 -5,-2.23857 -5,-5 0,-2.76142 2.238576,-5 5,-5 2.761424,0 5,2.23858 5,5 z"
          sodipodi:ry="5"
          sodipodi:rx="5"
          sodipodi:cy="237.36218"
@@ -1188,7 +1188,7 @@
       <path
          inkscape:transform-center-y="-54.545454"
          inkscape:transform-center-x="22.727269"
-         d="m 53,237.36218 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+         d="m 53,237.36218 c 0,2.76143 -2.238576,5 -5,5 -2.761424,0 -5,-2.23857 -5,-5 0,-2.76142 2.238576,-5 5,-5 2.761424,0 5,2.23858 5,5 z"
          sodipodi:ry="5"
          sodipodi:rx="5"
          sodipodi:cy="237.36218"
@@ -1201,7 +1201,7 @@
       <path
          inkscape:transform-center-y="-54.545454"
          inkscape:transform-center-x="22.727269"
-         d="m 53,237.36218 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+         d="m 53,237.36218 c 0,2.76143 -2.238576,5 -5,5 -2.761424,0 -5,-2.23857 -5,-5 0,-2.76142 2.238576,-5 5,-5 2.761424,0 5,2.23858 5,5 z"
          sodipodi:ry="5"
          sodipodi:rx="5"
          sodipodi:cy="237.36218"
@@ -1214,7 +1214,7 @@
       <path
          inkscape:transform-center-y="-54.545454"
          inkscape:transform-center-x="22.727269"
-         d="m 53,237.36218 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+         d="m 53,237.36218 c 0,2.76143 -2.238576,5 -5,5 -2.761424,0 -5,-2.23857 -5,-5 0,-2.76142 2.238576,-5 5,-5 2.761424,0 5,2.23858 5,5 z"
          sodipodi:ry="5"
          sodipodi:rx="5"
          sodipodi:cy="237.36218"
@@ -1227,7 +1227,7 @@
       <path
          inkscape:transform-center-y="-54.545454"
          inkscape:transform-center-x="22.727269"
-         d="m 53,237.36218 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+         d="m 53,237.36218 c 0,2.76143 -2.238576,5 -5,5 -2.761424,0 -5,-2.23857 -5,-5 0,-2.76142 2.238576,-5 5,-5 2.761424,0 5,2.23858 5,5 z"
          sodipodi:ry="5"
          sodipodi:rx="5"
          sodipodi:cy="237.36218"
@@ -1240,7 +1240,7 @@
       <path
          inkscape:transform-center-y="-54.545454"
          inkscape:transform-center-x="22.727269"
-         d="m 53,237.36218 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+         d="m 53,237.36218 c 0,2.76143 -2.238576,5 -5,5 -2.761424,0 -5,-2.23857 -5,-5 0,-2.76142 2.238576,-5 5,-5 2.761424,0 5,2.23858 5,5 z"
          sodipodi:ry="5"
          sodipodi:rx="5"
          sodipodi:cy="237.36218"
@@ -1253,7 +1253,7 @@
       <path
          inkscape:transform-center-y="-54.545454"
          inkscape:transform-center-x="22.727269"
-         d="m 53,237.36218 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+         d="m 53,237.36218 c 0,2.76143 -2.238576,5 -5,5 -2.761424,0 -5,-2.23857 -5,-5 0,-2.76142 2.238576,-5 5,-5 2.761424,0 5,2.23858 5,5 z"
          sodipodi:ry="5"
          sodipodi:rx="5"
          sodipodi:cy="237.36218"
@@ -1266,7 +1266,7 @@
       <path
          inkscape:transform-center-y="-54.545454"
          inkscape:transform-center-x="22.727269"
-         d="m 53,237.36218 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+         d="m 53,237.36218 c 0,2.76143 -2.238576,5 -5,5 -2.761424,0 -5,-2.23857 -5,-5 0,-2.76142 2.238576,-5 5,-5 2.761424,0 5,2.23858 5,5 z"
          sodipodi:ry="5"
          sodipodi:rx="5"
          sodipodi:cy="237.36218"
@@ -1279,7 +1279,7 @@
       <path
          inkscape:transform-center-y="-54.545454"
          inkscape:transform-center-x="22.727269"
-         d="m 53,237.36218 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+         d="m 53,237.36218 c 0,2.76143 -2.238576,5 -5,5 -2.761424,0 -5,-2.23857 -5,-5 0,-2.76142 2.238576,-5 5,-5 2.761424,0 5,2.23858 5,5 z"
          sodipodi:ry="5"
          sodipodi:rx="5"
          sodipodi:cy="237.36218"
@@ -1292,7 +1292,7 @@
       <path
          inkscape:transform-center-y="-54.545454"
          inkscape:transform-center-x="22.727269"
-         d="m 53,237.36218 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+         d="m 53,237.36218 c 0,2.76143 -2.238576,5 -5,5 -2.761424,0 -5,-2.23857 -5,-5 0,-2.76142 2.238576,-5 5,-5 2.761424,0 5,2.23858 5,5 z"
          sodipodi:ry="5"
          sodipodi:rx="5"
          sodipodi:cy="237.36218"
@@ -1305,7 +1305,7 @@
       <path
          inkscape:transform-center-y="-54.545454"
          inkscape:transform-center-x="22.727269"
-         d="m 53,237.36218 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+         d="m 53,237.36218 c 0,2.76143 -2.238576,5 -5,5 -2.761424,0 -5,-2.23857 -5,-5 0,-2.76142 2.238576,-5 5,-5 2.761424,0 5,2.23858 5,5 z"
          sodipodi:ry="5"
          sodipodi:rx="5"
          sodipodi:cy="237.36218"
@@ -1318,7 +1318,7 @@
       <path
          inkscape:transform-center-y="-54.545454"
          inkscape:transform-center-x="22.727269"
-         d="m 53,237.36218 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+         d="m 53,237.36218 c 0,2.76143 -2.238576,5 -5,5 -2.761424,0 -5,-2.23857 -5,-5 0,-2.76142 2.238576,-5 5,-5 2.761424,0 5,2.23858 5,5 z"
          sodipodi:ry="5"
          sodipodi:rx="5"
          sodipodi:cy="237.36218"
@@ -1331,7 +1331,7 @@
       <path
          inkscape:transform-center-y="-54.545454"
          inkscape:transform-center-x="22.727269"
-         d="m 53,237.36218 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+         d="m 53,237.36218 c 0,2.76143 -2.238576,5 -5,5 -2.761424,0 -5,-2.23857 -5,-5 0,-2.76142 2.238576,-5 5,-5 2.761424,0 5,2.23858 5,5 z"
          sodipodi:ry="5"
          sodipodi:rx="5"
          sodipodi:cy="237.36218"
@@ -1344,7 +1344,7 @@
       <path
          inkscape:transform-center-y="-54.545454"
          inkscape:transform-center-x="22.727269"
-         d="m 53,237.36218 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+         d="m 53,237.36218 c 0,2.76143 -2.238576,5 -5,5 -2.761424,0 -5,-2.23857 -5,-5 0,-2.76142 2.238576,-5 5,-5 2.761424,0 5,2.23858 5,5 z"
          sodipodi:ry="5"
          sodipodi:rx="5"
          sodipodi:cy="237.36218"
@@ -1357,7 +1357,7 @@
       <path
          inkscape:transform-center-y="-54.545454"
          inkscape:transform-center-x="22.727269"
-         d="m 53,237.36218 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+         d="m 53,237.36218 c 0,2.76143 -2.238576,5 -5,5 -2.761424,0 -5,-2.23857 -5,-5 0,-2.76142 2.238576,-5 5,-5 2.761424,0 5,2.23858 5,5 z"
          sodipodi:ry="5"
          sodipodi:rx="5"
          sodipodi:cy="237.36218"
@@ -1370,7 +1370,7 @@
       <path
          inkscape:transform-center-y="-54.545454"
          inkscape:transform-center-x="22.727269"
-         d="m 53,237.36218 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+         d="m 53,237.36218 c 0,2.76143 -2.238576,5 -5,5 -2.761424,0 -5,-2.23857 -5,-5 0,-2.76142 2.238576,-5 5,-5 2.761424,0 5,2.23858 5,5 z"
          sodipodi:ry="5"
          sodipodi:rx="5"
          sodipodi:cy="237.36218"
@@ -1383,7 +1383,7 @@
       <path
          inkscape:transform-center-y="-54.545454"
          inkscape:transform-center-x="22.727269"
-         d="m 53,237.36218 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+         d="m 53,237.36218 c 0,2.76143 -2.238576,5 -5,5 -2.761424,0 -5,-2.23857 -5,-5 0,-2.76142 2.238576,-5 5,-5 2.761424,0 5,2.23858 5,5 z"
          sodipodi:ry="5"
          sodipodi:rx="5"
          sodipodi:cy="237.36218"
@@ -1396,7 +1396,7 @@
       <path
          inkscape:transform-center-y="-54.545454"
          inkscape:transform-center-x="22.727269"
-         d="m 53,237.36218 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+         d="m 53,237.36218 c 0,2.76143 -2.238576,5 -5,5 -2.761424,0 -5,-2.23857 -5,-5 0,-2.76142 2.238576,-5 5,-5 2.761424,0 5,2.23858 5,5 z"
          sodipodi:ry="5"
          sodipodi:rx="5"
          sodipodi:cy="237.36218"
@@ -1409,7 +1409,7 @@
       <path
          inkscape:transform-center-y="-54.545454"
          inkscape:transform-center-x="22.727269"
-         d="m 53,237.36218 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+         d="m 53,237.36218 c 0,2.76143 -2.238576,5 -5,5 -2.761424,0 -5,-2.23857 -5,-5 0,-2.76142 2.238576,-5 5,-5 2.761424,0 5,2.23858 5,5 z"
          sodipodi:ry="5"
          sodipodi:rx="5"
          sodipodi:cy="237.36218"
@@ -1422,7 +1422,7 @@
       <path
          inkscape:transform-center-y="-54.545454"
          inkscape:transform-center-x="22.727269"
-         d="m 53,237.36218 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+         d="m 53,237.36218 c 0,2.76143 -2.238576,5 -5,5 -2.761424,0 -5,-2.23857 -5,-5 0,-2.76142 2.238576,-5 5,-5 2.761424,0 5,2.23858 5,5 z"
          sodipodi:ry="5"
          sodipodi:rx="5"
          sodipodi:cy="237.36218"
@@ -1435,7 +1435,7 @@
       <path
          inkscape:transform-center-y="-54.545454"
          inkscape:transform-center-x="22.727269"
-         d="m 53,237.36218 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+         d="m 53,237.36218 c 0,2.76143 -2.238576,5 -5,5 -2.761424,0 -5,-2.23857 -5,-5 0,-2.76142 2.238576,-5 5,-5 2.761424,0 5,2.23858 5,5 z"
          sodipodi:ry="5"
          sodipodi:rx="5"
          sodipodi:cy="237.36218"
@@ -1448,7 +1448,7 @@
       <path
          inkscape:transform-center-y="-54.545454"
          inkscape:transform-center-x="22.727269"
-         d="m 53,237.36218 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+         d="m 53,237.36218 c 0,2.76143 -2.238576,5 -5,5 -2.761424,0 -5,-2.23857 -5,-5 0,-2.76142 2.238576,-5 5,-5 2.761424,0 5,2.23858 5,5 z"
          sodipodi:ry="5"
          sodipodi:rx="5"
          sodipodi:cy="237.36218"
@@ -1461,7 +1461,7 @@
       <path
          inkscape:transform-center-y="-54.545454"
          inkscape:transform-center-x="22.727269"
-         d="m 53,237.36218 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+         d="m 53,237.36218 c 0,2.76143 -2.238576,5 -5,5 -2.761424,0 -5,-2.23857 -5,-5 0,-2.76142 2.238576,-5 5,-5 2.761424,0 5,2.23858 5,5 z"
          sodipodi:ry="5"
          sodipodi:rx="5"
          sodipodi:cy="237.36218"
@@ -1474,7 +1474,7 @@
       <path
          inkscape:transform-center-y="-54.545454"
          inkscape:transform-center-x="22.727269"
-         d="m 53,237.36218 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+         d="m 53,237.36218 c 0,2.76143 -2.238576,5 -5,5 -2.761424,0 -5,-2.23857 -5,-5 0,-2.76142 2.238576,-5 5,-5 2.761424,0 5,2.23858 5,5 z"
          sodipodi:ry="5"
          sodipodi:rx="5"
          sodipodi:cy="237.36218"
@@ -1487,7 +1487,7 @@
       <path
          inkscape:transform-center-y="-54.545454"
          inkscape:transform-center-x="22.727269"
-         d="m 53,237.36218 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+         d="m 53,237.36218 c 0,2.76143 -2.238576,5 -5,5 -2.761424,0 -5,-2.23857 -5,-5 0,-2.76142 2.238576,-5 5,-5 2.761424,0 5,2.23858 5,5 z"
          sodipodi:ry="5"
          sodipodi:rx="5"
          sodipodi:cy="237.36218"
@@ -1500,7 +1500,7 @@
       <path
          inkscape:transform-center-y="-54.545454"
          inkscape:transform-center-x="22.727269"
-         d="m 53,237.36218 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+         d="m 53,237.36218 c 0,2.76143 -2.238576,5 -5,5 -2.761424,0 -5,-2.23857 -5,-5 0,-2.76142 2.238576,-5 5,-5 2.761424,0 5,2.23858 5,5 z"
          sodipodi:ry="5"
          sodipodi:rx="5"
          sodipodi:cy="237.36218"
@@ -1513,7 +1513,7 @@
       <path
          inkscape:transform-center-y="-54.545454"
          inkscape:transform-center-x="22.727269"
-         d="m 53,237.36218 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+         d="m 53,237.36218 c 0,2.76143 -2.238576,5 -5,5 -2.761424,0 -5,-2.23857 -5,-5 0,-2.76142 2.238576,-5 5,-5 2.761424,0 5,2.23858 5,5 z"
          sodipodi:ry="5"
          sodipodi:rx="5"
          sodipodi:cy="237.36218"
@@ -1526,7 +1526,7 @@
       <path
          inkscape:transform-center-y="-54.545454"
          inkscape:transform-center-x="22.727269"
-         d="m 53,237.36218 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+         d="m 53,237.36218 c 0,2.76143 -2.238576,5 -5,5 -2.761424,0 -5,-2.23857 -5,-5 0,-2.76142 2.238576,-5 5,-5 2.761424,0 5,2.23858 5,5 z"
          sodipodi:ry="5"
          sodipodi:rx="5"
          sodipodi:cy="237.36218"
@@ -1539,7 +1539,7 @@
       <path
          inkscape:transform-center-y="-54.545454"
          inkscape:transform-center-x="22.727269"
-         d="m 53,237.36218 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+         d="m 53,237.36218 c 0,2.76143 -2.238576,5 -5,5 -2.761424,0 -5,-2.23857 -5,-5 0,-2.76142 2.238576,-5 5,-5 2.761424,0 5,2.23858 5,5 z"
          sodipodi:ry="5"
          sodipodi:rx="5"
          sodipodi:cy="237.36218"
@@ -1552,7 +1552,7 @@
       <path
          inkscape:transform-center-y="-54.545454"
          inkscape:transform-center-x="22.727269"
-         d="m 53,237.36218 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+         d="m 53,237.36218 c 0,2.76143 -2.238576,5 -5,5 -2.761424,0 -5,-2.23857 -5,-5 0,-2.76142 2.238576,-5 5,-5 2.761424,0 5,2.23858 5,5 z"
          sodipodi:ry="5"
          sodipodi:rx="5"
          sodipodi:cy="237.36218"
@@ -1565,7 +1565,7 @@
       <path
          inkscape:transform-center-y="-54.545454"
          inkscape:transform-center-x="22.727269"
-         d="m 53,237.36218 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+         d="m 53,237.36218 c 0,2.76143 -2.238576,5 -5,5 -2.761424,0 -5,-2.23857 -5,-5 0,-2.76142 2.238576,-5 5,-5 2.761424,0 5,2.23858 5,5 z"
          sodipodi:ry="5"
          sodipodi:rx="5"
          sodipodi:cy="237.36218"
@@ -1578,7 +1578,7 @@
       <path
          inkscape:transform-center-y="-54.545454"
          inkscape:transform-center-x="22.727269"
-         d="m 53,237.36218 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+         d="m 53,237.36218 c 0,2.76143 -2.238576,5 -5,5 -2.761424,0 -5,-2.23857 -5,-5 0,-2.76142 2.238576,-5 5,-5 2.761424,0 5,2.23858 5,5 z"
          sodipodi:ry="5"
          sodipodi:rx="5"
          sodipodi:cy="237.36218"
@@ -1591,7 +1591,7 @@
       <path
          inkscape:transform-center-y="-54.545454"
          inkscape:transform-center-x="22.727269"
-         d="m 53,237.36218 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+         d="m 53,237.36218 c 0,2.76143 -2.238576,5 -5,5 -2.761424,0 -5,-2.23857 -5,-5 0,-2.76142 2.238576,-5 5,-5 2.761424,0 5,2.23858 5,5 z"
          sodipodi:ry="5"
          sodipodi:rx="5"
          sodipodi:cy="237.36218"
@@ -1604,7 +1604,7 @@
       <path
          inkscape:transform-center-y="-54.545454"
          inkscape:transform-center-x="22.727269"
-         d="m 53,237.36218 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+         d="m 53,237.36218 c 0,2.76143 -2.238576,5 -5,5 -2.761424,0 -5,-2.23857 -5,-5 0,-2.76142 2.238576,-5 5,-5 2.761424,0 5,2.23858 5,5 z"
          sodipodi:ry="5"
          sodipodi:rx="5"
          sodipodi:cy="237.36218"
@@ -1617,7 +1617,7 @@
       <path
          inkscape:transform-center-y="-54.545454"
          inkscape:transform-center-x="22.727269"
-         d="m 53,237.36218 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+         d="m 53,237.36218 c 0,2.76143 -2.238576,5 -5,5 -2.761424,0 -5,-2.23857 -5,-5 0,-2.76142 2.238576,-5 5,-5 2.761424,0 5,2.23858 5,5 z"
          sodipodi:ry="5"
          sodipodi:rx="5"
          sodipodi:cy="237.36218"
@@ -1630,7 +1630,7 @@
       <path
          inkscape:transform-center-y="-54.545454"
          inkscape:transform-center-x="22.727269"
-         d="m 53,237.36218 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+         d="m 53,237.36218 c 0,2.76143 -2.238576,5 -5,5 -2.761424,0 -5,-2.23857 -5,-5 0,-2.76142 2.238576,-5 5,-5 2.761424,0 5,2.23858 5,5 z"
          sodipodi:ry="5"
          sodipodi:rx="5"
          sodipodi:cy="237.36218"
@@ -1643,7 +1643,7 @@
       <path
          inkscape:transform-center-y="-54.545454"
          inkscape:transform-center-x="22.727269"
-         d="m 53,237.36218 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+         d="m 53,237.36218 c 0,2.76143 -2.238576,5 -5,5 -2.761424,0 -5,-2.23857 -5,-5 0,-2.76142 2.238576,-5 5,-5 2.761424,0 5,2.23858 5,5 z"
          sodipodi:ry="5"
          sodipodi:rx="5"
          sodipodi:cy="237.36218"
@@ -1656,7 +1656,7 @@
       <path
          inkscape:transform-center-y="-54.545454"
          inkscape:transform-center-x="22.727269"
-         d="m 53,237.36218 a 5,5 0 1 1 -10,0 5,5 0 1 1 10,0 z"
+         d="m 53,237.36218 c 0,2.76143 -2.238576,5 -5,5 -2.761424,0 -5,-2.23857 -5,-5 0,-2.76142 2.238576,-5 5,-5 2.761424,0 5,2.23858 5,5 z"
          sodipodi:ry="5"
          sodipodi:rx="5"
          sodipodi:cy="237.36218"
@@ -2638,6 +2638,62 @@
          id="path11780-1-5-2-8-7"
          inkscape:connector-curvature="0"
          sodipodi:nodetypes="cc" />
+      <text
+         inkscape:transform-center-y="-7.0750605"
+         inkscape:transform-center-x="0.66599259"
+         transform="matrix(0.00480522,-0.99998845,0.99998845,0.00480522,0,0)"
+         xml:space="preserve"
+         style="font-size:12px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ff7700;fill-opacity:1;stroke:none;display:inline;font-family:Sans"
+         x="-146.45235"
+         y="386.95148"
+         id="text9941-8"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           x="-146.45235"
+           y="386.95148"
+           id="tspan9632-9"
+           style="font-style:normal;-inkscape-font-specification:Sans">LED 1</tspan></text>
+      <text
+         inkscape:transform-center-y="-7.0750605"
+         inkscape:transform-center-x="0.66599259"
+         transform="matrix(0.00480522,-0.99998845,0.99998845,0.00480522,0,0)"
+         xml:space="preserve"
+         style="font-size:12px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ff7700;fill-opacity:1;stroke:none;display:inline;font-family:Sans"
+         x="-146.23131"
+         y="408.64868"
+         id="text9941-8-8"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           x="-146.23131"
+           y="408.64868"
+           id="tspan9632-9-4"
+           style="font-style:normal;-inkscape-font-specification:Sans">LED 2</tspan></text>
+      <text
+         inkscape:transform-center-y="-7.0750605"
+         inkscape:transform-center-x="0.66599259"
+         transform="matrix(0.00480522,-0.99998845,0.99998845,0.00480522,0,0)"
+         xml:space="preserve"
+         style="font-size:12px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ff7700;fill-opacity:1;stroke:none;display:inline;font-family:Sans"
+         x="-146.3121"
+         y="428.62506"
+         id="text9941-8-7"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           x="-146.3121"
+           y="428.62506"
+           id="tspan9632-9-43"
+           style="font-style:normal;-inkscape-font-specification:Sans">LED 3</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+         x="37.24189"
+         y="388.43091"
+         id="text3443"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           id="tspan3445"
+           x="37.24189"
+           y="388.43091">- Please also see documentation (especially the notes) in the *.md files</tspan></text>
     </g>
     <g
        inkscape:groupmode="layer"
@@ -3344,6 +3400,31 @@
            x="180"
            sodipodi:role="line"
            id="tspan5053-8">AREF</tspan></text>
+      <text
+         sodipodi:linespacing="125%"
+         id="text4888-0-1-9"
+         y="191.5706"
+         x="150.63737"
+         style="font-size:18px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#bbbbbb;fill-opacity:1;stroke:none;display:inline;font-family:Sans"
+         xml:space="preserve"><tspan
+           y="191.5706"
+           x="150.63737"
+           sodipodi:role="line"
+           id="tspan5053-8-7"
+           style="font-size:18px;font-weight:bold;fill:#bbbbbb;fill-opacity:1;-inkscape-font-specification:Sans Bold">Teensy 2.0</tspan></text>
+      <text
+         sodipodi:linespacing="125%"
+         id="text4888-0-1-9-1"
+         y="188.34169"
+         x="570.96857"
+         style="font-size:18px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#bbbbbb;fill-opacity:1;stroke:none;display:inline;font-family:Sans"
+         xml:space="preserve"
+         inkscape:transform-center-x="-1.7677669"><tspan
+           y="188.34169"
+           x="570.96857"
+           sodipodi:role="line"
+           id="tspan5053-8-7-4"
+           style="font-size:18px;font-weight:bold;fill:#bbbbbb;fill-opacity:1;-inkscape-font-specification:Sans Bold">MCP23018</tspan></text>
     </g>
   </g>
 </svg>

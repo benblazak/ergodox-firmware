@@ -14,47 +14,34 @@
 
 #include "lib/data-types.h"
 
-// #include "keyboard.h"
-//dbg
-#define KEYBOARD_INCLUDE_PRIVATE
-#include "keyboard/ergodox/teensy-2-0.h"
-#include "keyboard/ergodox/mcp23018.h"
 #include "keyboard.h"
-///
 
 
-#define DEBOUNCE_TIME 5  // in ms;  see the spec for your keyswitches
+// note:
+// - see your keyswitch specification for the necessary value.  for cherry mx
+//   switches, bounce time should be <= 5ms.  it looks like most switches are
+//   speced between 5 and 8ms.
+// - if timing is important, balance this value with the main() loop run time
+//   (~5ms, last i checked, nearly all of it in the i2c update() function)
+#define DEBOUNCE_TIME 5  // in ms
 
 
-//dbg
-static void _toggle_led3(void) {
-	static bool led_on = false;
-	if (led_on) {
-		KB_LED3_OFF;
-		led_on = false;
-	} else {
-		KB_LED3_ON;
-		led_on = true;
-	}
-}
-///
 int main(void) {
 	kb_init();  // does controller initialization too
+
+	KB_LED1_ON;
+	KB_LED2_ON;
+	KB_LED3_ON;
 
 	usb_init();
 	while (!usb_configured());
 	_delay_ms(1000);  // make sure the OS has had time to load drivers, etc.
 
+	KB_LED1_OFF;
+	KB_LED2_OFF;
+	KB_LED3_OFF;
+
 	for (;;) {
-		//dbg
-// 		KB_LED1_ON; _delay_ms(200); KB_LED1_OFF; _delay_ms(200);  //dbg
-		static int counter=0;
-		if (counter == 0)
-			_toggle_led3();
-		counter++;
-		if (counter >= 250)
-			counter = 0;
-		///
 		static uint8_t current_layer = 0;
 
 		// swap `kb_is_pressed` and `kb_was_pressed`, then update
@@ -66,6 +53,10 @@ int main(void) {
 
 		// call the appropriate function for each key, then send the report if
 		// necessary
+		// - everything else is the key function's responsibility; see the
+		//   keyboard layout file ("keyboard/ergodox/layout.c") for which key
+		//   is assigned which function (per layer), and "key-functions.c" for
+		//   their definitions
 		for (uint8_t row=0; row<KB_ROWS; row++) {
 			for (uint8_t col=0; col<KB_COLUMNS; col++) {
 				bool is_pressed = (*kb_is_pressed)[row][col];
@@ -96,9 +87,9 @@ int main(void) {
 		}
 
 		// update LEDs
-// 		(keyboard_leds & (1<<0)) ? KB_LED1_ON : KB_LED1_OFF;  // num lock
-// 		(keyboard_leds & (1<<1)) ? KB_LED2_ON : KB_LED2_OFF;  // caps lock
-// 		(keyboard_leds & (1<<2)) ? KB_LED3_ON : KB_LED3_OFF;  // scroll lock
+		(keyboard_leds & (1<<0)) ? KB_LED1_ON : KB_LED1_OFF;  // num lock
+		(keyboard_leds & (1<<1)) ? KB_LED2_ON : KB_LED2_OFF;  // caps lock
+		(keyboard_leds & (1<<2)) ? KB_LED3_ON : KB_LED3_OFF;  // scroll lock
 		#if 0  // not implemented right now
 		(keyboard_leds & (1<<3)) ? KB_LED4_ON : KB_LED4_OFF;  // compose
 		(keyboard_leds & (1<<4)) ? KB_LED5_ON : KB_LED5_OFF;  // kana

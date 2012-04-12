@@ -33,9 +33,9 @@ uint8_t kb_init(void) {
  * - error: number of the function that failed
  */
 uint8_t kb_update_matrix(bool matrix[KB_ROWS][KB_COLUMNS]) {
-	if (teensy_update_matrix(matrix))    // must be first
+	if (teensy_update_matrix(matrix))
 		return 1;
-	if (mcp23018_update_matrix(matrix))  // must be second
+	if (mcp23018_update_matrix(matrix))
 		return 2;
 
 	return 0;  // success

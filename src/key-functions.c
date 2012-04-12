@@ -14,6 +14,7 @@
 
 #include "keyboard.h"
 
+
 // ----------------------------------------------------------------------------
 
 #if 0  // not being used right now
@@ -35,6 +36,7 @@ static uint8_t _dec_current_layer(uint8_t * current_layer) {
 	return 0;  // success
 }
 #endif
+
 
 // ----------------------------------------------------------------------------
 

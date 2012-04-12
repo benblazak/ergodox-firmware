@@ -27,18 +27,21 @@
 
 ### Teensy 2.0 Pin Assignments
 
-              power_negative  GND +---.....---+ Vcc   power_positive
-                    column6   PB0 +           + PF0   row0
-                                  o           + PF1   row1
-                                  o           + PF4   row2
-                                  o  o     o  + PF5   row3
-                       LED3  OC1C +           + PF6   row4
-                        I2C   SCL +           + PF7   row5
-                        I2C   SDA +           + OC1B  LED2
-                    column3   PD2 +           + OC1A  LED1
-                    column4   PD3 +           + PB4   column0
-                    column1   PC6 +           + PD7   column5
-                    column2   PC7 +-o-o-o-o-o-+ PD6   onboardLED
+              power_negative  GND +---.....---+ Vcc  power_positive
+                     column6  PB0 +           + PF0  row0
+                              PB1 o           + PF1  row1
+                              PB2 o           + PF4  row2
+                              PB3 o  o     o  + PF5  row3
+                 (OC1C) LED3  PB7 + PE6  AREF + PF6  row4
+                  (SCL)  I2C  PD0 +           + PF7  row5
+                  (SDA)  I2C  PD1 +           + PB6  LED2 (OC1B)
+                     column3  PD2 +           + PB5  LED1 (OC1A)
+                     column4  PD3 +           + PB4  column0
+                     column1  PC6 +           + PD7  column5
+                     column2  PC7 +-o-o-o-o-o-+ PD6  onboardLED
+                              PD5 --/ | | | \-- PD4
+                              Vcc ----/ | \---- RST
+                              GND-------/
 
 * notes:
   * SCL and SDA: Need external pull-up resistors.  Sometimes the Teensy
