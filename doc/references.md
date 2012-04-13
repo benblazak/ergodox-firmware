@@ -122,6 +122,12 @@
   (http://geekhack.org/showwiki.php?title=Scan+Codes)
   (on <http://geekhack.org/>)
 
+* [USB - boot mode, NKRO, compatibility, etc...]
+  (http://geekhack.org/showthread.php?13162-USB-boot-mode-NKRO-compatibility-etc/page2)
+  : old thread by [Soarer]
+  (http://geekhack.org/member.php?4274-Soarer)
+  (on <http://geekhack.org/>)
+
 * [USB 2.0 Specification]
   (http://www.usb.org/developers/docs/usb_20_101111.zip)
   : zip (from <http://www.usb.org/developers/docs/>)
