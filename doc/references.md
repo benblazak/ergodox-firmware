@@ -176,6 +176,11 @@
 	* mentioned on [the designer's blog]
 	  (http://humblehacker.com/blog/)
 
+### USB Libraries
+
+* [LUFA (2012) (Lightweight USB Framework for AVRs)]
+  (http://www.fourwalledcubicle.com/LUFA.php)
+
 ### TWI Libraries
 
 * github: [TWI library in C]
@@ -203,7 +208,7 @@
 	* mentioned on [the PJRC website]
 	  (http://pjrc.com/teensy/usb_keyboard.html)
 
-### Miscellaneous
+### Other
 
 * zip: [PJRC: blinky]
   (http://pjrc.com/teensy/blinky.zip)
