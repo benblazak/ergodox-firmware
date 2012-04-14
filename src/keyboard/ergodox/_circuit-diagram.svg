@@ -29,7 +29,7 @@
      inkscape:cx="477.26232"
      inkscape:cy="197.75046"
      inkscape:document-units="px"
-     inkscape:current-layer="layer4"
+     inkscape:current-layer="layer7"
      showgrid="true"
      inkscape:snap-global="false"
      inkscape:snap-bbox="false"
@@ -2465,7 +2465,7 @@
            sodipodi:role="line"
            x="-112.36218"
            y="560"
-           id="tspan12234-5">row 6</tspan></text>
+           id="tspan12234-5">row B</tspan></text>
       <text
          inkscape:transform-center-y="-3"
          inkscape:transform-center-x="-20.5"
@@ -2479,7 +2479,7 @@
            id="tspan13461"
            sodipodi:role="line"
            x="-113.45203"
-           y="579.83008">row 7</tspan></text>
+           y="579.83008">row A</tspan></text>
       <text
          inkscape:transform-center-y="-3"
          inkscape:transform-center-x="-20.5"
@@ -2493,7 +2493,7 @@
            id="tspan13463"
            sodipodi:role="line"
            x="-113.45203"
-           y="599.83008">row 8</tspan></text>
+           y="599.83008">row 9</tspan></text>
       <text
          inkscape:transform-center-y="-3"
          inkscape:transform-center-x="-20.5"
@@ -2507,7 +2507,7 @@
            id="tspan13465"
            sodipodi:role="line"
            x="-113.45203"
-           y="619.83008">row 9</tspan></text>
+           y="619.83008">row 8</tspan></text>
       <text
          inkscape:transform-center-y="-3"
          inkscape:transform-center-x="-20.5"
@@ -2521,7 +2521,7 @@
            id="tspan13467"
            sodipodi:role="line"
            x="-113.45203"
-           y="639.83008">row A</tspan></text>
+           y="639.83008">row 7</tspan></text>
       <text
          inkscape:transform-center-y="-3"
          inkscape:transform-center-x="-20.5"
@@ -2535,7 +2535,7 @@
            id="tspan13469"
            sodipodi:role="line"
            x="-112.36218"
-           y="660">row B</tspan></text>
+           y="660">row 6</tspan></text>
       <path
          style="fill:none;stroke:#aaaa00;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#marker11070);display:inline"
          d="m 275,247.36218 0,59.74443"

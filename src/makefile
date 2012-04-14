@@ -10,9 +10,11 @@
 
 TARGET = firmware
 
-SRC = $(shell find -maxdepth 1 -name '*.c') \
-      $(shell find ./keyboard  -name '*.c') \
-      $(shell find ./lib       -name '*.c') \
+SRC = $(wildcard *.c) \
+      $(wildcard keyboard/*.c) \
+      $(wildcard keyboard/*/*.c) \
+      $(wildcard lib/*.c) \
+      $(wildcard lib/*/*.c) \
       './lib-other/pjrc/usb_keyboard/usb_keyboard.c'
 
 

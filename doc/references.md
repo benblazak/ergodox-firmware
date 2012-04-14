@@ -122,6 +122,12 @@
   (http://geekhack.org/showwiki.php?title=Scan+Codes)
   (on <http://geekhack.org/>)
 
+* [USB - boot mode, NKRO, compatibility, etc...]
+  (http://geekhack.org/showthread.php?13162-USB-boot-mode-NKRO-compatibility-etc/page2)
+  : old thread by [Soarer]
+  (http://geekhack.org/member.php?4274-Soarer)
+  (on <http://geekhack.org/>)
+
 * [USB 2.0 Specification]
   (http://www.usb.org/developers/docs/usb_20_101111.zip)
   : zip (from <http://www.usb.org/developers/docs/>)
@@ -176,6 +182,11 @@
 	* mentioned on [the designer's blog]
 	  (http://humblehacker.com/blog/)
 
+### USB Libraries
+
+* [LUFA (2012) (Lightweight USB Framework for AVRs)]
+  (http://www.fourwalledcubicle.com/LUFA.php)
+
 ### TWI Libraries
 
 * github: [TWI library in C]
@@ -203,7 +214,7 @@
 	* mentioned on [the PJRC website]
 	  (http://pjrc.com/teensy/usb_keyboard.html)
 
-### Miscellaneous
+### Other
 
 * zip: [PJRC: blinky]
   (http://pjrc.com/teensy/blinky.zip)
@@ -303,6 +314,6 @@
 -------------------------------------------------------------------------------
 
 Copyright &copy; 2012 Ben Blazak <benblazak.dev@gmail.com>  
-Released under The MIT License (MIT) (see "license.md")
+Released under The MIT License (MIT) (see "license.md")  
 Project located at <https://github.com/benblazak/ergodox-firmware>
 
