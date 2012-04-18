@@ -86,6 +86,10 @@
   by Randy Meyers
   (on <http://drdobbs.com/>)
 
+* [gcc: why the -lm flag is needed to link the math library?]
+  (http://stackoverflow.com/questions/4606301/gcc-why-the-lm-flag-is-needed-to-link-the-math-library)
+  (on <http://stackoverflow.com/>)
+
 ### For the AVR
 
 * [AVR Newbie guide]
@@ -102,6 +106,17 @@
 * [A Brief Tutorial on Programming the AVR without Arduino]
   (https://www.mainframe.cx/~ckuethe/avr-c-tutorial/)
   by Chris Kuethe
+
+* [Optimisations of AVR programs using avr-gcc]
+  (http://www.tty1.net/blog/2008-04-29-avr-gcc-optimisations_en.html)
+
+* [Using the EEPROM memory in AVR-GCC]
+  (http://www.avrfreaks.net/index.php?name=PNphpBB2&file=viewtopic&t=38417)
+  : tutorial by [Dean Camera] (http://fourwalledcubicle.com/AboutMe.php)
+  (on <http://www.avrfreaks.net/>)
+
+  * updated version available as a pdf at [Four Walled Cubicle : AVR Articles]
+    (http://www.fourwalledcubicle.com/AVRArticles.php), along with a few other good articles on AVR programming
 
 
 ## Protocol Stuff
@@ -187,6 +202,12 @@
 * [LUFA (2012) (Lightweight USB Framework for AVRs)]
   (http://www.fourwalledcubicle.com/LUFA.php)
 
+* zip: [PJRC: usb_keyboard]
+  (http://pjrc.com/teensy/usb_keyboard.zip)
+
+	* mentioned on [the PJRC website]
+	  (http://pjrc.com/teensy/usb_keyboard.html)
+
 ### TWI Libraries
 
 * github: [TWI library in C]
@@ -205,14 +226,6 @@
 * github: [maniacbug / Arduino / libraries / MCP23018]
   (https://github.com/maniacbug/Arduino/tree/master/libraries/MCP23018)
   : library in C++
-
-### USB
-
-* zip: [PJRC: usb_keyboard]
-  (http://pjrc.com/teensy/usb_keyboard.zip)
-
-	* mentioned on [the PJRC website]
-	  (http://pjrc.com/teensy/usb_keyboard.html)
 
 ### Other
 

@@ -45,6 +45,9 @@ buy!), please stop by.  :) .
   for instructions on how to set up an AVR programming environment.  This
   project uses C (not Arduino).
 
+* I also assume that you are using [git] (http://git-scm.com/) (for `make
+  clean`).
+
 
 -------------------------------------------------------------------------------
 
