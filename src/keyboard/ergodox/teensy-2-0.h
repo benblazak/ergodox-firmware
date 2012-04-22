@@ -12,7 +12,7 @@
 
 	#include <avr/io.h>  // for the register macros
 
-	#include "lib/data-types.h"
+	#include "lib/_data-types.h"
 
 	#include "matrix.h"
 

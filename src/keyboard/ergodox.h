@@ -11,7 +11,7 @@
 #ifndef ERGODOX_h
 	#define ERGODOX_h
 
-	#include "lib/data-types.h"
+	#include "lib/_data-types.h"
 
 	#include "ergodox/layout.h"      // number of layers, layout
 	#include "ergodox/matrix.h"      // kb dimensions, matrix status

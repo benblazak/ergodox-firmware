@@ -9,9 +9,9 @@
 
 #include <avr/io.h>
 
-#include "lib/data-types.h"
+#include "lib/_data-types.h"
 #define TWI_FREQ 400000
-#include "lib/teensy-2-0/twi.h"
+#include "lib/_teensy-2-0/twi.h"
 
 #define KEYBOARD_INCLUDE_PRIVATE
 #include "matrix.h"

@@ -19,11 +19,10 @@ FORMAT = ihex
 
 SRC = \
       $(wildcard *.c) \
-      $(wildcard keyboard/*.c) \
-      $(wildcard keyboard/*/*.c) \
-      $(wildcard lib/*.c) \
-      $(wildcard lib/*/*.c) \
-      lib-other/pjrc/usb_keyboard/usb_keyboard.c
+      $(wildcard keyboard/ergodox*.c) \
+      $(wildcard keyboard/ergodox/*.c) \
+      $(wildcard lib/_teensy-2-0/*.c) \
+      $(wildcard lib/pjrc/usb_keyboard/*.c)
 
 OBJ = $(SRC:%.c=%.o)
 

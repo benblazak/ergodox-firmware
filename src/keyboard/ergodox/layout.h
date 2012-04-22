@@ -9,7 +9,7 @@
 #ifndef LAYOUT_h
 	#define LAYOUT_h
 
-	#include "lib/data-types.h"
+	#include "lib/_data-types.h"
 
 	#include "key-functions.h"
 

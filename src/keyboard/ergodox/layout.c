@@ -7,8 +7,8 @@
  * ------------------------------------------------------------------------- */
 
 
-#include "lib/data-types.h"
-#include "lib/usb/keyboard-usage-page.h"
+#include "lib/_data-types.h"
+#include "lib/_usb/keyboard-usage-page.h"
 
 #include "key-functions.h"
 

@@ -9,8 +9,8 @@
 
 #include <util/twi.h>
 
-#include "lib/data-types.h"
-#include "lib/teensy-2-0/twi.h"  // `TWI_FREQ` defined in "teensy-2-0.c"
+#include "lib/_data-types.h"
+#include "lib/_teensy-2-0/twi.h"  // `TWI_FREQ` defined in "teensy-2-0.c"
 
 #define KEYBOARD_INCLUDE_PRIVATE
 #include "matrix.h"

@@ -10,9 +10,8 @@
 
 #include <util/delay.h>
 
-#include "lib-other/pjrc/usb_keyboard/usb_keyboard.h"
-
-#include "lib/data-types.h"
+#include "lib/pjrc/usb_keyboard/usb_keyboard.h"
+#include "lib/_data-types.h"
 
 #include "keyboard.h"
 
