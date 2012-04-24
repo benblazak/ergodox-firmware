@@ -229,6 +229,9 @@
 
 ### Other
 
+* [Soarer's Converter (XT/AT/PS2/Terminal to USB Converter with NKRO)]
+  (http://geekhack.org/showwiki.php?title=Island:17458)
+
 * zip: [PJRC: blinky]
   (http://pjrc.com/teensy/blinky.zip)
 

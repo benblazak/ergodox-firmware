@@ -5,11 +5,12 @@
  *   (the code example in C), and section 20.8.1, figure 20-12
  * - Also see the documentation for `<util/twi.h>` at <http://www.nongnu.org/avr-libc/user-manual/group__util__twi.html#ga8d3aca0acc182f459a51797321728168>
  *
- * Some other (more complete) TWI libraries for the Teensy 2.0 (and other Amtel
+ * Some other (more complete) TWI libraries for the Teensy 2.0 (and other Atmel
  * processors):
  * - [i2cmaster] (http://homepage.hispeed.ch/peterfleury/i2cmaster.zip)
  *   - written by [peter-fleury] (http://homepage.hispeed.ch/peterfleury/)
- * - [the arduino twi library] (https://github.com/arduino/Arduino/tree/master/libraries/Wire/utility)
+ * - [the arduino twi library]
+ *   (https://github.com/arduino/Arduino/tree/master/libraries/Wire/utility)
  *   - look for an older version if you need one that doesn't depend on all the
  *     other Arduino stuff
  * ----------------------------------------------------------------------------

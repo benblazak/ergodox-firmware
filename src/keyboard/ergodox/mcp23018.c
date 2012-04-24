@@ -60,7 +60,8 @@ uint8_t mcp23018_init(void) {
 	// - rows    : off : 0
 	// - columns : on  : 1
 	twi_start();
-	twi_send(TWI_ADDR_WRITE);
+	ret = twi_send(TWI_ADDR_WRITE);
+	if (ret) goto out;  // make sure we got an ACK
 	twi_send(GPPUA);
 	twi_send(0b11000000);  // GPPUA
 	twi_send(0b11111111);  // GPPUB
@@ -71,7 +72,8 @@ uint8_t mcp23018_init(void) {
 	// - rows    : high (hi-Z) : 1
 	// - columns : high (hi-Z) : 1
 	twi_start();
-	twi_send(TWI_ADDR_WRITE);
+	ret = twi_send(TWI_ADDR_WRITE);
+	if (ret) goto out;  // make sure we got an ACK
 	twi_send(OLATA);
 	twi_send(0b11111111);  //OLATA
 	twi_send(0b11111111);  //OLATB

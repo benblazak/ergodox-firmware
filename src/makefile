@@ -68,12 +68,16 @@ SIZE    = avr-size
 
 all: $(TARGET).hex $(TARGET).eep
 	@echo
+	@echo '---------------------------------------------------------------'
 	@echo '------- done --------------------------------------------------'
 	@echo
 	$(SIZE) --target=$(FORMAT) $(TARGET).hex
 	@echo
 	$(SIZE) --target=$(FORMAT) $(TARGET).eep
 	@echo
+	@echo '. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .'
+	@echo
+	$(SIZE) -C --mcu=atmega32u4 $(TARGET).elf
 	@echo '. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .'
 	@echo
 	@echo 'you can load "$(TARGET).hex" and "$(TARGET).eep" onto the'
