@@ -67,27 +67,27 @@ CFLAGS += -fdata-sections      # /   section in the output file if the
 			       #     linker optimizations, and discarding
 			       #     unused code.
 # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-CFLAGS += -MMD -MP -MF $@.dep  # generate dependency files
-# . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 LDFLAGS  = -Wl,--relax        # for some linker optimizations
 LDFLAGS += -Wl,--gc-sections  # discard unused functions and data
+# . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+# . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+GENDEPFLAGS += -MMD -MP -MF $@.dep  # generate dependency files
 
 
 CC      = avr-gcc
 OBJCOPY = avr-objcopy
 SIZE    = avr-size
 
+
+# remove extraneous whitespace
+TARGET      := $(strip $(TARGET))
+FORMAT      := $(strip $(FORMAT))
+
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
 
 .PHONY: all clean
-
-# remove extraneous whitespace
-FORMAT  := $(strip $(FORMAT))
-TARGET  := $(strip $(TARGET))
-CFLAGS  := $(strip $(CFLAGS))
-LDFLAGS := $(strip $(LDFLAGS))
 
 all: $(TARGET).hex $(TARGET).eep
 	@echo
@@ -140,12 +140,12 @@ clean:
 %.elf: $(OBJ)
 	@echo
 	@echo --- making $@ ---
-	$(CC) $(CFLAGS) $(LDFLAGS) $^ --output $@
+	$(CC) $(strip $(CFLAGS)) $(strip $(LDFLAGS)) $^ --output $@
 
 %.o: %.c
 	@echo
 	@echo --- making $@ ---
-	$(CC) -c $(CFLAGS) $< -o $@ 
+	$(CC) -c $(strip $(CFLAGS)) $(strip $(GENDEPFLAGS)) $< -o $@ 
 
 # -----------------------------------------------------------------------------
 
