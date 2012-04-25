@@ -47,6 +47,10 @@ void kbfun_press(
 		uint8_t * keycode, uint8_t * current_layer,
 		uint8_t * row,     uint8_t * col ) {
 
+	// no-op
+	if (*keycode == 0)
+		return;
+
 	// modifier keys
 	switch (*keycode) {
 		case KEY_LeftControl:  keyboard_modifier_keys |= (1<<0);
@@ -78,6 +82,10 @@ void kbfun_press(
 void kbfun_release(
 		uint8_t * keycode, uint8_t * current_layer,
 		uint8_t * row,     uint8_t * col ) {
+
+	// no-op
+	if (*keycode == 0)
+		return;
 
 	// modifier keys
 	switch (*keycode) {
