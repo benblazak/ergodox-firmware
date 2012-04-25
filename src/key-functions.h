@@ -20,12 +20,6 @@
 	void kbfun_release(
 			uint8_t * keycode, uint8_t * current_layer,
 			uint8_t * row,     uint8_t * col );
-	void kbfun_mod_press(
-			uint8_t * keycode, uint8_t * current_layer,
-			uint8_t * row,     uint8_t * col );
-	void kbfun_mod_release(
-			uint8_t * keycode, uint8_t * current_layer,
-			uint8_t * row,     uint8_t * col );
 
 #endif
 

@@ -241,7 +241,7 @@
 #define KEYPAD_MemorySubtract       0xD4  // -  -   -     -
 #define KEYPAD_MemoryMultiply       0xD5  // -  -   -     -
 #define KEYPAD_MemoryDivide         0xD6  // -  -   -     -
-#define KEYPAD_PlusMinux            0xD7  // -  -   -     -
+#define KEYPAD_PlusMinus            0xD7  // -  -   -     -
 #define KEYPAD_Clear                0xD8  // -  -   -     -
 #define KEYPAD_ClearEntry           0xD9  // -  -   -     -
 #define KEYPAD_Binary               0xDA  // -  -   -     -

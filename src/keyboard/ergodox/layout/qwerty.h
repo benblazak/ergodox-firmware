@@ -1,7 +1,5 @@
 /* ----------------------------------------------------------------------------
- * keyboard specific exports
- *
- * Different keyboards are included by modifying a variable in the makefile.
+ * ergoDOX layout : QWERTY : exports
  * ----------------------------------------------------------------------------
  * Copyright (c) 2012 Ben Blazak <benblazak.dev@gmail.com>
  * Released under The MIT License (MIT) (see "license.md")
@@ -9,5 +7,5 @@
  * ------------------------------------------------------------------------- */
 
 
-#include KEYBOARD
+#define KB_LAYERS 1  // must match what's defined in "layout*.c"
 

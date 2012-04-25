@@ -1,5 +1,7 @@
 /* ----------------------------------------------------------------------------
- * ergoDOX layout specific exports
+ * ergoDOX layout : exports
+ *
+ * Different layouts are included by modifying a variable in the makefile.
  * ----------------------------------------------------------------------------
  * Copyright (c) 2012 Ben Blazak <benblazak.dev@gmail.com>
  * Released under The MIT License (MIT) (see "license.md")
@@ -11,11 +13,11 @@
 
 	#include "lib/_data-types.h"
 
-	#include "key-functions.h"
+	#include "key-functions.h"  // for a pointer typedef
 
-	#include "matrix.h"
+	#include "matrix.h"  // for number of rows and columns
 
-	#define KB_LAYERS 1  // must match what's defined in "layout.c"
+	#include KEYBOARD_LAYOUT  // for number of layers
 
 	extern uint8_t
 			kb_layout        [KB_LAYERS][KB_ROWS][KB_COLUMNS];

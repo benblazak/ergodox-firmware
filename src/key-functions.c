@@ -1,5 +1,9 @@
 /* ----------------------------------------------------------------------------
  * key functions: code
+ *
+ * These functions may do.. pretty much anything rational that thay like.  If
+ * they want keycodes to be sent to the host in an aggrate report, they're
+ * responsible for modifying the appropriate report variables.
  * ----------------------------------------------------------------------------
  * Copyright (c) 2012 Ben Blazak <benblazak.dev@gmail.com>
  * Released under The MIT License (MIT) (see "license.md")
@@ -43,6 +47,27 @@ void kbfun_press(
 		uint8_t * keycode, uint8_t * current_layer,
 		uint8_t * row,     uint8_t * col ) {
 
+	// modifier keys
+	switch (*keycode) {
+		case KEY_LeftControl:  keyboard_modifier_keys |= (1<<0);
+				       return;
+		case KEY_LeftShift:    keyboard_modifier_keys |= (1<<1);
+				       return;
+		case KEY_LeftAlt:      keyboard_modifier_keys |= (1<<2);
+				       return;
+		case KEY_LeftGUI:      keyboard_modifier_keys |= (1<<3);
+				       return;
+		case KEY_RightControl: keyboard_modifier_keys |= (1<<4);
+				       return;
+		case KEY_RightShift:   keyboard_modifier_keys |= (1<<5);
+				       return;
+		case KEY_RightAlt:     keyboard_modifier_keys |= (1<<6);
+				       return;
+		case KEY_RightGUI:     keyboard_modifier_keys |= (1<<7);
+				       return;
+	}
+
+	// all others
 	for (uint8_t i=0; i<6; i++)
 		if (keyboard_keys[i] == 0) {
 			keyboard_keys[i] = *keycode;
@@ -54,42 +79,31 @@ void kbfun_release(
 		uint8_t * keycode, uint8_t * current_layer,
 		uint8_t * row,     uint8_t * col ) {
 
+	// modifier keys
+	switch (*keycode) {
+		case KEY_LeftControl:  keyboard_modifier_keys &= ~(1<<0);
+				       return;
+		case KEY_LeftShift:    keyboard_modifier_keys &= ~(1<<1);
+				       return;
+		case KEY_LeftAlt:      keyboard_modifier_keys &= ~(1<<2);
+				       return;
+		case KEY_LeftGUI:      keyboard_modifier_keys &= ~(1<<3);
+				       return;
+		case KEY_RightControl: keyboard_modifier_keys &= ~(1<<4);
+				       return;
+		case KEY_RightShift:   keyboard_modifier_keys &= ~(1<<5);
+				       return;
+		case KEY_RightAlt:     keyboard_modifier_keys &= ~(1<<6);
+				       return;
+		case KEY_RightGUI:     keyboard_modifier_keys &= ~(1<<7);
+				       return;
+	}
+
+	// all others
 	for (uint8_t i=0; i<6; i++)
 		if (keyboard_keys[i] == *keycode) {
 			keyboard_keys[i] = 0;
 			break;
 		}
-}
-
-void kbfun_mod_press(
-		uint8_t * keycode, uint8_t * current_layer,
-		uint8_t * row,     uint8_t * col ) {
-
-	switch (*keycode) {
-		case KEY_LeftControl:  keyboard_modifier_keys |= (1<<0); break;
-		case KEY_LeftShift:    keyboard_modifier_keys |= (1<<1); break;
-		case KEY_LeftAlt:      keyboard_modifier_keys |= (1<<2); break;
-		case KEY_LeftGUI:      keyboard_modifier_keys |= (1<<3); break;
-		case KEY_RightControl: keyboard_modifier_keys |= (1<<4); break;
-		case KEY_RightShift:   keyboard_modifier_keys |= (1<<5); break;
-		case KEY_RightAlt:     keyboard_modifier_keys |= (1<<6); break;
-		case KEY_RightGUI:     keyboard_modifier_keys |= (1<<7); break;
-	}
-}
-
-void kbfun_mod_release(
-		uint8_t * keycode, uint8_t * current_layer,
-		uint8_t * row,     uint8_t * col ) {
-
-	switch (*keycode) {
-		case KEY_LeftControl: keyboard_modifier_keys &= ~(1<<0); break;
-		case KEY_LeftShift:   keyboard_modifier_keys &= ~(1<<1); break;
-		case KEY_LeftAlt:     keyboard_modifier_keys &= ~(1<<2); break;
-		case KEY_LeftGUI:     keyboard_modifier_keys &= ~(1<<3); break;
-		case KEY_RightControl:keyboard_modifier_keys &= ~(1<<4); break;
-		case KEY_RightShift:  keyboard_modifier_keys &= ~(1<<5); break;
-		case KEY_RightAlt:    keyboard_modifier_keys &= ~(1<<6); break;
-		case KEY_RightGUI:    keyboard_modifier_keys &= ~(1<<7); break;
-	}
 }
 

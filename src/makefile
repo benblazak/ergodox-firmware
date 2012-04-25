@@ -14,15 +14,29 @@
 # -----------------------------------------------------------------------------
 
 
-TARGET = firmware
-FORMAT = ihex
+TARGET   = firmware
+FORMAT   = ihex
+KEYBOARD = ergodox   # see "src/keyboard" for what's available
+LAYOUT   = qwerty    # see "src/keyboard/*/layout" for what's available
 
-SRC = \
-      $(wildcard *.c) \
-      $(wildcard keyboard/ergodox*.c) \
-      $(wildcard keyboard/ergodox/*.c) \
-      $(wildcard lib/_teensy-2-0/*.c) \
-      $(wildcard lib/pjrc/usb_keyboard/*.c)
+# firmware stuff
+SRC  = $(wildcard *.c)
+# keyboard stuff
+# --- remove whitespace
+KEYBOARD := $(strip $(KEYBOARD))
+LAYOUT   := $(strip $(LAYOUT))
+# --- include stuff
+SRC += $(wildcard keyboard/$(KEYBOARD)*.c)
+SRC += $(wildcard keyboard/$(KEYBOARD)/*.c)
+SRC += $(wildcard keyboard/$(KEYBOARD)/layout/$(LAYOUT)*.c)
+# library stuff
+# - add more "*/*/..."s as necessary to compile everything.
+# - parts the stuff under "lib" may not be necessary, depending on other
+#   options, but it's all included here.  hopefully any unnecessary stuff gets
+#   compiled out.  else, the makefile will have to become more complicated.
+SRC += $(wildcard lib/*.c)
+SRC += $(wildcard lib/*/*.c)
+SRC += $(wildcard lib/*/*/*.c)
 
 OBJ = $(SRC:%.c=%.o)
 
@@ -32,6 +46,9 @@ CFLAGS  = -mmcu=atmega32u4  # processor type (teensy 2.0); must match real
 CFLAGS += -DF_CPU=16000000  # processor frequency; must match initialization
 			    #   in source
 CFLAGS += -I.               # search for includes in the current directory
+# . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+CFLAGS += -DKEYBOARD='"keyboard/$(strip $(KEYBOARD)).h"'
+CFLAGS += -DKEYBOARD_LAYOUT='"layout/$(strip $(LAYOUT)).h"'
 # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 CFLAGS += -std=gnu99  # use C99 plus GCC extensions
 CFLAGS += -Os         # optimize for size
@@ -65,6 +82,12 @@ SIZE    = avr-size
 # -----------------------------------------------------------------------------
 
 .PHONY: all clean
+
+# remove extraneous whitespace
+FORMAT  := $(strip $(FORMAT))
+TARGET  := $(strip $(TARGET))
+CFLAGS  := $(strip $(CFLAGS))
+LDFLAGS := $(strip $(LDFLAGS))
 
 all: $(TARGET).hex $(TARGET).eep
 	@echo
