@@ -297,6 +297,15 @@
   (http://geekhack.org/showwiki.php?title=Keyboard+scan+rates)
   list (on <http://geekhack.org/>)
 
+### Other Awesome Keyboard Projects
+
+* [My DIY keyboard collection ( or how I became a KB-geek...)]
+  (http://deskthority.net/workshop-f7/my-diy-keyboard-collection-or-how-i-became-a-kb-geek-t2534.html)
+
+    * linked to in [a post]
+      (http://geekhack.org/showthread.php?22780-Interest-Check-Custom-split-ergo-keyboard&p=582593&viewfull=1#post582593)
+      on the ergoDOX geekhack thread
+
 ### Documentation and Design Tools
 
 * [Markdown: Syntax]
