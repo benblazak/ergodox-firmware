@@ -61,20 +61,20 @@ kbfun_funptr_t kb_layout_press[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
 {  // layer 0: default
 // right hand
 /*        ---- 0 ---- ---- 1 ---- ---- 2 ---- ---- 3 ---- ---- 4 ---- ---- 5 ---- ---- 6 ----	*/
-/* 0 */ {  f_NOP     , f_press   , f_press   , f_press   , f_press   , f_press   , f_press    }, /* 0 */
-/* 1 */ {  f_NOP     , f_press   , f_press   , f_press   , f_press   , f_press   , f_press    }, /* 1 */
+/* 0 */ {  f_press   , f_press   , f_press   , f_press   , f_press   , f_press   , f_press    }, /* 0 */
+/* 1 */ {  f_press   , f_press   , f_press   , f_press   , f_press   , f_press   , f_press    }, /* 1 */
 /* 2 */ {  f_NA      , f_press   , f_press   , f_press   , f_press   , f_press   , f_press    }, /* 2 */
-/* 3 */ {  f_NOP     , f_press   , f_press   , f_press   , f_press   , f_press   , f_press    }, /* 3 */
-/* 4 */ {  f_NA      , f_NA      , f_press   , f_press   , f_press   , f_press   , f_NOP      }, /* 4 */
+/* 3 */ {  f_press   , f_press   , f_press   , f_press   , f_press   , f_press   , f_press    }, /* 3 */
+/* 4 */ {  f_NA      , f_NA      , f_press   , f_press   , f_press   , f_press   , f_press    }, /* 4 */
 /* 5 */ {  f_NA      , f_press   , f_press   , f_press   , f_press   , f_press   , f_press    }, /* 5 */
 /*        ---- 0 ---- ---- 1 ---- ---- 2 ---- ---- 3 ---- ---- 4 ---- ---- 5 ---- ---- 6 ----	*/
 // left hand
 /*        ---- 0 ---- ---- 1 ---- ---- 2 ---- ---- 3 ---- ---- 4 ---- ---- 5 ---- ---- 6 ----	*/
-/* 6 */ {  f_press   , f_press   , f_press   , f_press   , f_press   , f_press   , f_NOP      }, /* 6 */
-/* 7 */ {  f_press   , f_press   , f_press   , f_press   , f_press   , f_press   , f_NOP      }, /* 7 */
+/* 6 */ {  f_press   , f_press   , f_press   , f_press   , f_press   , f_press   , f_press    }, /* 6 */
+/* 7 */ {  f_press   , f_press   , f_press   , f_press   , f_press   , f_press   , f_press    }, /* 7 */
 /* 8 */ {  f_press   , f_press   , f_press   , f_press   , f_press   , f_press   , f_NA       }, /* 8 */
-/* 9 */ {  f_press   , f_press   , f_press   , f_press   , f_press   , f_press   , f_NOP      }, /* 9 */
-/* A */ {  f_NOP     , f_press   , f_press   , f_press   , f_press   , f_NA      , f_NA       }, /* A */
+/* 9 */ {  f_press   , f_press   , f_press   , f_press   , f_press   , f_press   , f_press    }, /* 9 */
+/* A */ {  f_press   , f_press   , f_press   , f_press   , f_press   , f_NA      , f_NA       }, /* A */
 /* B */ {  f_press   , f_press   , f_press   , f_press   , f_press   , f_press   , f_NA       }  /* B */
 /*        ---- 0 ---- ---- 1 ---- ---- 2 ---- ---- 3 ---- ---- 4 ---- ---- 5 ---- ---- 6 ----	*/
 }
@@ -84,20 +84,20 @@ kbfun_funptr_t kb_layout_release[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
 {  // layer 0: default
 // right hand
 /*        ---- 0 ---- ---- 1 ---- ---- 2 ---- ---- 3 ---- ---- 4 ---- ---- 5 ---- ---- 6 ----	*/
-/* 0 */ {  f_NOP     , f_release , f_release , f_release , f_release , f_release , f_release  }, /* 0 */
-/* 1 */ {  f_NOP     , f_release , f_release , f_release , f_release , f_release , f_release  }, /* 1 */
+/* 0 */ {  f_release , f_release , f_release , f_release , f_release , f_release , f_release  }, /* 0 */
+/* 1 */ {  f_release , f_release , f_release , f_release , f_release , f_release , f_release  }, /* 1 */
 /* 2 */ {  f_NA      , f_release , f_release , f_release , f_release , f_release , f_release  }, /* 2 */
-/* 3 */ {  f_NOP     , f_release , f_release , f_release , f_release , f_release , f_release  }, /* 3 */
-/* 4 */ {  f_NA      , f_NA      , f_release , f_release , f_release , f_release , f_NOP      }, /* 4 */
+/* 3 */ {  f_release , f_release , f_release , f_release , f_release , f_release , f_release  }, /* 3 */
+/* 4 */ {  f_NA      , f_NA      , f_release , f_release , f_release , f_release , f_release  }, /* 4 */
 /* 5 */ {  f_NA      , f_release , f_release , f_release , f_release , f_release , f_release  }, /* 5 */
 /*        ---- 0 ---- ---- 1 ---- ---- 2 ---- ---- 3 ---- ---- 4 ---- ---- 5 ---- ---- 6 ----	*/
 // left hand
 /*        ---- 0 ---- ---- 1 ---- ---- 2 ---- ---- 3 ---- ---- 4 ---- ---- 5 ---- ---- 6 ----	*/
-/* 6 */ {  f_release , f_release , f_release , f_release , f_release , f_release , f_NOP      }, /* 6 */
-/* 7 */ {  f_release , f_release , f_release , f_release , f_release , f_release , f_NOP      }, /* 7 */
+/* 6 */ {  f_release , f_release , f_release , f_release , f_release , f_release , f_release  }, /* 6 */
+/* 7 */ {  f_release , f_release , f_release , f_release , f_release , f_release , f_release  }, /* 7 */
 /* 8 */ {  f_release , f_release , f_release , f_release , f_release , f_release , f_NA       }, /* 8 */
-/* 9 */ {  f_release , f_release , f_release , f_release , f_release , f_release , f_NOP      }, /* 9 */
-/* A */ {  f_NOP     , f_release , f_release , f_release , f_release , f_NA      , f_NA       }, /* A */
+/* 9 */ {  f_release , f_release , f_release , f_release , f_release , f_release , f_release  }, /* 9 */
+/* A */ {  f_release , f_release , f_release , f_release , f_release , f_NA      , f_NA       }, /* A */
 /* B */ {  f_release , f_release , f_release , f_release , f_release , f_release , f_NA       }  /* B */
 /*        ---- 0 ---- ---- 1 ---- ---- 2 ---- ---- 3 ---- ---- 4 ---- ---- 5 ---- ---- 6 ----	*/
 }

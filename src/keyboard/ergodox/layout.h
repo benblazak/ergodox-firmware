@@ -13,7 +13,7 @@
 
 	#include "lib/_data-types.h"
 
-	#include "key-functions.h"  // for a pointer typedef
+	#include "key-functions.h"  // for `kbfun_funptr_t`
 
 	#include "matrix.h"  // for number of rows and columns
 
