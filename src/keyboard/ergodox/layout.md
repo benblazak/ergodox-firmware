@@ -21,11 +21,11 @@ To write a new one:
   for the layout.  This should be enough for about 7 layers.  Watch your RAM
   usage if you're getting close.
 
-  * The layout matricies could be moved to flash memory (program space, instead
-    of data space) in order to save RAM, but that doesn't seem necessary at the
-    moment.  It would also be slightly slower, though that probably shouldn't
-    be a concern.  It might be necessary (or convenient) if one were trying to
-    implement on-keyboard remaping.
+    * The layout matricies could be moved to flash memory (program space,
+      instead of data space) in order to save RAM, but that doesn't seem
+      necessary at the moment.  It would also be slightly slower, though that
+      probably shouldn't be a concern.  It might be necessary (or convenient)
+      if one were trying to implement on-keyboard remaping.
 
 
 -------------------------------------------------------------------------------

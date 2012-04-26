@@ -2,7 +2,6 @@
 # makefile for the ergoDOX project
 #
 # - .h file dependencies are automatically generated
-# - 
 #
 # - This makefile was originally (extensively) modified from the WinAVR
 #   makefile template, mostly by removing stuff.  The copy I used was from

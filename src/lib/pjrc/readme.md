@@ -3,7 +3,7 @@
 ## links to original files
 
 * [pjrc] (http://pjrc.com/teensy/)
-  * [usb_keyboard] (http://pjrc.com/teensy/usb_keyboard.zip)
+    * [usb_keyboard] (http://pjrc.com/teensy/usb_keyboard.zip)
 
 -------------------------------------------------------------------------------
 
