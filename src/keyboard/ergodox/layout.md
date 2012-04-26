@@ -7,9 +7,10 @@ To write a new one:
   at existing layouts in the 'layout' subdir.
     * Currently, see [qwerty.c] (layout/qwerty.c) and [qwerty.h]
       (layout/qwerty.h).  The latter is only important if you want more than
-      one layer.  And I still need to write the functions to make that
-      possible... (though that shouldn't be hard, I just haven't gotten to it
-      yet).  But if you indicate it clealy in the layout, and provide complete
+      one layer.  And I still need to write the functions to make that possible
+      (though that shouldn't be hard, I just haven't gotten to it yet).  But
+      (at least for the QWERTY and Dvorak layouts I'd really like to include)
+      if you indicate it clealy in the layout, and provide complete
       initializations for `kb_layout[][][]`, `kb_layout_press[][][]`, and
       `kb_layout_release[][][]`, I'll make sure it gets working.
 * The number of layers must be defined in the layout *.h file.
