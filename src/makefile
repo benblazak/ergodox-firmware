@@ -20,7 +20,7 @@ LAYOUT   = qwerty    # see "src/keyboard/*/layout" for what's available
 
 # firmware stuff
 SRC  = $(wildcard *.c)
-# keyboard stuff
+# keyboard and layout stuff
 # --- remove whitespace
 KEYBOARD := $(strip $(KEYBOARD))
 LAYOUT   := $(strip $(LAYOUT))
@@ -30,7 +30,7 @@ SRC += $(wildcard keyboard/$(KEYBOARD)/*.c)
 SRC += $(wildcard keyboard/$(KEYBOARD)/layout/$(LAYOUT)*.c)
 # library stuff
 # - add more "*/*/..."s as necessary to compile everything.
-# - parts the stuff under "lib" may not be necessary, depending on other
+# - parts of the stuff under "lib" may not be necessary, depending on other
 #   options, but it's all included here.  hopefully any unnecessary stuff gets
 #   compiled out.  else, the makefile will have to become more complicated.
 SRC += $(wildcard lib/*.c)

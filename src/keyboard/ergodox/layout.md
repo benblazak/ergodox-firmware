@@ -19,8 +19,8 @@ To write a new one:
 * See [matrix.md] (matrix.md) for how the key matrix maps to hardware.
 * See [keyboard-usage-page--short-names.h]
   (../../lib/_usb/keyboard-usage-page--short-names.h) for available keycodes.
-* See [key-functions.c] (../../key-functions.c) for what functions keys can
-  call.
+* See [key-functions.c] (../../lib/_key-functions.c) for what functions keys
+  can call.
 
 
 ## notes

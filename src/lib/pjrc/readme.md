@@ -4,6 +4,12 @@
 
 * [pjrc] (http://pjrc.com/teensy/)
     * [usb_keyboard] (http://pjrc.com/teensy/usb_keyboard.zip)
+<!--
+    * [usb_mouse] (http://pjrc.com/teensy/usb_mouse.zip)
+    * [usb_serial] (http://pjrc.com/teensy/usb_serial.zip)
+        * Directions for host setup [here]
+          (http://pjrc.com/teensy/usb_serial.html)
+-->
 
 -------------------------------------------------------------------------------
 

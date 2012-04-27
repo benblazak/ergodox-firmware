@@ -12,8 +12,7 @@
 	#define LAYOUT_h
 
 	#include "lib/_data-types.h"
-
-	#include "key-functions.h"  // for `kbfun_funptr_t`
+	#include "lib/_key-functions.h"  // for `kbfun_funptr_t`
 
 	#include "matrix.h"  // for number of rows and columns
 

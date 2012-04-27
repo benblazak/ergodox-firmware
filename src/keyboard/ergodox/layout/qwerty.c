@@ -11,8 +11,7 @@
 
 #include "lib/_data-types.h"
 #include "lib/_usb/keyboard-usage-page--short-names.h"
-
-#include "key-functions.h"
+#include "lib/_key-functions.h"
 
 #include "../matrix.h"
 #include "../layout.h"
