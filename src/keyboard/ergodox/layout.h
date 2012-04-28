@@ -16,7 +16,18 @@
 
 	#include "matrix.h"  // for number of rows and columns
 
-	#include MAKEFILE_KEYBOARD_LAYOUT  // for number of layers
+	// include the appropriate keyboard layout header;
+	// for number of layers
+	#undef _str
+	#undef _expstr
+	#undef _inc
+	#define _str(s) #s          // stringify
+	#define _expstr(s) _str(s)  // expand -> stringify
+	#define _inc _expstr(layout/MAKEFILE_KEYBOARD_LAYOUT.h)  // inc(lude)
+	#include _inc
+	#undef _str
+	#undef _expstr
+	#undef _inc
 
 	extern uint8_t
 			kb_layout        [KB_LAYERS][KB_ROWS][KB_COLUMNS];

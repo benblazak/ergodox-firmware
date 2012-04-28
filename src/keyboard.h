@@ -9,5 +9,14 @@
  * ------------------------------------------------------------------------- */
 
 
-#include MAKEFILE_KEYBOARD
+#undef _str
+#undef _expstr
+#undef _inc
+#define _str(s) #s          // stringify
+#define _expstr(s) _str(s)  // expand -> stringify
+#define _inc _expstr(keyboard/MAKEFILE_KEYBOARD.h)  // inc(lude)
+#include _inc
+#undef _str
+#undef _expstr
+#undef _inc
 

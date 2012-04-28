@@ -10,11 +10,14 @@
  * ------------------------------------------------------------------------- */
 
 
-#define str(s) #s                          // stringify
-#define expstr(s) str(s)                   // expand -> stringify
-#define inc expstr(_twi/MAKEFILE_BOARD.h)  // inc(lude)
-#include inc
-#undef str
-#undef expstr
-#undef inc
+#undef _str
+#undef _expstr
+#undef _inc
+#define _str(s) #s          // stringify
+#define _expstr(s) _str(s)  // expand -> stringify
+#define _inc _expstr(_twi/MAKEFILE_BOARD.h)  // inc(lude)
+#include _inc
+#undef _str
+#undef _expstr
+#undef _inc
 

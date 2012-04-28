@@ -48,8 +48,8 @@ CFLAGS += -DF_CPU=16000000  # processor frequency; must match initialization
 CFLAGS += -I.               # search for includes in the current directory
 # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 CFLAGS += -DMAKEFILE_BOARD='$(strip $(BOARD))'
-CFLAGS += -DMAKEFILE_KEYBOARD='"keyboard/$(strip $(KEYBOARD)).h"'
-CFLAGS += -DMAKEFILE_KEYBOARD_LAYOUT='"layout/$(strip $(LAYOUT)).h"'
+CFLAGS += -DMAKEFILE_KEYBOARD='$(strip $(KEYBOARD))'
+CFLAGS += -DMAKEFILE_KEYBOARD_LAYOUT='$(strip $(LAYOUT))'
 # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 CFLAGS += -std=gnu99  # use C99 plus GCC extensions
 CFLAGS += -Os         # optimize for size
