@@ -112,7 +112,7 @@
   One of my main references.
 
 * [avr-libc/include/avr/iom32u4.h]
-  (http://svn.savannah.nongnu.org/viewvc/trunk/avr-libc/include/avr/iom32u4.h?revision=2288&root=avr-libc&view=markup)
+  (http://svn.savannah.nongnu.org/viewvc/trunk/avr-libc/include/avr/iom32u4.h?revision=2288&root=avr-libc&view=markup)  
   List of registers and associated bit numbers for the ATmega32U4
 
 * [A Brief Tutorial on Programming the AVR without Arduino]
@@ -133,8 +133,8 @@
   The EEPROM is non-volatile data memory that you can write to if you like.  I
   don't really see the purpose, unless it feels conceptually cleaner to you,
   because there's only 1024 bytes of it on the Teensy 2.0, while there's 2560
-  bytes of RAM, and 33256 bytes of flahs (program memory), and it seems like
-  it'd be easier to use one of those if you could.
+  bytes of RAM, and 33256 bytes of flash (program memory), and it seems like
+  it'd be generally easier to use one of those.
 
     * updated version available as a pdf at
       [Four Walled Cubicle : AVR Articles]
@@ -197,8 +197,8 @@
 
 * zip: [Phantom Firmware from PrinsValium]
   (http://geekhack.org/attachment.php?attachmentid=38982&d=1327895092)  
-  Pretty basic.  Helped me a lot when I was learning how to initialize stuff on
-  the Teensy.
+  Pretty basic (unless I'm missing nuances, which is entirely possible).
+  Helped me a lot when I was learning how to initialize stuff on the Teensy.
 
     * mentioned in the [Building Phantom Hardware and Firmware Mods]
       (http://geekhack.org/showwiki.php?title=Island:26742)
@@ -243,8 +243,8 @@
   (http://www.fourwalledcubicle.com/LUFA.php)  
   Very well known USB library for AVRs.  And it looks like it be really good
   too, but the documentation is hard to get into, and the examples don't seem
-  to have enough explanation for me, not having a background in what USB is
-  doing in the first place.
+  to have enough explanation for me, since I don't have any background in what
+  USB is doing in the first place.
 
 * zip: [PJRC: usb_keyboard]
   (http://pjrc.com/teensy/usb_keyboard.zip)  
@@ -279,8 +279,8 @@
   handling).  Meant to be used through the Arduino 'Wire' library interface,
   but you can use it alone as well.  The version on github pulls in a whole
   bunch of Arduino dependencies though, if you're just going to use the
-  library look for an older version that doesn't (like the version in the
-  Ubuntu 11.10 repos).
+  library look for an older version that doesn't (like the one included in the
+  version of Arduino in the Ubuntu 11.10 repos).
 
 * zip: [i2cmaster]
   (http://homepage.hispeed.ch/peterfleury/i2cmaster.zip)
@@ -373,17 +373,19 @@
   list (on <http://geekhack.org/>)  
   Keyboards seem to typically scan at rates from a little below 100Hz to about
   300Hz, with the most common values a little below 100Hz.  The [PJRC
-  usb_keyboard] example documentation has a limit of 1000 packets (so 500
-  presses -> releases) per second, but says that even that speed might
-  overwhelm host software, which expects keystrokes to come much more slowly.
-  And, a debounce time of 5ms (which is the spec'ed high value for Cherry MX
-  switches) would give us a max send rate of 200Hz, above which it'd be a
-  little pointless to scan.
+  usb_keyboard] (http://pjrc.com/teensy/usb_keyboard.html) example
+  documentation has a limit of 1000 packets (so 500 presses -> releases) per
+  second, but says that even that speed might overwhelm host software, which
+  expects keystrokes to come much more slowly.  And, a debounce time of 5ms
+  (which is the spec'ed high value for Cherry MX switches) would give us a max
+  scan rate of 200Hz.
 
 ### Other Awesome Keyboard Projects
 
 * [My DIY keyboard collection ( or how I became a KB-geek...)]
-  (http://deskthority.net/workshop-f7/my-diy-keyboard-collection-or-how-i-became-a-kb-geek-t2534.html)  
+  (http://deskthority.net/workshop-f7/my-diy-keyboard-collection-or-how-i-became-a-kb-geek-t2534.html)
+  : post by [suka] (http://deskthority.net/suka-u434/)
+  on <http://deskthority.net/>  
   If I ever decide to do a keyboard completely by myself, I'm going back to
   this link and starting with this.  Looks really well done.
 
@@ -412,7 +414,7 @@
   : a TeX graphics package  
   This is really cool.  And I wish i knew more about LaTeX (and all its
   variations) so that it would have been time effective for me to use it.  If I
-  ever need to do automatic diagram generation, I'm going to give it a more
+  ever need to do automatic diagram generation, I'm going to give this a more
   serious try.
 
     * mentioned on the [circuit/block-diagram drawing]
