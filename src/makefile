@@ -15,8 +15,9 @@
 
 TARGET   = firmware
 FORMAT   = ihex
-KEYBOARD = ergodox   # see "src/keyboard" for what's available
-LAYOUT   = qwerty    # see "src/keyboard/*/layout" for what's available
+BOARD    = teensy-2-0  # see the libraries you're using for what's available
+KEYBOARD = ergodox     # see "src/keyboard" for what's available
+LAYOUT   = qwerty      # see "src/keyboard/*/layout" for what's available
 
 # firmware stuff
 SRC  = $(wildcard *.c)
@@ -46,8 +47,9 @@ CFLAGS += -DF_CPU=16000000  # processor frequency; must match initialization
 			    #   in source
 CFLAGS += -I.               # search for includes in the current directory
 # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-CFLAGS += -DKEYBOARD='"keyboard/$(strip $(KEYBOARD)).h"'
-CFLAGS += -DKEYBOARD_LAYOUT='"layout/$(strip $(LAYOUT)).h"'
+CFLAGS += -DMAKEFILE_BOARD='$(strip $(BOARD))'
+CFLAGS += -DMAKEFILE_KEYBOARD='"keyboard/$(strip $(KEYBOARD)).h"'
+CFLAGS += -DMAKEFILE_KEYBOARD_LAYOUT='"layout/$(strip $(LAYOUT)).h"'
 # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 CFLAGS += -std=gnu99  # use C99 plus GCC extensions
 CFLAGS += -Os         # optimize for size

@@ -11,7 +11,7 @@
 
 #include "lib/_data-types.h"
 #define TWI_FREQ 400000
-#include "lib/_teensy-2-0/twi.h"
+#include "lib/_twi.h"
 
 #define KEYBOARD_INCLUDE_PRIVATE
 #include "matrix.h"

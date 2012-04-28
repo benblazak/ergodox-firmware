@@ -16,7 +16,7 @@
 
 	#include "matrix.h"  // for number of rows and columns
 
-	#include KEYBOARD_LAYOUT  // for number of layers
+	#include MAKEFILE_KEYBOARD_LAYOUT  // for number of layers
 
 	extern uint8_t
 			kb_layout        [KB_LAYERS][KB_ROWS][KB_COLUMNS];
