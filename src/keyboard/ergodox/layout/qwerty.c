@@ -9,6 +9,8 @@
  * ------------------------------------------------------------------------- */
 
 
+#include <avr/pgmspace.h>
+
 #include "lib/_data-types.h"
 #include "lib/_usb/keyboard-usage-page--short-names.h"
 #include "lib/_key-functions.h"
@@ -33,7 +35,7 @@
 #endif
 
 
-uint8_t kb_layout[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
+uint8_t _kb_layout[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
 {  // layer 0: default
 // right hand
 /*        ---- 0 ---- ---- 1 ---- ---- 2 ---- ---- 3 ---- ---- 4 ---- ---- 5 ---- ---- 6 ----	*/
@@ -56,7 +58,7 @@ uint8_t kb_layout[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
 }
 };
 
-kbfun_funptr_t kb_layout_press[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
+kbfun_funptr_t _kb_layout_press[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
 {  // layer 0: default
 // right hand
 /*        ---- 0 ---- ---- 1 ---- ---- 2 ---- ---- 3 ---- ---- 4 ---- ---- 5 ---- ---- 6 ----	*/
@@ -79,7 +81,7 @@ kbfun_funptr_t kb_layout_press[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
 }
 };
 
-kbfun_funptr_t kb_layout_release[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
+kbfun_funptr_t _kb_layout_release[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
 {  // layer 0: default
 // right hand
 /*        ---- 0 ---- ---- 1 ---- ---- 2 ---- ---- 3 ---- ---- 4 ---- ---- 5 ---- ---- 6 ----	*/

@@ -50,12 +50,12 @@ int main(void) {
 
 		kb_update_matrix(*kb_is_pressed);
 
-		// call the appropriate function for each key, then send the report if
-		// necessary
+		// call the appropriate function for each key, then send the usb report
+		// if necessary
 		// - everything else is the key function's responsibility; see the
 		//   keyboard layout file ("keyboard/ergodox/layout.c") for which key
-		//   is assigned which function (per layer), and "key-functions.c" for
-		//   their definitions
+		//   is assigned which function (per layer), and "lib/key-functions.c"
+		//   for their definitions
 		for (uint8_t row=0; row<KB_ROWS; row++) {
 			for (uint8_t col=0; col<KB_COLUMNS; col++) {
 				bool is_pressed = (*kb_is_pressed)[row][col];
@@ -63,18 +63,18 @@ int main(void) {
 				if (is_pressed != was_pressed) {
 					if (is_pressed) {
 						kbfun_funptr_t press_function =
-								kb_layout_press[current_layer][row][col];
+								kb_layout_press_get(current_layer, row, col);
 						if (press_function) {
 							(*press_function)(
-									&kb_layout[current_layer][row][col],
+									&kb_layout_get(current_layer, row, col),
 									&current_layer, &row, &col );
 						}
 					} else {
 						kbfun_funptr_t release_function =
-								kb_layout_release[current_layer][row][col];
+								kb_layout_release_get(current_layer, row, col);
 						if (release_function) {
 							(*release_function)(
-									&kb_layout[current_layer][row][col],
+									&kb_layout_get(current_layer, row, col),
 									&current_layer, &row, &col );
 						}
 					}

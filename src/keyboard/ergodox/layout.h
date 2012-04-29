@@ -11,13 +11,18 @@
 #ifndef LAYOUT_h
 	#define LAYOUT_h
 
+	#include <avr/pgmspace.h>
+
 	#include "lib/_data-types.h"
 	#include "lib/_key-functions.h"  // for `kbfun_funptr_t`
 
 	#include "matrix.h"  // for number of rows and columns
 
-	// include the appropriate keyboard layout header;
-	// for number of layers
+	// include the appropriate keyboard layout header
+	// for:
+	// - number of layers
+	// - layout matrix definitions
+	// - possible non-default layout 'get' and 'set' definitions
 	#undef _str
 	#undef _expstr
 	#undef _inc
@@ -29,12 +34,37 @@
 	#undef _expstr
 	#undef _inc
 
-	extern uint8_t
-			kb_layout        [KB_LAYERS][KB_ROWS][KB_COLUMNS];
-	extern kbfun_funptr_t
-			kb_layout_press  [KB_LAYERS][KB_ROWS][KB_COLUMNS];
-	extern kbfun_funptr_t
-			kb_layout_release[KB_LAYERS][KB_ROWS][KB_COLUMNS];
+
+	// default layout 'get' functions
+	//
+	// these are for when the matrices are stored solely in RAM.  they're
+	// here so layouts can redefine them if they with and use RAM, Flash,
+	// EEPROM, or any combination of those, while maintaining the same
+	// interface
+	//
+	// - 'set' functions are optional, and should be defined in the layout
+	//   specific '.h'.  they'll require the use of the EEPROM, possibly in
+	//   clever conjunction with one of the other two memories (since the
+	//   EEPROM is small)
+	//
+	// - to override these with real functions, set the macro equal to
+	//   itself (e.g. `#define kb_layout_get kb_layout_get`) and provide
+	//   function prototypes in the layout specific '.h'
+
+	#ifndef kb_layout_get
+		#define kb_layout_get(layer,row,column) \
+			(_kb_layout[layer][row][column])
+	#endif
+
+	#ifndef kb_layout_press_get
+		#define kb_layout_press_get(layer,row,column) \
+			(_kb_layout_press[layer][row][column])
+	#endif
+
+	#ifndef kb_layout_release_get
+		#define kb_layout_release_get(layer,row,column) \
+			(_kb_layout_release[layer][row][column])
+	#endif
 
 #endif
 

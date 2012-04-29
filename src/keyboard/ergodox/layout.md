@@ -32,8 +32,7 @@ To write a new one:
     * The layout matricies could be moved to flash memory (program space,
       instead of data space) in order to save RAM, but that doesn't seem
       necessary at the moment.  It would also be slightly slower, though that
-      probably shouldn't be a concern.  It might be necessary (or convenient)
-      if one were trying to implement on-keyboard remaping.
+      probably shouldn't be a concern.
 
 
 -------------------------------------------------------------------------------

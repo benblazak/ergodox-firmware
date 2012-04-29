@@ -13,16 +13,20 @@
 # -----------------------------------------------------------------------------
 
 
-TARGET   = firmware
-FORMAT   = ihex
-BOARD    = teensy-2-0  # see the libraries you're using for what's available
-KEYBOARD = ergodox     # see "src/keyboard" for what's available
-LAYOUT   = qwerty      # see "src/keyboard/*/layout" for what's available
+TARGET   = firmware  # the name we want for our program binary
+FORMAT   = ihex      # the program binary's format
+KEYBOARD = ergodox   # keyboard model; see "src/keyboard" for what's available
+LAYOUT   = qwerty    # keyboard layout; see "src/keyboard/*/layout" for what's
+                     #   available
+
+MCU   = atmega32u4  # processor type (for teensy 2.0); must match real life
+BOARD = teensy-2-0  # see the libraries you're using for what's available
+F_CPU = 16000000    # processor speed, in Hz
 
 # firmware stuff
 SRC  = $(wildcard *.c)
 # keyboard and layout stuff
-# --- remove whitespace
+# --- remove whitespace from vars
 KEYBOARD := $(strip $(KEYBOARD))
 LAYOUT   := $(strip $(LAYOUT))
 # --- include stuff
@@ -41,9 +45,9 @@ SRC += $(wildcard lib/*/*/*.c)
 OBJ = $(SRC:%.c=%.o)
 
 
-CFLAGS  = -mmcu=atmega32u4  # processor type (teensy 2.0); must match real
+CFLAGS  = -mmcu=$(MCU)      # processor type (teensy 2.0); must match real
 			    #   life
-CFLAGS += -DF_CPU=16000000  # processor frequency; must match initialization
+CFLAGS += -DF_CPU=$(F_CPU)  # processor frequency; must match initialization
 			    #   in source
 CFLAGS += -I.               # search for includes in the current directory
 # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
@@ -81,7 +85,7 @@ OBJCOPY = avr-objcopy
 SIZE    = avr-size
 
 
-# remove extraneous whitespace
+# remove whitespace from some of the variables
 TARGET      := $(strip $(TARGET))
 FORMAT      := $(strip $(FORMAT))
 

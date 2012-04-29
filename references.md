@@ -57,6 +57,11 @@
   (on <http://gcc.gnu.org/>)  
   One of my main references.
 
+* [The GNU C Preprocessor]
+  (http://tigcc.ticalc.org/doc/cpp.html#SEC27)  
+  A modified version on a different site.  Has a few really useful things that
+  I don't think I saw in the official documentation.
+
 * [C Library Reference]
   (http://www.cplusplus.com/reference/)
   (on <http://cplusplus.com>)
@@ -130,11 +135,13 @@
   (http://www.avrfreaks.net/index.php?name=PNphpBB2&file=viewtopic&t=38417)
   : tutorial by [Dean Camera] (http://fourwalledcubicle.com/AboutMe.php)
   (on <http://www.avrfreaks.net/>)  
-  The EEPROM is non-volatile data memory that you can write to if you like.  I
-  don't really see the purpose, unless it feels conceptually cleaner to you,
-  because there's only 1024 bytes of it on the Teensy 2.0, while there's 2560
-  bytes of RAM, and 33256 bytes of flash (program memory), and it seems like
-  it'd be generally easier to use one of those.
+  The EEPROM is non-volatile data memory that can withstand 100,000 writes and
+  is byte accessible from within the program.  On the Teensy 2.0 there's only
+  1,024 bytes of it though (compared to 32,256 bytes of flash, and 2,560 bytes
+  of RAM), so you have to use it sparingly.  It's useful because flash
+  (program) memory is not really something that's meant to be written to (it
+  can only withstand 10,000 writes, and has to be written in pages using
+  instructions meant for the bootloader), and RAM is volatile.
 
     * updated version available as a pdf at
       [Four Walled Cubicle : AVR Articles]
