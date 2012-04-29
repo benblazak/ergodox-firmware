@@ -45,15 +45,15 @@ static uint8_t _dec_current_layer(uint8_t * current_layer) {
 // ----------------------------------------------------------------------------
 
 void kbfun_press(
-		uint8_t * keycode, uint8_t * current_layer,
-		uint8_t * row,     uint8_t * col ) {
+		uint8_t keycode, uint8_t * current_layer,
+		uint8_t * row,   uint8_t * col ) {
 
 	// no-op
-	if (*keycode == 0)
+	if (keycode == 0)
 		return;
 
 	// modifier keys
-	switch (*keycode) {
+	switch (keycode) {
 		case KEY_LeftControl:  keyboard_modifier_keys |= (1<<0);
 				       return;
 		case KEY_LeftShift:    keyboard_modifier_keys |= (1<<1);
@@ -75,21 +75,21 @@ void kbfun_press(
 	// all others
 	for (uint8_t i=0; i<6; i++)
 		if (keyboard_keys[i] == 0) {
-			keyboard_keys[i] = *keycode;
+			keyboard_keys[i] = keycode;
 			break;
 		}
 }
 
 void kbfun_release(
-		uint8_t * keycode, uint8_t * current_layer,
-		uint8_t * row,     uint8_t * col ) {
+		uint8_t keycode, uint8_t * current_layer,
+		uint8_t * row,   uint8_t * col ) {
 
 	// no-op
-	if (*keycode == 0)
+	if (keycode == 0)
 		return;
 
 	// modifier keys
-	switch (*keycode) {
+	switch (keycode) {
 		case KEY_LeftControl:  keyboard_modifier_keys &= ~(1<<0);
 				       return;
 		case KEY_LeftShift:    keyboard_modifier_keys &= ~(1<<1);
@@ -110,7 +110,7 @@ void kbfun_release(
 
 	// all others
 	for (uint8_t i=0; i<6; i++)
-		if (keyboard_keys[i] == *keycode) {
+		if (keyboard_keys[i] == keycode) {
 			keyboard_keys[i] = 0;
 			break;
 		}

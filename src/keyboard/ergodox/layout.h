@@ -33,7 +33,7 @@
 	#undef _inc
 
 
-	// default layout 'get' functions
+	// default layout 'get' macros
 	//
 	// these are for when the matrices are stored solely in RAM.  they're
 	// here so layouts can redefine them if they with and use RAM, Flash,

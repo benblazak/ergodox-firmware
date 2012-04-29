@@ -65,7 +65,7 @@ int main(void) {
 								kb_layout_press_get(current_layer, row, col);
 						if (press_function) {
 							(*press_function)(
-									&kb_layout_get(current_layer, row, col),
+									kb_layout_get(current_layer, row, col),
 									&current_layer, &row, &col );
 						}
 					} else {
@@ -73,7 +73,7 @@ int main(void) {
 								kb_layout_release_get(current_layer, row, col);
 						if (release_function) {
 							(*release_function)(
-									&kb_layout_get(current_layer, row, col),
+									kb_layout_get(current_layer, row, col),
 									&current_layer, &row, &col );
 						}
 					}

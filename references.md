@@ -116,6 +116,10 @@
   (http://www.nongnu.org/avr-libc/user-manual/modules.html)  
   One of my main references.
 
+* [AVR : Data in Program Space]
+  (http://www.nongnu.org/avr-libc/user-manual/pgmspace.html)  
+  How to use '<avr/pgmspace.h>'.
+
 * [avr-libc/include/avr/iom32u4.h]
   (http://svn.savannah.nongnu.org/viewvc/trunk/avr-libc/include/avr/iom32u4.h?revision=2288&root=avr-libc&view=markup)  
   List of registers and associated bit numbers for the ATmega32U4
@@ -125,7 +129,7 @@
   by Chris Kuethe  
   Goes over a bunch of stuff pretty generally.  Useful to me because it was
   talking about exactly what I was trying to do (e.g. program the thing
-  directly instead of messing around with gratuitous libraries)
+  directly instead of messing around with gratuitous libraries).
 
 * [Optimisations of AVR programs using avr-gcc]
   (http://www.tty1.net/blog/2008-04-29-avr-gcc-optimisations_en.html)  
