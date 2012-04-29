@@ -19,7 +19,7 @@
 	// include the appropriate keyboard layout header
 	// for:
 	// - number of layers
-	// - layout matrix definitions
+	// - possible non-default layout matrix definitions
 	// - possible non-default layout 'get' and 'set' definitions
 	#undef _str
 	#undef _expstr
@@ -33,33 +33,42 @@
 	#undef _inc
 
 
-	// default layout 'get' macros
+	// default layout 'get' macros and `extern` matrix declarations
 	//
-	// these are for when the matrices are stored solely in RAM.  they're
-	// here so layouts can redefine them if they with and use RAM, Flash,
-	// EEPROM, or any combination of those, while maintaining the same
-	// interface
+	// these are for when the matrices are stored solely in RAM.  layouts
+	// may redefine them if they wish and use RAM, Flash, EEPROM, or any
+	// combination of those, as long as they maintain the same interface.
+	//
+	// - if the macro is overridden, the matrix declaration must be too,
+	//   and vice versa.
 	//
 	// - 'set' functions are optional, and should be defined in the layout
 	//   specific '.h'.  they'll require the use of the EEPROM, possibly in
 	//   clever conjunction with one of the other two memories (since the
-	//   EEPROM is small)
+	//   EEPROM is small).  custom key functions will also need to be
+	//   written.
 	//
-	// - to override these with real functions, set the macro equal to
-	//   itself (e.g. `#define kb_layout_get kb_layout_get`) and provide
+	// - to override these macros with real functions, set the macro equal
+	//   to itself (e.g. `#define kb_layout_get kb_layout_get`) and provide
 	//   function prototypes in the layout specific '.h'
 
 	#ifndef kb_layout_get
+		extern uint8_t \
+			_kb_layout[KB_LAYERS][KB_ROWS][KB_COLUMNS];
 		#define kb_layout_get(layer,row,column) \
 			(_kb_layout[layer][row][column])
 	#endif
 
 	#ifndef kb_layout_press_get
+		extern kbfun_funptr_t \
+			_kb_layout_press[KB_LAYERS][KB_ROWS][KB_COLUMNS];
 		#define kb_layout_press_get(layer,row,column) \
 			(_kb_layout_press[layer][row][column])
 	#endif
 
 	#ifndef kb_layout_release_get
+		extern kbfun_funptr_t PROGMEM \
+			_kb_layout_release[KB_LAYERS][KB_ROWS][KB_COLUMNS];
 		#define kb_layout_release_get(layer,row,column) \
 			(_kb_layout_release[layer][row][column])
 	#endif
