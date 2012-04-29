@@ -7,7 +7,7 @@
  * ------------------------------------------------------------------------- */
 
 
-#include "lib/_data-types.h"
+#include "lib/data-types.h"
 
 #define KEYBOARD_INCLUDE_PRIVATE
 #include "ergodox/matrix.h"

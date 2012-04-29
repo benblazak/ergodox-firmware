@@ -15,7 +15,7 @@
 #undef _inc
 #define _str(s) #s          // stringify
 #define _expstr(s) _str(s)  // expand -> stringify
-#define _inc _expstr(_twi/MAKEFILE_BOARD.h)  // inc(lude)
+#define _inc _expstr(twi/MAKEFILE_BOARD.h)  // inc(lude)
 #include _inc
 #undef _str
 #undef _expstr

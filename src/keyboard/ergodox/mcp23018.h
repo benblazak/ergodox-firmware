@@ -10,7 +10,7 @@
 #ifndef MCP23018_h
 	#define MCP23018_h
 
-	#include "lib/_data-types.h"
+	#include "lib/data-types.h"
 
 	#ifdef KEYBOARD_INCLUDE_PRIVATE
 

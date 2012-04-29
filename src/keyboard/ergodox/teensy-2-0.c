@@ -8,10 +8,9 @@
 
 
 #include <avr/io.h>
-
-#include "lib/_data-types.h"
+#include "lib/data-types.h"
 #define TWI_FREQ 400000
-#include "lib/_twi.h"
+#include "lib/twi.h"
 
 #define KEYBOARD_INCLUDE_PRIVATE
 #include "matrix.h"

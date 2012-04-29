@@ -11,10 +11,8 @@
 #ifndef LAYOUT_h
 	#define LAYOUT_h
 
-	#include <avr/pgmspace.h>
-
-	#include "lib/_data-types.h"
-	#include "lib/_key-functions.h"  // for `kbfun_funptr_t`
+	#include "lib/data-types.h"
+	#include "lib/key-functions.h"  // for `kbfun_funptr_t`
 
 	#include "matrix.h"  // for number of rows and columns
 

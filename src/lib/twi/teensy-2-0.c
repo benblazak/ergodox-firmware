@@ -21,10 +21,8 @@
  * ------------------------------------------------------------------------- */
 
 
-#include <util/delay.h> //dbg
 #include <util/twi.h>
-
-#include "../_twi.h"
+#include "lib/twi.h"
 
 
 void twi_init(void) {

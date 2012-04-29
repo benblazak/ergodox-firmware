@@ -9,24 +9,13 @@
  * ------------------------------------------------------------------------- */
 
 
-#include <avr/pgmspace.h>
-
-#include "lib/_data-types.h"
-#include "lib/_usb/keyboard-usage-page--short-names.h"
-#include "lib/_key-functions.h"
+#include "lib/data-types.h"
+#include "lib/usb/keyboard-usage-page--short-names.h"
+#include "lib/key-functions.h"
 
 #include "../matrix.h"
 #include "../layout.h"
-
-
-// aliases
-#define NA     0     // for keys not available on the matrix
-#define NOP    0     // for keys that do nothing
-#define f_NA   NULL  // for functions not available on the matrix
-#define f_NOP  NULL  // for functions that do nothing
-// --- 
-#define f_press   &kbfun_press
-#define f_release &kbfun_release
+#include "_defaults.h"  // for default layers and aliases
 
 
 // error check; everything below assumes these dimensions
@@ -36,8 +25,8 @@
 
 
 uint8_t _kb_layout[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
-{  // layer 0: default
-// right hand
+{  /* layer 0: default */
+/* right hand */
 /*        ---- 0 ---- ---- 1 ---- ---- 2 ---- ---- 3 ---- ---- 4 ---- ---- 5 ---- ---- 6 ----	*/
 /* 0 */ {  NOP       , _6        , _7        , _8        , _9        , _0        , _dash      }, /* 0 */
 /* 1 */ {  NOP       , _Y        , _U        , _I        , _O        , _P        , _bracketL  }, /* 1 */
@@ -46,7 +35,7 @@ uint8_t _kb_layout[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
 /* 4 */ {  NA        , NA        , _arrowU   , _arrowD   , _backslash, _bracketR , NOP        }, /* 4 */
 /* 5 */ {  NA        , _ctrlR    , _altR     , _pageU    , _pageD    , _enter    , _space     }, /* 5 */
 /*        ---- 0 ---- ---- 1 ---- ---- 2 ---- ---- 3 ---- ---- 4 ---- ---- 5 ---- ---- 6 ----	*/
-// left hand
+/* left hand */
 /*        ---- 0 ---- ---- 1 ---- ---- 2 ---- ---- 3 ---- ---- 4 ---- ---- 5 ---- ---- 6 ----	*/
 /* 6 */ {  _equal    , _1        , _2        , _3        , _4        , _5        , NOP        }, /* 6 */
 /* 7 */ {  _tab      , _Q        , _W        , _E        , _R        , _T        , NOP        }, /* 7 */
@@ -59,48 +48,10 @@ uint8_t _kb_layout[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
 };
 
 kbfun_funptr_t _kb_layout_press[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
-{  // layer 0: default
-// right hand
-/*        ---- 0 ---- ---- 1 ---- ---- 2 ---- ---- 3 ---- ---- 4 ---- ---- 5 ---- ---- 6 ----	*/
-/* 0 */ {  f_press   , f_press   , f_press   , f_press   , f_press   , f_press   , f_press    }, /* 0 */
-/* 1 */ {  f_press   , f_press   , f_press   , f_press   , f_press   , f_press   , f_press    }, /* 1 */
-/* 2 */ {  f_NA      , f_press   , f_press   , f_press   , f_press   , f_press   , f_press    }, /* 2 */
-/* 3 */ {  f_press   , f_press   , f_press   , f_press   , f_press   , f_press   , f_press    }, /* 3 */
-/* 4 */ {  f_NA      , f_NA      , f_press   , f_press   , f_press   , f_press   , f_press    }, /* 4 */
-/* 5 */ {  f_NA      , f_press   , f_press   , f_press   , f_press   , f_press   , f_press    }, /* 5 */
-/*        ---- 0 ---- ---- 1 ---- ---- 2 ---- ---- 3 ---- ---- 4 ---- ---- 5 ---- ---- 6 ----	*/
-// left hand
-/*        ---- 0 ---- ---- 1 ---- ---- 2 ---- ---- 3 ---- ---- 4 ---- ---- 5 ---- ---- 6 ----	*/
-/* 6 */ {  f_press   , f_press   , f_press   , f_press   , f_press   , f_press   , f_press    }, /* 6 */
-/* 7 */ {  f_press   , f_press   , f_press   , f_press   , f_press   , f_press   , f_press    }, /* 7 */
-/* 8 */ {  f_press   , f_press   , f_press   , f_press   , f_press   , f_press   , f_NA       }, /* 8 */
-/* 9 */ {  f_press   , f_press   , f_press   , f_press   , f_press   , f_press   , f_press    }, /* 9 */
-/* A */ {  f_press   , f_press   , f_press   , f_press   , f_press   , f_NA      , f_NA       }, /* A */
-/* B */ {  f_press   , f_press   , f_press   , f_press   , f_press   , f_press   , f_NA       }  /* B */
-/*        ---- 0 ---- ---- 1 ---- ---- 2 ---- ---- 3 ---- ---- 4 ---- ---- 5 ---- ---- 6 ----	*/
-}
+/* layer 0: default */ DEFAULT_LAYER_PRESS
 };
 
 kbfun_funptr_t _kb_layout_release[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
-{  // layer 0: default
-// right hand
-/*        ---- 0 ---- ---- 1 ---- ---- 2 ---- ---- 3 ---- ---- 4 ---- ---- 5 ---- ---- 6 ----	*/
-/* 0 */ {  f_release , f_release , f_release , f_release , f_release , f_release , f_release  }, /* 0 */
-/* 1 */ {  f_release , f_release , f_release , f_release , f_release , f_release , f_release  }, /* 1 */
-/* 2 */ {  f_NA      , f_release , f_release , f_release , f_release , f_release , f_release  }, /* 2 */
-/* 3 */ {  f_release , f_release , f_release , f_release , f_release , f_release , f_release  }, /* 3 */
-/* 4 */ {  f_NA      , f_NA      , f_release , f_release , f_release , f_release , f_release  }, /* 4 */
-/* 5 */ {  f_NA      , f_release , f_release , f_release , f_release , f_release , f_release  }, /* 5 */
-/*        ---- 0 ---- ---- 1 ---- ---- 2 ---- ---- 3 ---- ---- 4 ---- ---- 5 ---- ---- 6 ----	*/
-// left hand
-/*        ---- 0 ---- ---- 1 ---- ---- 2 ---- ---- 3 ---- ---- 4 ---- ---- 5 ---- ---- 6 ----	*/
-/* 6 */ {  f_release , f_release , f_release , f_release , f_release , f_release , f_release  }, /* 6 */
-/* 7 */ {  f_release , f_release , f_release , f_release , f_release , f_release , f_release  }, /* 7 */
-/* 8 */ {  f_release , f_release , f_release , f_release , f_release , f_release , f_NA       }, /* 8 */
-/* 9 */ {  f_release , f_release , f_release , f_release , f_release , f_release , f_release  }, /* 9 */
-/* A */ {  f_release , f_release , f_release , f_release , f_release , f_NA      , f_NA       }, /* A */
-/* B */ {  f_release , f_release , f_release , f_release , f_release , f_release , f_NA       }  /* B */
-/*        ---- 0 ---- ---- 1 ---- ---- 2 ---- ---- 3 ---- ---- 4 ---- ---- 5 ---- ---- 6 ----	*/
-}
+/* layer 0: default */ DEFAULT_LAYER_RELEASE
 };
 

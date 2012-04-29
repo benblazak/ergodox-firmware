@@ -10,7 +10,7 @@
 #ifndef KEY_FUNCTIONS_h
 	#define KEY_FUNCTIONS_h
 
-	#include "lib/_data-types.h"
+	#include "lib/data-types.h"
 
 	typedef void (*kbfun_funptr_t)(uint8_t*, uint8_t*, uint8_t*, uint8_t*);
 

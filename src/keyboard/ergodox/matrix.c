@@ -7,7 +7,7 @@
  * ------------------------------------------------------------------------- */
 
 
-#include "lib/_data-types.h"
+#include "lib/data-types.h"
 
 #include "matrix.h"
 

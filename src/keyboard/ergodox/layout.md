@@ -21,19 +21,14 @@ To write a new one:
   (../../lib/_usb/keyboard-usage-page--short-names.h) for available keycodes.
 * See [key-functions.c] (../../lib/_key-functions.c) for what functions keys
   can call.
+* See [_defaults.h] (layout/_defaults.h) for default function layers and
+  aliases.
 
 
 ## notes
 
-* Assuming 560 bytes for everything else in RAM space, there's 2000 bytes left
-  for the layout.  This should be enough for about 7 layers.  Watch your RAM
-  usage if you're getting close.
-
-    * The layout matricies could be moved to flash memory (program space,
-      instead of data space) in order to save RAM, but that doesn't seem
-      necessary at the moment.  It would also be slightly slower, though that
-      probably shouldn't be a concern.
-
+* Each layer takes 420 bytes of memory, wherever it's stored.  (The matrix size
+  is 12x7, keycodes are 1 byte each, and function pointers are 2 bytes.)
 
 -------------------------------------------------------------------------------
 
