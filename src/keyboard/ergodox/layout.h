@@ -11,6 +11,7 @@
 #ifndef LAYOUT_h
 	#define LAYOUT_h
 
+	#include <avr/pgmspace.h>
 	#include "lib/data-types.h"
 	#include "lib/key-functions.h"  // for `kbfun_funptr_t`
 
@@ -35,9 +36,10 @@
 
 	// default layout 'get' macros and `extern` matrix declarations
 	//
-	// these are for when the matrices are stored solely in RAM.  layouts
-	// may redefine them if they wish and use RAM, Flash, EEPROM, or any
-	// combination of those, as long as they maintain the same interface.
+	// these are for when the matrices are stored solely in Flash.  layouts
+	// may redefine them if they wish and use RAM, EEPROM, or any
+	// combination of the three, as long as they maintain the same
+	// interface.
 	//
 	// - if the macro is overridden, the matrix declaration must be too,
 	//   and vice versa.
@@ -53,24 +55,33 @@
 	//   function prototypes in the layout specific '.h'
 
 	#ifndef kb_layout_get
-		extern uint8_t \
-			_kb_layout[KB_LAYERS][KB_ROWS][KB_COLUMNS];
+		extern uint8_t PROGMEM \
+			       _kb_layout[KB_LAYERS][KB_ROWS][KB_COLUMNS];
+
 		#define kb_layout_get(layer,row,column) \
-			(_kb_layout[layer][row][column])
+			( (uint8_t) \
+			  pgm_read_byte(&( \
+				_kb_layout[layer][row][column] )) )
 	#endif
 
 	#ifndef kb_layout_press_get
-		extern kbfun_funptr_t \
+		extern kbfun_funptr_t PROGMEM \
 			_kb_layout_press[KB_LAYERS][KB_ROWS][KB_COLUMNS];
+
 		#define kb_layout_press_get(layer,row,column) \
-			(_kb_layout_press[layer][row][column])
+			( (kbfun_funptr_t) \
+			  pgm_read_word(&( \
+				_kb_layout_press[layer][row][column] )) )
 	#endif
 
 	#ifndef kb_layout_release_get
 		extern kbfun_funptr_t PROGMEM \
 			_kb_layout_release[KB_LAYERS][KB_ROWS][KB_COLUMNS];
+
 		#define kb_layout_release_get(layer,row,column) \
-			(_kb_layout_release[layer][row][column])
+			( (kbfun_funptr_t) \
+			  pgm_read_word(&( \
+				_kb_layout_release[layer][row][column] )) )
 	#endif
 
 #endif

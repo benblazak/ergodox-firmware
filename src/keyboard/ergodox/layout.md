@@ -27,8 +27,9 @@ To write a new one:
 
 ## notes
 
-* Each layer takes 420 bytes of memory, wherever it's stored.  (The matrix size
-  is 12x7, keycodes are 1 byte each, and function pointers are 2 bytes.)
+* Each full layer takes 420 bytes of memory, wherever it's stored.  (The matrix
+  size is 12x7, keycodes are 1 byte each, and function pointers are 2 bytes
+  each.)
 
 -------------------------------------------------------------------------------
 
