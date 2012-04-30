@@ -36,18 +36,49 @@
  *   movable, and either are referenced explicitly or have macros defined for
  *   them elsewhere.
  * - note: if you change pin assignments, please be sure to update
- *   "teensy-2-0.md".
+ *   "teensy-2-0.md", and the '.svg' circuit diagram.
  */
 // --- helpers
-#define TEENSYPIN_WRITE(register, operation, pin) \
-	_TEENSYPIN_WRITE(register, operation, pin)
-#define _TEENSYPIN_WRITE(register, operation, pin_letter, pin_number) \
+#define teensypin_write(register, operation, pin) \
+	_teensypin_write(register, operation, pin)
+#define _teensypin_write(register, operation, pin_letter, pin_number) \
 	((register##pin_letter) operation (1<<(pin_number)))
 
-#define TEENSYPIN_READ(pin) \
-	_TEENSYPIN_READ(pin)
-#define _TEENSYPIN_READ(pin_letter, pin_number) \
+#define teensypin_read(pin) \
+	_teensypin_read(pin)
+#define _teensypin_read(pin_letter, pin_number) \
 	((PIN##pin_letter) & (1<<(pin_number)))
+
+#define teensypin_write_all_unused(register, operation) \
+	do { \
+		teensypin_write(register, operation, UNUSED_0); \
+		teensypin_write(register, operation, UNUSED_1); \
+		teensypin_write(register, operation, UNUSED_2); \
+		teensypin_write(register, operation, UNUSED_3); \
+		teensypin_write(register, operation, UNUSED_4); \
+		teensypin_write(register, operation, UNUSED_5); } \
+	while(0)
+
+#define teensypin_write_all_row(register, operation) \
+	do { \
+		teensypin_write(register, operation, ROW_0); \
+		teensypin_write(register, operation, ROW_1); \
+		teensypin_write(register, operation, ROW_2); \
+		teensypin_write(register, operation, ROW_3); \
+		teensypin_write(register, operation, ROW_4); \
+		teensypin_write(register, operation, ROW_5); } \
+	while(0)
+
+#define teensypin_write_all_column(register, operation) \
+	do { \
+		teensypin_write(register, operation, COLUMN_0); \
+		teensypin_write(register, operation, COLUMN_1); \
+		teensypin_write(register, operation, COLUMN_2); \
+		teensypin_write(register, operation, COLUMN_3); \
+		teensypin_write(register, operation, COLUMN_4); \
+		teensypin_write(register, operation, COLUMN_5); \
+		teensypin_write(register, operation, COLUMN_6); } \
+	while(0)
 
 #define SET |=
 #define CLEAR &=~
@@ -101,54 +132,16 @@ uint8_t teensy_init(void) {
 	twi_init();  // on pins D(1,0)
 
 	// unused pins
-	// --- set as input
-	TEENSYPIN_WRITE(DDR, CLEAR, UNUSED_0);
-	TEENSYPIN_WRITE(DDR, CLEAR, UNUSED_1);
-	TEENSYPIN_WRITE(DDR, CLEAR, UNUSED_2);
-	TEENSYPIN_WRITE(DDR, CLEAR, UNUSED_3);
-	TEENSYPIN_WRITE(DDR, CLEAR, UNUSED_4);
-	TEENSYPIN_WRITE(DDR, CLEAR, UNUSED_5);
-	// --- set internal pull-up enabled
-	TEENSYPIN_WRITE(PORT, SET, UNUSED_0);
-	TEENSYPIN_WRITE(PORT, SET, UNUSED_1);
-	TEENSYPIN_WRITE(PORT, SET, UNUSED_2);
-	TEENSYPIN_WRITE(PORT, SET, UNUSED_3);
-	TEENSYPIN_WRITE(PORT, SET, UNUSED_4);
-	TEENSYPIN_WRITE(PORT, SET, UNUSED_5);
+	teensypin_write_all_unused(DDR, CLEAR); // set as input
+	teensypin_write_all_unused(PORT, SET);  // set internal pull-up enabled
 
 	// rows
-	// --- set as input (hi-Z)
-	TEENSYPIN_WRITE(DDR, CLEAR, ROW_0);
-	TEENSYPIN_WRITE(DDR, CLEAR, ROW_1);
-	TEENSYPIN_WRITE(DDR, CLEAR, ROW_2);
-	TEENSYPIN_WRITE(DDR, CLEAR, ROW_3);
-	TEENSYPIN_WRITE(DDR, CLEAR, ROW_4);
-	TEENSYPIN_WRITE(DDR, CLEAR, ROW_5);
-	// --- set internal pull-up disabled
-	TEENSYPIN_WRITE(PORT, CLEAR, ROW_0);
-	TEENSYPIN_WRITE(PORT, CLEAR, ROW_1);
-	TEENSYPIN_WRITE(PORT, CLEAR, ROW_2);
-	TEENSYPIN_WRITE(PORT, CLEAR, ROW_3);
-	TEENSYPIN_WRITE(PORT, CLEAR, ROW_4);
-	TEENSYPIN_WRITE(PORT, CLEAR, ROW_5);
+	teensypin_write_all_row(DDR, CLEAR);  // set as input (hi-Z)
+	teensypin_write_all_row(PORT, CLEAR); // set internal pull-up disabled
 
 	// columns
-	// --- set as input
-	TEENSYPIN_WRITE(DDR, CLEAR, COLUMN_0);
-	TEENSYPIN_WRITE(DDR, CLEAR, COLUMN_1);
-	TEENSYPIN_WRITE(DDR, CLEAR, COLUMN_2);
-	TEENSYPIN_WRITE(DDR, CLEAR, COLUMN_3);
-	TEENSYPIN_WRITE(DDR, CLEAR, COLUMN_4);
-	TEENSYPIN_WRITE(DDR, CLEAR, COLUMN_5);
-	TEENSYPIN_WRITE(DDR, CLEAR, COLUMN_6);
-	// --- set internal pull-up enabled
-	TEENSYPIN_WRITE(PORT, SET, COLUMN_0);
-	TEENSYPIN_WRITE(PORT, SET, COLUMN_1);
-	TEENSYPIN_WRITE(PORT, SET, COLUMN_2);
-	TEENSYPIN_WRITE(PORT, SET, COLUMN_3);
-	TEENSYPIN_WRITE(PORT, SET, COLUMN_4);
-	TEENSYPIN_WRITE(PORT, SET, COLUMN_5);
-	TEENSYPIN_WRITE(PORT, SET, COLUMN_6);
+	teensypin_write_all_column(DDR, CLEAR); // set as input
+	teensypin_write_all_column(PORT, SET);  // set internal pull-up enabled
 
 	return 0;  // success
 }
@@ -161,38 +154,38 @@ uint8_t teensy_init(void) {
 #endif
 static inline void _update_columns(
 		bool matrix[KB_ROWS][KB_COLUMNS], uint8_t row ) {
-	matrix[row][0] = ! TEENSYPIN_READ(COLUMN_0);
-	matrix[row][1] = ! TEENSYPIN_READ(COLUMN_1);
-	matrix[row][2] = ! TEENSYPIN_READ(COLUMN_2);
-	matrix[row][3] = ! TEENSYPIN_READ(COLUMN_3);
-	matrix[row][4] = ! TEENSYPIN_READ(COLUMN_4);
-	matrix[row][5] = ! TEENSYPIN_READ(COLUMN_5);
-	matrix[row][6] = ! TEENSYPIN_READ(COLUMN_6);
+	matrix[row][0] = ! teensypin_read(COLUMN_0);
+	matrix[row][1] = ! teensypin_read(COLUMN_1);
+	matrix[row][2] = ! teensypin_read(COLUMN_2);
+	matrix[row][3] = ! teensypin_read(COLUMN_3);
+	matrix[row][4] = ! teensypin_read(COLUMN_4);
+	matrix[row][5] = ! teensypin_read(COLUMN_5);
+	matrix[row][6] = ! teensypin_read(COLUMN_6);
 }
 uint8_t teensy_update_matrix(bool matrix[KB_ROWS][KB_COLUMNS]) {
-	TEENSYPIN_WRITE(DDR, SET, ROW_0);    // set row low (set as output)
+	teensypin_write(DDR, SET, ROW_0);    // set row low (set as output)
 	_update_columns(matrix, 0);          // read col 0..6 and update matrix
-	TEENSYPIN_WRITE(DDR, CLEAR, ROW_0);  // set row hi-Z (set as input)
+	teensypin_write(DDR, CLEAR, ROW_0);  // set row hi-Z (set as input)
 
-	TEENSYPIN_WRITE(DDR, SET, ROW_1);
+	teensypin_write(DDR, SET, ROW_1);
 	_update_columns(matrix, 1);
-	TEENSYPIN_WRITE(DDR, CLEAR, ROW_1);
+	teensypin_write(DDR, CLEAR, ROW_1);
 
-	TEENSYPIN_WRITE(DDR, SET, ROW_2);
+	teensypin_write(DDR, SET, ROW_2);
 	_update_columns(matrix, 2);
-	TEENSYPIN_WRITE(DDR, CLEAR, ROW_2);
+	teensypin_write(DDR, CLEAR, ROW_2);
 
-	TEENSYPIN_WRITE(DDR, SET, ROW_3);
+	teensypin_write(DDR, SET, ROW_3);
 	_update_columns(matrix, 3);
-	TEENSYPIN_WRITE(DDR, CLEAR, ROW_3);
+	teensypin_write(DDR, CLEAR, ROW_3);
 
-	TEENSYPIN_WRITE(DDR, SET, ROW_4);
+	teensypin_write(DDR, SET, ROW_4);
 	_update_columns(matrix, 4);
-	TEENSYPIN_WRITE(DDR, CLEAR, ROW_4);
+	teensypin_write(DDR, CLEAR, ROW_4);
 
-	TEENSYPIN_WRITE(DDR, SET, ROW_5);
+	teensypin_write(DDR, SET, ROW_5);
 	_update_columns(matrix, 5);
-	TEENSYPIN_WRITE(DDR, CLEAR, ROW_5);
+	teensypin_write(DDR, CLEAR, ROW_5);
 
 	return 0;  // success
 }
