@@ -7,5 +7,11 @@
  * ------------------------------------------------------------------------- */
 
 
-#define KB_LAYERS 1  // must match what's defined in the layout '.c' file
+#ifndef LAYOUT_QWERTY_h
+	#define LAYOUT_QWERTY_h
+
+	#define KB_LAYERS 1  // must match what's defined in the layout '.c'
+	                     //   file
+
+#endif
 

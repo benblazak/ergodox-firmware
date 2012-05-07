@@ -124,9 +124,9 @@ uint8_t teensy_init(void) {
 	TCCR1A  = 0b10101001;  // set and configure fast PWM
 	TCCR1B  = 0b00001001;  // set and configure fast PWM
 
-	KB_LED1_SET_PERCENT(0.5); KB_LED1_OFF;
-	KB_LED2_SET_PERCENT(0.5); KB_LED2_OFF;
-	KB_LED3_SET_PERCENT(0.5); KB_LED3_OFF;
+	kb_led1_set_percent(0.5); kb_led1_off();
+	kb_led2_set_percent(0.5); kb_led2_off();
+	kb_led3_set_percent(0.5); kb_led3_off();
 
 	// I2C (TWI)
 	twi_init();  // on pins D(1,0)

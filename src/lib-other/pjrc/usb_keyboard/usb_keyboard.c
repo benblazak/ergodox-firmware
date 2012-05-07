@@ -350,7 +350,7 @@ int8_t usb_keyboard_send(void)
 ISR(USB_GEN_vect)
 {
 	uint8_t intbits, i;  // used to declare a variable `t` as well, but it
-			     //   wasn't used ::Blazak, 2012::
+			     //   wasn't used ::Ben Blazak, 2012::
 	static uint8_t div4=0;
 
         intbits = UDINT;

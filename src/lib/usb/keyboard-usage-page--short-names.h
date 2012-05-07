@@ -11,6 +11,12 @@
  * ------------------------------------------------------------------------- */
 
 
+#ifndef USB_KEYBOARD_USAGE_PAGE_SHORT_NAMES_h
+	#define USB_KEYBOARD_USAGE_PAGE_SHORT_NAMES_h
+// ----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
+
+
 #include "keyboard-usage-page.h"
 
 
@@ -297,4 +303,9 @@
 #define _memSub_kp          KEYPAD_MemorySubtract
 #define _memMul_kp          KEYPAD_MemoryMultiply
 #define _memDiv_kp          KEYPAD_MemoryDivide
+
+
+// ----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
+#endif
 
