@@ -11,7 +11,7 @@
 
 #include <avr/pgmspace.h>
 #include "lib/data-types.h"
-#include "lib/usb/keyboard-usage-page--short-names.h"
+#include "lib/usb/usage-page/keyboard--short-names.h"
 #include "lib/key-functions.h"
 
 #include "../matrix.h"

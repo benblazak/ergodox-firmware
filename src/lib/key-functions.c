@@ -13,7 +13,7 @@
 
 #include "lib-other/pjrc/usb_keyboard/usb_keyboard.h"
 #include "lib/data-types.h"
-#include "lib/usb/keyboard-usage-page.h"
+#include "lib/usb/usage-page/keyboard.h"
 #include "keyboard.h"
 
 #include "key-functions.h"

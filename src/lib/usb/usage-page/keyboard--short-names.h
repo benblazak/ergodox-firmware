@@ -11,13 +11,13 @@
  * ------------------------------------------------------------------------- */
 
 
-#ifndef USB_KEYBOARD_USAGE_PAGE_SHORT_NAMES_h
-	#define USB_KEYBOARD_USAGE_PAGE_SHORT_NAMES_h
+#ifndef USB_USAGE_PAGE_KEYBOARD_SHORT_NAMES_h
+	#define USB_USAGE_PAGE_KEYBOARD_SHORT_NAMES_h
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 
 
-#include "keyboard-usage-page.h"
+#include "keyboard.h"
 
 
 // ----------------------------------------------------------------------------

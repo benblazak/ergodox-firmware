@@ -40,5 +40,4 @@
 // TODO
 // - read the hid usage tables .pdf
 // - read the hid device class definition .pdf
-// - add a note about the variable prefixes (w, b, bcd, ...)
 
