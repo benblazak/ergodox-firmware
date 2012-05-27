@@ -2,10 +2,11 @@
  * Notes from the USB 2.0 specification
  *
  * Written as a header file because I was going to actually use it.  Changed my
- * mind because it's simpler to use uint8_t arrays for things than structs, and
- * to keep the least and most significant bits of uint16_t values separate
- * initially instead of separating them later.  Kept it as a header because it
- * looks cleaner to me than an .md file would.
+ * mind because it's simpler to use uint8_t arrays for things than to use
+ * structs.  it's also easier i think to keep the least and most significant
+ * bits of uint16_t values separate initially instead of separating them later.
+ * Kept it as a header because it looks cleaner this way than i could make it
+ * look as an .md file.
  *
  * - conventions from the spec
  *   - variable prefixes
@@ -120,7 +121,7 @@ struct usb_setup_data {
  *   - figure 9-2 (format when specifying an endpoint)
  *
  * .-------------------------------------------------------.
- * |    D7     |      D6 | D5 | D4     | D3 | D2 | D1 | D0 |
+ * |    D7     |     D6 | D5 | D4      | D3 | D2 | D1 | D0 |
  * |-------------------------------------------------------|
  * | direction | reserved (reset to 0) |  endpoint number  |
  *  >-----------------------------------------------------<
