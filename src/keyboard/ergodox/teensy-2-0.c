@@ -136,12 +136,13 @@ uint8_t teensy_init(void) {
 	teensypin_write_all_unused(PORT, SET);  // set internal pull-up enabled
 
 	// rows
-	teensypin_write_all_row(DDR, CLEAR);  // set as input (hi-Z)
-	teensypin_write_all_row(PORT, CLEAR); // set internal pull-up disabled
+	teensypin_write_all_row(DDR, CLEAR); // set as input
+	teensypin_write_all_row(PORT, SET);  // set internal pull-up enabled
 
 	// columns
-	teensypin_write_all_column(DDR, CLEAR); // set as input
-	teensypin_write_all_column(PORT, SET);  // set internal pull-up enabled
+	teensypin_write_all_column(DDR, CLEAR);   // set as input (hi-Z)
+	teensypin_write_all_column(PORT, CLEAR);  // set internal pull-up
+	                                          //   disabled
 
 	return 0;  // success
 }
@@ -152,40 +153,43 @@ uint8_t teensy_init(void) {
 #if KB_ROWS != 12 || KB_COLUMNS != 7
 	#error "Expecting different keyboard dimensions"
 #endif
-static inline void _update_columns(
-		bool matrix[KB_ROWS][KB_COLUMNS], uint8_t row ) {
-	matrix[row][0] = ! teensypin_read(COLUMN_0);
-	matrix[row][1] = ! teensypin_read(COLUMN_1);
-	matrix[row][2] = ! teensypin_read(COLUMN_2);
-	matrix[row][3] = ! teensypin_read(COLUMN_3);
-	matrix[row][4] = ! teensypin_read(COLUMN_4);
-	matrix[row][5] = ! teensypin_read(COLUMN_5);
-	matrix[row][6] = ! teensypin_read(COLUMN_6);
+static inline void _update_rows(
+		bool matrix[KB_ROWS][KB_COLUMNS], uint8_t column ) {
+	matrix[0][column] = ! teensypin_read(ROW_0);
+	matrix[1][column] = ! teensypin_read(ROW_1);
+	matrix[2][column] = ! teensypin_read(ROW_2);
+	matrix[3][column] = ! teensypin_read(ROW_3);
+	matrix[4][column] = ! teensypin_read(ROW_4);
+	matrix[5][column] = ! teensypin_read(ROW_5);
 }
 uint8_t teensy_update_matrix(bool matrix[KB_ROWS][KB_COLUMNS]) {
-	teensypin_write(DDR, SET, ROW_0);    // set row low (set as output)
-	_update_columns(matrix, 0);          // read col 0..6 and update matrix
-	teensypin_write(DDR, CLEAR, ROW_0);  // set row hi-Z (set as input)
+	teensypin_write(DDR, SET, COLUMN_0);   // set col low (set as output)
+	_update_rows(matrix, 0);               // read row 0..5 & update matrix
+	teensypin_write(DDR, CLEAR, COLUMN_0); // set col hi-Z (set as input)
 
-	teensypin_write(DDR, SET, ROW_1);
-	_update_columns(matrix, 1);
-	teensypin_write(DDR, CLEAR, ROW_1);
+	teensypin_write(DDR, SET, COLUMN_1);
+	_update_rows(matrix, 1);
+	teensypin_write(DDR, CLEAR, COLUMN_1);
 
-	teensypin_write(DDR, SET, ROW_2);
-	_update_columns(matrix, 2);
-	teensypin_write(DDR, CLEAR, ROW_2);
+	teensypin_write(DDR, SET, COLUMN_2);
+	_update_rows(matrix, 2);
+	teensypin_write(DDR, CLEAR, COLUMN_2);
 
-	teensypin_write(DDR, SET, ROW_3);
-	_update_columns(matrix, 3);
-	teensypin_write(DDR, CLEAR, ROW_3);
+	teensypin_write(DDR, SET, COLUMN_3);
+	_update_rows(matrix, 3);
+	teensypin_write(DDR, CLEAR, COLUMN_3);
 
-	teensypin_write(DDR, SET, ROW_4);
-	_update_columns(matrix, 4);
-	teensypin_write(DDR, CLEAR, ROW_4);
+	teensypin_write(DDR, SET, COLUMN_4);
+	_update_rows(matrix, 4);
+	teensypin_write(DDR, CLEAR, COLUMN_4);
 
-	teensypin_write(DDR, SET, ROW_5);
-	_update_columns(matrix, 5);
-	teensypin_write(DDR, CLEAR, ROW_5);
+	teensypin_write(DDR, SET, COLUMN_5);
+	_update_rows(matrix, 5);
+	teensypin_write(DDR, CLEAR, COLUMN_5);
+
+	teensypin_write(DDR, SET, COLUMN_6);
+	_update_rows(matrix, 6);
+	teensypin_write(DDR, CLEAR, COLUMN_6);
 
 	return 0;  // success
 }

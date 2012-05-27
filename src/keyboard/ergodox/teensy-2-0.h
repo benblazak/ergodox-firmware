@@ -16,14 +16,16 @@
 	#include "matrix.h"
 
 	// LED control
-	#define kb_led1_on()           (DDRB |=  (1<<5))
-	#define kb_led1_off()          (DDRB &= ~(1<<5))
-	#define kb_led1_set(n)         (OCR1A = (uint8_t)(n))
-	#define kb_led1_set_percent(n) (OCR1A = (uint8_t)((n) * 0xFF))
-	#define kb_led2_on()           (DDRB |=  (1<<6))
-	#define kb_led2_off()          (DDRB &= ~(1<<6))
-	#define kb_led2_set(n)         (OCR1B = (uint8_t)(n))
-	#define kb_led2_set_percent(n) (OCR1B = (uint8_t)((n) * 0xFF))
+	#define kb_led1_on()           (DDRB |=  (1<<6))
+	#define kb_led1_off()          (DDRB &= ~(1<<6))
+	#define kb_led1_set(n)         (OCR1B = (uint8_t)(n))
+	#define kb_led1_set_percent(n) (OCR1B = (uint8_t)((n) * 0xFF))
+	//
+	#define kb_led2_on()           (DDRB |=  (1<<5))
+	#define kb_led2_off()          (DDRB &= ~(1<<5))
+	#define kb_led2_set(n)         (OCR1A = (uint8_t)(n))
+	#define kb_led2_set_percent(n) (OCR1A = (uint8_t)((n) * 0xFF))
+	//
 	#define kb_led3_on()           (DDRB |=  (1<<7))
 	#define kb_led3_off()          (DDRB &= ~(1<<7))
 	#define kb_led3_set(n)         (OCR1C = (uint8_t)(n))

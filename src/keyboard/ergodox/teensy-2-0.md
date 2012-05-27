@@ -34,8 +34,8 @@
                               PB3 o  o     o  + PF5  row3
                  (OC1C) LED3  PB7 + PE6  AREF + PF6  row4
                   (SCL)  I2C  PD0 +           + PF7  row5
-                  (SDA)  I2C  PD1 +           + PB6  LED2 (OC1B)
-                     column3  PD2 +           + PB5  LED1 (OC1A)
+                  (SDA)  I2C  PD1 +           + PB6  LED1 (OC1B)
+                     column3  PD2 +           + PB5  LED2 (OC1A)
                      column4  PD3 +           + PB4  column0
                      column1  PC6 +           + PD7  column5
                      column2  PC7 +-o-o-o-o-o-+ PD6  onboardLED
@@ -70,10 +70,11 @@
     * PD6 (the onboard LED) already has a defined level (low), so there's no
       reason to set internal pull-up enabled on it.  If we do, it will source
       current to the LED, which is fine, but unnecessary.
-    * We want the row pins 'hi-Z' initially (set as input with pull-up
-      disabled), and the column pins set as input with internal pull-up
-      enabled.  We'll cycle through driving the row pins low (setting them as
-      output) and checking the column pins in the update function.
+    * We want the columns to be hi-Z when that column's not being scanned,
+      drive low when it is, and the rows to be input with pull-up enabled.
+      We'll cycle through driving the columns low and scanning all rows.
+        * To set a pin hi-Z on this board, set it as input with pull-up
+          disabled.
         * Switching the row pins between hi-Z and drive low (treating them as
           if they were open drain) seems just as good as, and a little safer
           than, driving them high when the row's not active.
