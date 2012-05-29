@@ -15,7 +15,8 @@
 	#include "lib/data-types.h"
 	#include "lib/key-functions.h"  // for `kbfun_funptr_t`
 
-	#include "matrix.h"  // for number of rows and columns
+	#include "matrix.h"  // for number of rows and columns, and layout
+			     //   to matrix macros
 
 	// include the appropriate keyboard layout header
 	// for:
@@ -82,6 +83,7 @@
 			( (kbfun_funptr_t) \
 			  pgm_read_word(&( \
 				_kb_layout_release[layer][row][column] )) )
+
 	#endif
 
 #endif
