@@ -15,29 +15,16 @@
 #include "keyboard.h"
 
 
-// note:
-// - see your keyswitch specification for the necessary value.  for cherry mx
-//   switches, bounce time should be <= 5ms.  it looks like most switches are
-//   speced between 5 and 8 ms.
-// - if timing is important, balance this value with the main() loop run time
-//   (~5ms, last i checked, nearly all of it in the i2c update() function)
-#define DEBOUNCE_TIME 5  // in ms
-
-
 int main(void) {
 	kb_init();  // does controller initialization too
 
-	kb_led1_on();
-	kb_led2_on();
-	kb_led3_on();
+	kb_led_state_power_on();
 
 	usb_init();
 	while (!usb_configured());
-	_delay_ms(1000);  // make sure the OS has had time to load drivers, etc.
+	kb_led_delay_usb_init();  // give the OS time to load drivers, etc.
 
-	kb_led1_off();
-	kb_led2_off();
-	kb_led3_off();
+	kb_led_state_ready();
 
 	for (;;) {
 		static uint8_t current_layer = 0;
@@ -79,19 +66,22 @@ int main(void) {
 					}
 
 					usb_keyboard_send();
-					_delay_ms(DEBOUNCE_TIME);
+					_delay_ms(KB_DEBOUNCE_TIME);
 				}
 			}
 		}
 
 		// update LEDs
-		(keyboard_leds & (1<<0)) ? kb_led1_on() : kb_led1_off(); // num lock
-		(keyboard_leds & (1<<1)) ? kb_led2_on() : kb_led2_off(); // caps lock
-		(keyboard_leds & (1<<2)) ? kb_led3_on() : kb_led3_off(); // scroll lock
-		#if 0  // not implemented right now
-		(keyboard_leds & (1<<3)) ? kb_led4_on() : kb_led4_off(); // compose
-		(keyboard_leds & (1<<4)) ? kb_led5_on() : kb_led5_off(); // kana
-		#endif
+		if (keyboard_leds & (1<<0)) { kb_led_num_on(); }
+		else { kb_led_num_off(); }
+		if (keyboard_leds & (1<<1)) { kb_led_caps_on(); }
+		else { kb_led_caps_off(); }
+		if (keyboard_leds & (1<<2)) { kb_led_scroll_on(); }
+		else { kb_led_scroll_off(); }
+		if (keyboard_leds & (1<<3)) { kb_led_compose_on(); }
+		else { kb_led_compose_off(); }
+		if (keyboard_leds & (1<<4)) { kb_led_kana_on(); }
+		else { kb_led_kana_off(); }
 	}
 
 	return 0;

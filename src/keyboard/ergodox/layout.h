@@ -86,5 +86,38 @@
 
 	#endif
 
+
+	// default logical LED macros (all defined to nothing)
+	#ifndef kb_led_num_on
+		#define kb_led_num_on()
+	#endif
+	#ifndef kb_led_num_off
+		#define kb_led_num_off()
+	#endif
+	#ifndef kb_led_caps_on
+		#define kb_led_caps_on()
+	#endif
+	#ifndef kb_led_caps_off
+		#define kb_led_caps_off()
+	#endif
+	#ifndef kb_led_scroll_on
+		#define kb_led_scroll_on()
+	#endif
+	#ifndef kb_led_scroll_off
+		#define kb_led_scroll_off()
+	#endif
+	#ifndef kb_led_compose_on
+		#define kb_led_compose_on()
+	#endif
+	#ifndef kb_led_compose_off
+		#define kb_led_compose_off()
+	#endif
+	#ifndef kb_led_kana_on
+		#define kb_led_kana_on()
+	#endif
+	#ifndef kb_led_kana_off
+		#define kb_led_kana_off()
+	#endif
+
 #endif
 

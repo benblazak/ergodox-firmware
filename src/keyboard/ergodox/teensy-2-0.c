@@ -120,13 +120,9 @@ uint8_t teensy_init(void) {
 	PORTD &= ~(1<<6);  // set D(6) internal pull-up disabled
 
 	// keyboard LEDs (see "PWM on ports OC1(A|B|C)" in "teensy-2-0.md")
-	DDRB   |= 0b11100000;  // set B(7,6,5) as output
+	_led_all_off();  // (just to put the pins in a known state)
 	TCCR1A  = 0b10101001;  // set and configure fast PWM
 	TCCR1B  = 0b00001001;  // set and configure fast PWM
-
-	kb_led1_set_percent(0.5); kb_led1_off();
-	kb_led2_set_percent(0.5); kb_led2_off();
-	kb_led3_set_percent(0.5); kb_led3_off();
 
 	// I2C (TWI)
 	twi_init();  // on pins D(1,0)

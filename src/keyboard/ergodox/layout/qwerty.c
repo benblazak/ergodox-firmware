@@ -27,6 +27,8 @@
 
 uint8_t PROGMEM _kb_layout[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
 	LAYER(  // layer 0: default
+// unused
+0,
 // left hand
 _grave,    _1,      _2,      _3,      _4,      _5,  _equal,
 _tab,      _Q,      _W,      _E,      _R,      _T,  _esc,
@@ -49,11 +51,11 @@ _altR,  _pageU, _pageD )
 
 
 kbfun_funptr_t PROGMEM _kb_layout_press[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
-	LAYER_SET_ALL(&kbfun_press);  // layer 0: default
+	LAYER_SET_ALL(NULL, &kbfun_press)  // layer 0: default
 };
 
 
 kbfun_funptr_t PROGMEM _kb_layout_release[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
-	LAYER_SET_ALL(&kbfun_release);  // layer 0: default
+	LAYER_SET_ALL(NULL, &kbfun_release)  // layer 0: default
 };
 
