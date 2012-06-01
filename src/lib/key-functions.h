@@ -12,20 +12,16 @@
 
 	#include "lib/data-types.h"
 
-	typedef void (*kbfun_funptr_t)(uint8_t*, uint8_t*, uint8_t*, uint8_t*);
+	typedef void (*kbfun_funptr_t)(
+			uint8_t,   uint8_t *,
+			uint8_t *, uint8_t * );
 
 	void kbfun_press(
-			uint8_t * keycode, uint8_t * current_layer,
-			uint8_t * row,     uint8_t * col );
+			uint8_t keycode, uint8_t * current_layer,
+			uint8_t * row,   uint8_t * col );
 	void kbfun_release(
-			uint8_t * keycode, uint8_t * current_layer,
-			uint8_t * row,     uint8_t * col );
-	void kbfun_mod_press(
-			uint8_t * keycode, uint8_t * current_layer,
-			uint8_t * row,     uint8_t * col );
-	void kbfun_mod_release(
-			uint8_t * keycode, uint8_t * current_layer,
-			uint8_t * row,     uint8_t * col );
+			uint8_t keycode, uint8_t * current_layer,
+			uint8_t * row,   uint8_t * col );
 
 #endif
 

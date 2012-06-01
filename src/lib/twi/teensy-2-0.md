@@ -1,4 +1,4 @@
-# Documentation : Teensy 2.0 I&sup2;C
+# Documentation : I&sup2;C : Teensy 2.0
 
 ## I&sup2;C Status Codes (for Master modes)
 

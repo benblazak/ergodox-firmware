@@ -8,9 +8,8 @@
 
 
 #include <util/twi.h>
-
 #include "lib/data-types.h"
-#include "lib/teensy-2-0/twi.h"  // `TWI_FREQ` defined in "teensy-2-0.c"
+#include "lib/twi.h"  // `TWI_FREQ` defined in "teensy-2-0.c"
 
 #define KEYBOARD_INCLUDE_PRIVATE
 #include "matrix.h"
@@ -45,25 +44,26 @@ uint8_t mcp23018_init(void) {
 
 	// set pin direction
 	// - unused  : input  : 1
-	// - rows    : output : 0
-	// - columns : input  : 1
+	// - row     : input  : 1
+	// - column  : output : 0
 	twi_start();
 	ret = twi_send(TWI_ADDR_WRITE);
 	if (ret) goto out;  // make sure we got an ACK
 	twi_send(IODIRA);
-	twi_send(0b11000000);  // IODIRA
-	twi_send(0b11111111);  // IODIRB
+	twi_send(0b11111111);  // IODIRA
+	twi_send(0b10000000);  // IODIRB
 	twi_stop();
 
 	// set pull-up
 	// - unused  : on  : 1
-	// - rows    : off : 0
-	// - columns : on  : 1
+	// - rows    : on  : 1
+	// - columns : off : 0
 	twi_start();
-	twi_send(TWI_ADDR_WRITE);
+	ret = twi_send(TWI_ADDR_WRITE);
+	if (ret) goto out;  // make sure we got an ACK
 	twi_send(GPPUA);
-	twi_send(0b11000000);  // GPPUA
-	twi_send(0b11111111);  // GPPUB
+	twi_send(0b11111111);  // GPPUA
+	twi_send(0b10000000);  // GPPUB
 	twi_stop();
 
 	// set logical value (doesn't matter on inputs)
@@ -71,7 +71,8 @@ uint8_t mcp23018_init(void) {
 	// - rows    : high (hi-Z) : 1
 	// - columns : high (hi-Z) : 1
 	twi_start();
-	twi_send(TWI_ADDR_WRITE);
+	ret = twi_send(TWI_ADDR_WRITE);
+	if (ret) goto out;  // make sure we got an ACK
 	twi_send(OLATA);
 	twi_send(0b11111111);  //OLATA
 	twi_send(0b11111111);  //OLATB
@@ -108,34 +109,34 @@ uint8_t mcp23018_update_matrix(bool matrix[KB_ROWS][KB_COLUMNS]) {
 	}
 
 	// update our part of the matrix
-	for (uint8_t row=0x6; row<=0xB; row++) {
-		// set active row low : 0
-		// set other rows high (hi-Z) : 1
+	for (uint8_t col=0; col<=6; col++) {
+		// set active column low : 0
+		// set other columns high (hi-Z) : 1
 		twi_start();
 		twi_send(TWI_ADDR_WRITE);
-		twi_send(OLATA);
-		twi_send( 0b11111111 & ~(1<<(row-6)) );
+		twi_send(OLATB);
+		twi_send( 0xFF & ~(1<<col) );
 		twi_stop();
 
-		// read column data
+		// read row data
 		twi_start();
 		twi_send(TWI_ADDR_WRITE);
-		twi_send(GPIOB);
+		twi_send(GPIOA);
 		twi_start();
 		twi_send(TWI_ADDR_READ);
 		twi_read(&data);
 		twi_stop();
 
 		// update matrix
-		for (uint8_t col=0; col<=6; col++)
-			matrix[row][col] = !( data & (1<<col) );
+		for (uint8_t row=0x6; row<=0xB; row++)
+			matrix[row][col] = !( data & (1<<(row-6)) );
 	}
 
-	// set all rows high (hi-Z) : 1
+	// set all columns high (hi-Z) : 1
 	twi_start();
 	twi_send(TWI_ADDR_WRITE);
-	twi_send(GPIOA);
-	twi_send(0b11111111);
+	twi_send(GPIOB);
+	twi_send(0xFF);
 	twi_stop();
 
 	return ret;  // success

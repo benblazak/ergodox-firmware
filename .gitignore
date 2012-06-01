@@ -1,3 +1,9 @@
 *~
 *.swp
 
+*.hex
+*.eep
+*.elf
+*.o
+*.o.dep
+

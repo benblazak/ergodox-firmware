@@ -1,10 +1,5 @@
-# src/lib-other
-Files taken from other projects
-
-## links to original files
-
-* [pjrc] (http://pjrc.com/teensy/)
-  * [usb_keyboard] (http://pjrc.com/teensy/usb_keyboard.zip)
+# src/lib
+Stuff that's generally useful
 
 -------------------------------------------------------------------------------
 

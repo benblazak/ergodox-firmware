@@ -19,7 +19,7 @@ extern volatile uint8_t keyboard_leds;
 #define usb_debug_flush_output()
 
 
-#if 0  // removed in favor of equilivent code elsewhere ::Ben Blazak, 2012::
+#if 0  // removed in favor of equivalent code elsewhere ::Ben Blazak, 2012::
 
 #define KEY_CTRL	0x01
 #define KEY_SHIFT	0x02
