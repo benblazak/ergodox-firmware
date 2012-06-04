@@ -13,7 +13,7 @@
 	#include "../led.h"
 
 
-	#define KB_LAYERS 1  // must match what's defined in "qwerty.c"
+	#define KB_LAYERS 2  // must match what's defined in "qwerty.c"
 
 	#define kb_led_num_on()      _led_1_on()
 	#define kb_led_num_off()     _led_1_off()

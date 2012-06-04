@@ -19,31 +19,6 @@
 #include "key-functions.h"
 
 
-// ----------------------------------------------------------------------------
-
-#if 0  // not being used right now
-static uint8_t _inc_current_layer(uint8_t * current_layer) {
-	if (*current_layer < (KB_LAYERS-1))
-		(*current_layer)++;
-	else
-		return 1;  // error: can't increase
-
-	return 0;  // success
-}
-
-static uint8_t _dec_current_layer(uint8_t * current_layer) {
-	if (*current_layer > 0)
-		(*current_layer)--;
-	else
-		return 1;  // error: can't decrease
-
-	return 0;  // success
-}
-#endif
-
-
-// ----------------------------------------------------------------------------
-
 void kbfun_press(
 		uint8_t keycode, uint8_t * current_layer,
 		uint8_t * row,   uint8_t * col ) {
@@ -115,4 +90,25 @@ void kbfun_release(
 			break;
 		}
 }
+
+void kbfun_layer_inc(
+		uint8_t keycode, uint8_t * current_layer,
+		uint8_t * row,   uint8_t * col ) {
+
+	if (*current_layer < (KB_LAYERS-1))
+		(*current_layer)++;
+	// else do nothing
+}
+
+void kbfun_layer_dec(
+		uint8_t keycode, uint8_t * current_layer,
+		uint8_t * row,   uint8_t * col ) {
+
+	if (*current_layer > 0)
+		(*current_layer)--;
+	// else do nothing
+}
+
+
+// ----------------------------------------------------------------------------
 
