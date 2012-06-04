@@ -29,7 +29,9 @@
 		 *
 		 * - location numbers are in the format `row##column`, where
 		 *   both 'row' and 'column' are single digit hex numbers
-		 *   corresponding to the matrix position
+		 *   corresponding to the matrix position (which also
+		 *   corresponds to the row and column pin labels used in the
+		 *   teensy and mcp23018 files)
 		 * - coordinates not listed are unused
 		 *
 		 * --- other info ---------------------------------------------

@@ -39,8 +39,10 @@
  *   "teensy-2-0.md", and the '.svg' circuit diagram.
  */
 // --- helpers
-#define teensypin_write(register, operation, pin) \
-	_teensypin_write(register, operation, pin)
+#define teensypin_write(register, operation, pin) do {		\
+	_teensypin_write(register, operation, pin);		\
+	_delay_us(1);  /* allow pins time to stabalize */	\
+	} while(0)
 #define _teensypin_write(register, operation, pin_letter, pin_number) \
 	((register##pin_letter) operation (1<<(pin_number)))
 
