@@ -122,6 +122,10 @@ clean:
 	@echo --- cleaning ---
 	cd .. ; git clean -dX  # remove ignored files and directories
 
+# availability: linux
+dist-hex: clean all
+	mv firmware.hex 'ergodox-firmware--$(shell git branch -l | grep '*' | cut -c 3-)--$(shell date +'%Y%m%d_%H%M%S').hex'
+
 # -----------------------------------------------------------------------------
 
 .SECONDARY:
