@@ -78,6 +78,22 @@
         * Switching the row pins between hi-Z and drive low (treating them as
           if they were open drain) seems just as good as, and a little safer
           than, driving them high when the row's not active.
+    * We need to delay for at least 1 μs between changing the column pins and
+      reading the row pins.  I would assume this is to allow the pins time to
+      stabalize.
+        * Thanks to [hasu] (http://geekhack.org/member.php?3412-hasu)
+          for the suggestion [here]
+          (http://geekhack.org/showthread.php?22780-Interest-Check-Custom-split-ergo-keyboard&p=606415&viewfull=1#post606415),
+          and [PrinsValium] (http://geekhack.org/member.php?6408-PrinsValium)
+          for noting that his firmware had erratic behavior without the delays
+          [here]
+          (http://geekhack.org/showthread.php?22780-Interest-Check-Custom-split-ergo-keyboard&p=606426&viewfull=1#post606426).
+          DOX tried it and confirmed that it worked for his protoype PCB (as of
+          3 June 2012) [here]
+          (http://geekhack.org/showthread.php?22780-Interest-Check-Custom-split-ergo-keyboard&p=606865&viewfull=1#post606865).
+          Before adding a delay we were having [strange problems with ghosting]
+          (http://geekhack.org/showthread.php?22780-Interest-Check-Custom-split-ergo-keyboard&p=605857&viewfull=1#post605857).
+          
 
 ### PWM on ports OC1(A|B|C) (see datasheet section 14.10)
 
