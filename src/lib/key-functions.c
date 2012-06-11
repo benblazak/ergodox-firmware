@@ -19,16 +19,13 @@
 #include "key-functions.h"
 
 
-void kbfun_press(
-		uint8_t keycode, uint8_t * current_layer,
-		uint8_t * row,   uint8_t * col ) {
-
+void kbfun_press( KBFUN_FUNCTION_ARGS ) {
 	// no-op
-	if (keycode == 0)
+	if (keycode_ == 0)
 		return;
 
 	// modifier keys
-	switch (keycode) {
+	switch (keycode_) {
 		case KEY_LeftControl:  keyboard_modifier_keys |= (1<<0);
 				       return;
 		case KEY_LeftShift:    keyboard_modifier_keys |= (1<<1);
@@ -50,21 +47,18 @@ void kbfun_press(
 	// all others
 	for (uint8_t i=0; i<6; i++)
 		if (keyboard_keys[i] == 0) {
-			keyboard_keys[i] = keycode;
-			break;
+			keyboard_keys[i] = keycode_;
+			return;
 		}
 }
 
-void kbfun_release(
-		uint8_t keycode, uint8_t * current_layer,
-		uint8_t * row,   uint8_t * col ) {
-
+void kbfun_release( KBFUN_FUNCTION_ARGS ) {
 	// no-op
-	if (keycode == 0)
+	if (keycode_ == 0)
 		return;
 
 	// modifier keys
-	switch (keycode) {
+	switch (keycode_) {
 		case KEY_LeftControl:  keyboard_modifier_keys &= ~(1<<0);
 				       return;
 		case KEY_LeftShift:    keyboard_modifier_keys &= ~(1<<1);
@@ -85,37 +79,30 @@ void kbfun_release(
 
 	// all others
 	for (uint8_t i=0; i<6; i++)
-		if (keyboard_keys[i] == keycode) {
+		if (keyboard_keys[i] == keycode_) {
 			keyboard_keys[i] = 0;
-			break;
+			return;
 		}
 }
 
 // TODO:
-// - allocate 10 layers, by default (overrideable in the map specific .h)
-// - implement having different keys using different layers
 // - implement two shifts => capslock
 // - implement layer lock key combos (make a function to switch to a specific
 //   layer)
 
-void kbfun_layer_inc(
-		uint8_t keycode, uint8_t * current_layer,
-		uint8_t * row,   uint8_t * col ) {
-
-	if (*current_layer < (KB_LAYERS-1))
-		(*current_layer)++;
-	// else do nothing
+void kbfun_layer_inc( KBFUN_FUNCTION_ARGS ) {
+	for (uint8_t row=0; row<KB_ROWS; row++)
+		for (uint8_t col=0; col<KB_COLUMNS; col++)
+			if ((*current_layers_)[row][col] < (KB_LAYERS-1))
+				((*current_layers_)[row][col])++;
+			// else do nothing
 }
 
-void kbfun_layer_dec(
-		uint8_t keycode, uint8_t * current_layer,
-		uint8_t * row,   uint8_t * col ) {
-
-	if (*current_layer > 0)
-		(*current_layer)--;
-	// else do nothing
+void kbfun_layer_dec( KBFUN_FUNCTION_ARGS ) {
+	for (uint8_t row=0; row<KB_ROWS; row++)
+		for (uint8_t col=0; col<KB_COLUMNS; col++)
+			if ((*current_layers_)[row][col] > 0)
+				((*current_layers_)[row][col])--;
+			// else do nothing
 }
-
-
-// ----------------------------------------------------------------------------
 

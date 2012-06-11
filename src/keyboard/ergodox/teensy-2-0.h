@@ -13,8 +13,6 @@
 	#include <avr/io.h>  // for the register macros
 	#include "lib/data-types.h"
 
-	#include "matrix.h"
-
 
 	// LED control
 	#define _led_1_on()           (DDRB |=  (1<<6))
@@ -52,15 +50,6 @@
 		_led_2_set_percent(n);		\
 		_led_3_set_percent(n);		\
 		} while(0)
-
-
-	#ifdef KEYBOARD_INCLUDE_PRIVATE
-
-		uint8_t teensy_init(void);
-		uint8_t teensy_update_matrix(
-				bool matrix[KB_ROWS][KB_COLUMNS] );
-
-	#endif
 
 #endif
 

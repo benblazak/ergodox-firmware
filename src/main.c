@@ -27,7 +27,10 @@ int main(void) {
 	kb_led_state_ready();
 
 	for (;;) {
-		static uint8_t current_layer = 0;
+		// the current layer for each key
+		static uint8_t current_layers[KB_ROWS][KB_COLUMNS];
+		// the layer each key was on when it was last pressed
+		static uint8_t pressed_layers[KB_ROWS][KB_COLUMNS];
 
 		// swap `kb_is_pressed` and `kb_was_pressed`, then update
 		bool (*temp)[KB_ROWS][KB_COLUMNS] = kb_was_pressed;
@@ -36,32 +39,44 @@ int main(void) {
 
 		kb_update_matrix(*kb_is_pressed);
 
-		// call the appropriate function for each key, then send the usb report
-		// if necessary
+		// call the appropriate function for each key(press|release), then send
+		// the usb report if necessary
+		// -------
 		// - everything else is the key function's responsibility; see the
 		//   keyboard layout file ("keyboard/ergodox/layout/*.c") for which key
 		//   is assigned which function (per layer), and "lib/key-functions.c"
 		//   for their definitions
+		// - anything passed to the key function by reference may be changed
+		//   after the call
 		for (uint8_t row=0; row<KB_ROWS; row++) {
 			for (uint8_t col=0; col<KB_COLUMNS; col++) {
+
 				bool is_pressed = (*kb_is_pressed)[row][col];
 				bool was_pressed = (*kb_was_pressed)[row][col];
+
 				if (is_pressed != was_pressed) {
+
 					if (is_pressed) {
+						uint8_t current_layer = current_layers[row][col];
+						pressed_layers[row][col] = current_layer;
 						kbfun_funptr_t press_function =
-								kb_layout_press_get(current_layer, row, col);
+							kb_layout_press_get(current_layer, row, col);
 						if (press_function) {
 							(*press_function)(
 									kb_layout_get(current_layer, row, col),
-									&current_layer, &row, &col );
+									&current_layers, &pressed_layers,
+									&row, &col );
 						}
+
 					} else {
+						uint8_t pressed_layer = pressed_layers[row][col];
 						kbfun_funptr_t release_function =
-								kb_layout_release_get(current_layer, row, col);
+							kb_layout_release_get(pressed_layer, row, col);
 						if (release_function) {
 							(*release_function)(
-									kb_layout_get(current_layer, row, col),
-									&current_layer, &row, &col );
+									kb_layout_get(pressed_layer, row, col),
+									&current_layers, &pressed_layers,
+									&row, &col );
 						}
 					}
 

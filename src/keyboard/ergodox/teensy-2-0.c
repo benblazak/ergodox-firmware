@@ -13,9 +13,9 @@
 #define TWI_FREQ 400000
 #include "lib/twi.h"
 
-#define KEYBOARD_INCLUDE_PRIVATE
 #include "matrix.h"
 #include "teensy-2-0.h"
+#include "teensy-2-0--private.h"
 
 
 // processor frequency (from <http://www.pjrc.com/teensy/prescaler.html>)

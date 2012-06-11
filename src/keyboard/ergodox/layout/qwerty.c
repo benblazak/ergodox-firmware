@@ -14,8 +14,8 @@
 #include "lib/usb/usage-page/keyboard--short-names.h"
 #include "lib/key-functions.h"
 
-#define KEYBOARD_INCLUDE_PRIVATE
 #include "../matrix.h"
+#include "../matrix--private.h"
 #include "../layout.h"
 
 
@@ -24,12 +24,6 @@
 #define f_relea &kbfun_release
 #define f_l_inc &kbfun_layer_inc
 #define f_l_dec &kbfun_layer_dec
-
-
-// error check: everything below assumes these dimensions
-#if KB_LAYERS != 2 || KB_ROWS != 12 || KB_COLUMNS != 7
-	#error "Expecting different keyboard dimensions"
-#endif
 
 
 uint8_t PROGMEM _kb_layout[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
@@ -41,7 +35,7 @@ uint8_t PROGMEM _kb_layout[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
 _grave,    _1,      _2,      _3,      _4,      _5,  _equal,
 _tab,      _Q,      _W,      _E,      _R,      _T,  _esc,
 _capsLock, _A,      _S,      _D,      _F,      _G,
-_shiftL,   _Z,      _X,      _C,      _V,      _B,  0/*inc*/,
+_shiftL,   _Z,      _X,      _C,      _V,      _B,   0,
 _guiL,     _arrowL, _arrowU, _arrowD, _arrowR,
                                                  _bs,
                                                  _del,     _ctrlL,
@@ -50,7 +44,7 @@ _guiL,     _arrowL, _arrowU, _arrowD, _arrowR,
          _backslash, _6, _7,      _8,      _9,      _0,         _dash,
          _bracketL,  _Y, _U,      _I,      _O,      _P,         _bracketR,
                      _H, _J,      _K,      _L,      _semicolon, _quote,
-          0/*inc*/,  _N, _M,      _comma,  _period, _slash,     _shiftR,
+          0,         _N, _M,      _comma,  _period, _slash,     _shiftR,
                          _arrowL, _arrowD, _arrowU, _arrowR,    _guiR,
             _space,
 _ctrlR,     _enter,
@@ -63,17 +57,17 @@ _altR,  _pageU, _pageD ),
 0, _F1,        _F2,        _F3,       _F4,       _F5,       _F11,
 0, _braceL_kp, _braceR_kp, _bracketL, _bracketR,  0,        _esc,
 0, _semicolon, _slash,     _dash,      0,        _colon_kp,
-0,  0,          0,          0,         0,         0,        0/*dec*/,
+0,  0,          0,          0,         0,         0,         0,
 0, _arrowL,    _arrowU,    _arrowD,   _arrowR,
                                                        _bs,
                                                        _del,     _ctrlL,
                                                     _end, _home, _altL,
 // right hand
-       _F12,     _F6,       _F7,     _F8,        _F9,        _F10,          0,
-        0,        0,        _dash,   _lt_kp,     _gt_kp,     _currencyUnit, 0,
-                 _backslash, 0,      _parenL_kp, _parenR_kp, _equal,        0,
-       0/*dec*/, _mul_kp,    0,       0,          0,          0,            0,
-                            _arrowL, _arrowD,    _arrowU,    _arrowR,       0,
+         _F12, _F6,       _F7,     _F8,        _F9,        _F10,          0,
+          0,    0,        _dash,   _lt_kp,     _gt_kp,     _currencyUnit, 0,
+               _backslash, 0,      _parenL_kp, _parenR_kp, _equal,        0,
+          0,   _mul_kp,    0,       0,          0,          0,            0,
+                          _arrowL, _arrowD,    _arrowU,    _arrowR,       0,
             _space,
 _ctrlR,     _enter,
 _altR,  _pageU, _pageD )
@@ -139,7 +133,7 @@ NULL,
 f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,
 f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,
 f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,
-f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,   NULL,
+f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,f_l_dec,
 f_relea,f_relea,f_relea,f_relea,f_relea,
                                            f_relea,
                                            f_relea,  f_relea,
@@ -148,7 +142,7 @@ f_relea,f_relea,f_relea,f_relea,f_relea,
        f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,
        f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,
                f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,
-          NULL,f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,
+       f_l_dec,f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,
                        f_relea,f_relea,f_relea,f_relea,f_relea,
           f_relea,
 f_relea,  f_relea,
@@ -161,7 +155,7 @@ NULL,
 f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,
 f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,
 f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,
-f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,f_l_dec,
+f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,   NULL,
 f_relea,f_relea,f_relea,f_relea,f_relea,
                                            f_relea,
                                            f_relea,  f_relea,
@@ -170,7 +164,7 @@ f_relea,f_relea,f_relea,f_relea,f_relea,
        f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,
        f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,
                f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,
-       f_l_dec,f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,
+          NULL,f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,
                        f_relea,f_relea,f_relea,f_relea,f_relea,
           f_relea,
 f_relea,  f_relea,

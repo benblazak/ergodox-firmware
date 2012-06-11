@@ -10,6 +10,7 @@
 #include "lib/data-types.h"
 
 #include "matrix.h"
+#include "matrix--private.h"
 
 
 static bool _kb_is_pressed[KB_ROWS][KB_COLUMNS];
