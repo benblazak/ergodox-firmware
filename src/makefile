@@ -76,7 +76,9 @@ CFLAGS += -fdata-sections      # /   section in the output file if the
 			       #     unused code.
 # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-LDFLAGS  = -Wl,--relax        # for some linker optimizations
+LDFLAGS  = -Wl,-Map=$(strip $(TARGET)).map,--cref  # generate a link map, with
+						   #   a cross reference table
+LDFLAGS += -Wl,--relax        # for some linker optimizations
 LDFLAGS += -Wl,--gc-sections  # discard unused functions and data
 # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
@@ -123,8 +125,14 @@ clean:
 	cd .. ; git clean -dX  # remove ignored files and directories
 
 # availability: linux
-dist-hex: clean all
-	mv firmware.hex 'ergodox-firmware--$(shell git branch -l | grep '*' | cut -c 3-)--$(shell date +'%Y%m%d_%H%M%S').hex'
+dist: clean all
+	name='ergodox-firmware'; \
+	branch='$(shell git branch -l | grep '*' | cut -c 3-)'; \
+	date='$(shell date +'%Y%m%d_%H%M%S')'; \
+	\
+	zip "$$name--$$branch--$$date.zip" "$(TARGET).hex" "$(TARGET).map"; \
+	\
+	make clean
 
 # -----------------------------------------------------------------------------
 
