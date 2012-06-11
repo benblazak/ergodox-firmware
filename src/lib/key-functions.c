@@ -91,6 +91,13 @@ void kbfun_release(
 		}
 }
 
+// TODO:
+// - allocate 10 layers, by default (overrideable in the map specific .h)
+// - implement having different keys using different layers
+// - implement two shifts => capslock
+// - implement layer lock key combos (make a function to switch to a specific
+//   layer)
+
 void kbfun_layer_inc(
 		uint8_t keycode, uint8_t * current_layer,
 		uint8_t * row,   uint8_t * col ) {
