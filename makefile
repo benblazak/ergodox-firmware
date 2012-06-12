@@ -4,9 +4,9 @@
 # This should produce a single file (probably in an archive format) for
 # distribution, containing everything people will need to use the software.
 #
-# AVAILABILITY:  This is unabashedly dependant on various Unix commands, and
-# therefore probably won't work in a Windows environment.  I'm sorry.  I don't
-# know a good portable way to write it.
+# DEPENDENCIES:  This is unabashedly dependant on various Unix commands, and
+# therefore probably won't work in a Windows environment.  I'm sorry...  I
+# don't know a good portable way to write it.
 #
 # TODO:
 # - include doc files (and maybe render them in html)
@@ -23,10 +23,13 @@ NAME := ergodox-firmware
 # the branch of the git repo we're currently on
 BRANCH := $(shell git branch -l | grep '*' | cut -c 3-)
 # a version identifier
-VERSION := $(shell date +'%Y%m%d_%H%M%S')
+VERSION := $(shell git log -n 1 | grep 'commit' | cut -c 8-14)--$(shell date +'%Y%m%dT%H%M%S')
 
 # name to use for the final distribution file or package
-TARGET = $(NAME)--$(BRANCH)--$(VERSION)
+TARGET := $(NAME)--$(BRANCH)--$(VERSION)
+
+# the build dir
+BUILD := build
 
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
@@ -37,17 +40,22 @@ all: dist
 
 clean:
 	git clean -dX  # remove ignored files and directories
+	-rm -r '$(BUILD)'
 
-dist: src contrib/UI
-
-# -----------------------------------------------------------------------------
-
-.PHONY: src contrib/UI
-
-src:
+dist:
+	# set up the build dir
+	-rm -r '$(BUILD)/$(TARGET)'*
+	-mkdir -p '$(BUILD)/$(TARGET)'
+	# make all subprojects
 	cd src; $(MAKE) all
-	zip '$(TARGET)' src/*.hex src/*.elf src/*.map
-
-contrib/UI:
-	# nothing yet
+	# copy stuff to build dir
+	# --- from src
+	( cd src; \
+	  cp firmware.hex firmware.eep firmware.map \
+	     '../$(BUILD)/$(TARGET)' )
+	# make into a zip archive
+	( cd '$(BUILD)/$(TARGET)'; \
+	  zip '../$(TARGET).zip' \
+	      -r * .* \
+	      -x '..*' )
 
