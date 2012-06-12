@@ -1,5 +1,5 @@
 # -----------------------------------------------------------------------------
-# makefile for the ergoDOX project
+# makefile for the ergoDOX firmware
 #
 # - .h file dependencies are automatically generated
 #
@@ -122,17 +122,7 @@ all: $(TARGET).hex $(TARGET).eep
 clean:
 	@echo
 	@echo --- cleaning ---
-	cd .. ; git clean -dX  # remove ignored files and directories
-
-# availability: linux
-dist: clean all
-	name='ergodox-firmware'; \
-	branch='$(shell git branch -l | grep '*' | cut -c 3-)'; \
-	date='$(shell date +'%Y%m%d_%H%M%S')'; \
-	\
-	zip "$$name--$$branch--$$date.zip" "$(TARGET).hex" "$(TARGET).map"; \
-	\
-	make clean
+	git clean -dX  # remove ignored files and directories
 
 # -----------------------------------------------------------------------------
 
