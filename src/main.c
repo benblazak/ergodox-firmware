@@ -64,6 +64,7 @@ int main(void) {
 						if (press_function) {
 							(*press_function)(
 									kb_layout_get(current_layer, row, col),
+									true,
 									&current_layers, &pressed_layers,
 									&row, &col );
 						}
@@ -75,6 +76,7 @@ int main(void) {
 						if (release_function) {
 							(*release_function)(
 									kb_layout_get(pressed_layer, row, col),
+									false,
 									&current_layers, &pressed_layers,
 									&row, &col );
 						}

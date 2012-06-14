@@ -35,7 +35,7 @@
 
 
 	#define KBFUN_FUNCTION_ARGS					\
-		uint8_t keycode_,					\
+		uint8_t keycode_, bool pressed_,			\
 		uint8_t (*current_layers_)[KB_ROWS][KB_COLUMNS],	\
 		uint8_t (*pressed_layers_)[KB_ROWS][KB_COLUMNS],	\
 		uint8_t * row_, uint8_t * col_
