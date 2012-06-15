@@ -19,14 +19,27 @@
 #include "../layout.h"
 
 
-#include "../../../lib/key-functions.h"
 // aliases
-#define f_press &kbfun_press
-#define f_relea &kbfun_release
-#define f_l_set &kbfun_layer_set
-#define f_l_inc &kbfun_layer_inc
-#define f_l_dec &kbfun_layer_dec
-#define f_2kcap &kbfun_2_keys_capslock_press_release
+// #define f_press &kbfun_press
+// #define f_relea &kbfun_release
+// #define f_l_set &kbfun_layer_set
+// #define f_l_inc &kbfun_layer_inc
+// #define f_l_dec &kbfun_layer_dec
+// #define f_2kcap &kbfun_2_keys_capslock_press_release
+kbfun_funptr_t PROGMEM _kb_layout_functions[6] = {
+	&kbfun_press,
+	&kbfun_release,
+	&kbfun_layer_set,
+	&kbfun_layer_inc,
+	&kbfun_layer_dec,
+	&kbfun_2_keys_capslock_press_release
+};
+#define f_press 0
+#define f_relea 1
+#define f_l_set 2
+#define f_l_inc 3
+#define f_l_dec 4
+#define f_2kcap 5
 
 
 uint8_t PROGMEM _kb_layout[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
@@ -78,11 +91,11 @@ _altR,  _pageU, _pageD )
 };
 
 
-kbfun_funptr_t PROGMEM _kb_layout_press[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
+uint8_t PROGMEM _kb_layout_press[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
 // ----------------------------------------------------------------------------
 	LAYER(  // layer 0: default
 // unused
-NULL,
+   0,
 // left hand
 f_press,f_press,f_press,f_press,f_press,f_press,f_press,
 f_press,f_press,f_press,f_press,f_press,f_press,f_press,
@@ -104,12 +117,12 @@ f_press,f_press,f_press ),
 // ----------------------------------------------------------------------------
 	LAYER(  // layer 1: function and symbol keys
 // unused
-NULL,
+   0,
 // left hand
 f_press,f_press,f_press,f_press,f_press,f_press,f_press,
 f_press,f_press,f_press,f_press,f_press,f_press,f_press,
 f_press,f_press,f_press,f_press,f_press,f_press,
-f_press,f_press,f_press,f_press,f_press,f_press,   NULL,
+f_press,f_press,f_press,f_press,f_press,f_press,      0,
 f_press,f_press,f_press,f_press,f_press,
                                            f_press,
                                            f_press,  f_press,
@@ -118,7 +131,7 @@ f_press,f_press,f_press,f_press,f_press,
        f_press,f_press,f_press,f_press,f_press,f_press,f_press,
        f_press,f_press,f_press,f_press,f_press,f_press,f_press,
                f_press,f_press,f_press,f_press,f_press,f_press,
-          NULL,f_press,f_press,f_press,f_press,f_press,f_press,
+             0,f_press,f_press,f_press,f_press,f_press,f_press,
                        f_press,f_press,f_press,f_press,f_press,
           f_press,
 f_press,  f_press,
@@ -127,11 +140,11 @@ f_press,f_press,f_press )
 };
 
 
-kbfun_funptr_t PROGMEM _kb_layout_release[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
+uint8_t PROGMEM _kb_layout_release[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
 // ----------------------------------------------------------------------------
 	LAYER(  // layer 0: default
 // unused
-NULL,
+   0,
 // left hand
 f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,
 f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,
@@ -153,12 +166,12 @@ f_relea,f_relea,f_relea ),
 // ----------------------------------------------------------------------------
 	LAYER(  // layer 1: function and symbol keys
 // unused
-NULL,
+   0,
 // left hand
 f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,
 f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,
 f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,
-f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,   NULL,
+f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,      0,
 f_relea,f_relea,f_relea,f_relea,f_relea,
                                            f_relea,
                                            f_relea,  f_relea,
@@ -167,7 +180,7 @@ f_relea,f_relea,f_relea,f_relea,f_relea,
        f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,
        f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,
                f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,
-          NULL,f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,
+             0,f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,
                        f_relea,f_relea,f_relea,f_relea,f_relea,
           f_relea,
 f_relea,  f_relea,
