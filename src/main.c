@@ -28,7 +28,7 @@ int main(void) {
 
 	for (;;) {
 		// the overall current layer
-		static uint8_t current layer;
+		static uint8_t current_layer;
 		// the current layer for each key
 		static uint8_t current_layers[KB_ROWS][KB_COLUMNS];
 		// the layer each key was on when it was last pressed
@@ -59,25 +59,25 @@ int main(void) {
 				if (is_pressed != was_pressed) {
 
 					if (is_pressed) {
-						uint8_t current_layer = current_layers[row][col];
-						pressed_layers[row][col] = current_layer;
+						uint8_t layer = current_layers[row][col];
+						pressed_layers[row][col] = layer;
 						kbfun_funptr_t press_function =
-							kb_layout_press_get(current_layer, row, col);
+							kb_layout_press_get(layer, row, col);
 						if (press_function) {
 							(*press_function)(
-									kb_layout_get(current_layer, row, col),
+									kb_layout_get(layer, row, col),
 									true, &current_layer,
 									&current_layers, &pressed_layers,
 									&row, &col );
 						}
 
 					} else {
-						uint8_t pressed_layer = pressed_layers[row][col];
+						uint8_t layer = pressed_layers[row][col];
 						kbfun_funptr_t release_function =
-							kb_layout_release_get(pressed_layer, row, col);
+							kb_layout_release_get(layer, row, col);
 						if (release_function) {
 							(*release_function)(
-									kb_layout_get(pressed_layer, row, col),
+									kb_layout_get(layer, row, col),
 									false, &current_layer,
 									&current_layers, &pressed_layers,
 									&row, &col );

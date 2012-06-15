@@ -45,10 +45,12 @@
 
 	typedef void (*kbfun_funptr_t)( KBFUN_FUNCTION_ARGS );
 
-	void kbfun_press     ( KBFUN_FUNCTION_ARGS );
-	void kbfun_release   ( KBFUN_FUNCTION_ARGS );
-	void kbfun_layer_inc ( KBFUN_FUNCTION_ARGS );
-	void kbfun_layer_dec ( KBFUN_FUNCTION_ARGS );
+	void kbfun_press                         ( KBFUN_FUNCTION_ARGS );
+	void kbfun_release                       ( KBFUN_FUNCTION_ARGS );
+	void kbfun_layer_set                     ( KBFUN_FUNCTION_ARGS );
+	void kbfun_layer_inc                     ( KBFUN_FUNCTION_ARGS );
+	void kbfun_layer_dec                     ( KBFUN_FUNCTION_ARGS );
+	void kbfun_2_keys_capslock_press_release ( KBFUN_FUNCTION_ARGS );
 
 #endif
 

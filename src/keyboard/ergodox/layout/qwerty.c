@@ -19,11 +19,14 @@
 #include "../layout.h"
 
 
+#include "../../../lib/key-functions.h"
 // aliases
 #define f_press &kbfun_press
 #define f_relea &kbfun_release
+#define f_l_set &kbfun_layer_set
 #define f_l_inc &kbfun_layer_inc
 #define f_l_dec &kbfun_layer_dec
+#define f_2kcap &kbfun_2_keys_capslock_press_release
 
 
 uint8_t PROGMEM _kb_layout[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
@@ -33,9 +36,9 @@ uint8_t PROGMEM _kb_layout[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
 0,
 // left hand
 _grave,    _1,      _2,      _3,      _4,      _5,  _equal,
-_tab,      _Q,      _W,      _E,      _R,      _T,  _esc,
-_capsLock, _A,      _S,      _D,      _F,      _G,
-_shiftL,   _Z,      _X,      _C,      _V,      _B,   0,
+_bracketL, _Q,      _W,      _E,      _R,      _T,  _esc,
+_tab,      _A,      _S,      _D,      _F,      _G,
+_shiftL,   _Z,      _X,      _C,      _V,      _B,   1,
 _guiL,     _arrowL, _arrowU, _arrowD, _arrowR,
                                                  _bs,
                                                  _del,     _ctrlL,
@@ -44,7 +47,7 @@ _guiL,     _arrowL, _arrowU, _arrowD, _arrowR,
          _backslash, _6, _7,      _8,      _9,      _0,         _dash,
          _bracketL,  _Y, _U,      _I,      _O,      _P,         _bracketR,
                      _H, _J,      _K,      _L,      _semicolon, _quote,
-          0,         _N, _M,      _comma,  _period, _slash,     _shiftR,
+          1,         _N, _M,      _comma,  _period, _slash,     _shiftR,
                          _arrowL, _arrowD, _arrowU, _arrowR,    _guiR,
             _space,
 _ctrlR,     _enter,
@@ -84,7 +87,7 @@ NULL,
 f_press,f_press,f_press,f_press,f_press,f_press,f_press,
 f_press,f_press,f_press,f_press,f_press,f_press,f_press,
 f_press,f_press,f_press,f_press,f_press,f_press,
-f_press,f_press,f_press,f_press,f_press,f_press,f_l_inc,
+f_2kcap,f_press,f_press,f_press,f_press,f_press,f_l_inc,
 f_press,f_press,f_press,f_press,f_press,
                                            f_press,
                                            f_press,  f_press,
@@ -93,7 +96,7 @@ f_press,f_press,f_press,f_press,f_press,
        f_press,f_press,f_press,f_press,f_press,f_press,f_press,
        f_press,f_press,f_press,f_press,f_press,f_press,f_press,
                f_press,f_press,f_press,f_press,f_press,f_press,
-       f_l_inc,f_press,f_press,f_press,f_press,f_press,f_press,
+       f_l_inc,f_press,f_press,f_press,f_press,f_press,f_2kcap,
                        f_press,f_press,f_press,f_press,f_press,
           f_press,
 f_press,  f_press,
@@ -133,7 +136,7 @@ NULL,
 f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,
 f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,
 f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,
-f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,f_l_dec,
+f_2kcap,f_relea,f_relea,f_relea,f_relea,f_relea,f_l_dec,
 f_relea,f_relea,f_relea,f_relea,f_relea,
                                            f_relea,
                                            f_relea,  f_relea,
@@ -142,7 +145,7 @@ f_relea,f_relea,f_relea,f_relea,f_relea,
        f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,
        f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,
                f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,
-       f_l_dec,f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,
+       f_l_dec,f_relea,f_relea,f_relea,f_relea,f_relea,f_2kcap,
                        f_relea,f_relea,f_relea,f_relea,f_relea,
           f_relea,
 f_relea,  f_relea,

@@ -101,7 +101,7 @@ void _press_release(uint8_t keycode, bool pressed) {
  * Arguments
  * - value: the new layer value
  * - current_layer: (a pointer to) the overall current layer (see main.c)
- * - current_layers_: (a pointer to a matrix of) the current layer for each key
+ * - current_layers: (a pointer to a matrix of) the current layer for each key
  *   (see main.c and lib/key-functions.h)
  *
  * Note
@@ -112,20 +112,51 @@ void _press_release(uint8_t keycode, bool pressed) {
 void _layer_set_current(
 		uint8_t value,
 		uint8_t * current_layer,
-		uint8_t * current_layers_[KB_ROWS][KB_COLUMNS] ) {
+		uint8_t (*current_layers)[KB_ROWS][KB_COLUMNS] ) {
 
 	// don't switch to out-of-bounds layers
-	if (!( (0 <= *current_layer) && (*current_layer < KB_LAYERS) ))
+	if ( value < 0 || value >= KB_LAYERS )
 		return;
 
 	for (uint8_t row=0; row<KB_ROWS; row++)
 		for (uint8_t col=0; col<KB_COLUMNS; col++)
-			// only change layers that are currently current.  if a
-			// key is set to a non-current layer, leave it alone
-			if ((*current_layers_)[row][col] == *current_layer)
-				(*current_layers_)[row][col] = value;
+			// if a key is set to a non-current layer, let it be
+			if ((*current_layers)[row][col] == *current_layer)
+				(*current_layers)[row][col] = value;
 
 	(*current_layer) = value;
+}
+
+/*
+ * Is the given keycode pressed?
+ */
+bool _is_pressed(uint8_t keycode) {
+	// modifier keys
+	switch (keycode) {
+		case KEY_LeftControl:  if (keyboard_modifier_keys & (1<<0))
+					       return true;
+		case KEY_LeftShift:    if (keyboard_modifier_keys & (1<<1))
+					       return true;
+		case KEY_LeftAlt:      if (keyboard_modifier_keys & (1<<2))
+					       return true;
+		case KEY_LeftGUI:      if (keyboard_modifier_keys & (1<<3))
+					       return true;
+		case KEY_RightControl: if (keyboard_modifier_keys & (1<<4))
+					       return true;
+		case KEY_RightShift:   if (keyboard_modifier_keys & (1<<5))
+					       return true;
+		case KEY_RightAlt:     if (keyboard_modifier_keys & (1<<6))
+					       return true;
+		case KEY_RightGUI:     if (keyboard_modifier_keys & (1<<7))
+					       return true;
+	}
+
+	// all others
+	for (uint8_t i=0; i<6; i++)
+		if (keyboard_keys[i] == keycode)
+			return true;
+
+	return false;
 }
 
 
@@ -134,65 +165,98 @@ void _layer_set_current(
 // ----------------------------------------------------------------------------
 
 /*
- * - press
- * - generate a normal keypress
+ * Press
+ * - Generate a normal keypress
  */
 void kbfun_press( KBFUN_FUNCTION_ARGS ) {
 	_press_release(keycode_, true);
 }
 
 /*
- * - release
- * - generate a normal keyrelease
+ * Release
+ * - Generate a normal keyrelease
  */
 void kbfun_release( KBFUN_FUNCTION_ARGS ) {
 	_press_release(keycode_, false);
 }
 
 /*
- * - set layer
- * - set layer to the value specified in the keymap (as a number instead of a
- *   keycode)
+ * Set layer
+ * - Set layer to the value specified in the keymap (using the value as a
+ *   number instead of a keycode)
  */
 void kbfun_layer_set( KBFUN_FUNCTION_ARGS ) {
 	_layer_set_current( keycode_, current_layer_, current_layers_ );
 }
 
 /*
- * - next layer
- * - layer increment (for all non-masked keys)
+ * Increase layer
+ * - Increment layer by the value specified in the keymap (for all non-masked
+ *   keys)
  */
 void kbfun_layer_inc( KBFUN_FUNCTION_ARGS ) {
 	_layer_set_current(
-			(*current_layer_)+1,
+			(*current_layer_) + keycode_,
 			current_layer_,
 			current_layers_ );
 }
 
 /*
- * - previous layer
- * - layer decrement (for all keys)
+ * Decrease layer
+ * - Decrement layer by the value specified in the keymap (for all non-masked
+ *   keys)
  */
 void kbfun_layer_dec( KBFUN_FUNCTION_ARGS ) {
 	_layer_set_current(
-			(*current_layer_)-1,
+			(*current_layer_) - keycode_,
 			current_layer_,
 			current_layers_ );
 }
 
 /*
- * - two keys => capslock
- * - when assigned to two keys (e.g. the physical left and right shift keys),
- *   pressing and holding down one of them makes the second toggle capslock
+ * Two keys => capslock
+ * - When assigned to two keys (e.g. the physical left and right shift keys)
+ *   (in both the press and release matrices), pressing and holding down one of
+ *   the keys will make the second toggle capslock
+ *
+ * Note
+ * - If either of the shifts are pressed when the second key is pressed, they
+ *   wil be released so that capslock will register properly when pressed.
+ *   Capslock will then be pressed and released, and the original state of the
+ *   shifts will be restored
  */
+#include "../lib/usb/usage-page/keyboard.h"
 void kbfun_2_keys_capslock_press_release( KBFUN_FUNCTION_ARGS ) {
-	static uint8_t keys_pressed = 0;
+	static uint8_t keys_pressed;
+	static bool lshift_pressed;
+	static bool rshift_pressed;
 
 	if (!pressed_) keys_pressed--;
 
+	// take care of the key that was actually pressed
 	_press_release(keycode_, pressed_);
-	if (keys_pressed == 1)
-		_press_release(KEY_CapsLock, pressed_);
+
+	// take care of capslock (only on the press of the 2nd key)
+	if (keys_pressed == 1 && pressed_) {
+		// save the state of left and right shift
+		lshift_pressed = _is_pressed(KEY_LeftShift);
+		rshift_pressed = _is_pressed(KEY_RightShift);
+		// disable both
+		_press_release(KEY_LeftShift, false);
+		_press_release(KEY_RightShift, false);
+
+		// press capslock, then release it
+		_press_release(KEY_CapsLock, true);
+		usb_keyboard_send();
+		_press_release(KEY_CapsLock, false);
+		usb_keyboard_send();
+
+		// restore the state of left and right shift
+		if (lshift_pressed)
+			_press_release(KEY_LeftShift, true);
+		if (rshift_pressed)
+			_press_release(KEY_RightShift, true);
+	}
 
 	if (pressed_) keys_pressed++;
 }

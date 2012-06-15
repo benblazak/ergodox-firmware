@@ -17,7 +17,8 @@
 	void _layer_set_current(
 			uint8_t value,
 			uint8_t * current_layer,
-			uint8_t * current_layers_[KB_ROWS][KB_COLUMNS] );
+			uint8_t (*current_layers_)[KB_ROWS][KB_COLUMNS] );
+	bool _is_pressed(uint8_t keycode);
 
 #endif
 
