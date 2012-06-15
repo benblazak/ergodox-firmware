@@ -35,10 +35,13 @@
 
 
 	#define KBFUN_FUNCTION_ARGS					\
-		uint8_t keycode_, bool pressed_,			\
+		uint8_t keycode_,					\
+		bool pressed_,						\
+		uint8_t * current_layer_,				\
 		uint8_t (*current_layers_)[KB_ROWS][KB_COLUMNS],	\
 		uint8_t (*pressed_layers_)[KB_ROWS][KB_COLUMNS],	\
-		uint8_t * row_, uint8_t * col_
+		uint8_t * row_,						\
+		uint8_t * col_
 
 	typedef void (*kbfun_funptr_t)( KBFUN_FUNCTION_ARGS );
 

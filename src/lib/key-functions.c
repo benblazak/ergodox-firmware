@@ -16,8 +16,12 @@
 #include "lib/usb/usage-page/keyboard.h"
 #include "keyboard.h"
 
-#include "key-functions.h"
+#include "key-functions.h"  // includes the appropriate keyboard 'matrix.h'
+#include "key-functions--private.h"
 
+
+// ----------------------------------------------------------------------------
+// private functions
 // ----------------------------------------------------------------------------
 
 /*
@@ -29,9 +33,10 @@
  *
  * Note
  * - Because of the way USB does things, what this actually does is either add
- *   or remove 'keycode' from the list of currently pressed keys
+ *   or remove 'keycode' from the list of currently pressed keys, to be sent at
+ *   the end of the current cycle (see main.c)
  */
-static void _press_release(uint8_t keycode, bool pressed) {
+void _press_release(uint8_t keycode, bool pressed) {
 	// no-op
 	if (keycode == 0)
 		return;
@@ -88,6 +93,44 @@ static void _press_release(uint8_t keycode, bool pressed) {
 	}
 }
 
+/*
+ * Set current layer
+ * - Sets any keys currently set to the overall current layer to the new layer,
+ *   and then sets the overall current layer
+ *
+ * Arguments
+ * - value: the new layer value
+ * - current_layer: (a pointer to) the overall current layer (see main.c)
+ * - current_layers_: (a pointer to a matrix of) the current layer for each key
+ *   (see main.c and lib/key-functions.h)
+ *
+ * Note
+ * - Leaving all non-current layer values alone allows changing layers while
+ *   maintaining a possibly enabled layer mask (as might be used to implement
+ *   firmware enabled numlock)
+ */
+void _layer_set_current(
+		uint8_t value,
+		uint8_t * current_layer,
+		uint8_t * current_layers_[KB_ROWS][KB_COLUMNS] ) {
+
+	// don't switch to out-of-bounds layers
+	if (!( (0 <= *current_layer) && (*current_layer < KB_LAYERS) ))
+		return;
+
+	for (uint8_t row=0; row<KB_ROWS; row++)
+		for (uint8_t col=0; col<KB_COLUMNS; col++)
+			// only change layers that are currently current.  if a
+			// key is set to a non-current layer, leave it alone
+			if ((*current_layers_)[row][col] == *current_layer)
+				(*current_layers_)[row][col] = value;
+
+	(*current_layer) = value;
+}
+
+
+// ----------------------------------------------------------------------------
+// public functions
 // ----------------------------------------------------------------------------
 
 /*
@@ -106,20 +149,24 @@ void kbfun_release( KBFUN_FUNCTION_ARGS ) {
 	_press_release(keycode_, false);
 }
 
-// TODO:
-// - implement layer lock key combos (make a function to switch to a specific
-//   layer)
+/*
+ * - set layer
+ * - set layer to the value specified in the keymap (as a number instead of a
+ *   keycode)
+ */
+void kbfun_layer_set( KBFUN_FUNCTION_ARGS ) {
+	_layer_set_current( keycode_, current_layer_, current_layers_ );
+}
 
 /*
  * - next layer
- * - layer increment (for all keys)
+ * - layer increment (for all non-masked keys)
  */
 void kbfun_layer_inc( KBFUN_FUNCTION_ARGS ) {
-	for (uint8_t row=0; row<KB_ROWS; row++)
-		for (uint8_t col=0; col<KB_COLUMNS; col++)
-			if ((*current_layers_)[row][col] < (KB_LAYERS-1))
-				((*current_layers_)[row][col])++;
-			// else do nothing
+	_layer_set_current(
+			(*current_layer_)+1,
+			current_layer_,
+			current_layers_ );
 }
 
 /*
@@ -127,11 +174,10 @@ void kbfun_layer_inc( KBFUN_FUNCTION_ARGS ) {
  * - layer decrement (for all keys)
  */
 void kbfun_layer_dec( KBFUN_FUNCTION_ARGS ) {
-	for (uint8_t row=0; row<KB_ROWS; row++)
-		for (uint8_t col=0; col<KB_COLUMNS; col++)
-			if ((*current_layers_)[row][col] > 0)
-				((*current_layers_)[row][col])--;
-			// else do nothing
+	_layer_set_current(
+			(*current_layer_)-1,
+			current_layer_,
+			current_layers_ );
 }
 
 /*

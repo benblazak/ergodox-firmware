@@ -27,6 +27,8 @@ int main(void) {
 	kb_led_state_ready();
 
 	for (;;) {
+		// the overall current layer
+		static uint8_t current layer;
 		// the current layer for each key
 		static uint8_t current_layers[KB_ROWS][KB_COLUMNS];
 		// the layer each key was on when it was last pressed
@@ -64,7 +66,7 @@ int main(void) {
 						if (press_function) {
 							(*press_function)(
 									kb_layout_get(current_layer, row, col),
-									true,
+									true, &current_layer,
 									&current_layers, &pressed_layers,
 									&row, &col );
 						}
@@ -76,7 +78,7 @@ int main(void) {
 						if (release_function) {
 							(*release_function)(
 									kb_layout_get(pressed_layer, row, col),
-									false,
+									false, &current_layer,
 									&current_layers, &pressed_layers,
 									&row, &col );
 						}
