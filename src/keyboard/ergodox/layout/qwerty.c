@@ -19,7 +19,6 @@
 #include "../layout.h"
 
 
-#include "../../../lib/key-functions.h"
 // aliases
 #define f_press &kbfun_press
 #define f_relea &kbfun_release
