@@ -20,12 +20,13 @@
 
 
 // aliases
-#define f_press &kbfun_press
-#define f_relea &kbfun_release
+#define f_prrel &kbfun_press_release
+#define f_toggl &kbfun_toggle
 #define f_l_set &kbfun_layer_set
 #define f_l_inc &kbfun_layer_inc
 #define f_l_dec &kbfun_layer_dec
 #define f_2kcap &kbfun_2_keys_capslock_press_release
+#define f_lidpr &kbfun_layer_inc_dec_press_release
 
 
 uint8_t PROGMEM _kb_layout[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
@@ -83,45 +84,45 @@ kbfun_funptr_t PROGMEM _kb_layout_press[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
 // unused
 NULL,
 // left hand
-f_press,f_press,f_press,f_press,f_press,f_press,f_press,
-f_press,f_press,f_press,f_press,f_press,f_press,f_press,
-f_press,f_press,f_press,f_press,f_press,f_press,
-f_2kcap,f_press,f_press,f_press,f_press,f_press,f_l_inc,
-f_press,f_press,f_press,f_press,f_press,
-                                           f_press,
-                                           f_press,  f_press,
-                                       f_press,f_press,f_press,
+f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
+f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
+f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
+f_2kcap,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_l_inc,
+f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
+                                           f_prrel,
+                                           f_prrel,  f_prrel,
+                                       f_prrel,f_prrel,f_prrel,
 // right hand
-       f_press,f_press,f_press,f_press,f_press,f_press,f_press,
-       f_press,f_press,f_press,f_press,f_press,f_press,f_press,
-               f_press,f_press,f_press,f_press,f_press,f_press,
-       f_l_inc,f_press,f_press,f_press,f_press,f_press,f_2kcap,
-                       f_press,f_press,f_press,f_press,f_press,
-          f_press,
-f_press,  f_press,
-f_press,f_press,f_press ),
+       f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
+       f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
+               f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
+       f_l_inc,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_2kcap,
+                       f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
+          f_prrel,
+f_prrel,  f_prrel,
+f_prrel,f_prrel,f_prrel ),
 // ----------------------------------------------------------------------------
 	LAYER(  // layer 1: function and symbol keys
 // unused
 NULL,
 // left hand
-f_press,f_press,f_press,f_press,f_press,f_press,f_press,
-f_press,f_press,f_press,f_press,f_press,f_press,f_press,
-f_press,f_press,f_press,f_press,f_press,f_press,
-f_press,f_press,f_press,f_press,f_press,f_press,   NULL,
-f_press,f_press,f_press,f_press,f_press,
-                                           f_press,
-                                           f_press,  f_press,
-                                       f_press,f_press,f_press,
+f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
+f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
+f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
+f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,   NULL,
+f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
+                                           f_prrel,
+                                           f_prrel,  f_prrel,
+                                       f_prrel,f_prrel,f_prrel,
 // right hand
-       f_press,f_press,f_press,f_press,f_press,f_press,f_press,
-       f_press,f_press,f_press,f_press,f_press,f_press,f_press,
-               f_press,f_press,f_press,f_press,f_press,f_press,
-          NULL,f_press,f_press,f_press,f_press,f_press,f_press,
-                       f_press,f_press,f_press,f_press,f_press,
-          f_press,
-f_press,  f_press,
-f_press,f_press,f_press )
+       f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
+       f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
+               f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
+          NULL,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
+                       f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
+          f_prrel,
+f_prrel,  f_prrel,
+f_prrel,f_prrel,f_prrel )
 // ----------------------------------------------------------------------------
 };
 
@@ -132,45 +133,45 @@ kbfun_funptr_t PROGMEM _kb_layout_release[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
 // unused
 NULL,
 // left hand
-f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,
-f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,
-f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,
-f_2kcap,f_relea,f_relea,f_relea,f_relea,f_relea,f_l_dec,
-f_relea,f_relea,f_relea,f_relea,f_relea,
-                                           f_relea,
-                                           f_relea,  f_relea,
-                                       f_relea,f_relea,f_relea,
+f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
+f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
+f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
+f_2kcap,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_l_dec,
+f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
+                                           f_prrel,
+                                           f_prrel,  f_prrel,
+                                       f_prrel,f_prrel,f_prrel,
 // right hand
-       f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,
-       f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,
-               f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,
-       f_l_dec,f_relea,f_relea,f_relea,f_relea,f_relea,f_2kcap,
-                       f_relea,f_relea,f_relea,f_relea,f_relea,
-          f_relea,
-f_relea,  f_relea,
-f_relea,f_relea,f_relea ),
+       f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
+       f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
+               f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
+       f_l_dec,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_2kcap,
+                       f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
+          f_prrel,
+f_prrel,  f_prrel,
+f_prrel,f_prrel,f_prrel ),
 // ----------------------------------------------------------------------------
 	LAYER(  // layer 1: function and symbol keys
 // unused
 NULL,
 // left hand
-f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,
-f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,
-f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,
-f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,   NULL,
-f_relea,f_relea,f_relea,f_relea,f_relea,
-                                           f_relea,
-                                           f_relea,  f_relea,
-                                       f_relea,f_relea,f_relea,
+f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
+f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
+f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
+f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,   NULL,
+f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
+                                           f_prrel,
+                                           f_prrel,  f_prrel,
+                                       f_prrel,f_prrel,f_prrel,
 // right hand
-       f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,
-       f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,
-               f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,
-          NULL,f_relea,f_relea,f_relea,f_relea,f_relea,f_relea,
-                       f_relea,f_relea,f_relea,f_relea,f_relea,
-          f_relea,
-f_relea,  f_relea,
-f_relea,f_relea,f_relea )
+       f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
+       f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
+               f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
+          NULL,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
+                       f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
+          f_prrel,
+f_prrel,  f_prrel,
+f_prrel,f_prrel,f_prrel )
 // ----------------------------------------------------------------------------
 };
 

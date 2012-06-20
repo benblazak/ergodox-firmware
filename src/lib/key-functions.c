@@ -16,8 +16,37 @@
 #include "lib/usb/usage-page/keyboard.h"
 #include "keyboard.h"
 
-#include "key-functions.h"  // includes the appropriate keyboard 'matrix.h'
+#include "key-functions.h"
 #include "key-functions--private.h"
+
+
+// ----------------------------------------------------------------------------
+// public functions not for key(press|release)
+// ----------------------------------------------------------------------------
+
+/*
+ * Exec key
+ * - Execute the keypress or keyrelease function (if it exists) of the key at
+ *   the current possition.  Pass the keycode at the current position, and pass
+ *   all other arguments as received
+ */
+void _kbfun_exec_key( KBFUN_FUNCTION_ARGS ) {
+	kbfun_funptr_t key_function =
+		( (pressed_)
+		  ? kb_layout_press_get(layer_, *row_, *col_)
+		  : kb_layout_release_get(layer_, *row_, *col_) );
+
+	if (key_function)
+		(*key_function)(
+				pressed_,
+				kb_layout_get(layer_, *row_, *col_),
+				layer_,
+				row_,
+				col_,
+				current_layer_,
+				current_layers_,
+				pressed_layers_ );
+}
 
 
 // ----------------------------------------------------------------------------
@@ -36,7 +65,7 @@
  *   or remove 'keycode' from the list of currently pressed keys, to be sent at
  *   the end of the current cycle (see main.c)
  */
-void _press_release(uint8_t keycode, bool pressed) {
+void _press_release(bool pressed, uint8_t keycode) {
 	// no-op
 	if (keycode == 0)
 		return;
@@ -165,19 +194,22 @@ bool _is_pressed(uint8_t keycode) {
 // ----------------------------------------------------------------------------
 
 /*
- * Press
- * - Generate a normal keypress
+ * Press|Release
+ * - Generate a normal keypress or keyrelease
  */
-void kbfun_press( KBFUN_FUNCTION_ARGS ) {
-	_press_release(keycode_, true);
+void kbfun_press_release( KBFUN_FUNCTION_ARGS ) {
+	_press_release(pressed_, keycode_);
 }
 
 /*
- * Release
- * - Generate a normal keyrelease
+ * Toggle
+ * - Toggle the key on or off
  */
-void kbfun_release( KBFUN_FUNCTION_ARGS ) {
-	_press_release(keycode_, false);
+void kbfun_toggle( KBFUN_FUNCTION_ARGS ) {
+	if (_is_pressed(keycode_))
+		_press_release(false, keycode_);
+	else
+		_press_release(true, keycode_);
 }
 
 /*
@@ -191,8 +223,8 @@ void kbfun_layer_set( KBFUN_FUNCTION_ARGS ) {
 
 /*
  * Increase layer
- * - Increment layer by the value specified in the keymap (for all non-masked
- *   keys)
+ * - Increment the current layer by the value specified in the keymap (for all
+ *   non-masked keys)
  */
 void kbfun_layer_inc( KBFUN_FUNCTION_ARGS ) {
 	_layer_set_current(
@@ -203,8 +235,8 @@ void kbfun_layer_inc( KBFUN_FUNCTION_ARGS ) {
 
 /*
  * Decrease layer
- * - Decrement layer by the value specified in the keymap (for all non-masked
- *   keys)
+ * - Decrement the current layer by the value specified in the keymap (for all
+ *   non-masked keys)
  */
 void kbfun_layer_dec( KBFUN_FUNCTION_ARGS ) {
 	_layer_set_current(
@@ -217,7 +249,7 @@ void kbfun_layer_dec( KBFUN_FUNCTION_ARGS ) {
  * Two keys => capslock
  * - When assigned to two keys (e.g. the physical left and right shift keys)
  *   (in both the press and release matrices), pressing and holding down one of
- *   the keys will make the second toggle capslock
+ *   the keys will make the second key toggle capslock
  *
  * Note
  * - If either of the shifts are pressed when the second key is pressed, they
@@ -225,7 +257,6 @@ void kbfun_layer_dec( KBFUN_FUNCTION_ARGS ) {
  *   Capslock will then be pressed and released, and the original state of the
  *   shifts will be restored
  */
-#include "../lib/usb/usage-page/keyboard.h"
 void kbfun_2_keys_capslock_press_release( KBFUN_FUNCTION_ARGS ) {
 	static uint8_t keys_pressed;
 	static bool lshift_pressed;
@@ -234,7 +265,7 @@ void kbfun_2_keys_capslock_press_release( KBFUN_FUNCTION_ARGS ) {
 	if (!pressed_) keys_pressed--;
 
 	// take care of the key that was actually pressed
-	_press_release(keycode_, pressed_);
+	_press_release(pressed_, keycode_);
 
 	// take care of capslock (only on the press of the 2nd key)
 	if (keys_pressed == 1 && pressed_) {
@@ -242,22 +273,44 @@ void kbfun_2_keys_capslock_press_release( KBFUN_FUNCTION_ARGS ) {
 		lshift_pressed = _is_pressed(KEY_LeftShift);
 		rshift_pressed = _is_pressed(KEY_RightShift);
 		// disable both
-		_press_release(KEY_LeftShift, false);
-		_press_release(KEY_RightShift, false);
+		_press_release(false, KEY_LeftShift);
+		_press_release(false, KEY_RightShift);
 
 		// press capslock, then release it
-		_press_release(KEY_CapsLock, true);
+		_press_release(true, KEY_CapsLock);
 		usb_keyboard_send();
-		_press_release(KEY_CapsLock, false);
+		_press_release(false, KEY_CapsLock);
 		usb_keyboard_send();
 
 		// restore the state of left and right shift
 		if (lshift_pressed)
-			_press_release(KEY_LeftShift, true);
+			_press_release(true, KEY_LeftShift);
 		if (rshift_pressed)
-			_press_release(KEY_RightShift, true);
+			_press_release(true, KEY_RightShift);
 	}
 
 	if (pressed_) keys_pressed++;
+}
+
+/*
+ * Layer (inc|dec), key (press|release)
+ * - Increment (for press) or decrement (for release) the current layer by the
+ *   value specified in the keymap (for all non-masked keys), and press or
+ *   release the key in the same position on that new layer
+ */
+void kbfun_layer_inc_dec_press_release( KBFUN_FUNCTION_ARGS ) {
+	// switch layers
+	_layer_set_current(
+			( (pressed_)
+			  ? (*current_layer_) + keycode_
+			  : (*current_layer_) - keycode_ ),
+			current_layer_,
+			current_layers_ );
+
+	// exececute second key (in the same position)
+	_kbfun_exec_key(
+			pressed_, 0, layer_+keycode_,
+			row_, col_, current_layer_,
+			current_layers_, pressed_layers_ );
 }
 

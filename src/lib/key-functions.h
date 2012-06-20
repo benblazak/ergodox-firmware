@@ -35,22 +35,26 @@
 
 
 	#define KBFUN_FUNCTION_ARGS					\
-		uint8_t keycode_,					\
 		bool pressed_,						\
+		uint8_t keycode_,					\
+		uint8_t layer_,						\
+		uint8_t * row_,						\
+		uint8_t * col_,						\
 		uint8_t * current_layer_,				\
 		uint8_t (*current_layers_)[KB_ROWS][KB_COLUMNS],	\
-		uint8_t (*pressed_layers_)[KB_ROWS][KB_COLUMNS],	\
-		uint8_t * row_,						\
-		uint8_t * col_
+		uint8_t (*pressed_layers_)[KB_ROWS][KB_COLUMNS]
 
 	typedef void (*kbfun_funptr_t)( KBFUN_FUNCTION_ARGS );
 
-	void kbfun_press                         ( KBFUN_FUNCTION_ARGS );
-	void kbfun_release                       ( KBFUN_FUNCTION_ARGS );
-	void kbfun_layer_set                     ( KBFUN_FUNCTION_ARGS );
-	void kbfun_layer_inc                     ( KBFUN_FUNCTION_ARGS );
-	void kbfun_layer_dec                     ( KBFUN_FUNCTION_ARGS );
-	void kbfun_2_keys_capslock_press_release ( KBFUN_FUNCTION_ARGS );
+	void _kbfun_exec_key ( KBFUN_FUNCTION_ARGS );
+
+	void kbfun_press_release			(KBFUN_FUNCTION_ARGS);
+	void kbfun_toggle				(KBFUN_FUNCTION_ARGS);
+	void kbfun_layer_set				(KBFUN_FUNCTION_ARGS);
+	void kbfun_layer_inc				(KBFUN_FUNCTION_ARGS);
+	void kbfun_layer_dec				(KBFUN_FUNCTION_ARGS);
+	void kbfun_2_keys_capslock_press_release	(KBFUN_FUNCTION_ARGS);
+	void kbfun_layer_inc_dec_press_release		(KBFUN_FUNCTION_ARGS);
 
 #endif
 

@@ -13,7 +13,7 @@
 #ifndef KEY_FUNCTIONS_h_PRIVATE
 	#define KEY_FUNCTIONS_h_PRIVATE
 
-	void _press_release(uint8_t keycode, bool pressed);
+	void _press_release(bool pressed, uint8_t keycode);
 	void _layer_set_current(
 			uint8_t value,
 			uint8_t * current_layer,
