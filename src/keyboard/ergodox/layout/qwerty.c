@@ -189,7 +189,7 @@ f_l_dex,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
 f_2kcap,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
    NULL,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
    NULL,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
-   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL )
+   NULL,   NULL,   NULL,   NULL,   NULL,   NULL          )
 // ----------------------------------------------------------------------------
 };
 
