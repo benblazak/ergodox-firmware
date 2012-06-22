@@ -53,8 +53,9 @@
 	void kbfun_layer_set				(KBFUN_FUNCTION_ARGS);
 	void kbfun_layer_inc				(KBFUN_FUNCTION_ARGS);
 	void kbfun_layer_dec				(KBFUN_FUNCTION_ARGS);
+	void kbfun_layer_inc_exec			(KBFUN_FUNCTION_ARGS);
+	void kbfun_layer_dec_exec			(KBFUN_FUNCTION_ARGS);
 	void kbfun_2_keys_capslock_press_release	(KBFUN_FUNCTION_ARGS);
-	void kbfun_layer_inc_dec_press_release		(KBFUN_FUNCTION_ARGS);
 
 #endif
 

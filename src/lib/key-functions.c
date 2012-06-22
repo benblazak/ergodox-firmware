@@ -246,6 +246,56 @@ void kbfun_layer_dec( KBFUN_FUNCTION_ARGS ) {
 }
 
 /*
+ * Increase layer, Execute key
+ * - Increment the current layer by the value specified in the keymap (for all
+ *   non-masked keys), and execute (usually press|release) the key in the same
+ *   position on that new layer
+ *
+ * Note
+ * - Meant to be paired with `kbfun_layer_dec_exec()`
+ */
+void kbfun_layer_inc_exec( KBFUN_FUNCTION_ARGS ) {
+	// switch layers
+	_layer_set_current(
+			(*current_layer_) + keycode_,
+			current_layer_,
+			current_layers_ );
+
+	// exececute second key (in the same position)
+	// - `layer_+keycode_` will be constant (under normal circumstances)
+	//   between the press and release
+	_kbfun_exec_key(
+			pressed_, 0, layer_+keycode_,
+			row_, col_, current_layer_,
+			current_layers_, pressed_layers_ );
+}
+
+/*
+ * Decrease layer, Execute key
+ * - Decrement the current layer by the value specified in the keymap (for all
+ *   non-masked keys), and execute (usually press|release) the key in the same
+ *   position on that new layer
+ *
+ * Note
+ * - Meant to be paired with `kbfun_layer_inc_exec()`
+ */
+void kbfun_layer_dec_exec( KBFUN_FUNCTION_ARGS ) {
+	// switch layers
+	_layer_set_current(
+			(*current_layer_) - keycode_,
+			current_layer_,
+			current_layers_ );
+
+	// exececute second key (in the same position)
+	// - `layer_+keycode_` will be constant (under normal circumstances)
+	//   between the press and release
+	_kbfun_exec_key(
+			pressed_, 0, layer_+keycode_,
+			row_, col_, current_layer_,
+			current_layers_, pressed_layers_ );
+}
+
+/*
  * Two keys => capslock
  * - When assigned to two keys (e.g. the physical left and right shift keys)
  *   (in both the press and release matrices), pressing and holding down one of
@@ -290,27 +340,5 @@ void kbfun_2_keys_capslock_press_release( KBFUN_FUNCTION_ARGS ) {
 	}
 
 	if (pressed_) keys_pressed++;
-}
-
-/*
- * Layer (inc|dec), key (press|release)
- * - Increment (for press) or decrement (for release) the current layer by the
- *   value specified in the keymap (for all non-masked keys), and press or
- *   release the key in the same position on that new layer
- */
-void kbfun_layer_inc_dec_press_release( KBFUN_FUNCTION_ARGS ) {
-	// switch layers
-	_layer_set_current(
-			( (pressed_)
-			  ? (*current_layer_) + keycode_
-			  : (*current_layer_) - keycode_ ),
-			current_layer_,
-			current_layers_ );
-
-	// exececute second key (in the same position)
-	_kbfun_exec_key(
-			pressed_, 0, layer_+keycode_,
-			row_, col_, current_layer_,
-			current_layers_, pressed_layers_ );
 }
 

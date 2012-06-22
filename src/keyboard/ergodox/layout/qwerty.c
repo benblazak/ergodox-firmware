@@ -25,8 +25,9 @@
 #define f_l_set &kbfun_layer_set
 #define f_l_inc &kbfun_layer_inc
 #define f_l_dec &kbfun_layer_dec
+#define f_l_iex &kbfun_layer_inc_exec
+#define f_l_dex &kbfun_layer_dec_exec
 #define f_2kcap &kbfun_2_keys_capslock_press_release
-#define f_lidpr &kbfun_layer_inc_dec_press_release
 
 
 uint8_t PROGMEM _kb_layout[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
@@ -171,7 +172,24 @@ f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
                        f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
           f_prrel,
 f_prrel,  f_prrel,
-f_prrel,f_prrel,f_prrel )
+f_prrel,f_prrel,f_prrel ),
+// ----------------------------------------------------------------------------
+	LAYER(  // layer 2: nothing (just making sure unused functions don't
+	        //   get compiled out)
+// unused
+NULL,
+// other
+f_prrel,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
+f_toggl,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
+f_l_set,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
+f_l_inc,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
+f_l_dec,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
+f_l_iex,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
+f_l_dex,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
+f_2kcap,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
+   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
+   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
+   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL )
 // ----------------------------------------------------------------------------
 };
 
