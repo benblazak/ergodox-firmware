@@ -50,7 +50,6 @@
 
 	void kbfun_press_release			(KBFUN_FUNCTION_ARGS);
 	void kbfun_toggle				(KBFUN_FUNCTION_ARGS);
-	void kbfun_layer_set				(KBFUN_FUNCTION_ARGS);
 	void kbfun_layer_inc				(KBFUN_FUNCTION_ARGS);
 	void kbfun_layer_dec				(KBFUN_FUNCTION_ARGS);
 	void kbfun_layer_inc_exec			(KBFUN_FUNCTION_ARGS);

@@ -213,15 +213,6 @@ void kbfun_toggle( KBFUN_FUNCTION_ARGS ) {
 }
 
 /*
- * Set layer
- * - Set layer to the value specified in the keymap (using the value as a
- *   number instead of a keycode)
- */
-void kbfun_layer_set( KBFUN_FUNCTION_ARGS ) {
-	_layer_set_current( keycode_, current_layer_, current_layers_ );
-}
-
-/*
  * Increase layer
  * - Increment the current layer by the value specified in the keymap (for all
  *   non-masked keys)

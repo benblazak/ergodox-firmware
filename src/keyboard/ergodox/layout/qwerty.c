@@ -22,7 +22,6 @@
 // aliases
 #define f_prrel &kbfun_press_release
 #define f_toggl &kbfun_toggle
-#define f_l_set &kbfun_layer_set
 #define f_l_inc &kbfun_layer_inc
 #define f_l_dec &kbfun_layer_dec
 #define f_l_iex &kbfun_layer_inc_exec
@@ -181,12 +180,12 @@ NULL,
 // other
 f_prrel,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
 f_toggl,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
-f_l_set,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
 f_l_inc,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
 f_l_dec,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
 f_l_iex,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
 f_l_dex,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
 f_2kcap,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
+   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
    NULL,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
    NULL,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
    NULL,   NULL,   NULL,   NULL,   NULL,   NULL          )
