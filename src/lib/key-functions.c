@@ -21,7 +21,7 @@
 
 
 // ----------------------------------------------------------------------------
-// public functions not for key(press|release)
+// public functions (not for keys)
 // ----------------------------------------------------------------------------
 
 /*
@@ -128,7 +128,7 @@ void _press_release(bool pressed, uint8_t keycode) {
  *   and then sets the overall current layer
  *
  * Arguments
- * - value: the new layer value
+ * - layer: the new layer value
  * - current_layer: (a pointer to) the overall current layer (see main.c)
  * - current_layers: (a pointer to a matrix of) the current layer for each key
  *   (see main.c and lib/key-functions.h)
@@ -139,21 +139,40 @@ void _press_release(bool pressed, uint8_t keycode) {
  *   firmware enabled numlock)
  */
 void _layer_set_current(
-		uint8_t value,
+		uint8_t layer,
 		uint8_t * current_layer,
 		uint8_t (*current_layers)[KB_ROWS][KB_COLUMNS] ) {
 
 	// don't switch to out-of-bounds layers
-	if ( value < 0 || value >= KB_LAYERS )
+	if ( layer < 0 || layer >= KB_LAYERS )
 		return;
 
 	for (uint8_t row=0; row<KB_ROWS; row++)
 		for (uint8_t col=0; col<KB_COLUMNS; col++)
-			// if a key is set to a non-current layer, let it be
+			// if a key is set to a non-current layer, leave it
 			if ((*current_layers)[row][col] == *current_layer)
-				(*current_layers)[row][col] = value;
+				(*current_layers)[row][col] = layer;
 
-	(*current_layer) = value;
+	(*current_layer) = layer;
+}
+
+/*
+ * Set layer mask
+ * - Sets the specified key positions to the specified layer
+ */
+void _layer_set_mask(
+		uint8_t layer,
+		bool positions[KB_ROWS][KB_COLUMNS],
+		uint8_t (*current_layers)[KB_ROWS][KB_COLUMNS] ) {
+
+	// don't switch to out-of-bounds layers
+	if ( layer < 0 || layer >= KB_LAYERS )
+		return;
+
+	for (uint8_t row=0; row<KB_ROWS; row++)
+		for (uint8_t col=0; col<KB_COLUMNS; col++)
+			if (positions[row][col])
+				(*current_layers)[row][col] = layer;
 }
 
 /*
@@ -203,7 +222,7 @@ void kbfun_press_release( KBFUN_FUNCTION_ARGS ) {
 
 /*
  * Toggle
- * - Toggle the key on or off
+ * - Toggle the key pressed or unpressed
  */
 void kbfun_toggle( KBFUN_FUNCTION_ARGS ) {
 	if (_is_pressed(keycode_))
@@ -331,5 +350,64 @@ void kbfun_2_keys_capslock_press_release( KBFUN_FUNCTION_ARGS ) {
 	}
 
 	if (pressed_) keys_pressed++;
+}
+
+/*
+ * Activate Numpad
+ * - Sets num-lock (on for press, off for release) and shifts (without changing
+ *   the overall current layer) the layer of the keys specified in this
+ *   function to the value specified in the keymap
+ *
+ * Note
+ * - If a more than one layer mask of this type is used at the same time, the
+ *   second will override the first, and any keys covered by both will be reset
+ *   to the overall current layer when the second is released (even if the
+ *   first is still pressed)
+ */
+#include "usb/usage-page/keyboard.h"
+void kbfun_layermask_numpad_press_release( KBFUN_FUNCTION_ARGS ) {
+	// define layer mask
+	bool layer_mask[KB_ROWS][KB_COLUMNS] = MATRIX_LAYER(
+			// unused
+			0,
+
+			// left hand
+			  0,  0,  0,  0,  0,  0,  0,
+			  0,  0,  0,  0,  0,  0,  0,
+			  0,  0,  0,  0,  0,  0,
+			  0,  0,  0,  0,  0,  0,  0,
+			  0,  0,  0,  0,  0,
+			                        0,
+			                        0,    0,
+			                      0,  0,  0,
+
+			// right hand
+			      0,  0,  1,  1,  1,  1,  0,
+			      0,  0,  1,  1,  1,  1,  0,
+			          0,  1,  1,  1,  1,  0,
+			      0,  0,  1,  1,  1,  1,  0,
+			              0,  0,  0,  0,  0,
+			        0,
+			  0,    0,
+			  0,  0,  0 );
+
+	// set numlock
+	if ( // if pressed and numlock off
+	     (pressed_ && !(keyboard_leds & (1<<0))) ||
+	     // if released and numlock on
+	     (!pressed_ && (keyboard_leds & (1<<0))) ) {
+
+		// toggle numlock
+		_press_release(true, KEYPAD_NumLock_Clear);
+		usb_keyboard_send();
+		_press_release(false, KEYPAD_NumLock_Clear);
+		usb_keyboard_send();
+	}
+
+	// set layer mask
+	if (pressed_)
+		_layer_set_mask(keycode_, layer_mask, current_layers_);
+	else
+		_layer_set_mask(*current_layer_, layer_mask, current_layers_);
 }
 
