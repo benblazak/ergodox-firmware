@@ -27,6 +27,8 @@
 #define f_l_dex &kbfun_layer_dec_exec
 #define f_2kcap &kbfun_2_keys_capslock_press_release
 #define f_lm_nu &kbfun_layermask_numpad_press_release
+#define f_btldr &kbfun_jump_to_bootloader
+
 
 
 uint8_t PROGMEM _kb_layout[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
@@ -57,14 +59,14 @@ _ctrlR,     _enter,
 // unused
 0,
 // left hand
-0,        _F1,        _F2,       _F3,       _F4,       _F5, _F11,
-0, _braceL_kp, _braceR_kp, _bracketL, _bracketR,         0, _esc,
-0, _semicolon,     _slash,     _dash,         0, _colon_kp,
-2,          0,          0,         0,         0,         0,    0,
-0,    _arrowL,    _arrowU,   _arrowD,   _arrowR,
-                                                           _bs,
-                                                          _del,    _ctrlL,
-                                                      _end, _home,  _altL,
+-1,        _F1,        _F2,       _F3,       _F4,       _F5, _F11,
+ 0, _braceL_kp, _braceR_kp, _bracketL, _bracketR,         0, _esc,
+ 0, _semicolon,     _slash,     _dash,         0, _colon_kp,
+ 2,          0,          0,         0,         0,         0,    0,
+ 0,    _arrowL,    _arrowU,   _arrowD,   _arrowR,
+                                                            _bs,
+                                                           _del,    _ctrlL,
+                                                       _end, _home,  _altL,
 // right hand
       _F12,        _F6,     _F7,        _F8,        _F9,          _F10, 0,
          0,          0,   _dash,     _lt_kp,     _gt_kp, _currencyUnit, 0,
@@ -129,7 +131,7 @@ f_prrel,f_prrel,f_prrel ),
 // unused
 NULL,
 // left hand
-f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
+f_btldr,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
 f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
 f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
 f_lm_nu,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,   NULL,
@@ -200,7 +202,7 @@ f_prrel,f_prrel,f_prrel ),
 // unused
 NULL,
 // left hand
-f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
+   NULL,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
 f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
 f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
 f_lm_nu,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,   NULL,
@@ -253,7 +255,7 @@ f_l_iex,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
 f_l_dex,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
 f_2kcap,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
 f_lm_nu,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
-   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
+f_btldr,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
    NULL,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
    NULL,   NULL,   NULL,   NULL,   NULL,   NULL          )
 // ----------------------------------------------------------------------------
