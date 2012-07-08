@@ -1,7 +1,5 @@
 /* ----------------------------------------------------------------------------
  * linked list : exports
- *
- * Includes aliases to treat the list as a queue or stack.
  * ----------------------------------------------------------------------------
  * Copyright (c) 2012 Ben Blazak <benblazak.dev@gmail.com>
  * Released under The MIT License (MIT) (see "license.md")
@@ -15,7 +13,7 @@
 	#include "lib/data-types.h"
 
 
-	// default list data type
+	// default data type for the list
 	#ifndef LINKED_LIST_DATA_TYPE
 		#define LINKED_LIST_DATA_TYPE uint8_t
 	#endif
@@ -27,60 +25,42 @@
 		struct linked_list_node * next;
 	};
 
-	struct linked_list{
+	struct linked_list {
 		uint8_t number_of_elements;
 		struct linked_list_node * head;
 		struct linked_list_node * tail;
 	};
 
+	// typedefs
+	typedef  struct linked_list       linked_list_t;
+	typedef  struct linked_list_node  linked_list_node_t;
+
 	// functions
-	struct linked_list * linked_list_new(void);
-	struct linked_list * linked_list_add_head(
-			struct linked_list * list,
-			LINKED_LIST_DATA_TYPE data );
-	struct linked_list * linked_list_add_tail(
-			struct linked_list * list,
-			LINKED_LIST_DATA_TYPE data );
-	LINKED_LIST_DATA_TYPE linked_list_pop_head(struct linked_list * list);
-	LINKED_LIST_DATA_TYPE linked_list_pop_tail(struct linked_list * list);
-	LINKED_LIST_DATA_TYPE linked_list_read(
-			struct linked_list * list,
-			uint8_t position );
-	struct linked_list * linked_list_copy(struct linked_list * list);
-	void linked_list_free(struct linked_list * list);
+	#define  _list_t  linked_list_t
+	#define  _data_t  LINKED_LIST_DATA_TYPE
+	_list_t * linked_list_new        (void);
+	_list_t * linked_list_add_head   (_list_t * list, _data_t data);
+	_list_t * linked_list_add_tail   (_list_t * list, _data_t data);
+	_data_t   linked_list_pop_head   (_list_t * list);
+	_data_t   linked_list_pop_tail   (_list_t * list);
+	_data_t   linked_list_read       (_list_t * list, uint8_t position);
+	_list_t * linked_list_insert     ( _list_t * list,
+	                                   uint8_t position,
+	                                   _data_t data );
+	_list_t * linked_list_copy       (_list_t * list);
+	void      linked_list_free       (_list_t * list);
 
-
-	// typedefs, for user code
-	typedef struct linked_list * linked_list_t;
-	typedef struct linked_list_node * linked_list_node_t;
-
-	// aliases, for user code
-	#define list_t        linked_list_t
-	#define list_new      linked_list_new
-	#define list_push     linked_list_add_head
-	#define list_append   linked_list_add_tail
-	#define list_pop      linked_list_pop_head
-	#define list_pop_tail linked_list_pop_tail
-	#define list_read     linked_list_read
-	#define list_copy     linked_list_copy
-	#define list_free     linked_list_free
-
-	#define queue_t      list_t
-	#define queue_new    list_new
-	#define queue_append list_append
-	#define queue_pop    list_pop
-	#define queue_read   list_read
-	#define queue_copy   list_copy
-	#define queue_free   list_free
-
-	#define stack_t    list_t
-	#define stack_new  list_new
-	#define stack_push list_push
-	#define stack_pop  list_pop
-	#define stack_read list_read
-	#define stack_copy list_copy
-	#define stack_free list_free
-
+	_list_t * linked_list_slice_copy ( _list_t * list,
+	                                   uint8_t start_position,
+	                                   uint8_t end_position );
+	_list_t * linked_list_slice      ( _list_t * list,
+	                                   uint8_t start_position,
+	                                   uint8_t end_position );
+	_list_t * linked_list_remove     (_list_t * list, uint8_t position);
+	uint8_t   linked_list_find_first (_list_t * list, _data_t data);
+	_list_t * linked_list_reverse    (_list_t * list);
+	#undef _list_t
+	#undef _data_t
 
 #endif
 

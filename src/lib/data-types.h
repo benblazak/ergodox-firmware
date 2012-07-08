@@ -10,13 +10,10 @@
 #ifndef DATA_TYPES_h
 	#define DATA_TYPES_h
 
+	#include <stdbool.h>
 	#include <stddef.h>
 	#include <stdint.h>
 	#include "data-types/linked-list.h"
-
-	#define bool _Bool
-	#define true  ((bool)1)
-	#define false ((bool)0)
 
 #endif
 
