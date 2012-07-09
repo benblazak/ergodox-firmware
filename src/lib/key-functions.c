@@ -353,63 +353,129 @@ void kbfun_2_keys_capslock_press_release( KBFUN_FUNCTION_ARGS ) {
 	if (pressed_) keys_pressed++;
 }
 
-/*
- * Activate Numpad
- * - Sets num-lock (on for press, off for release) and shifts (without changing
- *   the overall current layer) the layer of the keys specified in this
- *   function to the value specified in the keymap
+
+// TODO: maybe the numpad functions (and other logical sets of functions?) need
+// to be in (a) seaparate file(s).
+/* ----------------------------------------------------------------------------
+ * Numpad functions
+ * - Functions to implement an embedded numpad
  *
- * Note
- * - If a more than one layer mask of this type is used at the same time, the
+ * Notes
+ * - The numpad is toggled by shifting (without changing the overall current
+ *   layer) the layer of the keys specified in this function to the value
+ *   specified in the keymap
+ * - When the numpad is toggled, the numlock is set to on (for active) or off
+ *   (for inactive) as well
+ * - All these functions cooperate, but if more than one layer mask of this
+ *   type is used (by a different set of functions) at the same time, the
  *   second will override the first, and any keys covered by both will be reset
- *   to the overall current layer when the second is released (even if the
- *   first is still pressed)
- */
-void kbfun_layermask_numpad_press_release( KBFUN_FUNCTION_ARGS ) {
-	// define layer mask
-	bool layer_mask[KB_ROWS][KB_COLUMNS] = MATRIX_LAYER(
-			// unused
-			0,
+ *   to the overall current layer when either is released (even if the other is
+ *   still pressed)
+ * ------------------------------------------------------------------------- */
 
-			// left hand
-			  0,  0,  0,  0,  0,  0,  0,
-			  0,  0,  0,  0,  0,  0,  0,
-			  0,  0,  0,  0,  0,  0,
-			  0,  0,  0,  0,  0,  0,  0,
-			  0,  0,  0,  0,  0,
-			                        0,
-			                        0,    0,
-			                      0,  0,  0,
+// prefix function (undefined later)
+// - to keep these names reasonable in this block, and obviously not global
+//   outside it
+// - 'L' is for 'local'
+#define L(name) _kbfun_layermask_numpad__##name
 
-			// right hand
-			      0,  0,  1,  1,  1,  1,  0,
-			      0,  0,  1,  1,  1,  1,  0,
-			          0,  1,  1,  1,  1,  0,
-			      0,  0,  1,  1,  1,  1,  0,
-			              0,  0,  0,  0,  0,
-			        0,
-			  0,    0,
-			  0,  0,  0 );
+// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
-	// set numlock
-	if ( // if pressed and numlock off
-	     (pressed_ && !(keyboard_leds & (1<<0))) ||
-	     // if released and numlock on
-	     (!pressed_ && (keyboard_leds & (1<<0))) ) {
+// vars
+static bool L(numpad_activated) = false;
+static bool L(layer_mask)[KB_ROWS][KB_COLUMNS] =
+	MATRIX_LAYER(
+		// unused
+		0,
 
-		// toggle numlock
-		_press_release(true, KEYPAD_NumLock_Clear);
-		usb_keyboard_send();
-		_press_release(false, KEYPAD_NumLock_Clear);
-		usb_keyboard_send();
-	}
+		// left hand
+		  0,  0,  0,  0,  0,  0,  0,
+		  0,  0,  0,  0,  0,  0,  0,
+		  0,  0,  0,  0,  0,  0,
+		  0,  0,  0,  0,  0,  0,  0,
+		  0,  0,  0,  0,  0,
+		                        0,
+		                        0,    0,
+		                      0,  0,  0,
 
-	// set layer mask
-	if (pressed_)
-		_layer_set_mask(keycode_, layer_mask, current_layers_);
-	else
-		_layer_set_mask(*current_layer_, layer_mask, current_layers_);
+		// right hand
+		      0,  0,  1,  1,  1,  1,  0,
+		      0,  0,  1,  1,  1,  1,  0,
+		          0,  1,  1,  1,  1,  0,
+		      0,  0,  1,  1,  1,  1,  0,
+		              0,  0,  0,  0,  0,
+		        0,
+		  0,    0,
+		  0,  0,  0 );
+
+// functions
+static inline void L(toggle_numlock)(void) {
+	_press_release(true, KEYPAD_NumLock_Clear);
+	usb_keyboard_send();
+	_press_release(false, KEYPAD_NumLock_Clear);
+	usb_keyboard_send();
 }
+
+static void L(toggle_numpad)(
+		uint8_t numpad_layer,
+		uint8_t current_layer,
+		uint8_t (*current_layers)[KB_ROWS][KB_COLUMNS] ) {
+
+	if (L(numpad_activated)) {
+		// deactivate numpad
+		_layer_set_mask(current_layer, L(layer_mask), current_layers);
+		L(numpad_activated) = false;
+
+		// if: numlock on
+		if (keyboard_leds & (1<<0))
+			L(toggle_numlock)();
+	} else {
+		// activate numpad
+		_layer_set_mask(numpad_layer, L(layer_mask), current_layers);
+		L(numpad_activated) = true;
+
+		// if: numlock off
+		if (!(keyboard_leds & (1<<0)))
+			L(toggle_numlock)();
+	}
+}
+
+// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+/*
+ * Numpad toggle
+ * - Toggles the numpad and sets numlock on (for active) or off (for inactive)
+ *   with it, if it's not already in that state
+ */
+void kbfun_layermask_numpad_toggle( KBFUN_FUNCTION_ARGS ) {
+	L(toggle_numpad)(keycode_, *current_layer_, current_layers_);
+}
+
+/*
+ * Numpad on
+ * - Set the numpad on (along with numlock, if it's not already)
+ */
+void kbfun_layermask_numpad_on( KBFUN_FUNCTION_ARGS ) {
+	if (!L(numpad_activated))
+		L(toggle_numpad)(keycode_, *current_layer_, current_layers_);
+}
+
+/*
+ * Numpad off
+ * - Set the numpad off (along with numlock, if it's not already)
+ */
+void kbfun_layermask_numpad_off( KBFUN_FUNCTION_ARGS ) {
+	if (L(numpad_activated))
+		L(toggle_numpad)(keycode_, *current_layer_, current_layers_);
+}
+
+// . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+// prefix function (undefined here)
+#undef L
+
+/* ----------------------------------------------------------------------------
+ * ------------------------------------------------------------------------- */
 
 
 // ----------------------------------------------------------------------------

@@ -26,7 +26,9 @@
 #define f_l_iex &kbfun_layer_inc_exec
 #define f_l_dex &kbfun_layer_dec_exec
 #define f_2kcap &kbfun_2_keys_capslock_press_release
-#define f_lm_nu &kbfun_layermask_numpad_press_release
+#define f_np_to &kbfun_layermask_numpad_toggle
+#define f_np_on &kbfun_layermask_numpad_on
+#define f_np_of &kbfun_layermask_numpad_off
 #define f_btldr &kbfun_jump_to_bootloader
 
 
@@ -69,7 +71,7 @@ _ctrlR,     _enter,
                                                        _end, _home,  _altL,
 // right hand
       _F12,        _F6,     _F7,        _F8,        _F9,          _F10, 0,
-         0,          0,   _dash,     _lt_kp,     _gt_kp, _currencyUnit, 0,
+         2,          0,   _dash,     _lt_kp,     _gt_kp, _currencyUnit, 0,
             _backslash,       0, _parenL_kp, _parenR_kp,        _equal, 0,
          0,    _mul_kp,       0,          0,          0,             0, 0,
                         _arrowL,    _arrowD,    _arrowU,       _arrowR, 0,
@@ -134,14 +136,14 @@ NULL,
 f_btldr,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
 f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
 f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
-f_lm_nu,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,   NULL,
+f_np_on,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,   NULL,
 f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
                                            f_prrel,
                                            f_prrel,  f_prrel,
                                        f_prrel,f_prrel,f_prrel,
 // right hand
        f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
-       f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
+       f_np_to,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
                f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
           NULL,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
                        f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
@@ -205,14 +207,14 @@ NULL,
    NULL,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
 f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
 f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
-f_lm_nu,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,   NULL,
+f_np_of,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,   NULL,
 f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
                                            f_prrel,
                                            f_prrel,  f_prrel,
                                        f_prrel,f_prrel,f_prrel,
 // right hand
        f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
-       f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
+          NULL,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
                f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
           NULL,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
                        f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
@@ -254,10 +256,10 @@ f_l_dec,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
 f_l_iex,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
 f_l_dex,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
 f_2kcap,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
-f_lm_nu,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
-f_btldr,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
-   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
-   NULL,   NULL,   NULL,   NULL,   NULL,   NULL          )
+f_np_to,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
+f_np_on,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
+f_np_of,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
+f_btldr,   NULL,   NULL,   NULL,   NULL,   NULL          )
 // ----------------------------------------------------------------------------
 };
 

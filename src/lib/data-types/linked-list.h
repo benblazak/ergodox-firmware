@@ -26,7 +26,7 @@
 	};
 
 	struct linked_list {
-		uint8_t number_of_elements;
+		uint8_t length;
 		struct linked_list_node * head;
 		struct linked_list_node * tail;
 	};
@@ -38,27 +38,16 @@
 	// functions
 	#define  _list_t  linked_list_t
 	#define  _data_t  LINKED_LIST_DATA_TYPE
+	//  TODO
 	_list_t * linked_list_new        (void);
 	_list_t * linked_list_add_head   (_list_t * list, _data_t data);
 	_list_t * linked_list_add_tail   (_list_t * list, _data_t data);
 	_data_t   linked_list_pop_head   (_list_t * list);
 	_data_t   linked_list_pop_tail   (_list_t * list);
 	_data_t   linked_list_read       (_list_t * list, uint8_t position);
-	_list_t * linked_list_insert     ( _list_t * list,
-	                                   uint8_t position,
-	                                   _data_t data );
 	_list_t * linked_list_copy       (_list_t * list);
 	void      linked_list_free       (_list_t * list);
-
-	_list_t * linked_list_slice_copy ( _list_t * list,
-	                                   uint8_t start_position,
-	                                   uint8_t end_position );
-	_list_t * linked_list_slice      ( _list_t * list,
-	                                   uint8_t start_position,
-	                                   uint8_t end_position );
-	_list_t * linked_list_remove     (_list_t * list, uint8_t position);
-	uint8_t   linked_list_find_first (_list_t * list, _data_t data);
-	_list_t * linked_list_reverse    (_list_t * list);
+	// /TODO
 	#undef _list_t
 	#undef _data_t
 

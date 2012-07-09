@@ -39,63 +39,154 @@ _list_t * linked_list_new(void) {
 	list->head = NULL;
 	list->tail = NULL;
 
-	list->number_of_elements = 0;
+	list->length = 0;
 	return list;
 }
 
 /*
- * add_head()
+ * insert()
+ *
+ * Arguments
+ * - index: the index of the position that the new node will occupy.  if index
+ *   is negative, we set index += length (as in Python).  so:
+ *     -  0 => the first node in the list
+ *     -  1 => the second node in the list
+ *     - -1 => the last node in the list
+ *     - -2 => the second from the last node in the list
+ *   - '0' is undefined (returns 'failure')
+ *   - out of bounds positions wrap around, so:
+ *     -  [length]   =>  0 => the first node in the list
+ *     - -[length+1] => -1 => the last node in the list
  *
  * Returns
  * - success: the pointer to the list that was passed
  * - failure: NULL
  */
-_list_t * linked_list_add_head(_list_t * list, _data_t data) {
+_list_t * linked_list_insert(_list_t * list, _data_t data, int index) {
 	_NEW_POINTER(_node_t, node);
 	if (!node) return NULL;
 
 	node->data = data;
-	node->next = list->head;
-	list->head = node;
-	if (list->number_of_elements == 0)
-		list->tail = node;
 
-	list->number_of_elements++;
-	return list;
-}
-
-/*
- * add_tail()
- *
- * Returns
- * - success: the pointer to the list that was passed
- * - failure: NULL
- */
-_list_t * linked_list_add_tail(_list_t * list, _data_t data) {
-	_NEW_POINTER(_node_t, node);
-	if (!node) return NULL;
-
-	node->data = data;
-	node->next = NULL;
-	if (list->number_of_elements == 0)
+	if (list->length == 0) {
+		// insert as only node (no others exist yet)
 		list->head = node;
-	else
-		list->tail->next = node;
-	list->tail = node;
+		list->tail = node;
+		node->next = NULL;
+	} else {
+		// find positive, in-bounds index
+		index = index % list->length;
+		if (index < 0)
+			index += list->length;
 
-	list->number_of_elements++;
+		if (index == 0) {
+			// insert as first node
+			node->next = list->head;
+			list->head = node;
+		} else if (index == list->length-1) {
+			// insert as last node
+			list->tail->next = node;
+			list->tail = node;
+			node->next = NULL;
+		} else {
+			// insert as other node
+			_node_t * previous = list->head;
+			for (int i=1; i<index; i++)
+				previous = previous->next;
+			node->next = previous->next;
+			previous->next = node;
+		}
+	}
+
+	list->length++;
 	return list;
+}
+
+/*
+ * peek()
+ *
+ * Arguments
+ * - index: [see 'insert()']
+ *
+ * Returns
+ * - success: the data field of the node at the given index
+ * - failure: (_data_t) 0
+ */
+_data_t linked_list_peek(_list_t * list, int index) {
+	// if: no nodes exist
+	if (list->length == 0)
+		return (_data_t) 0;
+
+	// find positive, in-bounds index
+	index = index % list->length;
+	if (index < 0)
+		index += list->length;
+
+	// if: last node
+	if (index == list->length-1)
+		return list->tail->data;
+
+	// else
+	_node_t * node = list->head;
+	for (int i=0; i<index; i++)
+		node = node->next;
+	return node->data;
+}
+
+/*
+ * pop()
+ *
+ * Arguments
+ * - index: [see 'insert()']
+ *
+ * Returns
+ * - success: the data field of the node at the given index
+ * - failure: (_data_t) 0
+ */
+// TODO
+_data_t linked_list_pop(_list_t * list, int index) {
+	// if: no nodes exist
+	if (list->length == 0)
+		return (_data_t) 0;
+
+	// find positive, in-bounds index
+	index = index % list->length;
+	if (index < 0)
+		index += list->length;
+
+	// vars
+	_data_t data;
+	_node_t * node;
+
+	if (index == 0) {
+		// pop first node
+		data = list->head->data;
+		node = list->head;
+		list->head = node->next;
+	} else {
+		// find the index-1'th node, then pop the next one
+		_node_t * previous;
+		previous = list->head;
+		for (int i=1; i<index; i++)
+			previous = previous->next;
+		data = previous->next->data;
+		node = previous->next;
+		previous->next = node->next;
+	}
+
+	free(node);
+	return data;
 }
 
 /*
  * pop_head()
  *
  * Returns
- * - success: the data element of the first node of the list
+ * - success: the data field of the first node of the list
  * - failure: (_data_t) 0
  */
 _data_t linked_list_pop_head(_list_t * list) {
-	if (list->number_of_elements == 0)
+	if (list->length == 0)
 		return (_data_t) 0;
 
 	_node_t node = {
@@ -105,14 +196,14 @@ _data_t linked_list_pop_head(_list_t * list) {
 
 	free(list->head);
 
-	if (list->number_of_elements == 1) {
+	if (list->length == 1) {
 		list->head = NULL;
 		list->tail = NULL;
 	} else {
 		list->head = node.next;
 	}
 
-	list->number_of_elements--;
+	list->length--;
 	return node.data;
 }
 
@@ -120,7 +211,7 @@ _data_t linked_list_pop_head(_list_t * list) {
  * pop_tail()
  *
  * Returns
- * - success: the data element of the last node of the list
+ * - success: the data field of the last node of the list
  * - failure: (_data_t) 0
  *
  * Note
@@ -130,7 +221,7 @@ _data_t linked_list_pop_head(_list_t * list) {
  *   used all that much.  It's here for completeness.
  */
 _data_t linked_list_pop_tail(_list_t * list) {
-	if (list->number_of_elements == 0)
+	if (list->length == 0)
 		return (_data_t) 0;
 
 	_node_t node = {
@@ -140,64 +231,18 @@ _data_t linked_list_pop_tail(_list_t * list) {
 
 	free(list->tail);
 
-	if (list->number_of_elements == 1) {
+	if (list->length == 1) {
 		list->head = NULL;
 		list->tail = NULL;
 	} else {
 		list->tail = list->head;
-		for (uint8_t i=2; i<(list->number_of_elements); i++)
+		for (uint8_t i=2; i<(list->length); i++)
 			list->tail = list->tail->next;
 		list->tail->next = NULL;
 	}
 
-	list->number_of_elements--;
+	list->length--;
 	return node.data;
-}
-
-/*
- * read()
- *
- * Returns
- * - success: the data element at the given position
- * - failure: (_data_t) 0
- */
-_data_t linked_list_read(_list_t * list, uint8_t position) {
-	if (position < 1 || position > (list->number_of_elements))
-		return (_data_t) 0;
-
-	_node_t * node = list->head;
-	for (uint8_t i=1; i<position; i++)
-		node = node->next;
-
-	return node->data;
-}
-
-/*
- * insert()
- * - Insert a new node containing the given data such that it occupies the
- *   given position in the list.
- *
- * Returns
- * - success: the pointer to the list that was passed
- * - failure: NULL
- */
-_list_t * linked_list_insert(_list_t * list, _data_t data, uint8_t position) {
-	if (position < 1 || position > (list->number_of_elements)+1)
-		return NULL;
-
-	_NEW_POINTER(_node_t, new);
-	if (!new) return NULL;
-
-	_node_t * prev = list->head;
-	for (uint8_t i=0; i<position; i++)
-		prev = prev->next;
-
-	new->data = data;
-	new->next = prev->next;
-	prev->next = new;
-
-	list->number_of_elements++;
-	return list;
 }
 
 /*
@@ -211,7 +256,7 @@ _list_t * linked_list_copy(_list_t * list) {
 	_NEW_POINTER(_list_t, copy);
 	if (!copy) return NULL;
 
-	for (uint8_t i=1; i<=(list->number_of_elements); i++)
+	for (uint8_t i=1; i<=(list->length); i++)
 		linked_list_add_tail(copy, linked_list_read(list, i));
 
 	return copy;
@@ -228,85 +273,10 @@ _list_t * linked_list_copy(_list_t * list) {
  *   that often.
  */
 void linked_list_free(_list_t * list) {
-	while ((list->number_of_elements) > 0)
+	while ((list->length) > 0)
 		linked_list_pop_head(list);
 
 	free(list);
-}
-
-/*
- * slice_copy()
- * - Return the (copied) sublist
- *
- * Arguments
- * - start_position:
- *   - the position of the first element to include in the slice
- *   - or '0' for the beginning of the list
- * - end_position:
- *   - the position of the last element to include in the slice
- *   - or '0' for the end of the list
- *
- * Returns
- * - success: a copy of the portion of the list indicated
- * - failure: NULL
- */
-_list_t * linked_list_slice_copy (
-		_list_t * list,
-		uint8_t start_position,
-		uint8_t end_position ) {
-
-	if ( start_position > end_position ||
-	     end_position > (list->number_of_elements) )
-		return NULL;
-
-	if (start_position == 0)
-		start_position = 1;
-	if (end_position == 0)
-		end_position = list->number_of_elements;
-
-	_NEW_POINTER(_list_t, shallow_slice);
-	if (!shallow_slice) return NULL;
-
-	shallow_slice->number_of_elements = end_position - start_position + 1;
-	shallow_slice->head = list->head;
-	for (uint8_t i=1; i<start_position; i++)
-		shallow_slice->head = shallow_slice->head->next;
-	shallow_slice->tail = shallow_slice->head;
-	for (uint8_t i=1; i<(shallow_slice->number_of_elements); i++)
-		shallow_slice->tail = shallow_slice->tail->next;
-
-	return linked_list_copy(shallow_slice);
-}
-
-/*
- * slice()
- */
-_list_t * linked_list_slice (
-		_list_t * list,
-		uint8_t start_position,
-		uint8_t end_position ) {
-	// TODO
-}
-
-/*
- * remove()
- */
-_list_t * linked_list_remove(_list_t * list, uint8_t position) {
-	// TODO
-}
-
-/*
- * find_first()
- */
-uint8_t linked_list_find_first(_list_t * list, _data_t data) {
-	// TODO
-}
-
-/*
- * reverse()
- */
-_list_t * linked_list_reverse(_list_t * list) {
-	// TODO
 }
 
 

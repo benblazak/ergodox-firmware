@@ -48,15 +48,17 @@
 
 	void _kbfun_exec_key ( KBFUN_FUNCTION_ARGS );
 
-	void kbfun_press_release			(KBFUN_FUNCTION_ARGS);
-	void kbfun_toggle				(KBFUN_FUNCTION_ARGS);
-	void kbfun_layer_inc				(KBFUN_FUNCTION_ARGS);
-	void kbfun_layer_dec				(KBFUN_FUNCTION_ARGS);
-	void kbfun_layer_inc_exec			(KBFUN_FUNCTION_ARGS);
-	void kbfun_layer_dec_exec			(KBFUN_FUNCTION_ARGS);
-	void kbfun_2_keys_capslock_press_release	(KBFUN_FUNCTION_ARGS);
-	void kbfun_layermask_numpad_press_release       (KBFUN_FUNCTION_ARGS);
-	void kbfun_jump_to_bootloader                   (KBFUN_FUNCTION_ARGS);
+        void kbfun_press_release                 (KBFUN_FUNCTION_ARGS);
+        void kbfun_toggle                        (KBFUN_FUNCTION_ARGS);
+        void kbfun_layer_inc                     (KBFUN_FUNCTION_ARGS);
+        void kbfun_layer_dec                     (KBFUN_FUNCTION_ARGS);
+        void kbfun_layer_inc_exec                (KBFUN_FUNCTION_ARGS);
+        void kbfun_layer_dec_exec                (KBFUN_FUNCTION_ARGS);
+        void kbfun_2_keys_capslock_press_release (KBFUN_FUNCTION_ARGS);
+        void kbfun_layermask_numpad_toggle       (KBFUN_FUNCTION_ARGS);
+        void kbfun_layermask_numpad_on           (KBFUN_FUNCTION_ARGS);
+        void kbfun_layermask_numpad_off          (KBFUN_FUNCTION_ARGS);
+        void kbfun_jump_to_bootloader            (KBFUN_FUNCTION_ARGS);
 
 #endif
 
