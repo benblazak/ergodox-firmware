@@ -143,7 +143,6 @@ _data_t linked_list_peek(_list_t * list, int index) {
  * - success: the data field of the node at the given index
  * - failure: (_data_t) 0
  */
-// TODO
 _data_t linked_list_pop(_list_t * list, int index) {
 	// if: no nodes exist
 	if (list->length == 0)
@@ -164,100 +163,55 @@ _data_t linked_list_pop(_list_t * list, int index) {
 		node = list->head;
 		list->head = node->next;
 	} else {
-		// find the index-1'th node, then pop the next one
+		// find the index-1'th node
 		_node_t * previous;
 		previous = list->head;
 		for (int i=1; i<index; i++)
 			previous = previous->next;
+
+		// if: last node
+		if (index == list->length-1)
+			list->tail = previous;
+
+		// pop the node at index
 		data = previous->next->data;
 		node = previous->next;
 		previous->next = node->next;
 	}
 
 	free(node);
+
+	list->length--;
 	return data;
 }
 
 /*
- * pop_head()
- *
- * Returns
- * - success: the data field of the first node of the list
- * - failure: (_data_t) 0
+ * find()
+ * TODO
  */
-_data_t linked_list_pop_head(_list_t * list) {
-	if (list->length == 0)
-		return (_data_t) 0;
-
-	_node_t node = {
-		.data = list->head->data,
-		.next = list->head->next
-	};
-
-	free(list->head);
-
-	if (list->length == 1) {
-		list->head = NULL;
-		list->tail = NULL;
-	} else {
-		list->head = node.next;
-	}
-
-	list->length--;
-	return node.data;
-}
-
-/*
- * pop_tail()
- *
- * Returns
- * - success: the data field of the last node of the list
- * - failure: (_data_t) 0
- *
- * Note
- * - This function is inefficient for singly linked lists: it has O(n) time
- *   instead of O(1) time like most of the other functions.  But it's not
- *   needed for implementing stacks or queues, so i don't anticipate it being
- *   used all that much.  It's here for completeness.
- */
-_data_t linked_list_pop_tail(_list_t * list) {
-	if (list->length == 0)
-		return (_data_t) 0;
-
-	_node_t node = {
-		.data = list->tail->data,
-		.next = list->tail->next
-	};
-
-	free(list->tail);
-
-	if (list->length == 1) {
-		list->head = NULL;
-		list->tail = NULL;
-	} else {
-		list->tail = list->head;
-		for (uint8_t i=2; i<(list->length); i++)
-			list->tail = list->tail->next;
-		list->tail->next = NULL;
-	}
-
-	list->length--;
-	return node.data;
-}
+// TODO
 
 /*
  * copy()
  *
  * Returns
- * - success: a new pointer to a copy of the list who's pointer was passed
+ * - success: a new pointer to a (deep) copy of the list that was passed
  * - failure: NULL
  */
 _list_t * linked_list_copy(_list_t * list) {
 	_NEW_POINTER(_list_t, copy);
 	if (!copy) return NULL;
 
-	for (uint8_t i=1; i<=(list->length); i++)
-		linked_list_add_tail(copy, linked_list_read(list, i));
+	bool error;
+	_node_t * node = list->head;
+	for (uint8_t i=0; i<(list->length); i++) {
+		error = ! linked_list_insert(copy, node->data, -1);
+		if (error) {
+			linked_list_free(copy);
+			return NULL;
+		}
+		node = node->next;
+	}
 
 	return copy;
 }
@@ -266,16 +220,14 @@ _list_t * linked_list_copy(_list_t * list) {
  * free()
  * - Free the memory allocated to all the nodes, then free the memory allocated
  *   to the list.
- *
- * Note
- * - This is implemented inefficiently (using pop_head(), which does extra
- *   work).  But that makes things simpler, and i don't anticipate using it all
- *   that often.
  */
 void linked_list_free(_list_t * list) {
-	while ((list->length) > 0)
-		linked_list_pop_head(list);
-
+	_node_t * node;
+	for (uint8_t i=0; i<(list->length); i++) {
+		node = list->head;
+		list->head = list->head->next;
+		free(node);
+	}
 	free(list);
 }
 
