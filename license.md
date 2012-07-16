@@ -1,9 +1,13 @@
 # The MIT License (MIT)
-Taken from <http://www.opensource.org/licenses/MIT> on 2012-03-10
+Retrieved from <http://www.opensource.org/licenses/MIT> on 2012-03-10
+
+This copyright and licence apply to all files in this project, except where
+otherwise noted.  If you feel that this infringes on any existing intellectual
+property, please email me at the address below.
 
 -------------------------------------------------------------------------------
 
-Copyright &copy; 2012 Ben Blazak
+Copyright &copy; 2012 Ben Blazak <benblazak.dev@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in

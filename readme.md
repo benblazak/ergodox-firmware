@@ -1,7 +1,13 @@
-# [ergodox-firmware][]: Firmware for the [ergoDOX keyboard][]
+# [ergodox-firmware][]: Firmware for the [ErgoDox keyboard][]
+
+Also see the [geekhack]
+(http://geekhack.org/showthread.php?22780-Interest-Check-Custom-split-ergo-keyboard)
+and [deskthority]
+(http://deskthority.net/workshop-f7/split-ergonomic-keyboard-project-t1753.html)
+discussion threads.
 
 [ergodox-firmware]: https://github.com/benblazak/ergodox-firmware
-[ergodox keyboard]: http://geekhack.org/showthread.php?22780-Interest-Check-Custom-split-ergo-keyboard
+[ergodox keyboard]: http://ergodox.org/
 
 
 ## About this File
@@ -40,38 +46,17 @@ started this project), but for now:
   matrix to hardware matrix mapping, and hardware specific documentation.
 * [src/main.c] (src/main.c) ties it all together.
 
-Open issues and such are tracked [on github]
+Open issues, feature requests, and such are tracked [on github]
 (/benblazak/ergodox-firmware/issues).
 
 
 ## Notes
 
-### (2012-04-11) (first major release on branch 'main')
-As of now, it looks like we have a working 6-KRO keyboard firmware for a Teensy
-2.0 with a MCP23018 I/O expander.  It's scanning at ~167 Hz, most of which is
-spent communicating over I&sup2;C.  This should be fast enough, I think.
-Slight improvements might be possible (without finding a microprocessor capable
-of > 400 kHz I&sup2;C or using SPI, that is, which I imagine would speed things
-up a lot - but it'd also be much less convenient).  I'll attempt them if I see
-the need.
-
-Also, layers are implemented, but untested, as no keymaps are written to use
-them yet.  Implementing on-keyboard hardware remapping seems like it'd be very
-possible too, but I'd need to try it (and learn how to programmatically store
-stuff in program space) to see if it'd work; and I'm not sure of a good way to
-do the interface, since different people will likely have different keycap
-layouts on the ergoDOX.
-
-Getting to N-KRO is a goal, but I honestly have no idea whether it'll be
-accomplished.  Ideally, I'd like a variable-KRO, where the keyboard is 6-KRO
-till you press the 7th key (so if you're worried about compatibility, just
-don't press more than 6 keys at a time).  From what I've read, it might be
-possible, but I just finished everything else (so I'm slightly tired), and the
-USB spec is scary.
-
-Discussions about the project as a whole are going on at the forum page (linked
-in the title) so if you have any imput (or want to participate in the group
-buy!), please stop by.  :) .
+### Features as of 2012-04-11 : first major release on branch 'main'
+* 6KRO
+* Teensy 2.0, MCP23018 I/O expander
+* ~167 Hz scan rate (most of which is spent communicating via I&sup2;C)
+* firmware level layers
 
 
 ## Dependencies (for building from source)

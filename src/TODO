@@ -1,11 +1,15 @@
 -+ set USB vendor ID  = 0x1d50  // Openmoko, Inc.
 -+ set USB product ID = 0x6028  // ErgoDox ergonomic keyboard
 
-- link to the [ErgoDox website] (http://ergodox.org/) in toplevel readme.md
+// -------
 
-- update licence.md with "except when otherwise noted" or something similar, to
+-+ link to the [ErgoDox website] (http://ergodox.org/) in toplevel readme.md
+
+-+ update licence.md with "except when otherwise noted" or something similar, to
   reflect the fact that i have code (in src/lib, and contrib) under different
   licences, with different authors
+
+// -------
 
 - make new branch and update for fredrick's new PCB (pre-prototype)
 
