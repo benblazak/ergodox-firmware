@@ -34,16 +34,16 @@
  **************************************************************************/
 
 // You can change these to give your code its own name.
-#define STR_MANUFACTURER	L"MfgName"
-#define STR_PRODUCT		L"Keyboard"
+#define STR_MANUFACTURER	L"unspecified"  // TODO
+#define STR_PRODUCT		L"ErgoDox ergonomic keyboard"
 
 
 // Mac OS-X and Linux automatically load the correct drivers.  On
 // Windows, even though the driver is supplied by Microsoft, an
 // INF file is needed to load the driver.  These numbers need to
 // match the INF file.
-#define VENDOR_ID		0x16C0
-#define PRODUCT_ID		0x047C
+#define VENDOR_ID		0x1d50  // Openmoko, Inc.
+#define PRODUCT_ID		0x6028  // ErgoDox ergonomic keyboard
 
 
 // USB devices are supposed to implment a halt feature, which is
