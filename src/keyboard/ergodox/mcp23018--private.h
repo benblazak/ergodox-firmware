@@ -10,7 +10,7 @@
 #ifndef MCP23018_h_PRIVATE
 	#define MCP23018_h_PRIVATE
 
-	#include "lib/data-types.h"
+	#include "lib/data-types/common.h"
 	#include "matrix.h"
 
 	#define MCP23018_TWI_ADDRESS 0b0100000

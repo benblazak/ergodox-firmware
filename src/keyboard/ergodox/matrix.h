@@ -10,7 +10,7 @@
 #ifndef MATRIX_h
 	#define MATRIX_h
 
-	#include "lib/data-types.h"
+	#include "lib/data-types/common.h"
 
 	#define KB_ROWS    12  // must match real life
 	#define KB_COLUMNS  7  // must match real life

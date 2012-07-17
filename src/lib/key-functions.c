@@ -13,7 +13,7 @@
 
 #include <avr/interrupt.h>
 #include "lib-other/pjrc/usb_keyboard/usb_keyboard.h"
-#include "lib/data-types.h"
+#include "lib/data-types/common.h"
 #include "lib/usb/usage-page/keyboard.h"
 #include "keyboard.h"
 

@@ -7,7 +7,7 @@
  * ------------------------------------------------------------------------- */
 
 
-#include "lib/data-types.h"
+#include "lib/data-types/common.h"
 
 #include "ergodox/matrix.h"
 #include "ergodox/mcp23018--private.h"

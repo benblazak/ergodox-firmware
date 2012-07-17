@@ -7,10 +7,10 @@
  * ------------------------------------------------------------------------- */
 
 
-#ifndef LINKED_LIST_h
-	#define LINKED_LIST_h
+#ifndef DATA_TYPES_LINKED_LIST_h
+	#define DATA_TYPES_LINKED_LIST_h
 
-	#include "lib/data-types.h"
+	#include "lib/data-types/common.h"
 
 
 	// default data type for the list
@@ -26,28 +26,24 @@
 	};
 
 	struct linked_list {
-		uint8_t length;
+		uint8_t length;  // 'uint8_t' to save ram
 		struct linked_list_node * head;
 		struct linked_list_node * tail;
 	};
 
 	// typedefs
-	typedef  struct linked_list       linked_list_t;
-	typedef  struct linked_list_node  linked_list_node_t;
+	typedef  struct linked_list        linked_list_t;
+	typedef  struct linked_list_node   linked_list_node_t;
 
 	// functions
 	#define  _list_t  linked_list_t
 	#define  _data_t  LINKED_LIST_DATA_TYPE
-	//  TODO
-	_list_t * linked_list_new        (void);
-	_list_t * linked_list_add_head   (_list_t * list, _data_t data);
-	_list_t * linked_list_add_tail   (_list_t * list, _data_t data);
-	_data_t   linked_list_pop_head   (_list_t * list);
-	_data_t   linked_list_pop_tail   (_list_t * list);
-	_data_t   linked_list_read       (_list_t * list, uint8_t position);
-	_list_t * linked_list_copy       (_list_t * list);
-	void      linked_list_free       (_list_t * list);
-	// /TODO
+	_list_t * linked_list_new    (void);
+	_list_t * linked_list_insert (_list_t * list, int index, _data_t data);
+	_data_t   linked_list_peek   (_list_t * list, int index);
+	_data_t   linked_list_pop    (_list_t * list, int index);
+	_list_t * linked_list_copy   (_list_t * list);
+	void      linked_list_free   (_list_t * list);
 	#undef _list_t
 	#undef _data_t
 

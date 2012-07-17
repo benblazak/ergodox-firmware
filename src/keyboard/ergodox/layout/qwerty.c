@@ -10,7 +10,7 @@
 
 
 #include <avr/pgmspace.h>
-#include "lib/data-types.h"
+#include "lib/data-types/common.h"
 #include "lib/usb/usage-page/keyboard--short-names.h"
 #include "lib/key-functions.h"
 

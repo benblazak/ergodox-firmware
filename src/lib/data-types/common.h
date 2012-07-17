@@ -7,13 +7,12 @@
  * ------------------------------------------------------------------------- */
 
 
-#ifndef DATA_TYPES_h
-	#define DATA_TYPES_h
+#ifndef DATA_TYPES_COMMON_h
+	#define DATA_TYPES_COMMON_h
 
 	#include <stdbool.h>
 	#include <stddef.h>
 	#include <stdint.h>
-	#include "data-types/linked-list.h"
 
 #endif
 

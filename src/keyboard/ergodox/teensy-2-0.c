@@ -9,7 +9,7 @@
 
 #include <avr/io.h>
 #include <util/delay.h>
-#include "lib/data-types.h"
+#include "lib/data-types/common.h"
 #define TWI_FREQ 400000
 #include "lib/twi.h"
 

@@ -1,10 +1,5 @@
 /* ----------------------------------------------------------------------------
- * linked list
- *
- * Notes:
- * - When 'position' is used, it referes to the position of the node in the
- *   list, not the node's offset.  E.g. the node with position == 1 is the
- *   first node in the list.
+ * linked list : code
  * ----------------------------------------------------------------------------
  * Copyright (c) 2012 Ben Blazak <benblazak.dev@gmail.com>
  * Released under The MIT License (MIT) (see "license.md")
@@ -13,16 +8,16 @@
 
 
 #include <stdlib.h>
-#include "lib/data-types.h"
+#include "lib/data-types/common.h"
 
 #include "linked-list.h"
 
 
 // local macros (undefined later)
 #define  _NEW_POINTER(type, name)  type * name = (type *) malloc(sizeof(type))
-#define  _list_t  linked_list_t
-#define  _node_t  linked_list_node_t
-#define  _data_t  LINKED_LIST_DATA_TYPE
+#define  _list_t                   linked_list_t
+#define  _node_t                   linked_list_node_t
+#define  _data_t                   LINKED_LIST_DATA_TYPE
 
 
 /*
@@ -53,7 +48,6 @@ _list_t * linked_list_new(void) {
  *     -  1 => the second node in the list
  *     - -1 => the last node in the list
  *     - -2 => the second from the last node in the list
- *   - '0' is undefined (returns 'failure')
  *   - out of bounds positions wrap around, so:
  *     -  [length]   =>  0 => the first node in the list
  *     - -[length+1] => -1 => the last node in the list
@@ -61,14 +55,21 @@ _list_t * linked_list_new(void) {
  * Returns
  * - success: the pointer to the list that was passed
  * - failure: NULL
+ *
+ * Notes
+ * - in this function, 'list->length' is incremented before the index is
+ *   calculated|used, so that we have a consistent way to think of adding an
+ *   element to the end of the list
  */
-_list_t * linked_list_insert(_list_t * list, _data_t data, int index) {
+_list_t * linked_list_insert(_list_t * list, int index, _data_t data) {
 	_NEW_POINTER(_node_t, node);
 	if (!node) return NULL;
 
+	list->length++;
+
 	node->data = data;
 
-	if (list->length == 0) {
+	if (list->length == 1) {
 		// insert as only node (no others exist yet)
 		list->head = node;
 		list->tail = node;
@@ -98,7 +99,6 @@ _list_t * linked_list_insert(_list_t * list, _data_t data, int index) {
 		}
 	}
 
-	list->length++;
 	return list;
 }
 
@@ -186,12 +186,6 @@ _data_t linked_list_pop(_list_t * list, int index) {
 }
 
 /*
- * find()
- * TODO
- */
-// TODO
-
-/*
  * copy()
  *
  * Returns
@@ -199,13 +193,13 @@ _data_t linked_list_pop(_list_t * list, int index) {
  * - failure: NULL
  */
 _list_t * linked_list_copy(_list_t * list) {
-	_NEW_POINTER(_list_t, copy);
+	_list_t * copy = linked_list_new();
 	if (!copy) return NULL;
 
 	bool error;
 	_node_t * node = list->head;
-	for (uint8_t i=0; i<(list->length); i++) {
-		error = ! linked_list_insert(copy, node->data, -1);
+	for (int i=0; i<(list->length); i++) {
+		error = ! linked_list_insert(copy, -1, node->data);
 		if (error) {
 			linked_list_free(copy);
 			return NULL;
@@ -223,7 +217,7 @@ _list_t * linked_list_copy(_list_t * list) {
  */
 void linked_list_free(_list_t * list) {
 	_node_t * node;
-	for (uint8_t i=0; i<(list->length); i++) {
+	for (int i=0; i<(list->length); i++) {
 		node = list->head;
 		list->head = list->head->next;
 		free(node);

@@ -8,7 +8,7 @@
 
 
 #include <util/twi.h>
-#include "lib/data-types.h"
+#include "lib/data-types/common.h"
 #include "lib/twi.h"  // `TWI_FREQ` defined in "teensy-2-0.c"
 
 #include "matrix.h"

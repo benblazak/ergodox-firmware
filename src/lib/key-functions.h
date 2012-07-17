@@ -10,7 +10,7 @@
 #ifndef KEY_FUNCTIONS_h
 	#define KEY_FUNCTIONS_h
 
-	#include "lib/data-types.h"
+	#include "lib/data-types/common.h"
 
 	// --------------------------------------------------------------------
 	// include the appropriate 'matrix.h'

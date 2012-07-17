@@ -12,7 +12,7 @@
 	#define LAYOUT_h
 
 	#include <avr/pgmspace.h>
-	#include "lib/data-types.h"
+	#include "lib/data-types/common.h"
 	#include "lib/key-functions.h"  // for `kbfun_funptr_t`
 
 	#include "matrix.h"  // for number of rows and columns
