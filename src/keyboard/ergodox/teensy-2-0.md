@@ -2,8 +2,9 @@
 
 ## Pinout and Pin assignments
 
-* `+` indicates pin
-* `o` indicates unused pin
+* `+` indicates connected pin
+* `o` indicates unconnected pin
+* '=' is used to list other things the pin is connected to
 * `-`s inserted between some of the pin functions for readability
 * `OC**` pins enclosed in parenthesis had lines over them in the pinout
 
@@ -28,27 +29,27 @@
 ### Teensy 2.0 Pin Assignments
 
               power_negative  GND +---.....---+ Vcc  power_positive
-                     column6  PB0 +           + PF0  row0
-                              PB1 o           + PF1  row1
-                              PB2 o           + PF4  row2
-                              PB3 o  o     o  + PF5  row3
-                 (OC1C) LED3  PB7 + PE6  AREF + PF6  row4
-                  (SCL)  I2C  PD0 +           + PF7  row5
-                  (SDA)  I2C  PD1 +           + PB6  LED1 (OC1B)
-                     column3  PD2 +           + PB5  LED2 (OC1A)
-                     column4  PD3 +           + PB4  column0
-                     column1  PC6 +           + PD7  column5
-                     column2  PC7 +-o-o-o-o-o-+ PD6  onboardLED
+                    column_0  PB0 +           + PF0  row_5
+                    column_1  PB1 +           + PF1  row_4
+                    column_2  PB2 +           + PF4  row_3
+                    column_3  PB3 +  o     o  + PF5  row_2
+                (OC1C) LED_3  PB7 + PE6  AREF + PF6  row_1
+                 (SCL)   I2C  PD0 +           + PF7  row_0
+                 (SDA)   I2C  PD1 +           + PB6  LED_2 (OC1B)
+                    column_4  PD2 +           + PB5  LED_1 (OC1A)
+                    column_5  PD3 +           + PB4  = Vcc
+                    column_6  PC6 +           o PD7
+                              PC7 o-o-o-o-o-o-+ PD6  onboardLED = GND
                               PD5 --/ | | | \-- PD4
                               Vcc ----/ | \---- RST
                               GND-------/
 
 * notes:
     * Row and column assignments are to matrix positions, which may or may
-      correspond to the physical position of the key: e.g. the key where `row4`
-      and `column2` cross will be scanned into the matrix at `[4][2]`, wherever
-      it happens to be located on the keyboard.  Mapping from one to the other
-      (which only matters for defining layouts) is handled elsewhere.
+      correspond to the physical position of the key: e.g. the key where
+      `row_4` and `column_2` cross will be scanned into the matrix at `[4][2]`,
+      wherever it happens to be located on the keyboard.  Mapping from one to
+      the other (which only matters for defining layouts) is handled elsewhere.
     * SCL and SDA: Need external pull-up resistors.  Sometimes the Teensy
       internal pull-ups are enough (see datasheet section 20.5.1), but i think
       for this project we'll want external ones.  The general recommendation

@@ -49,8 +49,8 @@ uint8_t mcp23018_init(void) {
 	ret = twi_send(TWI_ADDR_WRITE);
 	if (ret) goto out;  // make sure we got an ACK
 	twi_send(IODIRA);
-	twi_send(0b11111111);  // IODIRA
-	twi_send(0b10000000);  // IODIRB
+	twi_send(0b10000000);  // IODIRA
+	twi_send(0b11111111);  // IODIRB
 	twi_stop();
 
 	// set pull-up
@@ -61,8 +61,8 @@ uint8_t mcp23018_init(void) {
 	ret = twi_send(TWI_ADDR_WRITE);
 	if (ret) goto out;  // make sure we got an ACK
 	twi_send(GPPUA);
-	twi_send(0b11111111);  // GPPUA
-	twi_send(0b10000000);  // GPPUB
+	twi_send(0b10000000);  // GPPUA
+	twi_send(0b11111111);  // GPPUB
 	twi_stop();
 
 	// set logical value (doesn't matter on inputs)
@@ -109,18 +109,18 @@ uint8_t mcp23018_update_matrix(bool matrix[KB_ROWS][KB_COLUMNS]) {
 
 	// update our part of the matrix
 	for (uint8_t col=0; col<=6; col++) {
-		// set active column low : 0
+		// set active column low         : 0
 		// set other columns high (hi-Z) : 1
 		twi_start();
 		twi_send(TWI_ADDR_WRITE);
-		twi_send(OLATB);
-		twi_send( 0xFF & ~(1<<col) );
+		twi_send(OLATA);
+		twi_send( 0xFF & ~(1<<(6-col)) );
 		twi_stop();
 
 		// read row data
 		twi_start();
 		twi_send(TWI_ADDR_WRITE);
-		twi_send(GPIOA);
+		twi_send(GPIOB);
 		twi_start();
 		twi_send(TWI_ADDR_READ);
 		twi_read(&data);
@@ -128,13 +128,13 @@ uint8_t mcp23018_update_matrix(bool matrix[KB_ROWS][KB_COLUMNS]) {
 
 		// update matrix
 		for (uint8_t row=0x6; row<=0xB; row++)
-			matrix[row][col] = !( data & (1<<(row-6)) );
+			matrix[row][col] = !( data & (1<<(5-(row-6))) );
 	}
 
 	// set all columns high (hi-Z) : 1
 	twi_start();
 	twi_send(TWI_ADDR_WRITE);
-	twi_send(GPIOB);
+	twi_send(GPIOA);
 	twi_send(0xFF);
 	twi_stop();
 

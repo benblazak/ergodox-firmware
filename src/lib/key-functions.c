@@ -394,8 +394,8 @@ static bool L(layer_mask)[KB_ROWS][KB_COLUMNS] =
 		  0,  0,  0,  0,  0,  0,
 		  0,  0,  0,  0,  0,  0,  0,
 		  0,  0,  0,  0,  0,
-		                        0,
-		                        0,    0,
+		                      0,  0,
+		                      0,  0,  0,
 		                      0,  0,  0,
 
 		// right hand
@@ -404,8 +404,8 @@ static bool L(layer_mask)[KB_ROWS][KB_COLUMNS] =
 		          0,  1,  1,  1,  1,  0,
 		      0,  0,  1,  1,  1,  1,  0,
 		              0,  0,  0,  0,  0,
-		        0,
-		  0,    0,
+		      0,  0,
+		  0,  0,  0,
 		  0,  0,  0 );
 
 // functions

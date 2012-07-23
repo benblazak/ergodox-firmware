@@ -58,8 +58,7 @@
 		teensypin_write(register, operation, UNUSED_1); \
 		teensypin_write(register, operation, UNUSED_2); \
 		teensypin_write(register, operation, UNUSED_3); \
-		teensypin_write(register, operation, UNUSED_4); \
-		teensypin_write(register, operation, UNUSED_5); } \
+		teensypin_write(register, operation, UNUSED_4); } \
 	while(0)
 
 #define teensypin_write_all_row(register, operation) \
@@ -87,29 +86,28 @@
 #define CLEAR &=~
 
 // --- unused
-#define UNUSED_0 B, 1  // SPI pin
-#define UNUSED_1 B, 2  // SPI pin
-#define UNUSED_2 B, 3  // SPI pin
-#define UNUSED_3 D, 4  // hard to use with breadboard (on the end)
-#define UNUSED_4 D, 5  // hard to use with breadboard (on the end)
-#define UNUSED_5 E, 6  // hard to use with breadboard (internal)
+#define UNUSED_0 C, 7
+#define UNUSED_1 D, 7
+#define UNUSED_2 D, 4  // hard to use with breadboard (on the end)
+#define UNUSED_3 D, 5  // hard to use with breadboard (on the end)
+#define UNUSED_4 E, 6  // hard to use with breadboard (internal)
 
 // --- rows
-#define ROW_0 F, 0
-#define ROW_1 F, 1
-#define ROW_2 F, 4
-#define ROW_3 F, 5
-#define ROW_4 F, 6
-#define ROW_5 F, 7
+#define ROW_0 F, 7
+#define ROW_1 F, 6
+#define ROW_2 F, 5
+#define ROW_3 F, 4
+#define ROW_4 F, 1
+#define ROW_5 F, 0
 
 // --- columns
-#define COLUMN_0 B, 4
-#define COLUMN_1 C, 6
-#define COLUMN_2 C, 7
-#define COLUMN_3 D, 2
-#define COLUMN_4 D, 3
-#define COLUMN_5 D, 7
-#define COLUMN_6 B, 0
+#define COLUMN_0 B, 0
+#define COLUMN_1 B, 1
+#define COLUMN_2 B, 2
+#define COLUMN_3 B, 3
+#define COLUMN_4 D, 2
+#define COLUMN_5 D, 3
+#define COLUMN_6 C, 6
 
 
 /* returns
@@ -121,6 +119,10 @@ uint8_t teensy_init(void) {
 	// onboard LED
 	DDRD  &= ~(1<<6);  // set D(6) as input
 	PORTD &= ~(1<<6);  // set D(6) internal pull-up disabled
+
+	// (tied to Vcc for hardware convenience)
+	DDRB  &= ~(1<<4);  // set B(4) as input
+	PORTB &= ~(1<<4);  // set B(4) internal pull-up disabled
 
 	// keyboard LEDs (see "PWM on ports OC1(A|B|C)" in "teensy-2-0.md")
 	_kb_led_all_off();  // (just to put the pins in a known state)
