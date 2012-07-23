@@ -117,6 +117,7 @@ uint8_t teensy_init(void) {
 	CPU_PRESCALE(CPU_16MHz);  // speed should match F_CPU in makefile
 
 	// onboard LED
+	// (tied to GND for hardware convenience)
 	DDRD  &= ~(1<<6);  // set D(6) as input
 	PORTD &= ~(1<<6);  // set D(6) internal pull-up disabled
 
