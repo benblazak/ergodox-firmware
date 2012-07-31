@@ -1,7 +1,5 @@
 /* ----------------------------------------------------------------------------
- * keyboard specific exports
- *
- * Different keyboards are included by modifying a variable in the makefile.
+ * Macros to help with conditional includes
  * ----------------------------------------------------------------------------
  * Copyright (c) 2012 Ben Blazak <benblazak.dev@gmail.com>
  * Released under The MIT License (MIT) (see "license.md")
@@ -9,14 +7,7 @@
  * ------------------------------------------------------------------------- */
 
 
-#undef _str
-#undef _expstr
-#undef _inc
-#define _str(s) #s          // stringify
-#define _expstr(s) _str(s)  // expand -> stringify
-#define _inc _expstr(keyboard/MAKEFILE_KEYBOARD.h)  // inc(lude)
-#include _inc
-#undef _str
-#undef _expstr
-#undef _inc
+#undef  INCLUDE
+#define  STR(s)  #s          // stringify
+#define  EXP_STR(s)  STR(s)  // expand -> stringify
 

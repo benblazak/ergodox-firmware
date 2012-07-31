@@ -7,11 +7,12 @@
  * ------------------------------------------------------------------------- */
 
 
+#include <stdbool.h>
+#include <stddef.h>
 #include <stdlib.h>
-#include "lib/data-types/common.h"
+#include "./linked-list.h"
 
-#include "linked-list.h"
-
+// ----------------------------------------------------------------------------
 
 // local macros (undefined later)
 #define  _NEW_POINTER(type, name)  type * name = (type *) malloc(sizeof(type))
@@ -19,6 +20,7 @@
 #define  _node_t                   linked_list_node_t
 #define  _data_t                   LINKED_LIST_DATA_TYPE
 
+// ----------------------------------------------------------------------------
 
 /*
  * new()
@@ -225,6 +227,7 @@ void linked_list_free(_list_t * list) {
 	free(list);
 }
 
+// ----------------------------------------------------------------------------
 
 // local macros (undefined here)
 #undef _NEW_POINTER

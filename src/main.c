@@ -8,14 +8,46 @@
  * ------------------------------------------------------------------------- */
 
 
+#include <stdbool.h>
+#include <stdint.h>
 #include <util/delay.h>
-#include "lib-other/pjrc/usb_keyboard/usb_keyboard.h"
-#include "lib/data-types/common.h"
-#include "lib/key-functions.h"
+#include "src/lib-other/pjrc/usb_keyboard/usb_keyboard.h"
+#include "src/lib/key-functions/public.h"
+#include "src/keyboard/controller.h"
+#include "src/keyboard/layout.h"
+#include "src/keyboard/matrix.h"
 
-#include "keyboard.h"
+// ----------------------------------------------------------------------------
 
+/*
+ * Exec key
+ * - Execute the keypress or keyrelease function (if it exists) of the key at
+ *   the current possition.  Pass the keycode at the current position, and pass
+ *   all other arguments as received
+ */
+void main_exec_key( KBFUN_FUNCTION_ARGS ) {
+	kbfun_funptr_t key_function =
+		( (pressed_)
+		  ? kb_layout_press_get(layer_, *row_, *col_)
+		  : kb_layout_release_get(layer_, *row_, *col_) );
 
+	if (key_function)
+		(*key_function)(
+				pressed_,
+				kb_layout_get(layer_, *row_, *col_),
+				layer_,
+				row_,
+				col_,
+				current_layer_,
+				current_layers_,
+				pressed_layers_ );
+}
+
+// ----------------------------------------------------------------------------
+
+/*
+ * main()
+ */
 int main(void) {
 	kb_init();  // does controller initialization too
 
@@ -28,6 +60,13 @@ int main(void) {
 	kb_led_state_ready();
 
 	for (;;) {
+		// matrix of keys currently pressed
+		static bool _kb_is_pressed[KB_ROWS][KB_COLUMNS];
+		static bool (*kb_is_pressed)[KB_ROWS][KB_COLUMNS] = &_kb_is_pressed;
+		// matrix of keys previously pressed
+		static bool _kb_was_pressed[KB_ROWS][KB_COLUMNS];
+		static bool (*kb_was_pressed)[KB_ROWS][KB_COLUMNS] = &_kb_was_pressed;
+
 		// the overall current layer
 		static uint8_t current_layer;
 		// the current layer for each key
@@ -43,9 +82,9 @@ int main(void) {
 		kb_update_matrix(*kb_is_pressed);
 
 		// this loop is responsible to
-		// - "execute" keys when they change state (call `_kbfun_exec_key()`,
+		// - "execute" keys when they change state (call `main_exec_key()`,
 		//   which will call the appropriate function with the appropriate
-		//   keycode argument from the kb_layout* matrices)
+		//   keycode argument from the kb_layout... matrices)
 		// - keep track of which layers the keys were on when they were pressed
 		//   (so they can be released using the function from that layer)
 		//
@@ -70,7 +109,7 @@ int main(void) {
 					if (is_pressed)
 						pressed_layers[row][col] = layer;
 
-					_kbfun_exec_key(
+					main_exec_key(
 							is_pressed, 0, layer,
 							&row, &col, &current_layer,
 							&current_layers, &pressed_layers );

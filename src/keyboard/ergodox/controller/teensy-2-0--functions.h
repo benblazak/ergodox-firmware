@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- * ergoDOX controller: MCP23018 specific exports : private
+ * ergoDOX : controller : Teensy 2.0 specific exports : functions
  * ----------------------------------------------------------------------------
  * Copyright (c) 2012 Ben Blazak <benblazak.dev@gmail.com>
  * Released under The MIT License (MIT) (see "license.md")
@@ -7,16 +7,17 @@
  * ------------------------------------------------------------------------- */
 
 
-#ifndef MCP23018_h_PRIVATE
-	#define MCP23018_h_PRIVATE
+#ifndef KEYBOARD__ERGODOX__CONTROLLER__TEENSY_2_0__FUNCTIONS_h
+	#define KEYBOARD__ERGODOX__CONTROLLER__TEENSY_2_0__FUNCTIONS_h
 
-	#include "lib/data-types/common.h"
-	#include "matrix.h"
+	#include <stdbool.h>
+	#include <stdint.h>
+	#include "../matrix.h"
 
-	#define MCP23018_TWI_ADDRESS 0b0100000
+	// --------------------------------------------------------------------
 
-	uint8_t mcp23018_init(void);
-	uint8_t mcp23018_update_matrix( bool matrix[KB_ROWS][KB_COLUMNS] );
+	uint8_t teensy_init(void);
+	uint8_t teensy_update_matrix( bool matrix[KB_ROWS][KB_COLUMNS] );
 
 #endif
 

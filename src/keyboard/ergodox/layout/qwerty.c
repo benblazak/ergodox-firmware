@@ -1,7 +1,7 @@
 /* ----------------------------------------------------------------------------
  * ergoDOX layout : QWERTY
  *
- * This is an overly basic implementation.  It needs to be replaced.
+ * TODO: This is a temporary version.  It will be replaced later.
  * ----------------------------------------------------------------------------
  * Copyright (c) 2012 Ben Blazak <benblazak.dev@gmail.com>
  * Released under The MIT License (MIT) (see "license.md")
@@ -9,33 +9,40 @@
  * ------------------------------------------------------------------------- */
 
 
+#include <stdint.h>
+#include <stddef.h>
 #include <avr/pgmspace.h>
-#include "lib/data-types/common.h"
-#include "lib/usb/usage-page/keyboard--short-names.h"
-#include "lib/key-functions.h"
-
+#include "src/lib/usb/usage-page/keyboard--short-names.h"
+#include "src/lib/key-functions/public.h"
 #include "../matrix.h"
 #include "../layout.h"
 
+// ----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 
 // aliases
+// --- basic
 #define f_prrel &kbfun_press_release
 #define f_toggl &kbfun_toggle
 #define f_l_inc &kbfun_layer_inc
 #define f_l_dec &kbfun_layer_dec
-#define f_l_iex &kbfun_layer_inc_exec
-#define f_l_dex &kbfun_layer_dec_exec
-#define f_2kcap &kbfun_2_keys_capslock_press_release
+// --- device
+#define f_btldr &kbfun_jump_to_bootloader
+// --- numpad
 #define f_np_to &kbfun_layermask_numpad_toggle
 #define f_np_on &kbfun_layermask_numpad_on
 #define f_np_of &kbfun_layermask_numpad_off
-#define f_btldr &kbfun_jump_to_bootloader
+// --- special
+#define f_l_iex &kbfun_layer_inc_exec
+#define f_l_dex &kbfun_layer_dec_exec
+#define f_2kcap &kbfun_2_keys_capslock_press_release
 
-
+// ----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 
 uint8_t PROGMEM _kb_layout[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
-// ----------------------------------------------------------------------------
-	MATRIX_LAYER(  // layer 0: default
+	// --------------------------------------------------------------------
+	KB_MATRIX_LAYER(  // layout: layer 0: default
 // unused
 0,
 // left hand
@@ -56,8 +63,8 @@ _bracketL,      _Q,      _W,      _E,      _R,      _T,   _esc,
              0, _space,
 _ctrlR,      0, _enter,
  _altR, _pageU, _pageD ),
-// ----------------------------------------------------------------------------
-	MATRIX_LAYER(  // layer 1: function and symbol keys
+	// --------------------------------------------------------------------
+	KB_MATRIX_LAYER(  // layout: layer 1: function and symbol keys
 // unused
 0,
 // left hand
@@ -78,8 +85,8 @@ _ctrlR,      0, _enter,
              0,     _space,
 _ctrlR,      0,     _enter,
  _altR, _pageU,     _pageD ),
-// ----------------------------------------------------------------------------
-	MATRIX_LAYER(  // layer 2: numpad
+	// --------------------------------------------------------------------
+	KB_MATRIX_LAYER(  // layout: layer 2: numpad
 // unused
 0,
 // left hand
@@ -92,7 +99,6 @@ _ctrlR,      0,     _enter,
                                              0,       0,       0, 
                                              0,       0,       0, 
 // right hand
-//------- ------- ------- ------- ------- ------- ------- 
          0,       0,   _7_kp,   _8_kp,   _9_kp, _div_kp,       0, 
          0,       0,   _4_kp,   _5_kp,   _6_kp, _mul_kp,       0, 
                   0,   _1_kp,   _2_kp,   _3_kp, _sub_kp,       0, 
@@ -101,13 +107,14 @@ _ctrlR,      0,     _enter,
          0,       0,
 0,       0,       0,
 0,       0,       0 )
-// ----------------------------------------------------------------------------
+	// --------------------------------------------------------------------
 };
 
+// ----------------------------------------------------------------------------
 
 kbfun_funptr_t PROGMEM _kb_layout_press[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
-// ----------------------------------------------------------------------------
-	MATRIX_LAYER(  // layer 0: default
+	// --------------------------------------------------------------------
+	KB_MATRIX_LAYER(  // press: layer 0: default
 // unused
 NULL,
 // left hand
@@ -128,8 +135,8 @@ f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
            NULL,f_prrel,
 f_prrel,   NULL,f_prrel,
 f_prrel,f_prrel,f_prrel ),
-// ----------------------------------------------------------------------------
-	MATRIX_LAYER(  // layer 1: function and symbol keys
+	// --------------------------------------------------------------------
+	KB_MATRIX_LAYER(  // press: layer 1: function and symbol keys
 // unused
 NULL,
 // left hand
@@ -150,8 +157,8 @@ f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
            NULL,f_prrel,
 f_prrel,   NULL,f_prrel,
 f_prrel,f_prrel,f_prrel ),
-// ----------------------------------------------------------------------------
-	MATRIX_LAYER(  // layer 2: numpad
+	// --------------------------------------------------------------------
+	KB_MATRIX_LAYER(  // press: layer 2: numpad
 // unused
 NULL,
 // left hand
@@ -172,13 +179,14 @@ NULL,
            NULL,   NULL,
    NULL,   NULL,   NULL,
    NULL,   NULL,   NULL )
-// ----------------------------------------------------------------------------
+	// --------------------------------------------------------------------
 };
 
+// ----------------------------------------------------------------------------
 
 kbfun_funptr_t PROGMEM _kb_layout_release[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
-// ----------------------------------------------------------------------------
-	MATRIX_LAYER(  // layer 0: default
+	// --------------------------------------------------------------------
+	KB_MATRIX_LAYER(  // release: layer 0: default
 // unused
 NULL,
 // left hand
@@ -199,8 +207,8 @@ f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
            NULL,f_prrel,
 f_prrel,   NULL,f_prrel,
 f_prrel,f_prrel,f_prrel ),
-// ----------------------------------------------------------------------------
-	MATRIX_LAYER(  // layer 1: function and symbol keys
+	// --------------------------------------------------------------------
+	KB_MATRIX_LAYER(  // release: layer 1: function and symbol keys
 // unused
 NULL,
 // left hand
@@ -221,8 +229,8 @@ f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
            NULL,f_prrel,
 f_prrel,   NULL,f_prrel,
 f_prrel,f_prrel,f_prrel ),
-// ----------------------------------------------------------------------------
-	MATRIX_LAYER(  // layer 2: numpad
+	// --------------------------------------------------------------------
+	KB_MATRIX_LAYER(  // release: layer 2: numpad
 // unused
 NULL,
 // left hand
@@ -243,9 +251,10 @@ NULL,
            NULL,   NULL,
    NULL,   NULL,   NULL,
    NULL,   NULL,   NULL ),
-// ----------------------------------------------------------------------------
-	MATRIX_LAYER(  // layer 3: nothing (just making sure unused functions
-		       //   don't get compiled out)
+	// --------------------------------------------------------------------
+	KB_MATRIX_LAYER(  // release: layer 3: nothing (just making sure unused
+			  //                   functions don't get compiled
+			  //                   out)
 // unused
 NULL,
 // other
@@ -259,6 +268,6 @@ f_2kcap,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
 f_np_to,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
 f_np_on,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
 f_np_of,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL )
-// ----------------------------------------------------------------------------
+	// --------------------------------------------------------------------
 };
 

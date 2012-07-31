@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- * ergoDOX controller: Teensy 2.0 specific code
+ * ergoDOX : controller: Teensy 2.0 specific code
  * ----------------------------------------------------------------------------
  * Copyright (c) 2012 Ben Blazak <benblazak.dev@gmail.com>
  * Released under The MIT License (MIT) (see "license.md")
@@ -7,16 +7,19 @@
  * ------------------------------------------------------------------------- */
 
 
+// for "lib/twi.h"
+#define TWI_FREQ 400000
+
+#include <stdbool.h>
+#include <stdint.h>
 #include <avr/io.h>
 #include <util/delay.h>
-#include "lib/data-types/common.h"
-#define TWI_FREQ 400000
-#include "lib/twi.h"
+#include "src/lib/twi.h"
+#include "../matrix.h"
+#include "./teensy-2-0--functions.h"
+#include "./teensy-2-0--led.h"
 
-#include "matrix.h"
-#include "teensy-2-0.h"
-#include "teensy-2-0--private.h"
-
+// ----------------------------------------------------------------------------
 
 // processor frequency (from <http://www.pjrc.com/teensy/prescaler.html>)
 #define CPU_PRESCALE(n) (CLKPR = 0x80, CLKPR = (n))
@@ -39,47 +42,48 @@
  * - note: if you change pin assignments, please be sure to update
  *   "teensy-2-0.md", and the '.svg' circuit diagram.
  */
+
 // --- helpers
+#define _teensypin_write(register, operation, pin_letter, pin_number)	\
+	((register##pin_letter) operation (1<<(pin_number)))
 #define teensypin_write(register, operation, pin) do {		\
 	_teensypin_write(register, operation, pin);		\
-	_delay_us(1);  /* allow pins time to stabalize */	\
+	_delay_us(1);  /* allow pins time to stabilize */	\
 	} while(0)
-#define _teensypin_write(register, operation, pin_letter, pin_number) \
-	((register##pin_letter) operation (1<<(pin_number)))
 
-#define teensypin_read(pin) \
-	_teensypin_read(pin)
-#define _teensypin_read(pin_letter, pin_number) \
+#define _teensypin_read(pin_letter, pin_number)	\
 	((PIN##pin_letter) & (1<<(pin_number)))
+#define teensypin_read(pin)	\
+	_teensypin_read(pin)
 
-#define teensypin_write_all_unused(register, operation) \
-	do { \
-		teensypin_write(register, operation, UNUSED_0); \
-		teensypin_write(register, operation, UNUSED_1); \
-		teensypin_write(register, operation, UNUSED_2); \
-		teensypin_write(register, operation, UNUSED_3); \
-		teensypin_write(register, operation, UNUSED_4); } \
+#define teensypin_write_all_unused(register, operation)			\
+	do {								\
+		teensypin_write(register, operation, UNUSED_0);		\
+		teensypin_write(register, operation, UNUSED_1);		\
+		teensypin_write(register, operation, UNUSED_2);		\
+		teensypin_write(register, operation, UNUSED_3);		\
+		teensypin_write(register, operation, UNUSED_4); }	\
 	while(0)
 
-#define teensypin_write_all_row(register, operation) \
-	do { \
-		teensypin_write(register, operation, ROW_0); \
-		teensypin_write(register, operation, ROW_1); \
-		teensypin_write(register, operation, ROW_2); \
-		teensypin_write(register, operation, ROW_3); \
-		teensypin_write(register, operation, ROW_4); \
-		teensypin_write(register, operation, ROW_5); } \
+#define teensypin_write_all_row(register, operation)		\
+	do {							\
+		teensypin_write(register, operation, ROW_0);	\
+		teensypin_write(register, operation, ROW_1);	\
+		teensypin_write(register, operation, ROW_2);	\
+		teensypin_write(register, operation, ROW_3);	\
+		teensypin_write(register, operation, ROW_4);	\
+		teensypin_write(register, operation, ROW_5); }	\
 	while(0)
 
-#define teensypin_write_all_column(register, operation) \
-	do { \
-		teensypin_write(register, operation, COLUMN_0); \
-		teensypin_write(register, operation, COLUMN_1); \
-		teensypin_write(register, operation, COLUMN_2); \
-		teensypin_write(register, operation, COLUMN_3); \
-		teensypin_write(register, operation, COLUMN_4); \
-		teensypin_write(register, operation, COLUMN_5); \
-		teensypin_write(register, operation, COLUMN_6); } \
+#define teensypin_write_all_column(register, operation)			\
+	do {								\
+		teensypin_write(register, operation, COLUMN_0);		\
+		teensypin_write(register, operation, COLUMN_1);		\
+		teensypin_write(register, operation, COLUMN_2);		\
+		teensypin_write(register, operation, COLUMN_3);		\
+		teensypin_write(register, operation, COLUMN_4);		\
+		teensypin_write(register, operation, COLUMN_5);		\
+		teensypin_write(register, operation, COLUMN_6); }	\
 	while(0)
 
 #define SET |=
@@ -109,12 +113,17 @@
 #define COLUMN_5 D, 3
 #define COLUMN_6 C, 6
 
+// ----------------------------------------------------------------------------
 
 /* returns
  * - success: 0
  */
 uint8_t teensy_init(void) {
-	CPU_PRESCALE(CPU_16MHz);  // speed should match F_CPU in makefile
+	// CPU speed : should match F_CPU in makefile
+	#if F_CPU != 16000000
+		#error "Expecting different CPU frequency"
+	#endif
+	CPU_PRESCALE(CPU_16MHz);
 
 	// onboard LED
 	// (tied to GND for hardware convenience)

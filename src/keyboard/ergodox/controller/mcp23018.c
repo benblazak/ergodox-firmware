@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- * ergoDOX controller: MCP23018 specific code
+ * ergoDOX : controller: MCP23018 specific code
  * ----------------------------------------------------------------------------
  * Copyright (c) 2012 Ben Blazak <benblazak.dev@gmail.com>
  * Released under The MIT License (MIT) (see "license.md")
@@ -7,13 +7,14 @@
  * ------------------------------------------------------------------------- */
 
 
+#include <stdbool.h>
+#include <stdint.h>
 #include <util/twi.h>
-#include "lib/data-types/common.h"
-#include "lib/twi.h"  // `TWI_FREQ` defined in "teensy-2-0.c"
+#include "src/lib/twi.h"  // `TWI_FREQ` defined in "teensy-2-0.c"
+#include "../matrix.h"
+#include "./mcp23018--functions.h"
 
-#include "matrix.h"
-#include "mcp23018--private.h"
-
+// ----------------------------------------------------------------------------
 
 // register addresses (see "mcp23018.md")
 #define IODIRA 0x00  // i/o direction register
@@ -29,6 +30,7 @@
 #define TWI_ADDR_WRITE ( (MCP23018_TWI_ADDRESS<<1) | TW_WRITE )
 #define TWI_ADDR_READ  ( (MCP23018_TWI_ADDRESS<<1) | TW_READ  )
 
+// ----------------------------------------------------------------------------
 
 /* returns:
  * - success: 0

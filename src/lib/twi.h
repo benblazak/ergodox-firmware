@@ -10,14 +10,7 @@
  * ------------------------------------------------------------------------- */
 
 
-#undef _str
-#undef _expstr
-#undef _inc
-#define _str(s) #s          // stringify
-#define _expstr(s) _str(s)  // expand -> stringify
-#define _inc _expstr(twi/MAKEFILE_BOARD.h)  // inc(lude)
-#include _inc
-#undef _str
-#undef _expstr
-#undef _inc
+#include "src/lib/conditional-include.h"
+#define INCLUDE EXP_STR( ./twi/MAKEFILE_BOARD.h )
+#include INCLUDE
 

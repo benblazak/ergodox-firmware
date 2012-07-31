@@ -10,14 +10,16 @@
 #ifndef DATA_TYPES_LINKED_LIST_h
 	#define DATA_TYPES_LINKED_LIST_h
 
-	#include "lib/data-types/common.h"
+	#include <stdint.h>
 
+	// --------------------------------------------------------------------
 
 	// default data type for the list
 	#ifndef LINKED_LIST_DATA_TYPE
 		#define LINKED_LIST_DATA_TYPE uint8_t
 	#endif
 
+	// --------------------------------------------------------------------
 
 	// structs
 	struct linked_list_node {
@@ -26,7 +28,7 @@
 	};
 
 	struct linked_list {
-		uint8_t length;  // 'uint8_t' to save ram
+		uint8_t length;  // 'uint8_t' to save memory
 		struct linked_list_node * head;
 		struct linked_list_node * tail;
 	};

@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- * ergoDOX: keyboard matrix specific exports
+ * ergoDOX : matrix specific exports
  * ----------------------------------------------------------------------------
  * Copyright (c) 2012 Ben Blazak <benblazak.dev@gmail.com>
  * Released under The MIT License (MIT) (see "license.md")
@@ -7,17 +7,15 @@
  * ------------------------------------------------------------------------- */
 
 
-#ifndef MATRIX_h
-	#define MATRIX_h
+#ifndef KEYBOARD__ERGODOX__MATRIX_h
+	#define KEYBOARD__ERGODOX__MATRIX_h
 
-	#include "lib/data-types/common.h"
+	// --------------------------------------------------------------------
 
 	#define KB_ROWS    12  // must match real life
 	#define KB_COLUMNS  7  // must match real life
 
-	extern bool (*kb_is_pressed)[KB_ROWS][KB_COLUMNS];
-	extern bool (*kb_was_pressed)[KB_ROWS][KB_COLUMNS];
-
+	// --------------------------------------------------------------------
 
 	/* mapping from spatial position to matrix position
 	 * - spatial position: where the key is spatially, relative to other
@@ -42,7 +40,7 @@
 	 * right hand : cols 0..6, rows 0..5
 	 * --------------------------------------------------------------------
 	 */
-	#define MATRIX_LAYER(					\
+	#define KB_MATRIX_LAYER(				\
 			/* for unused positions */		\
 			na,					\
 								\
@@ -81,7 +79,7 @@
 		  { kB0,kB1,kB2,kB3,kB4,kB5,kB6 } }
 
 
-	#define MATRIX_LAYER_SET_ALL(na, kxx)			\
+	#define KB_MATRIX_LAYER_SET_ALL(na, kxx)		\
 		LAYER(						\
 			na,					\
 								\
@@ -102,7 +100,6 @@
 			    kxx,kxx,				\
 			kxx,kxx,kxx,				\
 			kxx,kxx,kxx )				\
-
 
 #endif
 
