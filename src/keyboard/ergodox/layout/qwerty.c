@@ -12,8 +12,9 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <avr/pgmspace.h>
-#include "src/lib/usb/usage-page/keyboard--short-names.h"
-#include "src/lib/key-functions/public.h"
+#include "../../../lib/data-types/misc.h"
+#include "../../../lib/usb/usage-page/keyboard--short-names.h"
+#include "../../../lib/key-functions/public.h"
 #include "../matrix.h"
 #include "../layout.h"
 
@@ -112,7 +113,7 @@ _ctrlR,      0,     _enter,
 
 // ----------------------------------------------------------------------------
 
-kbfun_funptr_t PROGMEM _kb_layout_press[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
+void_funptr_t PROGMEM _kb_layout_press[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
 	// --------------------------------------------------------------------
 	KB_MATRIX_LAYER(  // press: layer 0: default
 // unused
@@ -184,7 +185,7 @@ NULL,
 
 // ----------------------------------------------------------------------------
 
-kbfun_funptr_t PROGMEM _kb_layout_release[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
+void_funptr_t PROGMEM _kb_layout_release[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
 	// --------------------------------------------------------------------
 	KB_MATRIX_LAYER(  // release: layer 0: default
 // unused

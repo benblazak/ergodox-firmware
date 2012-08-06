@@ -10,7 +10,7 @@
  * ------------------------------------------------------------------------- */
 
 
-#include "src/lib/conditional-include.h"
+#include "../lib/conditional-include.h"
 #define INCLUDE EXP_STR( ./MAKEFILE_KEYBOARD/matrix.h )
 #include INCLUDE
 

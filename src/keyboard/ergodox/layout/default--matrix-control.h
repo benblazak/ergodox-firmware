@@ -12,7 +12,8 @@
 
 	#include <stdint.h>
 	#include <avr/pgmspace.h>
-	#include "src/lib/key-functions/public.h"
+	#include "../../../lib/data-types/misc.h"
+	#include "../../../lib/key-functions/public.h"
 	#include "../matrix.h"
 
 	// --------------------------------------------------------------------
@@ -56,21 +57,21 @@
 	#endif
 
 	#ifndef kb_layout_press_get
-		extern kbfun_funptr_t PROGMEM \
+		extern void_funptr_t PROGMEM \
 			_kb_layout_press[KB_LAYERS][KB_ROWS][KB_COLUMNS];
 
 		#define kb_layout_press_get(layer,row,column) \
-			( (kbfun_funptr_t) \
+			( (void_funptr_t) \
 			  pgm_read_word(&( \
 				_kb_layout_press[layer][row][column] )) )
 	#endif
 
 	#ifndef kb_layout_release_get
-		extern kbfun_funptr_t PROGMEM \
+		extern void_funptr_t PROGMEM \
 			_kb_layout_release[KB_LAYERS][KB_ROWS][KB_COLUMNS];
 
 		#define kb_layout_release_get(layer,row,column) \
-			( (kbfun_funptr_t) \
+			( (void_funptr_t) \
 			  pgm_read_word(&( \
 				_kb_layout_release[layer][row][column] )) )
 

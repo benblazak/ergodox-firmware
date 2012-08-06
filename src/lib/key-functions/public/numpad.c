@@ -24,12 +24,22 @@
 
 #include <stdbool.h>
 #include <stdint.h>
-#include "src/lib-other/pjrc/usb_keyboard/usb_keyboard.h"
-#include "src/lib/usb/usage-page/keyboard.h"
-#include "src/keyboard/matrix.h"
+#include "../../../lib-other/pjrc/usb_keyboard/usb_keyboard.h"
+#include "../../../lib/usb/usage-page/keyboard.h"
+#include "../../../keyboard/layout.h"
+#include "../../../keyboard/matrix.h"
+#include "../../../main.h"
 #include "../public.h"
 #include "../private.h"
 
+// ----------------------------------------------------------------------------
+
+// convenience macros
+#define  layer        main_arg_layer
+#define  row          main_arg_row
+#define  col          main_arg_col
+#define  is_pressed   main_arg_is_pressed
+#define  was_pressed  main_arg_was_pressed
 
 // ----------------------------------------------------------------------------
 // vars
@@ -74,15 +84,10 @@ static inline void _toggle_numlock(void) {
 	usb_keyboard_send();
 }
 
-static void _toggle_numpad(
-		uint8_t numpad_layer,
-		uint8_t current_layer,
-		uint8_t (*current_layers)[KB_ROWS][KB_COLUMNS] ) {
-
+static void _toggle_numpad(uint8_t numpad_layer) {
 	if (_numpad_activated) {
 		// deactivate numpad
-		_kbfun_layer_set_mask(
-				current_layer, _layer_mask, current_layers );
+		_kbfun_layer_set_mask(main_layers_current, _layer_mask);
 		_numpad_activated = false;
 
 		// if: numlock on
@@ -90,8 +95,7 @@ static void _toggle_numpad(
 			_toggle_numlock();
 	} else {
 		// activate numpad
-		_kbfun_layer_set_mask(
-				numpad_layer, _layer_mask, current_layers );
+		_kbfun_layer_set_mask(numpad_layer, _layer_mask);
 		_numpad_activated = true;
 
 		// if: numlock off
@@ -110,25 +114,28 @@ static void _toggle_numpad(
  * - Toggles the numpad and sets numlock on (for active) or off (for inactive)
  *   with it, if it's not already in that state
  */
-void kbfun_layermask_numpad_toggle( KBFUN_FUNCTION_ARGS ) {
-	_toggle_numpad(keycode_, *current_layer_, current_layers_);
+void kbfun_layermask_numpad_toggle(void) {
+	uint8_t keycode = kb_layout_get(layer, row, col);
+	_toggle_numpad(keycode);
 }
 
 /*
  * Numpad on
  * - Set the numpad on (along with numlock, if it's not already)
  */
-void kbfun_layermask_numpad_on( KBFUN_FUNCTION_ARGS ) {
+void kbfun_layermask_numpad_on(void) {
+	uint8_t keycode = kb_layout_get(layer, row, col);
 	if (!_numpad_activated)
-		_toggle_numpad(keycode_, *current_layer_, current_layers_);
+		_toggle_numpad(keycode);
 }
 
 /*
  * Numpad off
  * - Set the numpad off (along with numlock, if it's not already)
  */
-void kbfun_layermask_numpad_off( KBFUN_FUNCTION_ARGS ) {
+void kbfun_layermask_numpad_off(void) {
+	uint8_t keycode = kb_layout_get(layer, row, col);
 	if (_numpad_activated)
-		_toggle_numpad(keycode_, *current_layer_, current_layers_);
+		_toggle_numpad(keycode);
 }
 

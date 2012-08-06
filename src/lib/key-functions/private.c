@@ -9,10 +9,11 @@
 
 #include <stdbool.h>
 #include <stdint.h>
-#include "src/lib-other/pjrc/usb_keyboard/usb_keyboard.h"
-#include "src/lib/usb/usage-page/keyboard.h"
-#include "src/keyboard/layout.h"
-#include "src/keyboard/matrix.h"
+#include "../../lib-other/pjrc/usb_keyboard/usb_keyboard.h"
+#include "../../lib/usb/usage-page/keyboard.h"
+#include "../../keyboard/layout.h"
+#include "../../keyboard/matrix.h"
+#include "../../main.h"
 #include "./public.h"
 
 // ----------------------------------------------------------------------------
@@ -21,50 +22,50 @@
  * Generate a normal keypress or keyrelease
  *
  * Arguments
+ * - press: whether to generate a keypress (true) or keyrelease (false)
  * - keycode: the keycode to use
- * - pressed: whether to generate a keypress (true) or keyrelease (false)
  *
  * Note
  * - Because of the way USB does things, what this actually does is either add
  *   or remove 'keycode' from the list of currently pressed keys, to be sent at
  *   the end of the current cycle (see main.c)
  */
-void _kbfun_press_release(bool pressed, uint8_t keycode) {
+void _kbfun_press_release(bool press, uint8_t keycode) {
 	// no-op
 	if (keycode == 0)
 		return;
 
 	// modifier keys
 	switch (keycode) {
-		case KEY_LeftControl:  (pressed)
+		case KEY_LeftControl:  (press)
 				       ? (keyboard_modifier_keys |=  (1<<0))
 				       : (keyboard_modifier_keys &= ~(1<<0));
 				       return;
-		case KEY_LeftShift:    (pressed)
+		case KEY_LeftShift:    (press)
 				       ? (keyboard_modifier_keys |=  (1<<1))
 				       : (keyboard_modifier_keys &= ~(1<<1));
 				       return;
-		case KEY_LeftAlt:      (pressed)
+		case KEY_LeftAlt:      (press)
 				       ? (keyboard_modifier_keys |=  (1<<2))
 				       : (keyboard_modifier_keys &= ~(1<<2));
 				       return;
-		case KEY_LeftGUI:      (pressed)
+		case KEY_LeftGUI:      (press)
 				       ? (keyboard_modifier_keys |=  (1<<3))
 				       : (keyboard_modifier_keys &= ~(1<<3));
 				       return;
-		case KEY_RightControl: (pressed)
+		case KEY_RightControl: (press)
 				       ? (keyboard_modifier_keys |=  (1<<4))
 				       : (keyboard_modifier_keys &= ~(1<<4));
 				       return;
-		case KEY_RightShift:   (pressed)
+		case KEY_RightShift:   (press)
 				       ? (keyboard_modifier_keys |=  (1<<5))
 				       : (keyboard_modifier_keys &= ~(1<<5));
 				       return;
-		case KEY_RightAlt:     (pressed)
+		case KEY_RightAlt:     (press)
 				       ? (keyboard_modifier_keys |=  (1<<6))
 				       : (keyboard_modifier_keys &= ~(1<<6));
 				       return;
-		case KEY_RightGUI:     (pressed)
+		case KEY_RightGUI:     (press)
 				       ? (keyboard_modifier_keys |=  (1<<7))
 				       : (keyboard_modifier_keys &= ~(1<<7));
 				       return;
@@ -72,7 +73,7 @@ void _kbfun_press_release(bool pressed, uint8_t keycode) {
 
 	// all others
 	for (uint8_t i=0; i<6; i++) {
-		if (pressed) {
+		if (press) {
 			if (keyboard_keys[i] == 0) {
 				keyboard_keys[i] = keycode;
 				return;
@@ -91,22 +92,12 @@ void _kbfun_press_release(bool pressed, uint8_t keycode) {
  * - Sets any keys currently set to the overall current layer to the new layer,
  *   and then sets the overall current layer
  *
- * Arguments
- * - layer: the new layer value
- * - current_layer: (a pointer to) the overall current layer (see main.c)
- * - current_layers: (a pointer to a matrix of) the current layer for each key
- *   (see main.c and lib/key-functions.h)
- *
  * Note
  * - Leaving all non-current layer values alone allows changing layers while
  *   maintaining a possibly enabled layer mask (as might be used to implement
  *   firmware enabled numlock)
  */
-void _kbfun_layer_set_current(
-		uint8_t layer,
-		uint8_t * current_layer,
-		uint8_t (*current_layers)[KB_ROWS][KB_COLUMNS] ) {
-
+void _kbfun_layer_set_current(uint8_t layer) {
 	// don't switch to out-of-bounds layers
 	if ( layer < 0 || layer >= KB_LAYERS )
 		return;
@@ -114,10 +105,10 @@ void _kbfun_layer_set_current(
 	for (uint8_t row=0; row<KB_ROWS; row++)
 		for (uint8_t col=0; col<KB_COLUMNS; col++)
 			// if a key is set to a non-current layer, leave it
-			if ((*current_layers)[row][col] == *current_layer)
-				(*current_layers)[row][col] = layer;
+			if (main_layers_press[row][col] == main_layers_current)
+				main_layers_press[row][col] = layer;
 
-	(*current_layer) = layer;
+	main_layers_current = layer;
 }
 
 /*
@@ -126,8 +117,7 @@ void _kbfun_layer_set_current(
  */
 void _kbfun_layer_set_mask(
 		uint8_t layer,
-		bool positions[KB_ROWS][KB_COLUMNS],
-		uint8_t (*current_layers)[KB_ROWS][KB_COLUMNS] ) {
+		bool positions[KB_ROWS][KB_COLUMNS] ) {
 
 	// don't switch to out-of-bounds layers
 	if ( layer < 0 || layer >= KB_LAYERS )
@@ -136,7 +126,7 @@ void _kbfun_layer_set_mask(
 	for (uint8_t row=0; row<KB_ROWS; row++)
 		for (uint8_t col=0; col<KB_COLUMNS; col++)
 			if (positions[row][col])
-				(*current_layers)[row][col] = layer;
+				main_layers_press[row][col] = layer;
 }
 
 /*

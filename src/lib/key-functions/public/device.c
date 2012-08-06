@@ -11,13 +11,14 @@
 #include <util/delay.h>
 #include "../public.h"
 
+
 // ----------------------------------------------------------------------------
 #if MAKEFILE_BOARD == teensy-2-0
 // ----------------------------------------------------------------------------
 
 // from PJRC (slightly modified)
 // <http://www.pjrc.com/teensy/jump_to_bootloader.html>
-void kbfun_jump_to_bootloader( KBFUN_FUNCTION_ARGS ) {
+void kbfun_jump_to_bootloader(void) {
 	// --- for all Teensy boards ---
 
 	cli();
@@ -43,7 +44,7 @@ void kbfun_jump_to_bootloader( KBFUN_FUNCTION_ARGS ) {
 #else
 // ----------------------------------------------------------------------------
 
-void kbfun_jump_to_bootloader( KBFUN_FUNCTION_ARGS ) {}
+void kbfun_jump_to_bootloader(void) {}
 
 
 // ----------------------------------------------------------------------------

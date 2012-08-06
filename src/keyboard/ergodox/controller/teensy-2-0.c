@@ -14,7 +14,7 @@
 #include <stdint.h>
 #include <avr/io.h>
 #include <util/delay.h>
-#include "src/lib/twi.h"
+#include "../../../lib/twi.h"
 #include "../matrix.h"
 #include "./teensy-2-0--functions.h"
 #include "./teensy-2-0--led.h"

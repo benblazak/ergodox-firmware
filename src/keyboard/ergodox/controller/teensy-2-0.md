@@ -4,7 +4,7 @@
 
 * `+` indicates connected pin
 * `o` indicates unconnected pin
-* '=' is used to list other things the pin is connected to
+* `=` is used to list other things the pin is connected to
 * `-`s inserted between some of the pin functions for readability
 * `OC**` pins enclosed in parenthesis had lines over them in the pinout
 

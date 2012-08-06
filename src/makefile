@@ -23,8 +23,8 @@ MCU   := atmega32u4  # processor type (for teensy 2.0); must match real life
 BOARD := teensy-2-0  # see the libraries you're using for what's available
 F_CPU := 16000000    # processor speed, in Hz
 
-KB_DEBOUNCE_TIME := 5  # in ms; see keyswitch spec for necessary value; 5ms
-		       #   should be good for cherry mx switches
+DEBOUNCE_TIME := 5  # in ms; see keyswitch spec for necessary value; 5ms should
+		    #   be good for cherry mx switches
 
 # firmware stuff
 SRC  := $(wildcard *.c)
@@ -38,11 +38,12 @@ SRC += $(wildcard keyboard/$(KEYBOARD)/*.c)
 SRC += $(wildcard keyboard/$(KEYBOARD)/controller/*.c)
 SRC += $(wildcard keyboard/$(KEYBOARD)/layout/$(LAYOUT)*.c)
 # library stuff
+# - should be last in the list of files to compile, in case there are default
+#   macros that have to be overridden in other source files
 # - add more "*/*/..."s as necessary to compile everything.
 # - parts of the stuff under "lib" may not be necessary, depending on other
 #   options, but it's all included here.  hopefully any unnecessary stuff gets
 #   compiled out.  else, the makefile will have to become more complicated.
-
 SRC += $(wildcard lib/*.c)
 SRC += $(wildcard lib/*/*.c)
 SRC += $(wildcard lib/*/*/*.c)
@@ -58,12 +59,11 @@ CFLAGS := -mmcu=$(MCU)      # processor type (teensy 2.0); must match real
 			    #   life
 CFLAGS += -DF_CPU=$(F_CPU)  # processor frequency; must match initialization
 			    #   in source
-CFLAGS += -I..              # search for includes in the toplevel directory
 # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 CFLAGS += -DMAKEFILE_BOARD='$(strip $(BOARD))'
 CFLAGS += -DMAKEFILE_KEYBOARD='$(strip $(KEYBOARD))'
 CFLAGS += -DMAKEFILE_KEYBOARD_LAYOUT='$(strip $(LAYOUT))'
-CFLAGS += -DKB_DEBOUNCE_TIME='$(strip $(KB_DEBOUNCE_TIME))'
+CFLAGS += -DMAKEFILE_DEBOUNCE_TIME='$(strip $(DEBOUNCE_TIME))'
 # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 CFLAGS += -std=gnu99  # use C99 plus GCC extensions
 CFLAGS += -Os         # optimize for size

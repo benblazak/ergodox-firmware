@@ -1,7 +1,5 @@
 /* ----------------------------------------------------------------------------
- * ergoDOX : layout exports
- *
- * Different layouts are included by modifying a variable in the makefile.
+ * miscellaneous data types
  * ----------------------------------------------------------------------------
  * Copyright (c) 2012 Ben Blazak <benblazak.dev@gmail.com>
  * Released under The MIT License (MIT) (see "license.md")
@@ -9,15 +7,10 @@
  * ------------------------------------------------------------------------- */
 
 
-#ifndef KEYBOARD__ERGODOX__LAYOUT_h
-	#define KEYBOARD__ERGODOX__LAYOUT_h
+#ifndef LIB__DATA_TYPES_h
+	#define LIB__DATA_TYPES_h
 
-	// --------------------------------------------------------------------
-
-	// include the appropriate keyboard layout header
-	#include "../../lib/conditional-include.h"
-	#define INCLUDE EXP_STR( ./layout/MAKEFILE_KEYBOARD_LAYOUT.h )
-	#include INCLUDE
+	typedef  void (*void_funptr_t)(void);
 
 #endif
 

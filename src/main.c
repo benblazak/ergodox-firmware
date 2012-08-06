@@ -11,37 +11,33 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <util/delay.h>
-#include "src/lib-other/pjrc/usb_keyboard/usb_keyboard.h"
-#include "src/lib/key-functions/public.h"
-#include "src/keyboard/controller.h"
-#include "src/keyboard/layout.h"
-#include "src/keyboard/matrix.h"
+#include "./lib-other/pjrc/usb_keyboard/usb_keyboard.h"
+#include "./lib/key-functions/public.h"
+#include "./keyboard/controller.h"
+#include "./keyboard/layout.h"
+#include "./keyboard/matrix.h"
+#include "./main.h"
 
 // ----------------------------------------------------------------------------
 
-/*
- * Exec key
- * - Execute the keypress or keyrelease function (if it exists) of the key at
- *   the current possition.  Pass the keycode at the current position, and pass
- *   all other arguments as received
- */
-void main_exec_key( KBFUN_FUNCTION_ARGS ) {
-	kbfun_funptr_t key_function =
-		( (pressed_)
-		  ? kb_layout_press_get(layer_, *row_, *col_)
-		  : kb_layout_release_get(layer_, *row_, *col_) );
+static bool _main_kb_is_pressed[KB_ROWS][KB_COLUMNS];
+bool (*main_kb_is_pressed)[KB_ROWS][KB_COLUMNS] = &_main_kb_is_pressed;
 
-	if (key_function)
-		(*key_function)(
-				pressed_,
-				kb_layout_get(layer_, *row_, *col_),
-				layer_,
-				row_,
-				col_,
-				current_layer_,
-				current_layers_,
-				pressed_layers_ );
-}
+static bool _main_kb_was_pressed[KB_ROWS][KB_COLUMNS];
+bool (*main_kb_was_pressed)[KB_ROWS][KB_COLUMNS] = &_main_kb_was_pressed;
+
+uint8_t main_layers_current;
+uint8_t main_layers_press[KB_ROWS][KB_COLUMNS];
+uint8_t main_layers_release[KB_ROWS][KB_COLUMNS];
+
+uint8_t main_loop_row;
+uint8_t main_loop_col;
+
+uint8_t main_arg_layer;
+uint8_t main_arg_row;
+uint8_t main_arg_col;
+bool    main_arg_is_pressed;
+bool    main_arg_was_pressed;
 
 // ----------------------------------------------------------------------------
 
@@ -60,31 +56,15 @@ int main(void) {
 	kb_led_state_ready();
 
 	for (;;) {
-		// matrix of keys currently pressed
-		static bool _kb_is_pressed[KB_ROWS][KB_COLUMNS];
-		static bool (*kb_is_pressed)[KB_ROWS][KB_COLUMNS] = &_kb_is_pressed;
-		// matrix of keys previously pressed
-		static bool _kb_was_pressed[KB_ROWS][KB_COLUMNS];
-		static bool (*kb_was_pressed)[KB_ROWS][KB_COLUMNS] = &_kb_was_pressed;
+		// swap `main_kb_is_pressed` and `main_kb_was_pressed`, then update
+		bool (*temp)[KB_ROWS][KB_COLUMNS] = main_kb_was_pressed;
+		main_kb_was_pressed = main_kb_is_pressed;
+		main_kb_is_pressed = temp;
 
-		// the overall current layer
-		static uint8_t current_layer;
-		// the current layer for each key
-		static uint8_t current_layers[KB_ROWS][KB_COLUMNS];
-		// the layer each key was on when it was last pressed
-		static uint8_t pressed_layers[KB_ROWS][KB_COLUMNS];
-
-		// swap `kb_is_pressed` and `kb_was_pressed`, then update
-		bool (*temp)[KB_ROWS][KB_COLUMNS] = kb_was_pressed;
-		kb_was_pressed = kb_is_pressed;
-		kb_is_pressed = temp;
-
-		kb_update_matrix(*kb_is_pressed);
+		kb_update_matrix(*main_kb_is_pressed);
 
 		// this loop is responsible to
-		// - "execute" keys when they change state (call `main_exec_key()`,
-		//   which will call the appropriate function with the appropriate
-		//   keycode argument from the kb_layout... matrices)
+		// - "execute" keys when they change state
 		// - keep track of which layers the keys were on when they were pressed
 		//   (so they can be released using the function from that layer)
 		//
@@ -92,34 +72,41 @@ int main(void) {
 		// - everything else is the key function's responsibility
 		//   - see the keyboard layout file ("keyboard/ergodox/layout/*.c") for
 		//     which key is assigned which function (per layer)
-		//   - see "lib/key-functions.c" for the function definitions
-		// - anything passed to the key function by reference is fair game for
-		//   that function to modify
-		for (uint8_t row=0; row<KB_ROWS; row++) {
-			for (uint8_t col=0; col<KB_COLUMNS; col++) {
-
-				bool is_pressed = (*kb_is_pressed)[row][col];
-				bool was_pressed = (*kb_was_pressed)[row][col];
+		//   - see "lib/key-functions/public/*.c" for the function definitions
+		#define row         main_loop_row
+		#define col         main_loop_col
+		#define layer       main_arg_layer
+		#define is_pressed  main_arg_is_pressed
+		#define was_pressed main_arg_was_pressed
+		for (row=0; row<KB_ROWS; row++) {
+			for (col=0; col<KB_COLUMNS; col++) {
+				is_pressed = (*main_kb_is_pressed)[row][col];
+				was_pressed = (*main_kb_was_pressed)[row][col];
 
 				if (is_pressed != was_pressed) {
-					uint8_t layer = ( (is_pressed)
-					                  ? current_layers[row][col]
-					                  : pressed_layers[row][col] );
+					if (is_pressed) {
+						layer = main_layers_press[row][col];
+						main_layers_release[row][col] = layer;
+					} else {
+						layer = main_layers_release[row][col];
+					}
 
-					if (is_pressed)
-						pressed_layers[row][col] = layer;
-
-					main_exec_key(
-							is_pressed, 0, layer,
-							&row, &col, &current_layer,
-							&current_layers, &pressed_layers );
+					// set remaining vars, and "execute" key
+					main_arg_row = row;
+					main_arg_col = col;
+					main_exec_key();
 				}
 			}
 		}
+		#undef row
+		#undef col
+		#undef layer
+		#undef is_pressed
+		#undef was_pressed
 
 		// send the USB report (even if nothing's changed)
 		usb_keyboard_send();
-		_delay_ms(KB_DEBOUNCE_TIME);
+		_delay_ms(MAKEFILE_DEBOUNCE_TIME);
 
 		// update LEDs
 		if (keyboard_leds & (1<<0)) { kb_led_num_on(); }
@@ -136,4 +123,32 @@ int main(void) {
 
 	return 0;
 }
+
+// ----------------------------------------------------------------------------
+
+// convenience macros (for the helper functions below)
+#define  layer        main_arg_layer
+#define  row          main_arg_row
+#define  col          main_arg_col
+#define  is_pressed   main_arg_is_pressed
+#define  was_pressed  main_arg_was_pressed
+
+// ----------------------------------------------------------------------------
+
+/*
+ * Exec key
+ * - Execute the keypress or keyrelease function (if it exists) of the key at
+ *   the current possition.
+ */
+void main_exec_key(void) {
+	void (*key_function)(void) =
+		( (is_pressed)
+		  ? kb_layout_press_get(layer, row, col)
+		  : kb_layout_release_get(layer, row, col) );
+
+	if (key_function)
+		(*key_function)();
+}
+
+// ----------------------------------------------------------------------------
 

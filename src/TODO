@@ -1,0 +1,12 @@
+- making the 'kbfun...'s work with the new global vars (instead of passed args)
+  from main()
+
+- write macros so that either rows or columns can be the driving pins (macro
+  should be set in the keyboard/.../controller folder somewhere, i think
+
+- then change stuff to correspond with the PCB Fredrik made
+
+- then i'll think about how to implement variable length arrays, and write some
+
+- then i'll think about how to use them as stacks, to deal with layer issues
+
