@@ -1,10 +1,10 @@
-- making the 'kbfun...'s work with the new global vars (instead of passed args)
-  from main()
+- change stuff to correspond with the PCB Fredrik made
 
 - write macros so that either rows or columns can be the driving pins (macro
   should be set in the keyboard/.../controller folder somewhere, i think
 
-- then change stuff to correspond with the PCB Fredrik made
+- write the python script for Ben, to extract all that useful stuff from the
+  .map file and comments
 
 - then i'll think about how to implement variable length arrays, and write some
 
