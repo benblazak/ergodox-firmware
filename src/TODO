@@ -1,7 +1,11 @@
 - change stuff to correspond with the PCB Fredrik made
+  - rows 0..6, cols 0..13
 
 - write macros so that either rows or columns can be the driving pins (macro
-  should be set in the keyboard/.../controller folder somewhere, i think
+  should be set in the keyboard/.../controller folder somewhere, i think)
+  - set them by default to match the direction of keyswitch internal diodes; if
+    fredrik or dominic put theirs together differently first, i can change the
+    default to match theirs
 
 - write the python script for Ben, to extract all that useful stuff from the
   .map file and comments
@@ -9,4 +13,6 @@
 - then i'll think about how to implement variable length arrays, and write some
 
 - then i'll think about how to use them as stacks, to deal with layer issues
+
+- implement the dvorak layout (see github issue)
 
