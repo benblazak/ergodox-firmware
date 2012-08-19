@@ -10,7 +10,7 @@
  * ------------------------------------------------------------------------- */
 
 
-#include "../lib/conditional-include.h"
+#include "../lib/variable-include.h"
 #define INCLUDE EXP_STR( ./MAKEFILE_KEYBOARD/layout.h )
 #include INCLUDE
 

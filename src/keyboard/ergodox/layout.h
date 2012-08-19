@@ -15,7 +15,7 @@
 	// --------------------------------------------------------------------
 
 	// include the appropriate keyboard layout header
-	#include "../../lib/conditional-include.h"
+	#include "../../lib/variable-include.h"
 	#define INCLUDE EXP_STR( ./layout/MAKEFILE_KEYBOARD_LAYOUT.h )
 	#include INCLUDE
 
