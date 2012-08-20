@@ -2388,7 +2388,7 @@
            sodipodi:role="line"
            x="-339.98328"
            y="299.83008"
-           id="tspan12254">col 6</tspan></text>
+           id="tspan12254">col D</tspan></text>
       <text
          inkscape:transform-center-y="-4.6435547"
          transform="matrix(0,-1,1,0,0,0)"
@@ -2401,7 +2401,7 @@
            sodipodi:role="line"
            x="-340.12976"
            y="259.83008"
-           id="tspan12258">col 4</tspan></text>
+           id="tspan12258">col B</tspan></text>
       <text
          transform="matrix(0,-1,1,0,0,0)"
          xml:space="preserve"
@@ -2413,7 +2413,7 @@
            sodipodi:role="line"
            x="-340.41687"
            y="279.83008"
-           id="tspan12260">col 5</tspan></text>
+           id="tspan12260">col C</tspan></text>
       <text
          transform="matrix(0,-1,1,0,0,0)"
          xml:space="preserve"
@@ -2425,7 +2425,7 @@
            sodipodi:role="line"
            x="-300.33484"
            y="119.83008"
-           id="tspan12264">col 0</tspan></text>
+           id="tspan12264">col 7</tspan></text>
       <path
          style="fill:none;stroke:#aaaa00;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#marker11070);display:inline"
          d="m 135,127.11218 0,-20.5"
@@ -2485,7 +2485,7 @@
            sodipodi:role="line"
            x="-335.29382"
            y="539.83008"
-           id="tspan12264-1">row B</tspan></text>
+           id="tspan12264-1">row 5</tspan></text>
       <text
          transform="matrix(0,-1,1,0,0,0)"
          xml:space="preserve"
@@ -2497,7 +2497,7 @@
            id="tspan13492"
            sodipodi:role="line"
            x="-334.98328"
-           y="559.83008">row A</tspan></text>
+           y="559.83008">row 4</tspan></text>
       <text
          transform="matrix(0,-1,1,0,0,0)"
          xml:space="preserve"
@@ -2509,7 +2509,7 @@
            id="tspan13494"
            sodipodi:role="line"
            x="-334.88953"
-           y="579.83008">row 9</tspan></text>
+           y="579.83008">row 3</tspan></text>
       <text
          transform="matrix(0,-1,1,0,0,0)"
          xml:space="preserve"
@@ -2521,7 +2521,7 @@
            id="tspan13496"
            sodipodi:role="line"
            x="-335.12976"
-           y="599.83008">row 8</tspan></text>
+           y="599.83008">row 2</tspan></text>
       <text
          transform="matrix(0,-1,1,0,0,0)"
          xml:space="preserve"
@@ -2533,7 +2533,7 @@
            id="tspan13498"
            sodipodi:role="line"
            x="-335.41687"
-           y="619.83008">row 7</tspan></text>
+           y="619.83008">row 1</tspan></text>
       <text
          transform="matrix(0,-1,1,0,0,0)"
          xml:space="preserve"
@@ -2545,7 +2545,7 @@
            id="tspan13502"
            sodipodi:role="line"
            x="-335.04187"
-           y="639.83008">row 6</tspan></text>
+           y="639.83008">row 0</tspan></text>
       <text
          inkscape:transform-center-y="-3"
          inkscape:transform-center-x="-20.5"
@@ -2559,7 +2559,7 @@
            sodipodi:role="line"
            x="-112.33308"
            y="558.26935"
-           id="tspan12234-5">col 1</tspan></text>
+           id="tspan12234-5">col 5</tspan></text>
       <text
          inkscape:transform-center-y="-3"
          inkscape:transform-center-x="-20.5"
@@ -2573,7 +2573,7 @@
            id="tspan13461"
            sodipodi:role="line"
            x="-113.42294"
-           y="578.09943">col 2</tspan></text>
+           y="578.09943">col 4</tspan></text>
       <text
          inkscape:transform-center-y="-3"
          inkscape:transform-center-x="-20.5"
@@ -2601,7 +2601,7 @@
            id="tspan13465"
            sodipodi:role="line"
            x="-113.42294"
-           y="618.09943">col 4</tspan></text>
+           y="618.09943">col 2</tspan></text>
       <text
          inkscape:transform-center-y="-3"
          inkscape:transform-center-x="-20.5"
@@ -2615,7 +2615,7 @@
            id="tspan13467"
            sodipodi:role="line"
            x="-113.42294"
-           y="638.09943">col 5</tspan></text>
+           y="638.09943">col 1</tspan></text>
       <text
          inkscape:transform-center-y="-3"
          inkscape:transform-center-x="-20.5"
@@ -2629,7 +2629,7 @@
            id="tspan13469"
            sodipodi:role="line"
            x="-112.33308"
-           y="658.26935">col 6</tspan></text>
+           y="658.26935">col 0</tspan></text>
       <path
          style="fill:none;stroke:#aaaa00;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#marker11070);display:inline"
          d="m 275,247.36218 0,59.74443"
@@ -2787,7 +2787,7 @@
            sodipodi:role="line"
            x="-112.3392"
            y="538.26208"
-           id="tspan12234-5-3">col 0</tspan></text>
+           id="tspan12234-5-3">col 6</tspan></text>
       <path
          style="fill:none;stroke:#770000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#DotM-10-7);marker-end:url(#DotM-10-7);display:inline"
          d="m 275.03546,127.24605 c 0.90412,-34.974223 19.03956,-22.61202 7.77819,-102.530485"
@@ -2805,7 +2805,7 @@
            sodipodi:role="line"
            x="-300.46454"
            y="139.9549"
-           id="tspan12264-7">col 1</tspan></text>
+           id="tspan12264-7">col 8</tspan></text>
       <path
          style="fill:none;stroke:#aaaa00;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#marker11070);display:inline"
          d="m 135.12482,247.5319 0,20.5"
@@ -2823,7 +2823,7 @@
            sodipodi:role="line"
            x="-300.39969"
            y="159.94453"
-           id="tspan12264-5">col 2</tspan></text>
+           id="tspan12264-5">col 9</tspan></text>
       <path
          style="fill:none;stroke:#aaaa00;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#marker11070);display:inline"
          d="m 155.11445,247.46705 0,20.5"
@@ -2841,7 +2841,7 @@
            sodipodi:role="line"
            x="-300.52939"
            y="180.06935"
-           id="tspan12264-7-6">col 3</tspan></text>
+           id="tspan12264-7-6">col A</tspan></text>
       <path
          style="fill:none;stroke:#aaaa00;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#marker11070);display:inline"
          d="m 175.23927,247.59677 0,20.5"

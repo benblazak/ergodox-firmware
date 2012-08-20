@@ -29,16 +29,16 @@
 ### Teensy 2.0 Pin Assignments
 
               power_negative  GND +---.....---+ Vcc  power_positive
-                    column_0  PB0 +           + PF0  row_5
-                    column_1  PB1 +           + PF1  row_4
-                    column_2  PB2 +           + PF4  row_3
-                    column_3  PB3 +  o     o  + PF5  row_2
+                    column_7  PB0 +           + PF0  row_5
+                    column_8  PB1 +           + PF1  row_4
+                    column_9  PB2 +           + PF4  row_3
+                    column_A  PB3 +  o     o  + PF5  row_2
                 (OC1C) LED_3  PB7 + PE6  AREF + PF6  row_1
                  (SCL)   I2C  PD0 +           + PF7  row_0
                  (SDA)   I2C  PD1 +           + PB6  LED_2 (OC1B)
-                    column_4  PD2 +           + PB5  LED_1 (OC1A)
-                    column_5  PD3 +           + PB4  = Vcc
-                    column_6  PC6 +           o PD7
+                    column_B  PD2 +           + PB5  LED_1 (OC1A)
+                    column_C  PD3 +           + PB4  = Vcc
+                    column_D  PC6 +           o PD7
                               PC7 o-o-o-o-o-o-+ PD6  onboardLED = GND
                               PD5 --/ | | | \-- PD4
                               Vcc ----/ | \---- RST
@@ -46,10 +46,13 @@
 
 * notes:
     * Row and column assignments are to matrix positions, which may or may
-      correspond to the physical position of the key: e.g. the key where
-      `row_4` and `column_2` cross will be scanned into the matrix at `[4][2]`,
-      wherever it happens to be located on the keyboard.  Mapping from one to
-      the other (which only matters for defining layouts) is handled elsewhere.
+      or may not correspond to the physical position of the key: e.g. the key
+      where `row_4` and `column_2` cross will be scanned into the matrix at
+      `[4][2]`, wherever it happens to be located on the keyboard.  Mapping
+      from one to the other (which only matters for defining layouts) is
+      handled elsewhere.
+    * LEDs are labeled using numbers (starting with '1') instead of letters
+      (starting with 'A') as on the PCB.
     * SCL and SDA: Need external pull-up resistors.  Sometimes the Teensy
       internal pull-ups are enough (see datasheet section 20.5.1), but i think
       for this project we'll want external ones.  The general recommendation
@@ -76,14 +79,16 @@
     * PD6 (the onboard LED) already has a defined level (low), so there's no
       reason to set internal pull-up enabled on it.  If we do, it will source
       current to the LED, which is fine, but unnecessary.
-    * We want the columns to be hi-Z when that column's not being scanned,
-      drive low when it is, and the rows to be input with pull-up enabled.
-      We'll cycle through driving the columns low and scanning all rows.
+    * Initially, we want either columns or rows (see <../options.h>) set as
+      hi-Z without pull-ups, and the other set of pins set as input with
+      pull-ups.  During the update function, we'll cycle through setting the
+      first set low and checking each pin in the second set.
         * To set a pin hi-Z on this board, set it as input with pull-up
           disabled.
-        * Switching the row pins between hi-Z and drive low (treating them as
-          if they were open drain) seems just as good as, and a little safer
-          than, driving them high when the row's not active.
+        * Switching the driving pins (the first set of pins) between hi-Z and
+          drive low (treating them as if they were open drain) seems just as
+          good as, and a little safer than, driving them high when they're not
+          active.
     * We need to delay for at least 1 μs between changing the column pins and
       reading the row pins.  I would assume this is to allow the pins time to
       stabalize.
