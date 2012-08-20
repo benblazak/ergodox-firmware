@@ -1,21 +1,3 @@
--+ change stuff to correspond with the PCB Fredrik made
-  - rows 0..6, cols 0..13
-
--+ write macros so that either rows or columns can be the driving pins (macro
-  should be set in the keyboard/.../controller folder somewhere, i think)
-  -- set them by default to match the direction of keyswitch internal diodes; if
-    fredrik or dominic put theirs together differently first, i can change the
-    default to match theirs
-    + can't do this, since i don't know which direction internal diodes go!
-      lol, and i can't seem to find it online.  i left a note in the file where
-      the direction is set (.../keyboard/.../options.h), and hopefully i'll
-      updated it later (maybe when i get my brown switches). :)
-
--+ (test)
-- (check in)
-- (merge)
-- (push)
-
 - write the python script for Ben, to extract all that useful stuff from the
   .map file and comments
 
