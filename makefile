@@ -44,7 +44,7 @@ clean:
 
 dist:
 	# make sure we're checked in
-	git commit -a
+	-git commit -a
 	# set up the build dir
 	-rm -r '$(BUILD)/$(TARGET)'*
 	-mkdir -p '$(BUILD)/$(TARGET)'
