@@ -110,8 +110,11 @@ static void _toggle_numpad(uint8_t numpad_layer) {
 // ----------------------------------------------------------------------------
 
 /*
- * Numpad toggle
- * - Toggles the numpad and sets numlock on (for active) or off (for inactive)
+ * [name]
+ *   Numpad toggle
+ *
+ * [description]
+ *   Toggles the numpad and sets numlock on (for active) or off (for inactive)
  *   with it, if it's not already in that state
  */
 void kbfun_layermask_numpad_toggle(void) {
@@ -120,8 +123,11 @@ void kbfun_layermask_numpad_toggle(void) {
 }
 
 /*
- * Numpad on
- * - Set the numpad on (along with numlock, if it's not already)
+ * [name]
+ *   Numpad on
+ *
+ * [description]
+ *   Set the numpad on (along with numlock, if it's not already)
  */
 void kbfun_layermask_numpad_on(void) {
 	uint8_t keycode = kb_layout_get(layer, row, col);
@@ -130,8 +136,11 @@ void kbfun_layermask_numpad_on(void) {
 }
 
 /*
- * Numpad off
- * - Set the numpad off (along with numlock, if it's not already)
+ * [name]
+ *   Numpad off
+ *
+ * [description]
+ *   Set the numpad off (along with numlock, if it's not already)
  */
 void kbfun_layermask_numpad_off(void) {
 	uint8_t keycode = kb_layout_get(layer, row, col);

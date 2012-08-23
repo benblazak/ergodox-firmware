@@ -24,8 +24,11 @@
 // ----------------------------------------------------------------------------
 
 /*
- * Press|Release
- * - Generate a normal keypress or keyrelease
+ * [name]
+ *   Press|Release
+ *
+ * [description]
+ *   Generate a normal keypress or keyrelease
  */
 void kbfun_press_release(void) {
 	uint8_t keycode = kb_layout_get(layer, row, col);
@@ -33,8 +36,11 @@ void kbfun_press_release(void) {
 }
 
 /*
- * Toggle
- * - Toggle the key pressed or unpressed
+ * [name]
+ *   Toggle
+ *
+ * [description]
+ *   Toggle the key pressed or unpressed
  */
 void kbfun_toggle(void) {
 	uint8_t keycode = kb_layout_get(layer, row, col);
@@ -46,8 +52,11 @@ void kbfun_toggle(void) {
 }
 
 /*
- * Increase layer
- * - Increment the current layer by the value specified in the keymap (for all
+ * [name]
+ *   Increase layer
+ *
+ * [description]
+ *   Increment the current layer by the value specified in the keymap (for all
  *   non-masked keys)
  */
 void kbfun_layer_inc(void) {
@@ -56,8 +65,11 @@ void kbfun_layer_inc(void) {
 }
 
 /*
- * Decrease layer
- * - Decrement the current layer by the value specified in the keymap (for all
+ * [name]
+ *   Decrease layer
+ *
+ * [description]
+ *   Decrement the current layer by the value specified in the keymap (for all
  *   non-masked keys)
  */
 void kbfun_layer_dec(void) {

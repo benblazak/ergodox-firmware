@@ -28,13 +28,16 @@
 // ----------------------------------------------------------------------------
 
 /*
- * Increase layer, Execute key
- * - Increment the current layer by the value specified in the keymap (for all
+ * [name]
+ *   Increase layer, Execute key
+ *
+ * [description]
+ *   Increment the current layer by the value specified in the keymap (for all
  *   non-masked keys), and execute (usually press|release) the key in the same
  *   position on that new layer
  *
- * Note
- * - Meant to be paired with `kbfun_layer_dec_exec()`
+ * [note]
+ *   Meant to be paired with `kbfun_layer_dec_exec()`
  */
 void kbfun_layer_inc_exec(void) {
 	uint8_t keycode = kb_layout_get(layer, row, col);
@@ -51,13 +54,16 @@ void kbfun_layer_inc_exec(void) {
 
 
 /*
- * Decrease layer, Execute key
- * - Decrement the current layer by the value specified in the keymap (for all
+ * [name]
+ *   Decrease layer, Execute key
+ *
+ * [description]
+ *   Decrement the current layer by the value specified in the keymap (for all
  *   non-masked keys), and execute (usually press|release) the key in the same
  *   position on that new layer
  *
- * Note
- * - Meant to be paired with `kbfun_layer_inc_exec()`
+ * [note]
+ *   Meant to be paired with `kbfun_layer_inc_exec()`
  */
 void kbfun_layer_dec_exec(void) {
 	uint8_t keycode = kb_layout_get(layer, row, col);
@@ -74,13 +80,16 @@ void kbfun_layer_dec_exec(void) {
 
 
 /*
- * Two keys => capslock
- * - When assigned to two keys (e.g. the physical left and right shift keys)
+ * [name]
+ *   Two keys => capslock
+ *
+ * [description]
+ *   When assigned to two keys (e.g. the physical left and right shift keys)
  *   (in both the press and release matrices), pressing and holding down one of
  *   the keys will make the second key toggle capslock
  *
- * Note
- * - If either of the shifts are pressed when the second key is pressed, they
+ * [note]
+ *   If either of the shifts are pressed when the second key is pressed, they
  *   wil be released so that capslock will register properly when pressed.
  *   Capslock will then be pressed and released, and the original state of the
  *   shifts will be restored

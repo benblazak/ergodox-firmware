@@ -20,13 +20,13 @@
 
 # the base name of the file or package to distribute
 NAME := ergodox-firmware
-# the branch of the git repo we're currently on
-BRANCH := $(shell git branch -l | grep '*' | cut -c 3-)
-# a version identifier
-VERSION := $(shell git log -n 1 | grep 'commit' | cut -c 8-14)--$(shell date +'%Y%m%dT%H%M%S')
+# git info
+GIT_BRANCH := $(shell git branch -l | grep '*' | cut -c 3-)
+GIT_COMMIT_DATE := $(shell git log -n 1 --pretty --date=iso | grep 'Date' | cut -c 9- )
+GIT_COMMIT_ID := $(shell git log -n 1 | grep 'commit' | cut -c 8-)
 
 # name to use for the final distribution file or package
-TARGET := $(NAME)--$(BRANCH)--$(VERSION)
+TARGET := $(NAME)--$(GIT_BRANCH)--$(shell date -d "$(GIT_COMMIT_DATE)" +'%Y%m%dT%H%M%S')--$(shell echo $(GIT_COMMIT_ID) | cut -c 1-7)
 
 # the build dir
 BUILD := build
@@ -43,6 +43,8 @@ clean:
 	-rm -r '$(BUILD)'
 
 dist:
+	# make sure we're checked in
+	git commit -a
 	# set up the build dir
 	-rm -r '$(BUILD)/$(TARGET)'*
 	-mkdir -p '$(BUILD)/$(TARGET)'
@@ -53,6 +55,13 @@ dist:
 	( cd src; \
 	  cp firmware.hex firmware.eep firmware.map \
 	     '../$(BUILD)/$(TARGET)' )
+	# run secondary build scripts
+	( ./build-scripts/gen-ui-info.py \
+		--git-commit-date '$(GIT_COMMIT_DATE)' \
+		--git-commit-id '$(GIT_COMMIT_ID)' \
+		--map-file-path '$(BUILD)/$(TARGET)/firmware.map' \
+		--source-code-path 'src' \
+	) > '$(BUILD)/$(TARGET)/firmware--ui-info.json'
 	# make into a zip archive
 	( cd '$(BUILD)/$(TARGET)'; \
 	  zip '../$(TARGET).zip' \
