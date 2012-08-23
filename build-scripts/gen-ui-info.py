@@ -8,7 +8,7 @@ The file will contain:
 {
   ".meta-data": {
       "version": <number>,
-	  "date-generated": <string>,
+      "date-generated": <string>,
   },
   "keyboard-functions": {
       <(function name)>: {
