@@ -15,12 +15,11 @@
 	#include "lib/data-types.h"
 	#include "lib/key-functions.h"  // for `kbfun_funptr_t`
 
-	#include "matrix.h"  // for number of rows and columns, and layout
-			     //   to matrix macros
+	#include "matrix.h"  // for number of rows and columns
 
 	// include the appropriate keyboard layout header
 	// for:
-	// - number of layers
+	// - possible non-default number of layers
 	// - possible non-default layout matrix definitions
 	// - possible non-default layout 'get' and 'set' definitions
 	#undef _str
@@ -33,6 +32,12 @@
 	#undef _str
 	#undef _expstr
 	#undef _inc
+
+
+	// default number of layers
+	#ifndef KB_LAYERS
+		#define KB_LAYERS 10
+	#endif
 
 
 	// default layout 'get' macros and `extern` matrix declarations

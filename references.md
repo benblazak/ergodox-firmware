@@ -377,6 +377,17 @@
 
 ## Miscellaneous
 
+### Keyboard Testing Tools
+
+* [Understanding Rollover]
+  (http://gadzikowski.com/nkeyrollover.html)  
+  Includes 3 different tests (2 of which are web based) to see which keys are
+  actually registering as pressed.
+
+    * mentioned on the [Default:NKey Rollover]
+      (http://geekhack.org/showwiki.php?title=NKey+Rollover+-+Overview+Testing+Methodology+and+Results)
+      page (on <http://geekhack.org/>)
+
 ### Typical Keyboard Information
 
 * [Keyboard Scan Rates]

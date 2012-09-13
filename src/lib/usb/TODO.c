@@ -38,6 +38,14 @@
 // - spec sec 9.4.11 (Standard Device Requests / Synch Frame) (pg 260)
 
 // TODO
-// - read the hid usage tables .pdf
 // - read the hid device class definition .pdf
+
+// DONE
+// - read the hid usage tables .pdf
+//   - i think this is more for reference and implementation than
+//     understanding.  i've copied the relevant (i think) tables ones into
+//     headers.  the unicode usage page, i'll have to look into more later: i'm
+//     not sure if it can be used with keyboards.  if so though, i'll have to
+//     look on the unicode website, or elsewhere, coz this .pdf doesn't list
+//     anything about them out, it just references the unicode spec.
 

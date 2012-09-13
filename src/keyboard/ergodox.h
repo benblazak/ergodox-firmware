@@ -16,7 +16,6 @@
 	#include "ergodox/layout.h"      // number of layers, layout
 	#include "ergodox/led.h"         // logical led controls
 	#include "ergodox/matrix.h"      // kb dimensions, matrix status
-	#include "ergodox/mcp23018.h"    // (nothing right now)
 	#include "ergodox/teensy-2-0.h"  // LED controls
 
 

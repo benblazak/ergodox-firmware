@@ -9,10 +9,9 @@
 
 #include "lib/data-types.h"
 
-#define KEYBOARD_INCLUDE_PRIVATE
 #include "ergodox/matrix.h"
-#include "ergodox/mcp23018.h"
-#include "ergodox/teensy-2-0.h"
+#include "ergodox/mcp23018--private.h"
+#include "ergodox/teensy-2-0--private.h"
 
 
 /* returns
