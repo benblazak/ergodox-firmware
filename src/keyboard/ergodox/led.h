@@ -4,8 +4,9 @@
  * you should also include this file for low-level led macros, as it will
  * always include the file(s) containing those
  *
- * - low level led macros should all start with '_led_'
- * - public led macros should start with 'kb_led_'
+ * - low level LED macros (that have to be shared, but aren't really public)
+ *   should all start with '_kb_led_'
+ * - public LED macros should start with 'kb_led_'
  * ----------------------------------------------------------------------------
  * Copyright (c) 2012 Ben Blazak <benblazak.dev@gmail.com>
  * Released under The MIT License (MIT) (see "license.md")
@@ -22,23 +23,23 @@
 
 
 	#define kb_led_state_power_on() do {		\
-			_led_all_set_percent(0.05);	\
-			_led_all_on();			\
+			_kb_led_all_set_percent(0.05);	\
+			_kb_led_all_on();			\
 			} while(0)
 
 	// note: need to delay for a total of ~1 second
 	#define kb_led_delay_usb_init() do {		\
-			_led_1_set_percent(0.5);	\
+			_kb_led_1_set_percent(0.5);	\
 			_delay_ms(333);			\
-			_led_2_set_percent(0.5);	\
+			_kb_led_2_set_percent(0.5);	\
 			_delay_ms(333);			\
-			_led_3_set_percent(0.5);	\
+			_kb_led_3_set_percent(0.5);	\
 			_delay_ms(333);			\
 			} while(0)
 
 	#define kb_led_state_ready() do {		\
-			_led_all_off();			\
-			_led_all_set_percent(0.5);	\
+			_kb_led_all_off();			\
+			_kb_led_all_set_percent(0.5);	\
 			} while(0)
 
 #endif

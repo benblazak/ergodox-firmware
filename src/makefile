@@ -1,5 +1,5 @@
 # -----------------------------------------------------------------------------
-# makefile for the ergoDOX project
+# makefile for the ergoDOX firmware
 #
 # - .h file dependencies are automatically generated
 #
@@ -13,18 +13,18 @@
 # -----------------------------------------------------------------------------
 
 
-TARGET   = firmware  # the name we want for our program binary
-FORMAT   = ihex      # the program binary's format
-KEYBOARD = ergodox   # keyboard model; see "src/keyboard" for what's available
-LAYOUT   = qwerty    # keyboard layout; see "src/keyboard/*/layout" for what's
-                     #   available
+TARGET   := firmware  # the name we want for our program binary
+FORMAT   := ihex      # the program binary's format
+KEYBOARD := ergodox   # keyboard model; see "src/keyboard" for what's available
+LAYOUT   := qwerty    # keyboard layout; see "src/keyboard/*/layout" for what's
+                      #   available
 
-MCU   = atmega32u4  # processor type (for teensy 2.0); must match real life
-BOARD = teensy-2-0  # see the libraries you're using for what's available
-F_CPU = 16000000    # processor speed, in Hz
+MCU   := atmega32u4  # processor type (for teensy 2.0); must match real life
+BOARD := teensy-2-0  # see the libraries you're using for what's available
+F_CPU := 16000000    # processor speed, in Hz
 
 # firmware stuff
-SRC  = $(wildcard *.c)
+SRC  := $(wildcard *.c)
 # keyboard and layout stuff
 # --- remove whitespace from vars
 KEYBOARD := $(strip $(KEYBOARD))
@@ -48,7 +48,7 @@ SRC += $(wildcard lib-other/*/*/*.c)
 OBJ = $(SRC:%.c=%.o)
 
 
-CFLAGS  = -mmcu=$(MCU)      # processor type (teensy 2.0); must match real
+CFLAGS := -mmcu=$(MCU)      # processor type (teensy 2.0); must match real
 			    #   life
 CFLAGS += -DF_CPU=$(F_CPU)  # processor frequency; must match initialization
 			    #   in source
@@ -76,21 +76,23 @@ CFLAGS += -fdata-sections      # /   section in the output file if the
 			       #     unused code.
 # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-LDFLAGS  = -Wl,--relax        # for some linker optimizations
+LDFLAGS := -Wl,-Map=$(strip $(TARGET)).map,--cref  # generate a link map, with
+						   #   a cross reference table
+LDFLAGS += -Wl,--relax        # for some linker optimizations
 LDFLAGS += -Wl,--gc-sections  # discard unused functions and data
 # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 GENDEPFLAGS += -MMD -MP -MF $@.dep  # generate dependency files
 
 
-CC      = avr-gcc
-OBJCOPY = avr-objcopy
-SIZE    = avr-size
+CC      := avr-gcc
+OBJCOPY := avr-objcopy
+SIZE    := avr-size
 
 
 # remove whitespace from some of the variables
-TARGET      := $(strip $(TARGET))
-FORMAT      := $(strip $(FORMAT))
+TARGET := $(strip $(TARGET))
+FORMAT := $(strip $(FORMAT))
 
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
@@ -120,7 +122,7 @@ all: $(TARGET).hex $(TARGET).eep
 clean:
 	@echo
 	@echo --- cleaning ---
-	cd .. ; git clean -dX  # remove ignored files and directories
+	git clean -dX  # remove ignored files and directories
 
 # -----------------------------------------------------------------------------
 
