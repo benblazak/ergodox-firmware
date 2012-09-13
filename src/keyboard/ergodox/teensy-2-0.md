@@ -44,6 +44,11 @@
                               GND-------/
 
 * notes:
+    * Row and column assignments are to matrix positions, which may or may
+      correspond to the physical position of the key: e.g. the key where `row4`
+      and `column2` cross will be scanned into the matrix at `[4][2]`, wherever
+      it happens to be located on the keyboard.  Mapping from one to the other
+      (which only matters for defining layouts) is handled elsewhere.
     * SCL and SDA: Need external pull-up resistors.  Sometimes the Teensy
       internal pull-ups are enough (see datasheet section 20.5.1), but i think
       for this project we'll want external ones.  The general recommendation
