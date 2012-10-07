@@ -33,6 +33,14 @@ The file will contain:
       },
       ...
   },
+  "mappings": {
+      "physical-positions": [
+          <string>, ...
+	  ],
+      "matrix-positions": [
+          <string>, ...
+	  ]
+  },
   "miscellaneous": {
       "git-commit-date": <string>,
       "git-commit-id": <string>,
@@ -61,17 +69,13 @@ import sys
 
 # -----------------------------------------------------------------------------
 
-def gen_static(git_commit_date=None, git_commit_id=None):
+def gen_static(current_date=None, git_commit_date=None, git_commit_id=None):
 	"""Generate static information"""
-
-	date = None
-	if os.name == 'posix':
-		date = subprocess.getoutput('date --rfc-3339 s')
 
 	return {
 		'.meta-data': {
 			'version': 0,  # the format version number
-			'date-generated': date,
+			'date-generated': current_date,
 		},
 		'miscellaneous': {
 			'git-commit-date': git_commit_date, # should be passed by makefile
@@ -118,42 +122,19 @@ def parse_mapfile(map_file_path):
 		}
 
 	def parse_layout_matrices(f, line):
-		"""Parse (all 3) layout matrices"""
+		"""Parse layout matrix information in the '.map' file"""
 
-		search = re.search(r'0x\S+\s+(0x\S+)', line)
-		# (length for (size of, in bytes) a layer of 1 byte objects)
-		base_length = int( int( search.group(1), 16 ) / 5 )
+		name = re.search(r'.progmem.data.(_kb_layout\S*)', line).group(1)
 
-		next_lines = ''.join([next(f), next(f), next(f)])
-		layout_position = re.search(
-				r'(0x\S+)\s+_kb_layout'+'\n', next_lines ) . group(1)
-		layout_press_position = re.search(
-				r'(0x\S+)\s+_kb_layout_press'+'\n', next_lines ) . group(1)
-		layout_release_position = re.search(
-				r'(0x\S+)\s+_kb_layout_release'+'\n', next_lines ) . group(1)
-		layout_position = int(layout_position, 16)
-		layout_press_position = int(layout_press_position, 16)
-		layout_release_position = int(layout_release_position, 16)
-
-		if not ( layout_position
-		         and layout_press_position
-		         and layout_release_position ):
-			   raise Exception(
-					   "parse_mapfile: not all layout matrices were found" )
+		search = re.search(r'(0x\S+)\s+(0x\S+)', next(f))
+		position = int( search.group(1), 16 )
+		length = int( search.group(2), 16 )
 
 		return {
 			'layout-matrices': {
-				'_kb_layout': {
-					'position': layout_position,
-					'length': base_length,
-				},
-				'_kb_layout_press': {
-					'position': layout_press_position,
-					'length': base_length * 2,
-				},
-				'_kb_layout_release': {
-					'position': layout_release_position,
-					'length': base_length * 2,
+				name: {
+					'position': position,
+					'length': length,
 				},
 			},
 		}
@@ -179,7 +160,7 @@ def parse_mapfile(map_file_path):
 	return output
 
 
-def parse_source_code(source_code_path):
+def find_keyboard_functions(source_code_path):
 	"""Parse all files in the source directory"""
 
 	def read_comments(f, line):
@@ -260,13 +241,13 @@ def parse_source_code(source_code_path):
 			},
 		}
 
-	# --- parse_source_code() ---
+	# --- find_keyboard_functions() ---
 
 	# normalize paths
-	source_dir_path = os.path.abspath(source_code_path)
+	source_code_path = os.path.abspath(source_code_path)
 	# check paths
 	if not os.path.exists(source_code_path):
-		raise ValueError("invalid 'source_dir_path' given")
+		raise ValueError("invalid 'source_code_path' given")
 
 	output = {}
 
@@ -291,6 +272,24 @@ def parse_source_code(source_code_path):
 							parse_keyboard_function(f, line, comments) )
 
 	return output
+
+
+def find_mappings(matrix_file_path):
+	# normalize paths
+	matrix_file_path = os.path.abspath(matrix_file_path)
+
+	match = re.search(
+			r'#define\s+KB_MATRIX_LAYER\s*\(([^)]+)\)[^{]*\{\{([^#]+)\}\}',
+			open(matrix_file_path).read(),
+			re.MULTILINE )
+
+	return {
+		"mappings": {
+			"physical-positions": re.findall(r'k..', match.group(1)),
+			"matrix-positions": re.findall(r'k..|na', match.group(2)),
+		},
+	}
+	
 
 # -----------------------------------------------------------------------------
 
@@ -321,6 +320,11 @@ def main():
 			description = 'Generate project data for use with the UI' )
 
 	arg_parser.add_argument(
+			'--current-date',
+			help = ( "should be in the format rfc-3339 "
+				   + "(e.g. 2006-08-07 12:34:56-06:00)" ),
+			required = True )
+	arg_parser.add_argument(
 			'--git-commit-date',
 			help = ( "should be in the format rfc-3339 "
 				   + "(e.g. 2006-08-07 12:34:56-06:00)" ),
@@ -337,13 +341,20 @@ def main():
 			'--source-code-path',
 			help = "the path to the source code directory",
 			required = True )
+	arg_parser.add_argument(
+			'--matrix-file-path',
+			help = "the path to the matrix file we're using",
+			required = True )
 
 	args = arg_parser.parse_args(sys.argv[1:])
 
 	output = {}
-	dict_merge(output, gen_static(args.git_commit_date, args.git_commit_id))
+	dict_merge( output, gen_static( args.current_date,
+									args.git_commit_date,
+									args.git_commit_id ) )
 	dict_merge(output, parse_mapfile(args.map_file_path))
-	dict_merge(output, parse_source_code(args.source_code_path))
+	dict_merge(output, find_keyboard_functions(args.source_code_path))
+	dict_merge(output, find_mappings(args.matrix_file_path))
 	dict_merge(output, gen_derived(output))
 
 	print(json.dumps(output, sort_keys=True, indent=4))

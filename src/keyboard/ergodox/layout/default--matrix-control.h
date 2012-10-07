@@ -47,7 +47,7 @@
 	 */
 
 	#ifndef kb_layout_get
-		extern uint8_t PROGMEM \
+		extern const uint8_t PROGMEM \
 			       _kb_layout[KB_LAYERS][KB_ROWS][KB_COLUMNS];
 
 		#define kb_layout_get(layer,row,column) \
@@ -57,7 +57,7 @@
 	#endif
 
 	#ifndef kb_layout_press_get
-		extern void_funptr_t PROGMEM \
+		extern const void_funptr_t PROGMEM \
 			_kb_layout_press[KB_LAYERS][KB_ROWS][KB_COLUMNS];
 
 		#define kb_layout_press_get(layer,row,column) \
@@ -67,7 +67,7 @@
 	#endif
 
 	#ifndef kb_layout_release_get
-		extern void_funptr_t PROGMEM \
+		extern const void_funptr_t PROGMEM \
 			_kb_layout_release[KB_LAYERS][KB_ROWS][KB_COLUMNS];
 
 		#define kb_layout_release_get(layer,row,column) \

@@ -41,7 +41,7 @@
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 
-uint8_t PROGMEM _kb_layout[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
+const uint8_t PROGMEM _kb_layout[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
 	// --------------------------------------------------------------------
 	KB_MATRIX_LAYER(  // layout: layer 0: default
 // unused
@@ -113,7 +113,7 @@ _ctrlR,      0,     _enter,
 
 // ----------------------------------------------------------------------------
 
-void_funptr_t PROGMEM _kb_layout_press[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
+const void_funptr_t PROGMEM _kb_layout_press[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
 	// --------------------------------------------------------------------
 	KB_MATRIX_LAYER(  // press: layer 0: default
 // unused
@@ -185,7 +185,7 @@ NULL,
 
 // ----------------------------------------------------------------------------
 
-void_funptr_t PROGMEM _kb_layout_release[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
+const void_funptr_t PROGMEM _kb_layout_release[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
 	// --------------------------------------------------------------------
 	KB_MATRIX_LAYER(  // release: layer 0: default
 // unused

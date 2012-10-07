@@ -20,13 +20,22 @@
 
 # the base name of the file or package to distribute
 NAME := ergodox-firmware
+# the name of the keyboard we're building
+# - must match the same variable in src/makefile
+KEYBOARD := ergodox
 # git info
 GIT_BRANCH := $(shell git branch -l | grep '*' | cut -c 3-)
 GIT_COMMIT_DATE := $(shell git log -n 1 --pretty --date=iso | grep 'Date' | cut -c 9- )
 GIT_COMMIT_ID := $(shell git log -n 1 | grep 'commit' | cut -c 8-)
 
+UNAME := $(shell uname)
+ifeq ($(UNAME),Darwin)
+	DATE := gdate
+else
+	DATE := date
+endif
 # name to use for the final distribution file or package
-TARGET := $(NAME)--$(GIT_BRANCH)--$(shell date -d "$(GIT_COMMIT_DATE)" +'%Y%m%dT%H%M%S')--$(shell echo $(GIT_COMMIT_ID) | cut -c 1-7)
+TARGET := $(NAME)--$(GIT_BRANCH)--$(shell $(DATE) -d "$(GIT_COMMIT_DATE)" +'%Y%m%dT%H%M%S')--$(shell echo $(GIT_COMMIT_ID) | cut -c 1-7)
 
 # the build dir
 BUILD := build
@@ -57,10 +66,12 @@ dist:
 	     '../$(BUILD)/$(TARGET)' )
 	# run secondary build scripts
 	( ./build-scripts/gen-ui-info.py \
+		--current-date '$(shell $(DATE) --rfc-3339 s)' \
 		--git-commit-date '$(GIT_COMMIT_DATE)' \
 		--git-commit-id '$(GIT_COMMIT_ID)' \
 		--map-file-path '$(BUILD)/$(TARGET)/firmware.map' \
 		--source-code-path 'src' \
+		--matrix-file-path 'src/keyboard/$(KEYBOARD)/matrix.h' \
 	) > '$(BUILD)/$(TARGET)/firmware--ui-info.json'
 	# make into a zip archive
 	( cd '$(BUILD)/$(TARGET)'; \

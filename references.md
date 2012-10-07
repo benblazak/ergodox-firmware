@@ -21,7 +21,7 @@
   : column by Kevin Ross for Encoder  
   Includes a short thing about pull-up resistors.
 
-* [Powering Light Emitting Diodes(LEDs)]
+* [Powering Light Emitting Diodes (LEDs)]
   (http://wolfstone.halloweenhost.com/Lighting/litlpo_PoweringLEDs.html)  
   Can you use one resistor for multiple parallel LEDs?  No.  Or, you can, but
   it's not the best idea.
@@ -34,6 +34,11 @@
          (http://wolfstone.halloweenhost.com/Navigation/TechBase.html)
       -> [powering LEDs]
          (http://wolfstone.halloweenhost.com/Lighting/litlpo_PoweringLEDs.html)
+
+* [Notes on LEDs]
+  (http://www.gizmology.net/LEDs.htm)  
+  Talks about different types of LEDs, mentioning typical brightnesses,
+  voltages, and other intersting stuff.
 
 * [All About Circuits : Reference]
   (http://www.allaboutcircuits.com/vol_5/index.html)  

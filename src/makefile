@@ -116,11 +116,6 @@ all: $(TARGET).hex $(TARGET).eep
 	@echo
 	$(SIZE) --target=$(FORMAT) $(TARGET).eep
 	@echo
-	@echo '. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .'
-	@echo
-	$(SIZE) -C --mcu=atmega32u4 $(TARGET).elf
-	@echo '. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .'
-	@echo
 	@echo 'you can load "$(TARGET).hex" and "$(TARGET).eep" onto the'
 	@echo 'Teensy using the Teensy loader'
 	@echo
