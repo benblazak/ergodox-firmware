@@ -56,7 +56,7 @@ clean:
 	-rm -r '$(BUILD)'
 
 checkin:
-# 	-git commit -a
+	-git commit -a
 
 build-dir:
 	-rm -r '$(BUILD)/$(TARGET)'*
