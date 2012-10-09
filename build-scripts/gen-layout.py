@@ -32,18 +32,33 @@ def main():
 	matrix_positions = info['mappings']['matrix-positions']
 	matrix_layout = info['mappings']['matrix-layout']
 
-	# only consider keycodes, for now
+	# initial stuff
+	doc += """
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<html><body>
+
+<p>It's sad that this doesn't look as pretty as it should... but it works for now, and I've spent too much time on it for the moment.  Oh well.. maybe later :) .</p>
+
+"""[1:-1]
+
+	# not that smart at the moment...
 	for layout in matrix_layout:
 		template_copy = template
 		for (name, (code, press, release)) \
 				in zip(matrix_positions, layout):
-			template_copy = re.sub( name,
-									keycode_to_string.get(code, '[n/a]'),
-									template_copy )
+			replace = ''
+			if press == '&kbfun_jump_to_bootloader':
+				replace = '[btldr]'
+			elif re.search(r'layer', press):
+				replace = '[layer]'
+			else:
+				replace = keycode_to_string.get(code, '[n/a]')
+
+			template_copy = re.sub(name, replace, template_copy)
 
 		doc += template_copy
 
-	print(doc)
+	print(doc+'\n</body></html>\n')
 
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
@@ -121,12 +136,12 @@ keycode_to_string = {
 		0x46: "PrintScreen",
 		0x47: "ScrollLock",
 		0x48: "Pause",
-		0x49: "Insert",
-		0x4A: "Home",
-		0x4B: "PageUp",
+		0x49: "Ins",  # Insert
+		0x4A: "Hm",  # Home
+		0x4B: "Pg\u2191",  # up arrow
 		0x4C: "Delete",
 		0x4D: "End",
-		0x4E: "PageDown",
+		0x4E: "Pg\u2193",  # down arrow
 		0x4F: "\u2192",  # right arrow
 		0x50: "\u2190",  # left arrow
 		0x51: "\u2193",  # down arrow
@@ -140,14 +155,14 @@ keycode_to_string = {
 		0x58: "Enter(kp)",
 		0x59: "1 End",
 		0x5A: "2 \u2193",  # down arrow
-		0x5B: "3 PageDown",
+		0x5B: "3 Pg\u2193",  # down arrow
 		0x5C: "4 \u2190",  # left arrow
 		0x5D: "5",
 		0x5E: "6 \u2192",  # right arrow
-		0x5F: "7 Home",
+		0x5F: "7 Hm",  # Home
 		0x60: "8 \u2191",  # up arrow
-		0x61: "9 PageUp",
-		0x62: "0 Insert",
+		0x61: "9 Pg\u2191",  # up arrow
+		0x62: "0 Ins",  # Insert
 		0x63: ". Del",
 
 		0x64: "\ |",
@@ -270,14 +285,14 @@ keycode_to_string = {
 		0xDC: "Decimal",
 		0xDD: "Hexadecimal",
 
-		0xE0: "LeftControl",
-		0xE1: "LeftShift",
-		0xE2: "LeftAlt",
-		0xE3: "LeftGUI",
-		0xE4: "RightControl",
-		0xE5: "RightShift",
-		0xE6: "RightAlt",
-		0xE7: "RightGUI",
+		0xE0: "L-Ctrl",
+		0xE1: "L-Shift",
+		0xE2: "L-Alt",
+		0xE3: "L-GUI",
+		0xE4: "R-Ctrl",
+		0xE5: "R-Shift",
+		0xE6: "R-Alt",
+		0xE7: "R-GUI",
 		}
 
 # -----------------------------------------------------------------------------
