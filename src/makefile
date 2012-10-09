@@ -13,18 +13,12 @@
 # -----------------------------------------------------------------------------
 
 
-TARGET   := firmware  # the name we want for our program binary
-FORMAT   := ihex      # the program binary's format
-KEYBOARD := ergodox   # keyboard model; see "src/keyboard" for what's available
-LAYOUT   := qwerty    # keyboard layout; see "src/keyboard/*/layout" for what's
-                      #   available
+include makefile-options
 
-MCU   := atmega32u4  # processor type (for teensy 2.0); must match real life
-BOARD := teensy-2-0  # see the libraries you're using for what's available
-F_CPU := 16000000    # processor speed, in Hz
-
-DEBOUNCE_TIME := 5  # in ms; see keyswitch spec for necessary value; 5ms should
-		    #   be good for cherry mx switches
+FORMAT := ihex        # the program binary's format
+MCU    := atmega32u4  # processor type (for teensy 2.0); must match real life
+BOARD  := teensy-2-0  # see the libraries you're using for what's available
+F_CPU  := 16000000    # processor speed, in Hz
 
 # firmware stuff
 SRC  := $(wildcard *.c)
@@ -98,9 +92,9 @@ OBJCOPY := avr-objcopy
 SIZE    := avr-size
 
 
-# remove whitespace from some of the variables
-TARGET := $(strip $(TARGET))
+# remove whitespace from some of the options
 FORMAT := $(strip $(FORMAT))
+
 
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------

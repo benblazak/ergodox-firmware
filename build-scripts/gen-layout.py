@@ -1,7 +1,9 @@
-!# /usr/bin/env python3
+#! /usr/bin/env python3
 
 import argparse
 import json
+import os
+import re
 import sys
 
 # -----------------------------------------------------------------------------
@@ -12,24 +14,38 @@ def main():
 			            + "keyboard layout" )
 
 	arg_parser.add_argument(
-			'--map-file',
-			required = True )
-
-	arg_parser.add_argument(
-			'--hex-file',
-			required = True )
-
-	arg_parser.add_argument(
-			'--eep-file',
+			'--ui-info-file',
 			required = True )
 
 	args = arg_parser.parse_args(sys.argv[1:])
 
+	args.template_file = './build-scripts/gen-layout--template.svg'
+
+	# normalize paths
+	args.ui_info_file = os.path.abspath(args.ui_info_file)
+
+	# do stuff
+	doc = ''  # to store the html document we're generating
+	template = open(args.template_file).read()
+	info = json.loads(open(args.ui_info_file).read())
+
+	matrix_positions = info['mappings']['matrix-positions']
+	matrix_layout = info['mappings']['matrix-layout']
+
+	# only consider keycodes, for now
+	for layout in matrix_layout:
+		template_copy = template
+		for (name, (code, press, release)) \
+				in zip(matrix_positions, layout):
+			template_copy = re.sub( name,
+									keycode_to_string.get(code, '[n/a]'),
+									template_copy )
+
+		doc += template_copy
+
+	print(doc)
+
 # -----------------------------------------------------------------------------
-
-if __name__ == '__main__':
-	main()
-
 # -----------------------------------------------------------------------------
 
 keycode_to_string = {
@@ -263,4 +279,10 @@ keycode_to_string = {
 		0xE6: "RightAlt",
 		0xE7: "RightGUI",
 		}
+
+# -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
+
+if __name__ == '__main__':
+	main()
 

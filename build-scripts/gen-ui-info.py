@@ -39,6 +39,10 @@ The file will contain:
 	  ],
       "matrix-positions": [
           <string>, ...
+	  ],
+      "matrix-layout": [
+          [ [ <number>, <string>, <string> ], ... ],
+		  ...
 	  ]
   },
   "miscellaneous": {
@@ -274,22 +278,63 @@ def find_keyboard_functions(source_code_path):
 	return output
 
 
-def find_mappings(matrix_file_path):
+def gen_mappings(matrix_file_path, layout_file_path):
 	# normalize paths
 	matrix_file_path = os.path.abspath(matrix_file_path)
+	layout_file_path = os.path.abspath(layout_file_path)
 
-	match = re.search(
-			r'#define\s+KB_MATRIX_LAYER\s*\(([^)]+)\)[^{]*\{\{([^#]+)\}\}',
-			open(matrix_file_path).read(),
-			re.MULTILINE )
+	def parse_matrix_file(matrix_file_path):
+		match = re.search(  # find the whole 'KB_MATRIX_LAYER' macro
+				r'#define\s+KB_MATRIX_LAYER\s*\(([^)]+)\)[^{]*\{\{([^#]+)\}\}',
+				open(matrix_file_path).read() )
 
-	return {
-		"mappings": {
-			"physical-positions": re.findall(r'k..', match.group(1)),
-			"matrix-positions": re.findall(r'k..|na', match.group(2)),
-		},
-	}
-	
+		return {
+			"mappings": {
+				"physical-positions": re.findall(r'k..', match.group(1)),
+				"matrix-positions": re.findall(r'k..|na', match.group(2)),
+			},
+		}
+
+	def parse_layout_file(layout_file_path):
+		match = re.findall(  # find each whole '_kb_layout*' matrix definition
+				r'(_kb_layout\w*)[^=]*=((?:[^{}]*\{){3}[^=]*(?:[^{}]*\}){3})',
+				subprocess.getoutput("gcc -E '"+layout_file_path+"'") )
+
+		layout = {}
+		# collect all the values
+		for (name, matrix) in match:
+			layout[name] = [
+					re.findall(  # find all numbers and function pointers
+						r'[x0-9A-F]+|&\w+|NULL',
+						re.sub(  # replace '((void *) 0)' with 'NULL'
+							r'\(\s*\(\s*void\s*\*\s*\)\s*0\s*\)',
+							'NULL',
+							el ) )
+					for el in
+						re.findall(  # find each whole layer
+							r'(?:[^{}]*\{){2}((?:[^}]|\}\s*,)+)(?:[^{}]*\}){2}',
+							matrix ) ]
+
+		# make the numbers into actual numbers
+		layout['_kb_layout'] = \
+				[[eval(el) for el in layer] for layer in layout['_kb_layout']]
+
+		return {
+			"mappings": {
+				"matrix-layout":
+					# group them all properly
+					[ [[c, p, r] for (c, p, r) in zip(code, press, release)]
+					  for (code, press, release) in
+						  zip( layout['_kb_layout'],
+							   layout['_kb_layout_press'],
+							   layout['_kb_layout_release'] ) ]
+			},
+		}
+
+	return dict_merge(
+			parse_matrix_file(matrix_file_path),
+			parse_layout_file(layout_file_path) )
+
 
 # -----------------------------------------------------------------------------
 
@@ -345,6 +390,10 @@ def main():
 			'--matrix-file-path',
 			help = "the path to the matrix file we're using",
 			required = True )
+	arg_parser.add_argument(
+			'--layout-file-path',
+			help = "the path to the layout file we're using",
+			required = True )
 
 	args = arg_parser.parse_args(sys.argv[1:])
 
@@ -354,7 +403,8 @@ def main():
 									args.git_commit_id ) )
 	dict_merge(output, parse_mapfile(args.map_file_path))
 	dict_merge(output, find_keyboard_functions(args.source_code_path))
-	dict_merge(output, find_mappings(args.matrix_file_path))
+	dict_merge(output, gen_mappings( args.matrix_file_path,
+									  args.layout_file_path ))
 	dict_merge(output, gen_derived(output))
 
 	print(json.dumps(output, sort_keys=True, indent=4))
