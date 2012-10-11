@@ -8,6 +8,15 @@ import sys
 
 # -----------------------------------------------------------------------------
 
+class Namespace():
+	pass
+
+template = Namespace()
+doc = Namespace()
+info = Namespace()
+
+# -----------------------------------------------------------------------------
+
 def main():
 	arg_parser = argparse.ArgumentParser(
 			description = "Generate a picture of the firmware's "
@@ -19,33 +28,53 @@ def main():
 
 	args = arg_parser.parse_args(sys.argv[1:])
 
-	args.template_file = './build-scripts/gen-layout--template.svg'
+	# constant file paths
+	args.template_svg_file = './build-scripts/gen_layout/template.svg'
+	args.template_js_file = './build-scripts/gen_layout/template.js'
 
 	# normalize paths
 	args.ui_info_file = os.path.abspath(args.ui_info_file)
+	args.template_svg_file = os.path.abspath(args.template_svg_file)
+	args.template_js_file = os.path.abspath(args.template_js_file)
 
-	# do stuff
-	doc = ''  # to store the html document we're generating
-	template = open(args.template_file).read()
-	info = json.loads(open(args.ui_info_file).read())
+	# set vars
+	doc.main = ''  # to store the html document we're generating
+	template.svg = open(args.template_svg_file).read()
+	template.js = open(args.template_js_file).read()
+	info.all = json.loads(open(args.ui_info_file).read())
 
-	matrix_positions = info['mappings']['matrix-positions']
-	matrix_layout = info['mappings']['matrix-layout']
+	info.matrix_positions = info.all['mappings']['matrix-positions']
+	info.matrix_layout = info.all['mappings']['matrix-layout']
 
-	# initial stuff
-	doc += """
+	# prefix
+	doc.prefix = ("""
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<html><body>
+<html>
 
-<p>It's sad that this doesn't look as pretty as it should... but it works for now, and I've spent too much time on it for the moment.  Oh well.. maybe later :) .</p>
+<head>
+  <script>
+"""
++ template.js +
+""" </script>
+</head>
 
-"""[1:-1]
+<body>
 
-	# not that smart at the moment...
-	for layout in matrix_layout:
-		template_copy = template
+""")[1:-1]
+
+	# suffix
+	doc.suffix = ("""
+</body>
+</html>
+
+""")[1:-1]
+
+	# substitute into template
+	for (layout, layer) in zip( info.matrix_layout,
+								range(len(info.matrix_layout))):
+		svg = template.svg
 		for (name, (code, press, release)) \
-				in zip(matrix_positions, layout):
+				in zip(info.matrix_positions, layout):
 			replace = ''
 			if press == '&kbfun_jump_to_bootloader':
 				replace = '[btldr]'
@@ -54,11 +83,16 @@ def main():
 			else:
 				replace = keycode_to_string.get(code, '[n/a]')
 
-			template_copy = re.sub(name, replace, template_copy)
+			svg = re.sub(
+					'>'+name+'<', '>'+replace+'<', svg )
+			svg = re.sub(
+					r"\('(" + name + r".*)'\)",
+					r"('\1', " + str(layer) + r")",
+					svg )
 
-		doc += template_copy
+		doc.main += svg
 
-	print(doc+'\n</body></html>\n')
+	print(doc.prefix + doc.main + doc.suffix)
 
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
