@@ -58,6 +58,7 @@ CFLAGS += -DMAKEFILE_BOARD='$(strip $(BOARD))'
 CFLAGS += -DMAKEFILE_KEYBOARD='$(strip $(KEYBOARD))'
 CFLAGS += -DMAKEFILE_KEYBOARD_LAYOUT='$(strip $(LAYOUT))'
 CFLAGS += -DMAKEFILE_DEBOUNCE_TIME='$(strip $(DEBOUNCE_TIME))'
+CFLAGS += -DMAKEFILE_LED_BRIGHTNESS='$(strip $(LED_BRIGHTNESS))'
 # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 CFLAGS += -std=gnu99  # use C99 plus GCC extensions
 CFLAGS += -Os         # optimize for size
