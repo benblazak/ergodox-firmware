@@ -9,8 +9,9 @@
 
 TARGET   := firmware  # the name we want for our program binary
 KEYBOARD := ergodox   # keyboard model; see "src/keyboard" for what's available
-LAYOUT   := qwerty    # keyboard layout; see "src/keyboard/*/layout" for what's
-                      #   available
+LAYOUT   := qwerty-kinesis-mod  # keyboard layout
+				# see "src/keyboard/*/layout" for what's
+				# available
 
 LED_BRIGHTNESS := 0.5  # a multiplier, with 1 being the max
 DEBOUNCE_TIME := 5  # in ms; see keyswitch spec for necessary value; 5ms should

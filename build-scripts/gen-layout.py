@@ -1,4 +1,18 @@
 #! /usr/bin/env python3
+# -----------------------------------------------------------------------------
+# Copyright (c) 2012 Ben Blazak <benblazak.dev@gmail.com>
+# Released under The MIT License (MIT) (see "license.md")
+# Project located at <https://github.com/benblazak/ergodox-firmware>
+# -----------------------------------------------------------------------------
+
+"""
+Generate a depiction of the layout (in html + svg)
+
+Depends on:
+- the UI info file (in JSON)
+"""
+
+# -----------------------------------------------------------------------------
 
 import argparse
 import json
@@ -76,7 +90,7 @@ def main():
 		for (name, (code, press, release)) \
 				in zip(info.matrix_positions, layout):
 			replace = ''
-			if press == '&kbfun_jump_to_bootloader':
+			if press == 'kbfun_jump_to_bootloader':
 				replace = '[btldr]'
 			elif re.search(r'layer', press):
 				replace = '[layer]'
@@ -98,9 +112,9 @@ def main():
 # -----------------------------------------------------------------------------
 
 keycode_to_string = {
-		0x01: "ErrorRollOver",
+		0x01: "Error",  # ErrorRollOver
 		0x02: "POSTFail",
-		0x03: "ErrorUndefined",
+		0x03: "Error",  # ErrorUndefined
 		0x04: "a A",
 		0x05: "b B",
 		0x06: "c C",
@@ -154,7 +168,7 @@ keycode_to_string = {
 		0x36: ", <",
 		0x37: ". >",
 		0x38: "/ ?",
-		0x39: "CapsLock",
+		0x39: "Caps",
 		0x3A: "F1",
 		0x3B: "F2",
 		0x3C: "F3",
@@ -181,12 +195,12 @@ keycode_to_string = {
 		0x51: "\u2193",  # down arrow
 		0x52: "\u2191",  # up arrow
 
-		0x53: "NumLock Clear",
+		0x53: "Num",
 		0x54: "/",
 		0x55: "*",
 		0x56: "-",
 		0x57: "+",
-		0x58: "Enter(kp)",
+		0x58: "Enter",
 		0x59: "1 End",
 		0x5A: "2 \u2193",  # down arrow
 		0x5B: "3 Pg\u2193",  # down arrow
@@ -200,7 +214,7 @@ keycode_to_string = {
 		0x63: ". Del",
 
 		0x64: "\ |",
-		0x65: "Application",
+		0x65: "App",
 		0x66: "Power",
 
 		0x67: "=",
@@ -229,8 +243,8 @@ keycode_to_string = {
 		0x7D: "Paste",
 		0x7E: "Find",
 		0x7F: "Mute",
-		0x80: "VolumeUp",
-		0x81: "VolumeDown",
+		0x80: "VolUp",
+		0x81: "VolDown",
 		0x82: "LockingCapsLock",
 		0x83: "LockingNumLock",
 		0x84: "LockingScrollLock",
@@ -238,15 +252,15 @@ keycode_to_string = {
 		0x85: ",",
 		0x86: "=",
 
-		0x87: "International1",
-		0x88: "International2",
-		0x89: "International3",
-		0x8A: "International4",
-		0x8B: "International5",
-		0x8C: "International6",
-		0x8D: "International7",
-		0x8E: "International8",
-		0x8F: "International9",
+		0x87: "Int1",
+		0x88: "Int2",
+		0x89: "Int3",
+		0x8A: "Int4",
+		0x8B: "Int5",
+		0x8C: "Int6",
+		0x8D: "Int7",
+		0x8E: "Int8",
+		0x8F: "Int9",
 		0x90: "LANG1",
 		0x91: "LANG2",
 		0x92: "LANG3",
@@ -274,7 +288,7 @@ keycode_to_string = {
 
 		0xB2: "Thousands_Sep",
 		0xB3: "Decimal_Sep",
-		0xB4: "Currency_Unit",
+		0xB4: "$",
 		0xB5: "Currency_Subunit",
 
 		0xB6: "(",
@@ -316,7 +330,7 @@ keycode_to_string = {
 		0xD9: "ClearEntry",
 		0xDA: "Binary",
 		0xDB: "Octal",
-		0xDC: "Decimal",
+		0xDC: ".",
 		0xDD: "Hexadecimal",
 
 		0xE0: "L-Ctrl",
