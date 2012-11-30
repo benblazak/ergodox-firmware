@@ -19,65 +19,15 @@
 // ----------------------------------------------------------------------------
 
 // convenience macros
-#define  layer        main_arg_layer
-#define  row          main_arg_row
-#define  col          main_arg_col
-#define  is_pressed   main_arg_is_pressed
-#define  was_pressed  main_arg_was_pressed
+#define  LAYER         main_arg_layer
+#define  LAYER_OFFSET  main_arg_layer_offset
+#define  ROW           main_arg_row
+#define  COL           main_arg_col
+#define  IS_PRESSED    main_arg_is_pressed
+#define  WAS_PRESSED   main_arg_was_pressed
+
 
 // ----------------------------------------------------------------------------
-
-/*
- * [name]
- *   Increase layer, Execute key
- *
- * [description]
- *   Increment the current layer by the value specified in the keymap (for all
- *   non-masked keys), and execute (usually press|release) the key in the same
- *   position on that new layer
- *
- * [note]
- *   Meant to be paired with `kbfun_layer_dec_exec()`
- */
-void kbfun_layer_inc_exec(void) {
-	uint8_t keycode = kb_layout_get(layer, row, col);
-
-	// switch layers
-	_kbfun_layer_set_current(main_layers_current + keycode);
-
-	// exececute second key (in the same position)
-	// - `layer+keycode` will be constant (under normal circumstances)
-	//   between the press and release
-	layer += keycode;
-	main_exec_key();
-}
-
-
-/*
- * [name]
- *   Decrease layer, Execute key
- *
- * [description]
- *   Decrement the current layer by the value specified in the keymap (for all
- *   non-masked keys), and execute (usually press|release) the key in the same
- *   position on that new layer
- *
- * [note]
- *   Meant to be paired with `kbfun_layer_inc_exec()`
- */
-void kbfun_layer_dec_exec(void) {
-	uint8_t keycode = kb_layout_get(layer, row, col);
-
-	// switch layers
-	_kbfun_layer_set_current(main_layers_current - keycode);
-
-	// exececute second key (in the same position)
-	// - `layer+keycode` will be constant (under normal circumstances)
-	//   between the press and release
-	layer += keycode;
-	main_exec_key();
-}
-
 
 /*
  * [name]
@@ -99,15 +49,15 @@ void kbfun_2_keys_capslock_press_release(void) {
 	static bool lshift_pressed;
 	static bool rshift_pressed;
 
-	uint8_t keycode = kb_layout_get(layer, row, col);
+	uint8_t keycode = kb_layout_get(LAYER, ROW, COL);
 
-	if (!is_pressed) keys_pressed--;
+	if (!IS_PRESSED) keys_pressed--;
 
 	// take care of the key that was actually pressed
-	_kbfun_press_release(is_pressed, keycode);
+	_kbfun_press_release(IS_PRESSED, keycode);
 
 	// take care of capslock (only on the press of the 2nd key)
-	if (keys_pressed == 1 && is_pressed) {
+	if (keys_pressed == 1 && IS_PRESSED) {
 		// save the state of left and right shift
 		lshift_pressed = _kbfun_is_pressed(KEY_LeftShift);
 		rshift_pressed = _kbfun_is_pressed(KEY_RightShift);
@@ -128,6 +78,61 @@ void kbfun_2_keys_capslock_press_release(void) {
 			_kbfun_press_release(true, KEY_RightShift);
 	}
 
-	if (is_pressed) keys_pressed++;
+	if (IS_PRESSED) keys_pressed++;
 }
+
+/* ----------------------------------------------------------------------------
+ * numpad functions
+ * ------------------------------------------------------------------------- */
+
+static uint8_t numpad_layer_id;
+
+static inline void numpad_toggle_numlock(void) {
+	_kbfun_press_release(true, KEYPAD_NumLock_Clear);
+	usb_keyboard_send();
+	_kbfun_press_release(false, KEYPAD_NumLock_Clear);
+	usb_keyboard_send();
+}
+
+/*
+ * [name]
+ *   Numpad on
+ *
+ * [description]
+ *   Set the numpad to on (put the numpad layer, specified in the keymap, in an
+ *   element at the top of the layer stack, and record that element's id) and
+ *   toggle numlock (regardless of whether or not numlock is currently on)
+ *
+ * [note]
+ *   Meant to be assigned (along with "numpad off") instead of a normal numlock
+ *   key
+ */
+void kbfun_layer_push_numpad(void) {
+	uint8_t keycode = kb_layout_get(LAYER, ROW, COL);
+	main_layers_pop_id(numpad_layer_id);
+	numpad_layer_id = main_layers_push(keycode);
+	numpad_toggle_numlock();
+}
+
+/*
+ * [name]
+ *   Numpad off
+ *
+ * [description]
+ *   Set the numpad to off (pop the layer element created by "numpad on" out of
+ *   the stack) and toggle numlock (regardless of whether or not numlock is
+ *   currently on)
+ *
+ * [note]
+ *   Meant to be assigned (along with "numpad on") instead of a normal numlock
+ *   key
+ */
+void kbfun_layer_pop_numpad(void) {
+	main_layers_pop_id(numpad_layer_id);
+	numpad_layer_id = 0;
+	numpad_toggle_numlock();
+}
+
+/* ----------------------------------------------------------------------------
+ * ------------------------------------------------------------------------- */
 

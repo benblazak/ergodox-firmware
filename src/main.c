@@ -20,20 +20,23 @@
 
 // ----------------------------------------------------------------------------
 
+#define  MAX_ACTIVE_LAYERS  20
+
+// ----------------------------------------------------------------------------
+
 static bool _main_kb_is_pressed[KB_ROWS][KB_COLUMNS];
 bool (*main_kb_is_pressed)[KB_ROWS][KB_COLUMNS] = &_main_kb_is_pressed;
 
 static bool _main_kb_was_pressed[KB_ROWS][KB_COLUMNS];
 bool (*main_kb_was_pressed)[KB_ROWS][KB_COLUMNS] = &_main_kb_was_pressed;
 
-uint8_t main_layers_current;
-uint8_t main_layers_press[KB_ROWS][KB_COLUMNS];
-uint8_t main_layers_release[KB_ROWS][KB_COLUMNS];
+uint8_t main_layers_pressed[KB_ROWS][KB_COLUMNS];
 
 uint8_t main_loop_row;
 uint8_t main_loop_col;
 
 uint8_t main_arg_layer;
+uint8_t main_arg_layer_offset;
 uint8_t main_arg_row;
 uint8_t main_arg_col;
 bool    main_arg_is_pressed;
@@ -73,11 +76,11 @@ int main(void) {
 		//   - see the keyboard layout file ("keyboard/ergodox/layout/*.c") for
 		//     which key is assigned which function (per layer)
 		//   - see "lib/key-functions/public/*.c" for the function definitions
-		#define row         main_loop_row
-		#define col         main_loop_col
-		#define layer       main_arg_layer
-		#define is_pressed  main_arg_is_pressed
-		#define was_pressed main_arg_was_pressed
+		#define row          main_loop_row
+		#define col          main_loop_col
+		#define layer        main_arg_layer
+		#define is_pressed   main_arg_is_pressed
+		#define was_pressed  main_arg_was_pressed
 		for (row=0; row<KB_ROWS; row++) {
 			for (col=0; col<KB_COLUMNS; col++) {
 				is_pressed = (*main_kb_is_pressed)[row][col];
@@ -85,15 +88,16 @@ int main(void) {
 
 				if (is_pressed != was_pressed) {
 					if (is_pressed) {
-						layer = main_layers_press[row][col];
-						main_layers_release[row][col] = layer;
+						layer = main_layers_peek(0);
+						main_layers_pressed[row][col] = layer;
 					} else {
-						layer = main_layers_release[row][col];
+						layer = main_layers_pressed[row][col];
 					}
 
 					// set remaining vars, and "execute" key
-					main_arg_row = row;
-					main_arg_col = col;
+					main_arg_row          = row;
+					main_arg_col          = col;
+					main_arg_layer_offset = 0;
 					main_exec_key();
 				}
 			}
@@ -150,5 +154,121 @@ void main_exec_key(void) {
 		(*key_function)();
 }
 
-// ----------------------------------------------------------------------------
+
+/* ----------------------------------------------------------------------------
+ * Layer Functions
+ * ----------------------------------------------------------------------------
+ * We keep track of which layer is foremost by placing it on a stack.  Layers
+ * may appear in the stack more than once.  The base layer will always be
+ * layer-0.  
+ *
+ * Implemented as a fixed size stack.
+ * ------------------------------------------------------------------------- */
+
+struct layers {
+	uint8_t layer;
+	uint8_t id;
+};
+struct layers_info {
+	uint8_t head;
+	bool    ids_in_use[MAX_ACTIVE_LAYERS];
+};
+
+static struct layers layers[MAX_ACTIVE_LAYERS];
+static struct layers_info layers_info = {
+	// .head = 0,  // default
+	.ids_in_use = {true},  // id 0 = true; id's 1..max = false
+};
+
+/*
+ * peek()
+ *
+ * Arguments
+ * - 'offset': the offset (down the stack) from the head element
+ *
+ * Returns
+ * - success: the layer-number of the requested element (which may be 0)
+ * - failure: 0 (default) (out of bounds)
+ */
+uint8_t main_layers_peek(uint8_t offset) {
+	if (offset > layers_info.head)  // uint8_t, so they're both >0
+		return 0;  // default
+
+	return layers[layers_info.head - offset].layer;
+}
+
+/*
+ * push()
+ *
+ * Arguments
+ * - 'layer': the layer-number to push to the top of the stack
+ *
+ * Returns
+ * - success: the id assigned to the newly added element
+ * - failure: 0 (the stack was already full)
+ */
+uint8_t main_layers_push(uint8_t layer) {
+	if (layers_info.head == MAX_ACTIVE_LAYERS)
+		return 0;  // error
+
+	layers_info.head++;
+
+	for (uint8_t id=1; id<MAX_ACTIVE_LAYERS; id++)
+		if (layers_info.ids_in_use[id] == false) {
+			// claim the unused id
+			layers_info.ids_in_use[id] = true;
+			// assign the element values
+			layers[layers_info.head].layer = layer;
+			layers[layers_info.head].id = id;
+			// return the id
+			return id;
+		}
+
+	// if no id was found
+	// (this should never happen, since we check if the array's full above)
+	return 0;  // error
+}
+
+/*
+ * pop_id()
+ *
+ * Arguments
+ * - 'id': the id of the element to pop from the stack
+ */
+void main_layers_pop_id(uint8_t id) {
+	for (uint8_t i=1; i<MAX_ACTIVE_LAYERS; i++)
+		if (layers[i].id == id) {
+			// clear the entry
+			layers[i].layer = 0;
+			layers[i].id = 0;
+			// if there are elements above it, move them down
+			for (uint8_t pos=i+1; i<=layers_info.head; i++)
+				layers[pos-1] = layers[pos];
+			// decrement 'head'
+			layers_info.head--;
+		}
+}
+
+/*
+ * get_offset_id()
+ *
+ * Arguments
+ * - 'id': the id of the element you want the offset of
+ *
+ * Returns
+ * - success: the offset (down the stack from the head element) of the element
+ *   with the given id
+ * - failure: 0 (default) (id unassigned)
+ */
+uint8_t main_layers_get_offset_id(uint8_t id) {
+	for (uint8_t i=1; i<=layers_info.head; i++)
+		if (layers[i].id == id)
+			return layers_info.head - i;
+
+	// if no element with the given id was found
+	return 0;
+}
+
+/* ----------------------------------------------------------------------------
+ * ------------------------------------------------------------------------- */
 

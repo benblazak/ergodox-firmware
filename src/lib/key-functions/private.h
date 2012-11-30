@@ -20,9 +20,6 @@
 	// --------------------------------------------------------------------
 
 	void _kbfun_press_release     (bool press, uint8_t keycode);
-	void _kbfun_layer_set_current (uint8_t layer);
-	void _kbfun_layer_set_mask    ( uint8_t layer,
-	                                bool positions[KB_ROWS][KB_COLUMNS] );
 	bool _kbfun_is_pressed        (uint8_t keycode);
 
 #endif

@@ -1,5 +1,6 @@
 /* ----------------------------------------------------------------------------
  * ergoDOX layout : QWERTY (modified from the Kinesis layout)
+ * TODO: rewrite for new kbfun's
  * ----------------------------------------------------------------------------
  * Copyright (c) 2012 Ben Blazak <benblazak.dev@gmail.com>
  * Released under The MIT License (MIT) (see "license.md")
@@ -19,28 +20,8 @@
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 
-// aliases
-// --- basic
-#define f_prrel &kbfun_press_release
-#define f_toggl &kbfun_toggle
-#define f_l_inc &kbfun_layer_inc
-#define f_l_dec &kbfun_layer_dec
-// --- device
-#define f_btldr &kbfun_jump_to_bootloader
-// --- numpad
-#define f_np_to &kbfun_layermask_numpad_toggle
-#define f_np_on &kbfun_layermask_numpad_on
-#define f_np_of &kbfun_layermask_numpad_off
-// --- special
-#define f_l_iex &kbfun_layer_inc_exec
-#define f_l_dex &kbfun_layer_dec_exec
-#define f_2kcap &kbfun_2_keys_capslock_press_release
-
-// ----------------------------------------------------------------------------
-// ----------------------------------------------------------------------------
-
 const uint8_t PROGMEM _kb_layout[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
-	// --------------------------------------------------------------------
+
 	KB_MATRIX_LAYER(  // layout: layer 0: default
 // unused
 0,
@@ -62,7 +43,8 @@ _capsLock,     _A,         _S,      _D,      _F,    _G,
              0, _space,
 _ctrlR,      0, _enter,
  _altR, _pageU, _pageD ),
-	// --------------------------------------------------------------------
+
+
 	KB_MATRIX_LAYER(  // layout: layer 1: function and symbol keys
 // unused
 0,
@@ -84,7 +66,8 @@ _bracketL,         0,  _dash,    _lt_kp,    _gt_kp,_currencyUnit,_bracketR,
              0, _space,
 _ctrlR,      0, _enter,
  _altR, _pageU, _pageD ),
-	// --------------------------------------------------------------------
+
+
 	KB_MATRIX_LAYER(  // layout: layer 2: numpad
 // unused
 0,
@@ -106,167 +89,213 @@ _ctrlR,      0, _enter,
    0,  _0_kp,
 0, 0,      0,
 0, 0,      0 ),
-	// --------------------------------------------------------------------
+
 };
 
 // ----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
+
+// aliases
+
+// basic
+#define  kprrel  &kbfun_press_release
+#define  ktog    &kbfun_toggle
+#define  ktrans  &kbfun_transparent
+// --- layer push/pop functions
+#define  lpush1   &kbfun_layer_push_1
+#define  lpush2   &kbfun_layer_push_2
+#define  lpush3   &kbfun_layer_push_3
+#define  lpush4   &kbfun_layer_push_4
+#define  lpush5   &kbfun_layer_push_5
+#define  lpush6   &kbfun_layer_push_6
+#define  lpush7   &kbfun_layer_push_7
+#define  lpush8   &kbfun_layer_push_8
+#define  lpush9   &kbfun_layer_push_9
+#define  lpush10  &kbfun_layer_push_10
+#define  lpop1    &kbfun_layer_pop_1
+#define  lpop2    &kbfun_layer_pop_2
+#define  lpop3    &kbfun_layer_pop_3
+#define  lpop4    &kbfun_layer_pop_4
+#define  lpop5    &kbfun_layer_pop_5
+#define  lpop6    &kbfun_layer_pop_6
+#define  lpop7    &kbfun_layer_pop_7
+#define  lpop8    &kbfun_layer_pop_8
+#define  lpop9    &kbfun_layer_pop_9
+#define  lpop10   &kbfun_layer_pop_10
+// ---
+
+// device
+#define  dbtldr  &kbfun_jump_to_bootloader
+
+// special
+#define  s2kcap   &kbfun_2_keys_capslock_press_release
+#define  slpunum  &kbfun_layer_push_numpad
+#define  slponum  &kbfun_layer_pop_numpad
+
+// ----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 
 const void_funptr_t PROGMEM _kb_layout_press[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
-	// --------------------------------------------------------------------
+
 	KB_MATRIX_LAYER(  // press: layer 0: default
 // unused
 NULL,
 // left hand
-f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
-f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_l_inc,
-f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
-f_2kcap,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_l_inc,
-f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
-                                        f_prrel,   NULL,
-                                        f_prrel,   NULL,f_prrel,
-                                        f_prrel,f_prrel,f_prrel,
+ kprrel, kprrel, kprrel, kprrel, kprrel, kprrel, kprrel,
+ kprrel, kprrel, kprrel, kprrel, kprrel, kprrel, lpush1,
+ kprrel, kprrel, kprrel, kprrel, kprrel, kprrel,
+ s2kcap, kprrel, kprrel, kprrel, kprrel, kprrel, lpush1,
+ kprrel, kprrel, kprrel, kprrel, kprrel,
+                                         kprrel,   NULL,
+                                         kprrel,   NULL, kprrel,
+                                         kprrel, kprrel, kprrel,
 // right hand
-        f_np_to,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
-        f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
-                f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
-        f_l_inc,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_2kcap,
-                        f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
-           NULL,f_prrel,
-f_prrel,   NULL,f_prrel,
-f_prrel,f_prrel,f_prrel ),
-	// --------------------------------------------------------------------
+        slpunum, kprrel, kprrel, kprrel, kprrel, kprrel, kprrel,
+         kprrel, kprrel, kprrel, kprrel, kprrel, kprrel, kprrel,
+                 kprrel, kprrel, kprrel, kprrel, kprrel, kprrel,
+         lpush1, kprrel, kprrel, kprrel, kprrel, kprrel, s2kcap,
+                         kprrel, kprrel, kprrel, kprrel, kprrel,
+           NULL, kprrel,
+ kprrel,   NULL, kprrel,
+ kprrel, kprrel, kprrel ),
+
+
 	KB_MATRIX_LAYER(  // press: layer 1: function and symbol keys
 // unused
 NULL,
 // left hand
-f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
-f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,   NULL,f_l_dec,
-f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
-f_2kcap,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,   NULL,
-f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
-                                        f_prrel,   NULL,
-                                        f_prrel,   NULL,f_prrel,
-                                        f_prrel,f_prrel,f_prrel,
+ kprrel, kprrel, kprrel, kprrel, kprrel, kprrel, kprrel,
+ kprrel, kprrel, kprrel, kprrel, kprrel,   NULL,  lpop1,
+ kprrel, kprrel, kprrel, kprrel, kprrel, kprrel,
+ s2kcap, kprrel, kprrel, kprrel, kprrel, kprrel,   NULL,
+ kprrel, kprrel, kprrel, kprrel, kprrel,
+                                         kprrel,   NULL,
+                                         kprrel,   NULL, kprrel,
+                                         kprrel, kprrel, kprrel,
 // right hand
-       f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
-       f_prrel,   NULL,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
-               f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
-          NULL,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_2kcap,
-                       f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
-           NULL,f_prrel,
-f_prrel,   NULL,f_prrel,
-f_prrel,f_prrel,f_prrel ),
-	// --------------------------------------------------------------------
+        kprrel, kprrel, kprrel, kprrel, kprrel, kprrel, kprrel,
+        kprrel,   NULL, kprrel, kprrel, kprrel, kprrel, kprrel,
+                kprrel, kprrel, kprrel, kprrel, kprrel, kprrel,
+          NULL, kprrel, kprrel, kprrel, kprrel, kprrel, s2kcap,
+                        kprrel, kprrel, kprrel, kprrel, kprrel,
+           NULL, kprrel,
+ kprrel,   NULL, kprrel,
+ kprrel, kprrel, kprrel ),
+
+
 	KB_MATRIX_LAYER(  // press: layer 2: numpad
 // unused
 NULL,
 // left hand
-   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
-   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
-   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
-   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
-   NULL,   NULL,   NULL,   NULL,   NULL,
-                                           NULL,   NULL,
-                                           NULL,   NULL,   NULL,
-                                           NULL,   NULL,   NULL,
+ ktrans, ktrans, ktrans, ktrans, ktrans, ktrans, ktrans,
+ ktrans, ktrans, ktrans, ktrans, ktrans, ktrans, ktrans,
+ ktrans, ktrans, ktrans, ktrans, ktrans, ktrans,
+ ktrans, ktrans, ktrans, ktrans, ktrans, ktrans, ktrans,
+ ktrans, kprrel, ktrans, ktrans, ktrans,
+                                         ktrans, ktrans,
+                                         ktrans, ktrans, ktrans,
+                                         ktrans, ktrans, ktrans,
 // right hand
-       f_np_to,   NULL,f_np_to,f_prrel,f_prrel,f_prrel,   NULL,
-          NULL,   NULL,f_prrel,f_prrel,f_prrel,f_prrel,   NULL,
-                  NULL,f_prrel,f_prrel,f_prrel,f_prrel,   NULL,
-          NULL,   NULL,f_prrel,f_prrel,f_prrel,f_prrel,   NULL,
-                          NULL,   NULL,f_prrel,f_prrel,   NULL,
-           NULL,f_prrel,
-   NULL,   NULL,   NULL,
-   NULL,   NULL,   NULL ),
-	// --------------------------------------------------------------------
+       slponum, ktrans,slponum, kprrel, kprrel, kprrel, ktrans,
+        ktrans, ktrans, kprrel, kprrel, kprrel, kprrel, ktrans,
+                ktrans, kprrel, kprrel, kprrel, kprrel, ktrans,
+        ktrans, ktrans, kprrel, kprrel, kprrel, kprrel, ktrans,
+                        ktrans, ktrans, kprrel, kprrel, ktrans,
+         ktrans, kprrel,
+ ktrans, ktrans, ktrans,
+ ktrans, ktrans, ktrans ),
+
 };
 
 // ----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 
 const void_funptr_t PROGMEM _kb_layout_release[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
-	// --------------------------------------------------------------------
+
 	KB_MATRIX_LAYER(  // release: layer 0: default
 // unused
 NULL,
 // left hand
-f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
-f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,   NULL,
-f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
-f_2kcap,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_l_dec,
-f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
-                                        f_prrel,   NULL,
-                                        f_prrel,   NULL,f_prrel,
-                                        f_prrel,f_prrel,f_prrel,
+ kprrel, kprrel, kprrel, kprrel, kprrel, kprrel, kprrel,
+ kprrel, kprrel, kprrel, kprrel, kprrel, kprrel,   NULL,
+ kprrel, kprrel, kprrel, kprrel, kprrel, kprrel,
+ s2kcap, kprrel, kprrel, kprrel, kprrel, kprrel,  lpop1,
+ kprrel, kprrel, kprrel, kprrel, kprrel,
+                                         kprrel,   NULL,
+                                         kprrel,   NULL, kprrel,
+                                         kprrel, kprrel, kprrel,
 // right hand
-          NULL,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
-       f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
-               f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
-       f_l_dec,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_2kcap,
-                       f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
-           NULL,f_prrel,
-f_prrel,   NULL,f_prrel,
-f_prrel,f_prrel,f_prrel ),
-	// --------------------------------------------------------------------
+          NULL, kprrel, kprrel, kprrel, kprrel, kprrel, kprrel,
+        kprrel, kprrel, kprrel, kprrel, kprrel, kprrel, kprrel,
+                kprrel, kprrel, kprrel, kprrel, kprrel, kprrel,
+         lpop1, kprrel, kprrel, kprrel, kprrel, kprrel, s2kcap,
+                        kprrel, kprrel, kprrel, kprrel, kprrel,
+           NULL, kprrel,
+ kprrel,   NULL, kprrel,
+ kprrel, kprrel, kprrel ),
+
+
 	KB_MATRIX_LAYER(  // release: layer 1: function and symbol keys
 // unused
 NULL,
 // left hand
-   NULL,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
-f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,   NULL,   NULL,
-f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
-f_2kcap,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,   NULL,
-f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
-                                        f_prrel,   NULL,
-                                        f_prrel,   NULL,f_prrel,
-                                        f_prrel,f_prrel,f_prrel,
+   NULL, kprrel, kprrel, kprrel, kprrel, kprrel, kprrel,
+ kprrel, kprrel, kprrel, kprrel, kprrel,   NULL,   NULL,
+ kprrel, kprrel, kprrel, kprrel, kprrel, kprrel,
+ s2kcap, kprrel, kprrel, kprrel, kprrel, kprrel,   NULL,
+ kprrel, kprrel, kprrel, kprrel, kprrel,
+                                         kprrel,   NULL,
+                                         kprrel,   NULL, kprrel,
+                                         kprrel, kprrel, kprrel,
 // right hand
-       f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
-       f_prrel,   NULL,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
-               f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
-          NULL,f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,f_2kcap,
-                       f_prrel,f_prrel,f_prrel,f_prrel,f_prrel,
-           NULL,f_prrel,
-f_prrel,   NULL,f_prrel,
-f_prrel,f_prrel,f_prrel ),
-	// --------------------------------------------------------------------
+        kprrel, kprrel, kprrel, kprrel, kprrel, kprrel, kprrel,
+        kprrel,   NULL, kprrel, kprrel, kprrel, kprrel, kprrel,
+                kprrel, kprrel, kprrel, kprrel, kprrel, kprrel,
+          NULL, kprrel, kprrel, kprrel, kprrel, kprrel, s2kcap,
+                        kprrel, kprrel, kprrel, kprrel, kprrel,
+           NULL, kprrel,
+ kprrel,   NULL, kprrel,
+ kprrel, kprrel, kprrel ),
+
+
 	KB_MATRIX_LAYER(  // release: layer 2: numpad
 // unused
 NULL,
 // left hand
-   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
-   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
-   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
-   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
-   NULL,   NULL,   NULL,   NULL,   NULL,
-                                           NULL,   NULL,
-                                           NULL,   NULL,   NULL,
-                                           NULL,   NULL,   NULL,
+ ktrans, ktrans, ktrans, ktrans, ktrans, ktrans, ktrans,
+ ktrans, ktrans, ktrans, ktrans, ktrans, ktrans, ktrans,
+ ktrans, ktrans, ktrans, ktrans, ktrans, ktrans,
+ ktrans, ktrans, ktrans, ktrans, ktrans, ktrans, ktrans,
+ ktrans, kprrel, ktrans, ktrans, ktrans,
+                                         ktrans, ktrans,
+                                         ktrans, ktrans, ktrans,
+                                         ktrans, ktrans, ktrans,
 // right hand
-          NULL,   NULL,   NULL,f_prrel,f_prrel,f_prrel,   NULL,
-          NULL,   NULL,f_prrel,f_prrel,f_prrel,f_prrel,   NULL,
-                  NULL,f_prrel,f_prrel,f_prrel,f_prrel,   NULL,
-          NULL,   NULL,f_prrel,f_prrel,f_prrel,f_prrel,   NULL,
-                          NULL,   NULL,f_prrel,f_prrel,   NULL,
-           NULL,f_prrel,
-   NULL,   NULL,   NULL,
-   NULL,   NULL,   NULL ),
-	// --------------------------------------------------------------------
+          NULL, ktrans,   NULL, kprrel, kprrel, kprrel, ktrans,
+        ktrans, ktrans, kprrel, kprrel, kprrel, kprrel, ktrans,
+                ktrans, kprrel, kprrel, kprrel, kprrel, ktrans,
+        ktrans, ktrans, kprrel, kprrel, kprrel, kprrel, ktrans,
+                        ktrans, ktrans, kprrel, kprrel, ktrans,
+         ktrans, kprrel,
+ ktrans, ktrans, ktrans,
+ ktrans, ktrans, ktrans ),
+
+
 	KB_MATRIX_LAYER(  // release: layer 3: nothing (just making sure unused
-			  //                   functions don't get compiled
-			  //                   out)
+			  // functions don't get compiled out)
 // unused
 NULL,
 // other
-f_prrel,f_btldr,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
-f_toggl,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
-f_l_inc,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
-f_l_dec,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
-f_l_iex,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
-f_l_dex,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
-f_2kcap,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
-f_np_to,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
-f_np_on,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
-f_np_of,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL )
-	// --------------------------------------------------------------------
+ kprrel, lpush8,  lpop8,   NULL,   NULL,   NULL,   NULL,   NULL,
+   ktog, lpush9,  lpop9,   NULL,   NULL,   NULL,   NULL,   NULL,
+ ktrans,lpush10, lpop10,   NULL,   NULL,   NULL,   NULL,   NULL,
+ lpush1,  lpop1,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
+ lpush2,  lpop2, dbtldr,   NULL,   NULL,   NULL,   NULL,   NULL,
+ lpush3,  lpop3,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL,
+ lpush4,  lpop4, s2kcap,   NULL,   NULL,   NULL,   NULL,   NULL,
+ lpush5,  lpop5,slpunum,   NULL,   NULL,   NULL,   NULL,   NULL,
+ lpush6,  lpop6,slponum,   NULL,   NULL,   NULL,   NULL,   NULL,
+ lpush7,  lpop7,   NULL,   NULL,   NULL,   NULL,   NULL,   NULL )
+
 };
 

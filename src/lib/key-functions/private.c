@@ -88,48 +88,6 @@ void _kbfun_press_release(bool press, uint8_t keycode) {
 }
 
 /*
- * Set current layer
- * - Sets any keys currently set to the overall current layer to the new layer,
- *   and then sets the overall current layer
- *
- * Note
- * - Leaving all non-current layer values alone allows changing layers while
- *   maintaining a possibly enabled layer mask (as might be used to implement
- *   firmware enabled numlock)
- */
-void _kbfun_layer_set_current(uint8_t layer) {
-	// don't switch to out-of-bounds layers
-	if ( layer < 0 || layer >= KB_LAYERS )
-		return;
-
-	for (uint8_t row=0; row<KB_ROWS; row++)
-		for (uint8_t col=0; col<KB_COLUMNS; col++)
-			// if a key is set to a non-current layer, leave it
-			if (main_layers_press[row][col] == main_layers_current)
-				main_layers_press[row][col] = layer;
-
-	main_layers_current = layer;
-}
-
-/*
- * Set layer mask
- * - Sets the specified key positions to the specified layer
- */
-void _kbfun_layer_set_mask(
-		uint8_t layer,
-		bool positions[KB_ROWS][KB_COLUMNS] ) {
-
-	// don't switch to out-of-bounds layers
-	if ( layer < 0 || layer >= KB_LAYERS )
-		return;
-
-	for (uint8_t row=0; row<KB_ROWS; row++)
-		for (uint8_t col=0; col<KB_COLUMNS; col++)
-			if (positions[row][col])
-				main_layers_press[row][col] = layer;
-}
-
-/*
  * Is the given keycode pressed?
  */
 bool _kbfun_is_pressed(uint8_t keycode) {

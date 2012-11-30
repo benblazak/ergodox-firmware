@@ -37,10 +37,10 @@
      inkscape:bbox-nodes="true"
      inkscape:snap-bbox-edge-midpoints="false"
      inkscape:bbox-paths="false"
-     inkscape:window-width="1920"
-     inkscape:window-height="997"
+     inkscape:window-width="1440"
+     inkscape:window-height="852"
      inkscape:window-x="0"
-     inkscape:window-y="30"
+     inkscape:window-y="0"
      inkscape:window-maximized="1"
      inkscape:snap-bbox-midpoints="true"
      showguides="true"
@@ -2129,14 +2129,14 @@
       <text
          xml:space="preserve"
          style="font-size:12px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ff7700;fill-opacity:1;stroke:none;font-family:Sans"
-         x="433.5"
-         y="341.86218"
+         x="429.96448"
+         y="346.10483"
          id="text9042"
          sodipodi:linespacing="125%"><tspan
            sodipodi:role="line"
            id="tspan9044"
-           x="433.5"
-           y="341.86218">R = 220 Ω</tspan></text>
+           x="429.96448"
+           y="346.10483">R = (match to LEDs)</tspan></text>
       <text
          xml:space="preserve"
          style="font-size:12px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ff7700;fill-opacity:1;stroke:none;display:inline;font-family:Sans"
