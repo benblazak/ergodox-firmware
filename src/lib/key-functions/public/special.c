@@ -88,9 +88,9 @@ void kbfun_2_keys_capslock_press_release(void) {
 static uint8_t numpad_layer_id;
 
 static inline void numpad_toggle_numlock(void) {
-	_kbfun_press_release(true, KEYPAD_NumLock_Clear);
+	_kbfun_press_release(true, KEY_LockingNumLock);
 	usb_keyboard_send();
-	_kbfun_press_release(false, KEYPAD_NumLock_Clear);
+	_kbfun_press_release(false, KEY_LockingNumLock);
 	usb_keyboard_send();
 }
 

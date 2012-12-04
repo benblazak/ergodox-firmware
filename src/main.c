@@ -165,20 +165,18 @@ void main_exec_key(void) {
  * Implemented as a fixed size stack.
  * ------------------------------------------------------------------------- */
 
+// ----------------------------------------------------------------------------
+
 struct layers {
 	uint8_t layer;
 	uint8_t id;
 };
-struct layers_info {
-	uint8_t head;
-	bool    ids_in_use[MAX_ACTIVE_LAYERS];
-};
 
-static struct layers layers[MAX_ACTIVE_LAYERS];
-static struct layers_info layers_info = {
-	// .head = 0,  // default
-	.ids_in_use = {true},  // id 0 = true; id's 1..max = false
-};
+// ----------------------------------------------------------------------------
+
+struct layers layers[MAX_ACTIVE_LAYERS];
+uint8_t       layers_head = 0;
+uint8_t       layers_ids_in_use[MAX_ACTIVE_LAYERS] = {true};
 
 /*
  * peek()
@@ -191,10 +189,10 @@ static struct layers_info layers_info = {
  * - failure: 0 (default) (out of bounds)
  */
 uint8_t main_layers_peek(uint8_t offset) {
-	if (offset > layers_info.head)  // uint8_t, so they're both >0
-		return 0;  // default
+	if (offset <= layers_head)
+		return layers[layers_head - offset].layer;
 
-	return layers[layers_info.head - offset].layer;
+	return 0;  // default, or error
 }
 
 /*
@@ -208,25 +206,18 @@ uint8_t main_layers_peek(uint8_t offset) {
  * - failure: 0 (the stack was already full)
  */
 uint8_t main_layers_push(uint8_t layer) {
-	if (layers_info.head == MAX_ACTIVE_LAYERS)
-		return 0;  // error
-
-	layers_info.head++;
-
+	// look for an available id
 	for (uint8_t id=1; id<MAX_ACTIVE_LAYERS; id++)
-		if (layers_info.ids_in_use[id] == false) {
-			// claim the unused id
-			layers_info.ids_in_use[id] = true;
-			// assign the element values
-			layers[layers_info.head].layer = layer;
-			layers[layers_info.head].id = id;
-			// return the id
+		// if one is found
+		if (layers_ids_in_use[id] == false) {
+			layers_ids_in_use[id] = true;
+			layers_head++;
+			layers[layers_head].layer = layer;
+			layers[layers_head].id = id;
 			return id;
 		}
 
-	// if no id was found
-	// (this should never happen, since we check if the array's full above)
-	return 0;  // error
+	return 0;  // default, or error
 }
 
 /*
@@ -236,16 +227,21 @@ uint8_t main_layers_push(uint8_t layer) {
  * - 'id': the id of the element to pop from the stack
  */
 void main_layers_pop_id(uint8_t id) {
-	for (uint8_t i=1; i<MAX_ACTIVE_LAYERS; i++)
-		if (layers[i].id == id) {
-			// clear the entry
-			layers[i].layer = 0;
-			layers[i].id = 0;
-			// if there are elements above it, move them down
-			for (uint8_t pos=i+1; i<=layers_info.head; i++)
-				layers[pos-1] = layers[pos];
-			// decrement 'head'
-			layers_info.head--;
+	// look for the element with the id we want to pop
+	for (uint8_t element=1; element<=layers_head; element++)
+		// if we find it
+		if (layers[element].id == id) {
+			// move all layers above it down one
+			for (; element<layers_head; element++) {
+				layers[element].layer = layers[element+1].layer;
+				layers[element].id = layers[element+1].id;
+			}
+			// reinitialize the topmost (now unused) slot
+			layers[layers_head].layer = 0;
+			layers[layers_head].id = 0;
+			// record keeping
+			layers_ids_in_use[id] = false;
+			layers_head--;
 		}
 }
 
@@ -261,12 +257,14 @@ void main_layers_pop_id(uint8_t id) {
  * - failure: 0 (default) (id unassigned)
  */
 uint8_t main_layers_get_offset_id(uint8_t id) {
-	for (uint8_t i=1; i<=layers_info.head; i++)
-		if (layers[i].id == id)
-			return layers_info.head - i;
+	// look for the element with the id we want to get the offset of
+	for (uint8_t element=1; element<=layers_head; element++)
+		// if we find it
+		if (layers[element].id == id)
+			return (layers_head - element);
 
-	// if no element with the given id was found
-	return 0;
+	return 0;  // default, or error
+
 }
 
 /* ----------------------------------------------------------------------------

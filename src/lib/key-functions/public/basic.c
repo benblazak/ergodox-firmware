@@ -67,7 +67,7 @@ void kbfun_toggle(void) {
 void kbfun_transparent(void) {
 	LAYER_OFFSET++;
 	LAYER = main_layers_peek(LAYER_OFFSET);
-	main_layers_pressed[row][col] = LAYER;
+	main_layers_pressed[ROW][COL] = LAYER;
 	main_exec_key();
 }
 
