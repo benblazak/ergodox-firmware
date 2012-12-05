@@ -29,6 +29,20 @@
 
 // ----------------------------------------------------------------------------
 
+
+/*
+ * [name]
+ *   Shift + press|release
+ *
+ * [description]
+ *   Generate a 'shift' press or release before the normal keypress or
+ *   keyrelease
+ */
+void kbfun_shift_press_release(void) {
+	_kbfun_press_release(IS_PRESSED, KEY_LeftShift);
+	kbfun_press_release();
+}
+
 /*
  * [name]
  *   Two keys => capslock

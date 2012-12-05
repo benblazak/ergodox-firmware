@@ -26,20 +26,20 @@ const uint8_t PROGMEM _kb_layout[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
 // unused
 0,
 // left hand
-   _equal,     _1,         _2,      _3,      _4,    _5, _esc,
-     _tab,     _Q,         _W,      _E,      _R,    _T,    1,
-_capsLock,     _A,         _S,      _D,      _F,    _G,
-  _shiftL,     _Z,         _X,      _C,      _V,    _B,    1,
-    _guiL, _grave, _backslash, _arrowL, _arrowR,
-                                          _bs,     0,
-                                         _del,     0, _ctrlL,
-                                         _end, _home,  _altL,
+    _equal,     _1,         _2,      _3,      _4,    _5, _esc,
+_backslash,     _Q,         _W,      _E,      _R,    _T,    1,
+      _tab,     _A,         _S,      _D,      _F,    _G,
+   _shiftL,     _Z,         _X,      _C,      _V,    _B,    1,
+     _guiL, _grave, _backslash, _arrowL, _arrowR,
+                                           _bs,     0,
+                                          _del,     0, _ctrlL,
+                                          _end, _home,  _altL,
 // right hand
-          3, _6,      _7,      _8,      _9,         _0,     _dash,
-  _bracketL, _Y,      _U,      _I,      _O,         _P, _bracketR,
-             _H,      _J,      _K,      _L, _semicolon,    _quote,
-          1, _N,      _M,  _comma, _period,     _slash,   _shiftR,
-                 _arrowL, _arrowD, _arrowU,    _arrowR,     _guiR,
+        3, _6,      _7,      _8,      _9,         _0,     _dash,
+_bracketL, _Y,      _U,      _I,      _O,         _P, _bracketR,
+           _H,      _J,      _K,      _L, _semicolon,    _quote,
+        1, _N,      _M,  _comma, _period,     _slash,   _shiftR,
+               _arrowL, _arrowD, _arrowU,    _arrowR,     _guiR,
              0, _space,
 _ctrlR,      0, _enter,
  _altR, _pageU, _pageD ),
@@ -49,23 +49,23 @@ _ctrlR,      0, _enter,
 // unused
 0,
 // left hand
-   _equal,        _F1,        _F2,       _F3,       _F4,        _F5, _F11,
-     _tab, _braceL_kp, _braceR_kp, _bracketL, _bracketR,          0,    1,
-_capsLock, _semicolon,     _slash,     _dash,     _0_kp,  _colon_kp,
-  _shiftL,      _6_kp,      _7_kp,     _8_kp,     _9_kp,    _add_kp,    2,
-    _guiL,     _grave, _backslash,   _arrowL,   _arrowR,
-                                                       _bs,     0,
-                                                      _del,     0, _ctrlL,
-                                                      _end, _home,  _altL,
+  0,        _F1,        _F2,       _F3,       _F4,       _F5, _F11,
+  0,  _bracketL,  _bracketR, _bracketL, _bracketR,         0,    1,
+  0, _semicolon,     _slash,     _dash,     _0_kp,_semicolon,
+  0,      _6_kp,      _7_kp,     _8_kp,     _9_kp,    _equal,    2,
+  0,          0,          0,         0,         0,
+                                                         0,  0,
+                                                         0,  0,  0,
+                                                         0,  0,  0,
 // right hand
-     _F12,       _F6,    _F7,       _F8,       _F9,         _F10,    _dash,
-_bracketL,         0,  _dash,    _lt_kp,    _gt_kp,_currencyUnit,_bracketR,
-          _backslash,  _1_kp,_parenL_kp,_parenR_kp,    _equal_kp,   _quote,
-        2,   _mul_kp,  _2_kp,     _3_kp,     _4_kp,        _5_kp,  _shiftR,
-                     _arrowL,   _arrowD,   _arrowU,      _arrowR,    _guiR,
-             0, _space,
-_ctrlR,      0, _enter,
- _altR, _pageU, _pageD ),
+_F12,       _F6,    _F7,       _F8,       _F9,         _F10,   _power,
+   0,         0,  _dash,    _comma,   _period,_currencyUnit, _volumeU,
+     _backslash,  _1_kp,        _9,        _0,       _equal, _volumeD,
+   2,        _8,  _2_kp,     _3_kp,     _4_kp,        _5_kp,    _mute,
+                      0,         0,         0,            0,        0,
+      0,  0,
+  0,  0,  0,
+  0,  0,  0 ),
 
 
 	KB_MATRIX_LAYER(  // layout: layer 2: keyboard functions
@@ -80,7 +80,6 @@ _ctrlR,      0, _enter,
 		      0,  0,
 		      0,  0,  0,
 		      0,  0,  0,
-
 // right hand
       0,  0,  0,  0,  0,  0,  0,
       0,  0,  0,  0,  0,  0,  0,
@@ -90,7 +89,6 @@ _ctrlR,      0, _enter,
       0,  0,
   0,  0,  0,
   0,  0,  0 ),
-
 
 
 	KB_MATRIX_LAYER(  // layout: layer 3: numpad
@@ -153,6 +151,7 @@ _ctrlR,      0, _enter,
 #define  dbtldr  &kbfun_jump_to_bootloader
 
 // special
+#define  sshprre  &kbfun_shift_press_release
 #define  s2kcap   &kbfun_2_keys_capslock_press_release
 #define  slpunum  &kbfun_layer_push_numpad
 #define  slponum  &kbfun_layer_pop_numpad
@@ -189,23 +188,23 @@ NULL,
 // unused
 NULL,
 // left hand
- kprrel, kprrel, kprrel, kprrel, kprrel, kprrel, kprrel,
- kprrel, kprrel, kprrel, kprrel, kprrel,   NULL,  lpop1,
- kprrel, kprrel, kprrel, kprrel, kprrel, kprrel,
- s2kcap, kprrel, kprrel, kprrel, kprrel, kprrel, lpush2,
- kprrel, kprrel, kprrel, kprrel, kprrel,
-                                         kprrel,   NULL,
-                                         kprrel,   NULL, kprrel,
-                                         kprrel, kprrel, kprrel,
+   NULL, kprrel, kprrel, kprrel, kprrel, kprrel, kprrel,
+ ktrans,sshprre,sshprre, kprrel, kprrel,   NULL,  lpop1,
+ ktrans, kprrel, kprrel, kprrel, kprrel,sshprre,
+ ktrans, kprrel, kprrel, kprrel, kprrel,sshprre, lpush2,
+ ktrans, ktrans, ktrans, ktrans, ktrans,
+                                         ktrans, ktrans,
+                                         ktrans, ktrans, ktrans,
+                                         ktrans, ktrans, ktrans,
 // right hand
         kprrel, kprrel, kprrel, kprrel, kprrel, kprrel, kprrel,
-        kprrel,   NULL, kprrel, kprrel, kprrel, kprrel, kprrel,
-                kprrel, kprrel, kprrel, kprrel, kprrel, kprrel,
-        lpush2, kprrel, kprrel, kprrel, kprrel, kprrel, s2kcap,
-                        kprrel, kprrel, kprrel, kprrel, kprrel,
-           NULL, kprrel,
- kprrel,   NULL, kprrel,
- kprrel, kprrel, kprrel ),
+        ktrans,   NULL, kprrel,sshprre,sshprre, kprrel, kprrel,
+                kprrel, kprrel,sshprre,sshprre,sshprre, kprrel,
+        lpush2,sshprre, kprrel, kprrel, kprrel, kprrel, kprrel,
+                        ktrans, ktrans, ktrans, ktrans, ktrans,
+         ktrans, ktrans,
+ ktrans, ktrans, ktrans,
+ ktrans, ktrans, ktrans ),
 
 
 	KB_MATRIX_LAYER(  // press: layer 2: keyboard functions
@@ -288,22 +287,22 @@ NULL,
 NULL,
 // left hand
    NULL, kprrel, kprrel, kprrel, kprrel, kprrel, kprrel,
- kprrel, kprrel, kprrel, kprrel, kprrel,   NULL,   NULL,
- kprrel, kprrel, kprrel, kprrel, kprrel, kprrel,
- s2kcap, kprrel, kprrel, kprrel, kprrel, kprrel,  lpop2,
- kprrel, kprrel, kprrel, kprrel, kprrel,
-                                         kprrel,   NULL,
-                                         kprrel,   NULL, kprrel,
-                                         kprrel, kprrel, kprrel,
+ ktrans,sshprre,sshprre, kprrel, kprrel,   NULL,   NULL,
+ ktrans, kprrel, kprrel, kprrel, kprrel,sshprre,
+ ktrans, kprrel, kprrel, kprrel, kprrel,sshprre,  lpop2,
+ ktrans, ktrans, ktrans, ktrans, ktrans,
+                                         ktrans, ktrans,
+                                         ktrans, ktrans, ktrans,
+                                         ktrans, ktrans, ktrans,
 // right hand
         kprrel, kprrel, kprrel, kprrel, kprrel, kprrel, kprrel,
-        kprrel,   NULL, kprrel, kprrel, kprrel, kprrel, kprrel,
-                kprrel, kprrel, kprrel, kprrel, kprrel, kprrel,
-         lpop2, kprrel, kprrel, kprrel, kprrel, kprrel, s2kcap,
-                        kprrel, kprrel, kprrel, kprrel, kprrel,
-           NULL, kprrel,
- kprrel,   NULL, kprrel,
- kprrel, kprrel, kprrel ),
+        ktrans,   NULL, kprrel,sshprre,sshprre, kprrel, kprrel,
+                kprrel, kprrel,sshprre,sshprre,sshprre, kprrel,
+         lpop2,sshprre, kprrel, kprrel, kprrel, kprrel, kprrel,
+                        ktrans, ktrans, ktrans, ktrans, ktrans,
+         ktrans, ktrans,
+ ktrans, ktrans, ktrans,
+ ktrans, ktrans, ktrans ),
 
 
 	KB_MATRIX_LAYER(  // release: layer 2: keyboard functions
