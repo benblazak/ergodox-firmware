@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- * ergoDOX specific code: tying it all together
+ * ergoDOX : controller specific code
  * ----------------------------------------------------------------------------
  * Copyright (c) 2012 Ben Blazak <benblazak.dev@gmail.com>
  * Released under The MIT License (MIT) (see "license.md")
@@ -7,12 +7,13 @@
  * ------------------------------------------------------------------------- */
 
 
-#include "lib/data-types.h"
+#include <stdbool.h>
+#include <stdint.h>
+#include "./matrix.h"
+#include "./controller/mcp23018--functions.h"
+#include "./controller/teensy-2-0--functions.h"
 
-#include "ergodox/matrix.h"
-#include "ergodox/mcp23018--private.h"
-#include "ergodox/teensy-2-0--private.h"
-
+// ----------------------------------------------------------------------------
 
 /* returns
  * - success: 0

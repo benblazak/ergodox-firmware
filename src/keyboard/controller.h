@@ -1,5 +1,8 @@
 /* ----------------------------------------------------------------------------
- * ergoDOX controller: MCP23018 specific exports : private
+ * controller specific exports
+ *
+ * Files for different keyboards are used by modifying a variable in the
+ * Makefile
  * ----------------------------------------------------------------------------
  * Copyright (c) 2012 Ben Blazak <benblazak.dev@gmail.com>
  * Released under The MIT License (MIT) (see "license.md")
@@ -7,16 +10,7 @@
  * ------------------------------------------------------------------------- */
 
 
-#ifndef MCP23018_h_PRIVATE
-	#define MCP23018_h_PRIVATE
-
-	#include "lib/data-types.h"
-	#include "matrix.h"
-
-	#define MCP23018_TWI_ADDRESS 0b0100000
-
-	uint8_t mcp23018_init(void);
-	uint8_t mcp23018_update_matrix( bool matrix[KB_ROWS][KB_COLUMNS] );
-
-#endif
+#include "../lib/variable-include.h"
+#define INCLUDE EXP_STR( ./MAKEFILE_KEYBOARD/controller.h )
+#include INCLUDE
 

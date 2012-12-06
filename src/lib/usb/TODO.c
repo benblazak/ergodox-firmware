@@ -39,6 +39,8 @@
 
 // TODO
 // - read the hid device class definition .pdf
+// - set USB vendor  ID = 0x1d50  // Openmoko, Inc.
+//       USB product ID = 0x6028  // ErgoDox ergonomic keyboard
 
 // DONE
 // - read the hid usage tables .pdf

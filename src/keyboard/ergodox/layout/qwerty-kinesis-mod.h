@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- * Very simple Teensy 2.0 TWI library : exports
+ * ergoDOX : layout : QWERTY : exports
  * ----------------------------------------------------------------------------
  * Copyright (c) 2012 Ben Blazak <benblazak.dev@gmail.com>
  * Released under The MIT License (MIT) (see "license.md")
@@ -7,22 +7,24 @@
  * ------------------------------------------------------------------------- */
 
 
-#ifndef TWI_h
-	#define TWI_h
+#ifndef KEYBOARD__ERGODOX__LAYOUT__QWERTY_h
+	#define KEYBOARD__ERGODOX__LAYOUT__QWERTY_h
+
+	#include "../controller.h"
 
 	// --------------------------------------------------------------------
 
-	#ifndef TWI_FREQ
-		#define TWI_FREQ 100000  // in Hz
-	#endif
+	#define kb_led_num_on()      _kb_led_1_on()
+	#define kb_led_num_off()     _kb_led_1_off()
+	#define kb_led_caps_on()     _kb_led_2_on()
+	#define kb_led_caps_off()    _kb_led_2_off()
+	#define kb_led_scroll_on()   _kb_led_3_on()
+	#define kb_led_scroll_off()  _kb_led_3_off()
 
 	// --------------------------------------------------------------------
 
-	void    twi_init  (void);
-	uint8_t twi_start (void);
-	void    twi_stop  (void);
-	uint8_t twi_send  (uint8_t data);
-	uint8_t twi_read  (uint8_t * data);
+	#include "./default--led-control.h"
+	#include "./default--matrix-control.h"
 
 #endif
 

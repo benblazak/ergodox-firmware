@@ -13,15 +13,12 @@
 # -----------------------------------------------------------------------------
 
 
-TARGET   := firmware  # the name we want for our program binary
-FORMAT   := ihex      # the program binary's format
-KEYBOARD := ergodox   # keyboard model; see "src/keyboard" for what's available
-LAYOUT   := qwerty    # keyboard layout; see "src/keyboard/*/layout" for what's
-                      #   available
+include makefile-options
 
-MCU   := atmega32u4  # processor type (for teensy 2.0); must match real life
-BOARD := teensy-2-0  # see the libraries you're using for what's available
-F_CPU := 16000000    # processor speed, in Hz
+FORMAT := ihex        # the program binary's format
+MCU    := atmega32u4  # processor type (for teensy 2.0); must match real life
+BOARD  := teensy-2-0  # see the libraries you're using for what's available
+F_CPU  := 16000000    # processor speed, in Hz
 
 # firmware stuff
 SRC  := $(wildcard *.c)
@@ -32,8 +29,11 @@ LAYOUT   := $(strip $(LAYOUT))
 # --- include stuff
 SRC += $(wildcard keyboard/$(KEYBOARD)*.c)
 SRC += $(wildcard keyboard/$(KEYBOARD)/*.c)
+SRC += $(wildcard keyboard/$(KEYBOARD)/controller/*.c)
 SRC += $(wildcard keyboard/$(KEYBOARD)/layout/$(LAYOUT)*.c)
 # library stuff
+# - should be last in the list of files to compile, in case there are default
+#   macros that have to be overridden in other source files
 # - add more "*/*/..."s as necessary to compile everything.
 # - parts of the stuff under "lib" may not be necessary, depending on other
 #   options, but it's all included here.  hopefully any unnecessary stuff gets
@@ -48,15 +48,17 @@ SRC += $(wildcard lib-other/*/*/*.c)
 OBJ = $(SRC:%.c=%.o)
 
 
+# . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 CFLAGS := -mmcu=$(MCU)      # processor type (teensy 2.0); must match real
 			    #   life
 CFLAGS += -DF_CPU=$(F_CPU)  # processor frequency; must match initialization
 			    #   in source
-CFLAGS += -I.               # search for includes in the current directory
 # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 CFLAGS += -DMAKEFILE_BOARD='$(strip $(BOARD))'
 CFLAGS += -DMAKEFILE_KEYBOARD='$(strip $(KEYBOARD))'
 CFLAGS += -DMAKEFILE_KEYBOARD_LAYOUT='$(strip $(LAYOUT))'
+CFLAGS += -DMAKEFILE_DEBOUNCE_TIME='$(strip $(DEBOUNCE_TIME))'
+CFLAGS += -DMAKEFILE_LED_BRIGHTNESS='$(strip $(LED_BRIGHTNESS))'
 # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 CFLAGS += -std=gnu99  # use C99 plus GCC extensions
 CFLAGS += -Os         # optimize for size
@@ -83,6 +85,7 @@ LDFLAGS += -Wl,--gc-sections  # discard unused functions and data
 # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 GENDEPFLAGS += -MMD -MP -MF $@.dep  # generate dependency files
+# . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
 CC      := avr-gcc
@@ -90,9 +93,9 @@ OBJCOPY := avr-objcopy
 SIZE    := avr-size
 
 
-# remove whitespace from some of the variables
-TARGET := $(strip $(TARGET))
+# remove whitespace from some of the options
 FORMAT := $(strip $(FORMAT))
+
 
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
@@ -107,11 +110,6 @@ all: $(TARGET).hex $(TARGET).eep
 	$(SIZE) --target=$(FORMAT) $(TARGET).hex
 	@echo
 	$(SIZE) --target=$(FORMAT) $(TARGET).eep
-	@echo
-	@echo '. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .'
-	@echo
-	$(SIZE) -C --mcu=atmega32u4 $(TARGET).elf
-	@echo '. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .'
 	@echo
 	@echo 'you can load "$(TARGET).hex" and "$(TARGET).eep" onto the'
 	@echo 'Teensy using the Teensy loader'

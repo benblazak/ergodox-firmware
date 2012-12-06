@@ -1,7 +1,8 @@
 /* ----------------------------------------------------------------------------
- * ergoDOX : layout exports
+ * key functions : private : exports
  *
- * Different layouts are included by modifying a variable in the makefile.
+ * Things to be used only by keyfunctions.  Exported so layouts can use these
+ * functions to help define their own, if they like.
  * ----------------------------------------------------------------------------
  * Copyright (c) 2012 Ben Blazak <benblazak.dev@gmail.com>
  * Released under The MIT License (MIT) (see "license.md")
@@ -9,15 +10,17 @@
  * ------------------------------------------------------------------------- */
 
 
-#ifndef KEYBOARD__ERGODOX__LAYOUT_h
-	#define KEYBOARD__ERGODOX__LAYOUT_h
+#ifndef LIB__KEY_FUNCTIONS__INTERNAL_h
+	#define LIB__KEY_FUNCTIONS__INTERNAL_h
+
+	#include <stdbool.h>
+	#include <stdint.h>
+	#include "../../keyboard/matrix.h"
 
 	// --------------------------------------------------------------------
 
-	// include the appropriate keyboard layout header
-	#include "../../lib/variable-include.h"
-	#define INCLUDE EXP_STR( ./layout/MAKEFILE_KEYBOARD_LAYOUT.h )
-	#include INCLUDE
+	void _kbfun_press_release     (bool press, uint8_t keycode);
+	bool _kbfun_is_pressed        (uint8_t keycode);
 
 #endif
 

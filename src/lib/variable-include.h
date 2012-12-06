@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- * ergoDOX: keyboard matrix specific code
+ * Macros to help with conditional includes
  * ----------------------------------------------------------------------------
  * Copyright (c) 2012 Ben Blazak <benblazak.dev@gmail.com>
  * Released under The MIT License (MIT) (see "license.md")
@@ -7,14 +7,7 @@
  * ------------------------------------------------------------------------- */
 
 
-#include "lib/data-types.h"
-
-#include "matrix.h"
-
-
-static bool _kb_is_pressed[KB_ROWS][KB_COLUMNS];
-static bool _kb_was_pressed[KB_ROWS][KB_COLUMNS];
-
-bool (*kb_is_pressed)[KB_ROWS][KB_COLUMNS] = &_kb_is_pressed;
-bool (*kb_was_pressed)[KB_ROWS][KB_COLUMNS] = &_kb_was_pressed;
+#undef  INCLUDE
+#define  STR(s)  #s          // stringify
+#define  EXP_STR(s)  STR(s)  // expand -> stringify
 

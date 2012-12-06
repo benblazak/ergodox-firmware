@@ -1,0 +1,26 @@
+# -----------------------------------------------------------------------------
+# certain compilations options
+# -----------------------------------------------------------------------------
+# Copyright (c) 2012 Ben Blazak <benblazak.dev@gmail.com>
+# Released under The MIT License (MIT) (see "license.md")
+# Project located at <https://github.com/benblazak/ergodox-firmware>
+# -----------------------------------------------------------------------------
+
+
+TARGET   := firmware  # the name we want for our program binary
+KEYBOARD := ergodox   # keyboard model; see "src/keyboard" for what's available
+LAYOUT   := qwerty-kinesis-mod  # keyboard layout
+				# see "src/keyboard/*/layout" for what's
+				# available
+
+LED_BRIGHTNESS := 0.5  # a multiplier, with 1 being the max
+DEBOUNCE_TIME := 5  # in ms; see keyswitch spec for necessary value; 5ms should
+		    #   be good for cherry mx switches
+
+
+# remove whitespace
+TARGET        := $(strip $(TARGET))
+KEYBOARD      := $(strip $(KEYBOARD))
+LAYOUT        := $(strip $(LAYOUT))
+DEBOUNCE_TIME := $(strip $(DEBOUNCE_TIME))
+
