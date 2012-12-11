@@ -1,6 +1,5 @@
 /* ----------------------------------------------------------------------------
- * ergoDOX layout : QWERTY (modified from the Kinesis layout)
- * TODO: rewrite for new kbfun's
+ * ergoDOX layout : Dvorak (modified from the Kinesis layout)
  * ----------------------------------------------------------------------------
  * Copyright (c) 2012 Ben Blazak <benblazak.dev@gmail.com>
  * Released under The MIT License (MIT) (see "license.md")
