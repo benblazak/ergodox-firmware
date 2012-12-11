@@ -1,5 +1,6 @@
 # [ergodox-firmware][]: Firmware for the [ErgoDox keyboard][]
 
+The official website is <ergodox.org>.  
 Also see the [geekhack]
 (http://geekhack.org/showthread.php?22780-Interest-Check-Custom-split-ergo-keyboard)
 and [deskthority]
@@ -10,7 +11,7 @@ discussion threads.
 [ergodox keyboard]: http://ergodox.org/
 
 
-## About this File
+## About This File
 
 If you're viewing this on github, please note that directory links will only
 work if you're viewing this from the directory, and file links will only work
@@ -28,7 +29,7 @@ URLs as would be required.
 * firmware level layers
 
 
-## About this Project
+## About This Project
 
 This project is still definitely a work in progress, but it's getting towards
 something I'll be happy with when the keyboard finally goes into group buy.
@@ -50,7 +51,7 @@ Open issues, feature requests, and such are tracked [on github]
 (/benblazak/ergodox-firmware/issues).
 
 
-## About this Project (more technical)
+## About This Project (more technical)
 
 If you're looking to hack on the source, or just feel like reading it:
 
@@ -96,18 +97,79 @@ A few concepts that might be different:
 
 ## HowTo
 
-These instructions (or notes, rather) are meant for people who's googling
-skills and patience are directly proportional to the amount of C programming
-they don't already know :) .  I've done my best to organize and comment things
-though, so I hope that just about anyone who manages to find their way all the
-way here will be able to figure out a good deal from context.
+Most of these instructions (or notes, rather) are meant for people who's
+googling skills and patience are directly proportional to the amount of C
+programming they don't already know :) .  I've done my best to organize and
+comment things though, so I hope that just about anyone who manages to find
+their way all the way here will be able to figure out a good deal from context.
+
+
+### Load Firmware onto the Teensy
+(beginner)
+
+Before beginning, make sure:
+
+* Your Teensy is plugged into your computer via USB
+
+* You have the appropriate version of [the Teensy loader application]
+  (http://www.pjrc.com/teensy/loader.html) from PJRC installed.
+
+* You know what the "reset button" (a.k.a. the "tiny pushbutton") on the Teensy
+  is.  See the "HalfKay Bootloader Mode" section of the [Teensy First Use]
+  (http://www.pjrc.com/teensy/first_use.html) page on the PJRC website.
+
+After getting set up:
+
+* Run the Teensy loader program.
+    * This will give you a window, as shown on the website.
+
+* Click the "Auto" button on the upper right hand side of the window.
+    * The button will light up brighter green.
+    * This tells the loader program to load its current file whenever the
+      Teensy is ready for it.
+
+* Locate your '.eep' and '.hex' files.
+    * If you don't have any, you can grab the topmost QWERTY or Dvorak keymap
+      from [the project's github download page]
+      (https://github.com/benblazak/ergodox-firmware/downloads)
+
+* Drag and drop the '.eep' file onto the Teensy loader window.
+    * The information bar at the bottom of the window should now read
+      "firmware.eep" followed by the percentage of the Teensy memory that will
+      be used by this file.
+
+* Press and release the Teensy reset button (a.k.a. the "tiny pushbutton").
+    * The Teensy loader should inform you that it is loading the file.  Wait
+      until it's done: it shouldn't take long.
+
+* Drag and drop the '.hex' file onto the Teensy loader window.
+
+* Press and release the Teensy reset button (a.k.a. the "tiny pushbutton").
+
+* Your firmware is now loaded!  Press a few buttons on your keyboard to make
+  sure everything worked out all right, and enjoy :)
+
+Notes:
+
+* It may not be necessary to load the '.eep' file (if the file is 0 bytes, and
+  the Teensy doesn't have anything loaded into its EEPROM already, it doesn't
+  make any difference), but it's good to do so anyway, just to be safe.  It
+  won't hurt anything either way.
+
+* Now that your firmware is loaded, there should be a keyboard shortcut you can
+  press instead of the Teensy reset button.  See the documentation on your
+  layout for more information.
 
 
 ### Change the Direction of the Diodes
+(intermediate)
 
-That is, how to change whether the rows or the columns are being driven.  This can be done for each side of the keyboard separately.
+That is, how to change whether the rows or the columns are being driven.  This can be done for each side of the keyboard independently.
 
 * See [src/keyboard/ergodox/options.h] (src/keyboard/ergodox/options.h)
+
+* After this, you'll need to recompile.  See the [About This Project]
+  (#about-this-project) section above.
 
 
 ### Create a New Keymap
