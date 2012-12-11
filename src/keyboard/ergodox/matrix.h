@@ -55,9 +55,9 @@
 			k30,k31,k32,k33,k34,k35,			\
 			k20,k21,k22,k23,k24,k25,k26,			\
 			k10,k11,k12,k13,k14,				\
-			                    k03,k15,			\
-			                    k02,k16,k05,		\
-			                    k01,k04,k06,		\
+			                        k05,k06,		\
+			                    k15,k16,k04,		\
+					    k03,k02,k01,		\
 									\
 			/* right hand, spatial positions */		\
 			    k57,k58,k59,k5A,k5B,k5C,k5D,		\
@@ -65,9 +65,9 @@
 			        k38,k39,k3A,k3B,k3C,k3D,		\
 			    k27,k28,k29,k2A,k2B,k2C,k2D,		\
 			            k19,k1A,k1B,k1C,k1D,		\
-			    k18,k0A,					\
-			k08,k17,k0B,					\
-			k07,k09,k0C )					\
+			k07,k08,					\
+			k09,k17,k18,					\
+			k0C,k0B,k0A )					\
 									\
 	/* matrix positions */						\
 	{{  na,k01,k02,k03,k04,k05,k06, k07,k08,k09,k0A,k0B,k0C, na },	\
@@ -87,7 +87,7 @@
 			kxx,kxx,kxx,kxx,kxx,kxx,		\
 			kxx,kxx,kxx,kxx,kxx,kxx,kxx,		\
 			kxx,kxx,kxx,kxx,kxx,			\
-			                    kxx,kxx,		\
+			                        kxx,kxx,	\
 			                    kxx,kxx,kxx,	\
 			                    kxx,kxx,kxx,	\
 								\
@@ -96,7 +96,7 @@
 			        kxx,kxx,kxx,kxx,kxx,kxx,	\
 			    kxx,kxx,kxx,kxx,kxx,kxx,kxx,	\
 			            kxx,kxx,kxx,kxx,kxx,	\
-			    kxx,kxx,				\
+			kxx,kxx,				\
 			kxx,kxx,kxx,				\
 			kxx,kxx,kxx )				\
 
