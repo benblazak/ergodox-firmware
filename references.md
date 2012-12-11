@@ -257,7 +257,7 @@
 
 * [LUFA (2012) (Lightweight USB Framework for AVRs)]
   (http://www.fourwalledcubicle.com/LUFA.php)  
-  Very well known USB library for AVRs.  And it looks like it be really good
+  Very well known USB library for AVRs.  And it looks like it'd be really good
   too, but the documentation is hard to get into, and the examples don't seem
   to have enough explanation for me, since I don't have any background in what
   USB is doing in the first place.

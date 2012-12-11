@@ -12,7 +12,6 @@
 
 	#include <stdbool.h>
 	#include <stdint.h>
-	#include "./lib/key-functions/public.h"
 	#include "./keyboard/matrix.h"
 
 	// --------------------------------------------------------------------

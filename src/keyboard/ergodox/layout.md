@@ -2,18 +2,6 @@
 
 Different layouts are included by modifying a variable in the makefile.
 
-To write a new one:
-* Create new layout files under [layout] (layout) (see [qwerty.h]
-  (layout/qwerty.h) and [qwerty.c] (layout/qwerty.c)).
-* Use `0` for no-operation (unused) keys, and `NULL` for no-operation (unused)
-  functions.
-* See [matrix/mapping.h] (matrix/mapping.h) for how the key matrix maps to
-  hardware.
-* See [keyboard-usage-page--short-names.h]
-  (../../lib/_usb/keyboard-usage-page--short-names.h) for available keycodes.
-* See [key-functions.c] (../../lib/key-functions.c) for what functions keys
-  can call.
-
 
 ## notes
 
