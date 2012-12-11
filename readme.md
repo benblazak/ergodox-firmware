@@ -94,6 +94,20 @@ A few concepts that might be different:
   active before them).
 
 
+## Dependencies (for building from source)
+
+* See the PJRC [Getting Started] (http://pjrc.com/teensy/first_use.html) page
+  for instructions on how to set up an AVR programming environment (be sure to
+  click through all the subsections (in the navigation bar on the left), as
+  there is essential information in each one).  This project uses C (not
+  Arduino), and Make.  I'm compiling with GNU tools under OS X, but other
+  environments (especially Linux, appropriately set up, or [WinAVR]
+  (http://winavr.sourceforge.net/) under Windows) should work too.
+
+* I also assume that you are using [git] (http://git-scm.com/) (for `make
+  clean`).
+
+
 
 ## HowTo
 
@@ -265,20 +279,6 @@ That is, how to change whether the rows or the columns are being driven.  This c
 * Make sure to keep your eye on the `SRC` variable in [src/makefile]
   (src/makefile), to make sure all your '.c' files are getting compiled.
 
-
-
-## Dependencies (for building from source)
-
-* See the PJRC [Getting Started] (http://pjrc.com/teensy/first_use.html) page
-  for instructions on how to set up an AVR programming environment (be sure to
-  click through all the subsections (in the navigation bar on the left), as
-  there is essential information in each one).  This project uses C (not
-  Arduino), and Make.  I'm compiling with GNU tools under OS X, but other
-  environments (especially Linux, appropriately set up, or [WinAVR]
-  (http://winavr.sourceforge.net/) under Windows) should work too.
-
-* I also assume that you are using [git] (http://git-scm.com/) (for `make
-  clean`).
 
 
 -------------------------------------------------------------------------------

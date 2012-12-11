@@ -31,6 +31,7 @@ var ui_info = {
     ".meta-data": {                    // for the JSON file
         "version": "<number>",
         "date-generated": "<string>",  // format: RFC 3339
+		"description": "<string>",
     },
     "keyboard-functions": {
         "<(function name)>": {

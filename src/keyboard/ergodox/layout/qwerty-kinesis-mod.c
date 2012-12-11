@@ -247,9 +247,9 @@ NULL,
                 ktrans, kprrel, kprrel, kprrel, kprrel, ktrans,
         ktrans, ktrans, kprrel, kprrel, kprrel, kprrel, ktrans,
                         ktrans, ktrans, kprrel, kprrel, ktrans,
- ktrans, kprrel,
+ ktrans, ktrans,
  ktrans, ktrans, ktrans,
- ktrans, ktrans, ktrans ),
+ ktrans, ktrans, kprrel ),
 
 };
 
@@ -345,9 +345,9 @@ NULL,
                 ktrans, kprrel, kprrel, kprrel, kprrel, ktrans,
         ktrans, ktrans, kprrel, kprrel, kprrel, kprrel, ktrans,
                         ktrans, ktrans, kprrel, kprrel, ktrans,
- ktrans, kprrel,
+ ktrans, ktrans,
  ktrans, ktrans, ktrans,
- ktrans, ktrans, ktrans ),
+ ktrans, ktrans, kprrel ),
 
 
 	KB_MATRIX_LAYER(  // release: layer 3: nothing (just making sure unused
