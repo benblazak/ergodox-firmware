@@ -35,7 +35,7 @@ If you're just looking for binaries, they can be downloaded [here]
 [dropbox-download-page].
 
 If you're just trying to compile, jump to the How To: [Compile the Source Code]
-[#compile-the-source-code] section.
+(#compile-the-source-code) section.
 
 Open issues, feature requests, and such are tracked [on github]
 (/benblazak/ergodox-firmware/issues).
@@ -186,16 +186,19 @@ That is, how to change whether the rows or the columns are being driven.  This c
 
 
 ### Compile the Source Code
-(brief notes about compiling in the [src] (src) directory.  The toplevel build
-process (for generating the ui-info file and such) isn't really intended to be
-portable; but you could probably get it working without *too* much trouble, if
-you're familiar with programming in a Unix environment.  I'd suggest looking
-through the toplevel Makefile, as a staring point, if that's your goal.)
+(brief notes)
+
+Note: This relates to compiling in the [src] (src) directory.  The toplevel
+build process (for generating the ui-info file and such) isn't really intended
+to be portable; but you could probably get it working without *too* much
+trouble, if you're familiar with programming in a Unix environment.  I'd
+suggest looking through the toplevel Makefile, as a staring point, if that's
+your goal.
 
 * Read the [Dependencies] (#dependencies-for-building-from-source) section.
 
 * Take a quickish glance at the [About This Project (more technical)]
-  (#about-this-project-more-technical] section.
+  (#about-this-project-more-technical) section.
 
 * Navigate to the [src] (src) directory (*not* the toplevel directory) in a
   terminal, and type `make`.
