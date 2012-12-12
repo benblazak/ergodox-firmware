@@ -1,7 +1,7 @@
 # [ergodox-firmware][]: Firmware for the [ErgoDox keyboard][]
 
-The official website is <www.ergodox.org>.  
-Binaries can be downloaded [here] [dropbox-download-page].
+The official website is [ergodox.org] (http://www.ergodox.org).  
+Binaries can be downloaded [here] [dropbox-download-page].  
 Also see the [geekhack]
 (http://geekhack.org/showthread.php?22780-Interest-Check-Custom-split-ergo-keyboard)
 and [deskthority]
