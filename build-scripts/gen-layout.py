@@ -74,6 +74,55 @@ def main():
 
 <body>
 
+<h1>Firmware Layout</h1>
+
+<ul>
+  <li>git commit date:
+  <code>""" + info.all['miscellaneous']['git-commit-date'] + """</code></li>
+  <li>git commit id:
+  <code>""" + info.all['miscellaneous']['git-commit-id'] + """</code></li>
+</ul>
+
+<h2>Notes</h2>
+
+<ul>
+  <li>Layer keys are labeled e.g. <code>la 2 +- 2</code>
+  <ul>
+	<li><code>la</code> is for "layer"</li>
+	<li><code>2</code> indicates that the second pair of push|pop functions is
+	being used (differently numbered pairs won't interfere with each
+	other)</li>
+	<li><code>+</code> indicates that the layer is being "pushed" onto the
+	stack at some point, either when the key is pressed or when it is
+	released</li>
+	<li><code>-</code> indicates that the layer is being "popped" off of the
+	stack at some point</li>
+	<li>the last <code>2</code> indicates the layer-number that will be
+	activated on "push".</li>
+  </ul>
+  See the project 'readme.md' file on <a
+  href='https://github.com/benblazak/ergodox-firmware'>the github page</a> as a
+  starting point for learning more about how this firmware implements
+  layers.</li>
+  <br>
+  <li>Shifted keys are labeled with an <code>sh</code> at the beginning.  This
+  indicates that a 'Shift' is generated with that keypress, the same as if you
+  had held down 'Shift', and pressed that key.</li>
+  <br>
+  <li><code>(null)</code> indicates that no keypress or keyrelease will be
+  generated for that key, on that layer.</li>
+  <br>
+  <li>Blank keys indicate "transparency": if you press that key on that layer,
+  the key will act as if it was on whatever layer is active below the current
+  one.</li>
+  <br>
+  <li>Some keys may be labled with special functions (like
+  <code>[btldr]</code>, which tells the Teensy to wait for the host to send it
+  a new firmware).</li>
+</ul>
+
+<br>
+
 """)[1:-1]
 
 	# suffix
@@ -84,16 +133,36 @@ def main():
 """)[1:-1]
 
 	# substitute into template
+	# -------
+	# note: this is not general enough to handle any possible layout well, at
+	# the moment.  but it should handle more standard ones well.  (hopefully
+	# minor) modifications may be necessary on a case by case basis
+	# -------
+	layer_number = -1
 	for (layout, layer) in zip( info.matrix_layout,
 								range(len(info.matrix_layout))):
+		layer_number += 1
 		svg = template.svg
 		for (name, (code, press, release)) \
 				in zip(info.matrix_positions, layout):
 			replace = ''
-			if press == 'kbfun_jump_to_bootloader':
+			if press == 'kbfun_transparent':
+				replace = ''
+			elif press == 'kbfun_shift_press_release':
+				replace = 'sh ' + keycode_to_string.get(code, '[n/a]')
+			elif press == 'kbfun_jump_to_bootloader':
 				replace = '[btldr]'
-			elif re.search(r'layer', press):
-				replace = '[layer]'
+			elif press == 'NULL' and release == 'NULL':
+				replace = '(null)'
+			elif re.search(r'numpad', press+release):
+				replace = '[num]'
+			elif re.search(r'layer', press+release):
+				replace = 'la ' + re.findall(r'\d+', press+release)[0] + ' '
+				if re.search(r'push', press+release):
+					replace += '+'
+				if re.search(r'pop', press+release):
+					replace += '-'
+				replace += ' ' + str(code)
 			else:
 				replace = keycode_to_string.get(code, '[n/a]')
 
@@ -104,7 +173,10 @@ def main():
 					r"('\1', " + str(layer) + r")",
 					svg )
 
-		doc.main += svg
+		doc.main += '<h2>Layer ' + str(layer_number) + '</h2>\n' + svg
+
+	# change the font size
+	doc.main = re.sub(r'22.5px', '15px', doc.main)
 
 	print(doc.prefix + doc.main + doc.suffix)
 
