@@ -1,7 +1,6 @@
 # [ergodox-firmware][]: Firmware for the [ErgoDox keyboard][]
 
 The official website is [ergodox.org] (http://www.ergodox.org).  
-Binaries can be downloaded [here] [dropbox-download-page].  
 Also see the [geekhack]
 (http://geekhack.org/showthread.php?22780-Interest-Check-Custom-split-ergo-keyboard)
 and [deskthority]
@@ -32,6 +31,15 @@ URLs as would be required.
 
 ## About This Project
 
+If you're just looking for binaries, they can be downloaded [here]
+[dropbox-download-page].
+
+If you're just trying to compile, jump to the How To: [Compile the Source Code]
+[#compile-the-source-code] section.
+
+Open issues, feature requests, and such are tracked [on github]
+(/benblazak/ergodox-firmware/issues).
+
 This project is still definitely a work in progress, but it's getting towards
 something I'll be happy with when the keyboard finally goes into group buy.
 The 'master' branch should always contain the most recent "stable" release of
@@ -40,16 +48,6 @@ expiremental or not yet fixed things.  Code on the 'master' branch should also
 tend to be more thoroughly tested.  Please see the source (and especially the
 accompanying '.md' files) for documentation.  And [references.md]
 (references.md) contains lots of good links, along with descriptions.
-
-If you're just trying to compile, jump to the bottom of the file and read the
-[Dependencies] (#dependencies-for-building-from-source) section.  Once that's
-taken care of, navigate to the [src] (src) directory (*not* the toplevel
-directory), compile using Make, and fire up your teensy loader to transfer the
-'.hex' file.  Just to be safe, you should also check the '.eep' file.  If it's
-larger than 0 bytes, you need to load it too.
-
-Open issues, feature requests, and such are tracked [on github]
-(/benblazak/ergodox-firmware/issues).
 
 
 ## About This Project (more technical)
@@ -185,6 +183,25 @@ That is, how to change whether the rows or the columns are being driven.  This c
 
 * After this, you'll need to recompile.  See the [About This Project]
   (#about-this-project) section above.
+
+
+### Compile the Source Code
+(brief notes about compiling in the [src] (src) directory.  The toplevel build
+process (for generating the ui-info file and such) isn't really intended to be
+portable; but you could probably get it working without *too* much trouble, if
+you're familiar with programming in a Unix environment.  I'd suggest looking
+through the toplevel Makefile, as a staring point, if that's your goal.)
+
+* Read the [Dependencies] (#dependencies-for-building-from-source) section.
+
+* Take a quickish glance at the [About This Project (more technical)]
+  (#about-this-project-more-technical] section.
+
+* Navigate to the [src] (src) directory (*not* the toplevel directory) in a
+  terminal, and type `make`.
+
+* If everything worked, the '.hex' and '.eep' files will be in the [src] (src)
+  directory (where you currently are).
 
 
 ### Create a New Keymap
