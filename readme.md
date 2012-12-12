@@ -1,6 +1,7 @@
 # [ergodox-firmware][]: Firmware for the [ErgoDox keyboard][]
 
-The official website is <ergodox.org>.  
+The official website is <www.ergodox.org>.  
+Binaries can be downloaded [here] [dropbox-download-page].
 Also see the [geekhack]
 (http://geekhack.org/showthread.php?22780-Interest-Check-Custom-split-ergo-keyboard)
 and [deskthority]
@@ -56,11 +57,10 @@ Open issues, feature requests, and such are tracked [on github]
 If you're looking to hack on the source, or just feel like reading it:
 
 * The [makefile] (./makefile) and [build-scripts] (./build-scripts) folder in
-  the toplevel directory are for building the collection of files that are
-  posted on the [downloads]
-  (https://github.com/benblazak/ergodox-firmware/downloads) page.  They are not
-  guaranteed to work on non-Unix systems, and may be more hackish than the
-  stuff in [src] (./src).  They help me out though.
+  the toplevel directory are for building a collection of files for easy
+  distribution.  They are not guaranteed to work on non-Unix systems, and may
+  be (read: are) more hackish than the stuff in [src] (./src).  They help me
+  out though.
 * [src/lib] (src/lib) is for generally useful stuff relating to the firmware.
   [src/lib-other] (src/lib-other) is for generally useful stuff that I didn't
   write myself.  The TWI and USB libraries are in there, along with the files
@@ -143,9 +143,10 @@ After getting set up:
       Teensy is ready for it.
 
 * Locate your '.eep' and '.hex' files.
-    * If you don't have any, you can grab the topmost QWERTY or Dvorak keymap
-      from [the project's github download page]
-      (https://github.com/benblazak/ergodox-firmware/downloads)
+    * If you don't have any, you can grab the latest ones [here]
+      [dropbox-download-page] (in a '.zip' file).  Choose the newest file who's
+      name contains the name of the keymap you want (look for "qwerty" if
+      you're not sure).
 
 * Drag and drop the '.eep' file onto the Teensy loader window.
     * The information bar at the bottom of the window should now read
@@ -281,6 +282,7 @@ That is, how to change whether the rows or the columns are being driven.  This c
 
 
 
+[dropbox-download-page]: https://www.dropbox.com/sh/8bbol6fkvydmtmg/QLudrdEyc9
 -------------------------------------------------------------------------------
 
 Copyright &copy; 2012 Ben Blazak <benblazak.dev@gmail.com>  
