@@ -1,6 +1,7 @@
 /* ----------------------------------------------------------------------------
  * ergoDOX layout : COLEMAK (modified from the Kinesis layout)
- * TODO: rewrite for new kbfun's
+ * 
+ * Submitted by Jason Trill [jjt] (https://github.com/jjt)
  * ----------------------------------------------------------------------------
  * Copyright (c) 2012 Ben Blazak <benblazak.dev@gmail.com>
  * Released under The MIT License (MIT) (see "license.md")
@@ -256,9 +257,9 @@ const void_funptr_t PROGMEM _kb_layout_press[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
     ktrans,     ktrans,     kprrel,     kprrel,     kprrel,     kprrel,     ktrans,
                             ktrans,     ktrans,     kprrel,     kprrel,     ktrans,
                 
-    ktrans,     kprrel,
+    ktrans,     ktrans,
     ktrans,     ktrans,     ktrans,
-    ktrans,     ktrans,     ktrans ),
+    ktrans,     ktrans,     kprrel ),
 
 };
 
@@ -358,9 +359,9 @@ const void_funptr_t PROGMEM _kb_layout_release[KB_LAYERS][KB_ROWS][KB_COLUMNS] =
     lpop3,      ktrans,     kprrel,     kprrel,     kprrel,     kprrel,     ktrans,
                             ktrans,     ktrans,     kprrel,     kprrel,     ktrans,
 
-    ktrans,     kprrel,
+    ktrans,     ktrans,
     ktrans,     ktrans,     ktrans,
-    ktrans,     ktrans,     ktrans ),
+    ktrans,     ktrans,     kprrel ),
 
 
     // RELEASE L3: nothing (just making sure unused

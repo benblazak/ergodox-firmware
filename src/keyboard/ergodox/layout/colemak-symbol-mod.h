@@ -1,5 +1,7 @@
 /* ----------------------------------------------------------------------------
  * ergoDOX : layout : COLEMAK : exports
+ * 
+ * Submitted by Jason Trill [jjt] (https://github.com/jjt)
  * ----------------------------------------------------------------------------
  * Copyright (c) 2012 Ben Blazak <benblazak.dev@gmail.com>
  * Released under The MIT License (MIT) (see "license.md")

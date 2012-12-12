@@ -21,6 +21,12 @@
 
 include src/makefile-options
 
+# which layouts to compile (will override the variable in src/makefile-options)
+# --- default
+LAYOUT := qwerty-kinesis-mod
+# --- all
+LAYOUTS := qwerty-kinesis-mod dvorak-kinesis-mod colemak-symbol-mod
+
 # system specific stuff
 UNAME := $(shell uname)
 ifeq ($(UNAME),Darwin)
@@ -37,7 +43,7 @@ GIT_COMMIT_DATE := $(shell git log -n 1 --pretty --date=iso | grep 'Date' | cut 
 GIT_COMMIT_ID := $(shell git log -n 1 | grep 'commit' | cut -c 8-)
 
 # name to use for the final distribution file or package
-TARGET := ergodox-firmware--$(GIT_BRANCH)--$(shell $(DATE_PROG) -d "$(GIT_COMMIT_DATE)" +'%Y%m%dT%H%M%S')--$(shell echo $(GIT_COMMIT_ID) | cut -c 1-7)
+TARGET := ergodox-firmware--$(GIT_BRANCH)--$(shell $(DATE_PROG) -d "$(GIT_COMMIT_DATE)" +'%Y%m%dT%H%M%S')--$(shell echo $(GIT_COMMIT_ID) | cut -c 1-7)--$(LAYOUT)
 
 # directories
 BUILD := build
@@ -47,7 +53,7 @@ SCRIPTS := build-scripts
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
 
-.PHONY: all clean checkin build-dir firmware dist zip
+.PHONY: all clean checkin build-dir firmware dist zip zip-all
 
 all: dist
 
@@ -63,7 +69,7 @@ build-dir:
 	-mkdir -p '$(BUILD)/$(TARGET)'
 
 firmware:
-	cd src; $(MAKE) all
+	cd src; $(MAKE) LAYOUT=$(LAYOUT) all
 
 $(ROOT)/firmware.%: firmware
 	cp 'src/firmware.$*' '$@'
@@ -104,4 +110,9 @@ zip: dist
 	  zip '../$(TARGET).zip' \
 	      -r * .* \
 	      -x '..*' )
+
+zip-all:
+	for layout in $(LAYOUTS); do \
+		make LAYOUT=$$layout zip; \
+	done
 
