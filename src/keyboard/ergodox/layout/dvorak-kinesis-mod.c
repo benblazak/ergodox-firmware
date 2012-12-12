@@ -268,7 +268,7 @@ NULL,
  s2kcap, kprrel, kprrel, kprrel, kprrel, kprrel,  lpop1,
  kprrel, kprrel, kprrel, kprrel, kprrel,
                                                  kprrel, kprrel,
-                                         kprrel,   NULL,   NULL,
+                                           NULL,   NULL, kprrel,
                                          kprrel, kprrel, kprrel,
 // right hand
           NULL, kprrel, kprrel, kprrel, kprrel, kprrel, kprrel,

@@ -176,7 +176,7 @@ const void_funptr_t PROGMEM _kb_layout_press[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
     kprrel,     kprrel,     kprrel,     kprrel,     lpush1,
     
                                                                 kprrel,     kprrel,
-                                                    kprrel,     NULL,       NULL,
+                                                    NULL,       NULL,       kprrel,
                                                     kprrel,     kprrel,     kprrel,
     // right hand
     slpunum,    kprrel,     kprrel,     kprrel,     kprrel,     kprrel,     kprrel,
@@ -278,7 +278,7 @@ const void_funptr_t PROGMEM _kb_layout_release[KB_LAYERS][KB_ROWS][KB_COLUMNS] =
     kprrel,     kprrel,     kprrel,     kprrel,     lpop1,
 
                                                                 kprrel,     kprrel,
-                                                    kprrel,     NULL,       NULL,
+                                                    NULL,       NULL,       kprrel,
                                                     kprrel,     kprrel,     kprrel,
     // right hand
     NULL,       kprrel,     kprrel,     kprrel,     kprrel,     kprrel,     kprrel,
