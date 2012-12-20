@@ -1,3 +1,0 @@
-function keyclick(position, layer) {
-}
-
