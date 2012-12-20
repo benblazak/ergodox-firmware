@@ -2,8 +2,7 @@
  * USB Keyboard Key Codes : short names
  *
  * These are for convenience (and to help with formatting, keeping stuff from
- * getting too long).  See "keyboard-usage-page.h" for definitions and
- * everything.
+ * getting too long).  See "../keyboard.h" for definitions and everything.
  * ----------------------------------------------------------------------------
  * Copyright (c) 2012 Ben Blazak <benblazak.dev@gmail.com>
  * Released under The MIT License (MIT) (see "license.md")
@@ -11,13 +10,13 @@
  * ------------------------------------------------------------------------- */
 
 
-#ifndef USB_USAGE_PAGE_KEYBOARD_SHORT_NAMES_h
-	#define USB_USAGE_PAGE_KEYBOARD_SHORT_NAMES_h
+#ifndef LIB__USB__USAGE_PAGE__KEYBOARD__SHORT_NAMES__H
+	#define LIB__USB__USAGE_PAGE__KEYBOARD__SHORT_NAMES__H
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 
 
-#include "./keyboard.h"
+#include "./long-names.h"
 
 
 // ----------------------------------------------------------------------------

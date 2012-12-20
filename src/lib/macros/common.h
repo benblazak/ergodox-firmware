@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- * Macros to help with conditional includes
+ * Common macros
  * ----------------------------------------------------------------------------
  * Copyright (c) 2012 Ben Blazak <benblazak.dev@gmail.com>
  * Released under The MIT License (MIT) (see "license.md")
@@ -7,7 +7,6 @@
  * ------------------------------------------------------------------------- */
 
 
-#undef  INCLUDE
-#define  STR(s)  #s          // stringify
-#define  EXP_STR(s)  STR(s)  // expand -> stringify
+#define  STRINGIFY(s)  #s
+#define  EXPAND_STRINGIFY(s)  STRINGIFY(s)
 
