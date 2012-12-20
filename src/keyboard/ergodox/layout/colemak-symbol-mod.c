@@ -112,7 +112,7 @@ const uint8_t PROGMEM _kb_layout[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
     0,          0,          _7_kp,      _8_kp,      _9_kp,      _sub_kp,    0,
                 0,          _4_kp,      _5_kp,      _6_kp,      _add_kp,    0,
     0,          0,          _1_kp,      _2_kp,      _3_kp,      _enter_kp,  0,
-                            0,          0,          _dec_kp,    _enter_kp,  0,
+                            0,          0,          _period,    _enter_kp,  0,
 
     0,          0,
     0,          0,          0,
