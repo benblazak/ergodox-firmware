@@ -8,6 +8,25 @@ and [deskthority]
 discussion threads.
 
 
+### Table of Contents
+*generated with [DocToc](http://doctoc.herokuapp.com/)*
+
+- [About This File](#about-this-file)
+- [About This Project](#about-this-project)
+	- [Downloading Binaries](#downloading-binaries)
+	- [Compiling](#compiling)
+	- [Issues and Feature Requests](#issues-and-feature-requests)
+	- [Features (on the ErgoDox)](#features-on-the-ergodox)
+- [About This Project (more technical)](#about-this-project-more-technical)
+- [Dependencies (for building from source)](#dependencies-for-building-from-source)
+- [HowTo](#howto)
+	- [Load Firmware onto the Teensy](#load-firmware-onto-the-teensy)
+	- [Change the Direction of the Diodes](#change-the-direction-of-the-diodes)
+	- [Compile the Source Code](#compile-the-source-code)
+	- [Create a New Keymap](#create-a-new-keymap)
+	- [Add Code for a Different Type of Keyboard](#add-code-for-a-different-type-of-keyboard)
+
+
 ## About This File
 
 If you're viewing this on github, please note that directory links will only
