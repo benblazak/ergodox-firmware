@@ -7,9 +7,6 @@ and [deskthority]
 (http://deskthority.net/workshop-f7/split-ergonomic-keyboard-project-t1753.html)
 discussion threads.
 
-[ergodox-firmware]: https://github.com/benblazak/ergodox-firmware
-[ergodox keyboard]: http://ergodox.org/
-
 
 ## About This File
 
@@ -21,33 +18,45 @@ the fact that Markdown doesn't have any way (that I know of) to rewrite the
 URLs as would be required.
 
 
-## Features (on the ErgoDox)
-* 6KRO
+## About This Project
+
+This project is meant to be a usable firmware for the [ErgoDox keyboard][].  I
+started writing it because, at the time, it was the easiest way for me to get
+I&sup2;C working, and I very much wanted to avoid having the designers put a
+16-pin connector (or something awful like that) between the two halves :) .  It
+was also my first project in pure C (though I'm planning to rewrite it in C++),
+and my first attempt at anything remotely this close to hardware.  I've done my
+best to put decent documentation everywhere, in the hope that my perspective as
+a n00b to this area might be useful for others.
+
+The 'master' branch is meant to be stable - the one you want if you're going to
+update your keyboard firmware, and usually the one you want if you're going to
+fork.  This is a small project, so there may be times when other branches have
+a bunch going on, and 'master' doesn't, and things sort of fall out of sync...
+but I'll try to avoid that.  See the other branches for what's going on there.
+
+Also, lots of other documentation can be found intermixed with the source
+(especially in the accompanying '.md' files), and [references.md]
+(references.md) contains lots of good links, along with descriptions.
+
+### Downloading Binaries
+If you're just looking for binaries, they can be downloaded [here]
+[dropbox-download-page].
+
+### Compiling
+If you're just trying to compile, jump to the How To: [Compile the Source Code]
+(#compile-the-source-code) section.
+
+### Issues and Feature Requests
+Open issues, feature requests, and such are tracked [on github]
+(/benblazak/ergodox-firmware/issues).
+
+### Features (on the ErgoDox)
+* 6KRO (conforms to the USB boot specification)
 * Teensy 2.0, MCP23018 I/O expander
 * ~167 Hz scan rate (last time I measured it) (most of which is spent
   communicating via I&sup2;C)
 * firmware level layers
-
-
-## About This Project
-
-If you're just looking for binaries, they can be downloaded [here]
-[dropbox-download-page].
-
-If you're just trying to compile, jump to the How To: [Compile the Source Code]
-(#compile-the-source-code) section.
-
-Open issues, feature requests, and such are tracked [on github]
-(/benblazak/ergodox-firmware/issues).
-
-This project is still definitely a work in progress, but it's getting towards
-something I'll be happy with when the keyboard finally goes into group buy.
-The 'master' branch should always contain the most recent "stable" release of
-the code.  The 'dev' branch may have new things, but it may also have
-expiremental or not yet fixed things.  Code on the 'master' branch should also
-tend to be more thoroughly tested.  Please see the source (and especially the
-accompanying '.md' files) for documentation.  And [references.md]
-(references.md) contains lots of good links, along with descriptions.
 
 
 ## About This Project (more technical)
@@ -303,6 +312,9 @@ your goal.
 
 
 [dropbox-download-page]: https://www.dropbox.com/sh/8bbol6fkvydmtmg/QLudrdEyc9
+[ergodox-firmware]: https://github.com/benblazak/ergodox-firmware
+[ergodox keyboard]: http://ergodox.org/
+
 -------------------------------------------------------------------------------
 
 Copyright &copy; 2012 Ben Blazak <benblazak.dev@gmail.com>  
