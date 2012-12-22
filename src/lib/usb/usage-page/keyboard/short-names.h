@@ -10,8 +10,8 @@
  * ------------------------------------------------------------------------- */
 
 
-#ifndef LIB__USB__USAGE_PAGE__KEYBOARD__SHORT_NAMES__H
-	#define LIB__USB__USAGE_PAGE__KEYBOARD__SHORT_NAMES__H
+#ifndef ERGODOX_FIRMWARE__SRC__LIB__USB__USAGE_PAGE__KEYBOARD__SHORT_NAMES__H
+#define ERGODOX_FIRMWARE__SRC__LIB__USB__USAGE_PAGE__KEYBOARD__SHORT_NAMES__H
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 
@@ -306,5 +306,5 @@
 
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
-#endif
+#endif  // ERGODOX_FIRMWARE__SRC__LIB__USB__USAGE_PAGE__KEYBOARD__SHORT_NAMES__H
 
