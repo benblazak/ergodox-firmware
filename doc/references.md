@@ -1,3 +1,6 @@
+# References
+
+
 ## Electronics Stuff
 
 * [Resistor Color Codes]
@@ -116,6 +119,13 @@
   (http://google-styleguide.googlecode.com/svn/trunk/cppguide.xml)  
   Useful overview of C++ stuff.  I'd been away from it for long enough that I
   needed a review.
+
+* [Haiku : Coding Guidelines]
+  (https://www.haiku-os.org/development/coding-guidelines)
+
+* [C++ Language Tutorial]
+  (http://www.cplusplus.com/doc/tutorial/)
+  (on <http://www.cplusplus.com/>)
 
 ### For the AVR
 
@@ -468,6 +478,8 @@
   see the link; as that tool improves it will hopefully become much better),
   but it works and I like it :) .
 
+### Web Stuff
+
 * [Raphaël—JavaScript Library]
   (http://raphaeljs.com)  
   A library for working with SVG (and VML, on IE I think) graphics - drawing
@@ -475,11 +487,55 @@
 
   * also [on github] (https://github.com/DmitryBaranovskiy/raphael/)
 
+* [An Introduction to the Raphaël JS Library]
+  (http://net.tutsplus.com/tutorials/javascript-ajax/an-introduction-to-the-raphael-js-library/)  
+  A good tutorial, it looks like.
+
+* [Lively Kernel]
+  (http://www.lively-kernel.org)  
+  I read about this a while ago, and just remembered it again while thinking
+  about how I would write a keymap making thing in javascript.  Not sure how
+  good it'd be for that specifically, but the concept is just so **awesome***!
+
+### Other Random Stuff
+
+* [Tutorial: Metacompilers Part 1]
+  (http://www.bayfronttechnologies.com/mc_tutorial.html)  
+  Probably doesn't have anything to do with microprocessors *or* web
+  development (at least at the moment)... but once again, the concept is really
+  awesome :) .  I included it here because, as I was writing in C, the thought
+  "I could write a script to generate this code in Python *so* easily..." went
+  through my head quite often.
+
+* [Towards Moore's Law Software: Part 1 of 3]
+  (http://www.moserware.com/2008/04/towards-moores-law-software-part-1-of-3.html)  
+  Great article on programming in general, and where it might be going in the
+  future.  Along the same lines as the Metacompilers tutorial, in that it talks
+  about using domain specific languages.  Also talks about different
+  programming paradigms that are being explored right now.
+
+* [What are the available interactive languages that run in tiny memory?]
+  (http://stackoverflow.com/questions/1082751/what-are-the-available-interactive-languages-that-run-in-tiny-memory)
+  (on <http://stackoverflow.com/>)  
+  Didn't really see anything other than ooc and FORTH that might work for an
+  application like this firmware, so I decided I may as well just subset C++
+  like everyone else, and use that.  Shouldn't be too bad.
+
+* [ooc]
+  (http://ooc-lang.org)
+  : a programming language targeting C99  
+  This project doesn't seem like it's been very active in the last year or
+  so... not that it looks dead (and, acutally, I didn't check the IRC channel
+  or forums or anything, so I could be completely wrong), just not very active.
+  And the documentation's fairly incomplete (which is sad, it looks like a
+  really cool language :) ).  If C++ weren't available on the AVR, I'd
+  definitly be looking into using it anyway.
+
 
 
 -------------------------------------------------------------------------------
 
 Copyright &copy; 2012 Ben Blazak <benblazak.dev@gmail.com>  
-Released under The MIT License (MIT) (see "license.md")  
+Released under The MIT License (see "license.md")  
 Project located at <https://github.com/benblazak/ergodox-firmware>
 

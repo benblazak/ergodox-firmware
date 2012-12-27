@@ -5,13 +5,13 @@
  * getting too long).  See "../keyboard.h" for definitions and everything.
  * ----------------------------------------------------------------------------
  * Copyright (c) 2012 Ben Blazak <benblazak.dev@gmail.com>
- * Released under The MIT License (MIT) (see "license.md")
+ * Released under The MIT License (see "license.md")
  * Project located at <https://github.com/benblazak/ergodox-firmware>
  * ------------------------------------------------------------------------- */
 
 
-#ifndef ERGODOX_FIRMWARE__SRC__LIB__USB__USAGE_PAGE__KEYBOARD__SHORT_NAMES__H
-#define ERGODOX_FIRMWARE__SRC__LIB__USB__USAGE_PAGE__KEYBOARD__SHORT_NAMES__H
+#ifndef ERGODOX_FIRMWARE__FIRMWARE__LIB__USB__USAGE_PAGE__KEYBOARD__SHORT_NAMES__H
+#define ERGODOX_FIRMWARE__FIRMWARE__LIB__USB__USAGE_PAGE__KEYBOARD__SHORT_NAMES__H
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 
