@@ -1,4 +1,4 @@
-# The MIT License (MIT)
+# The MIT License
 Retrieved from <http://www.opensource.org/licenses/MIT> on 2012-03-10
 
 This copyright and licence apply to all files in this project, except where
