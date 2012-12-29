@@ -1,23 +1,26 @@
 /* ----------------------------------------------------------------------------
- * USB LED Codes (usage page 0x08)
- *
- * Taken from [the HID Usage Tables pdf][1], Section 11,
- * which can be found on [the HID Page][2] at <http://www.usb.org>
- *
- * - applicable Usage Types (from Section 3.4)
- *   - OOC : On/Off Control
- *   - Sel : Selector
- *   - DV  : Dynamic Value
- *   - US  : Usage Switch
- *   - UM  : Usage Modifier
- *
- * [1]: http://www.usb.org/developers/devclass_docs/Hut1_12v2.pdf
- * [2]: http://www.usb.org/developers/hidpage
- * ----------------------------------------------------------------------------
  * Copyright (c) 2012 Ben Blazak <benblazak.dev@gmail.com>
  * Released under The MIT License (see "license.md")
  * Project located at <https://github.com/benblazak/ergodox-firmware>
  * ------------------------------------------------------------------------- */
+
+/**
+ * - file description: |
+ *     USB LED Codes (usage page 0x08)
+ *
+ *     Taken from [the HID Usage Tables pdf][1], Section 11,
+ *     which can be found on [the HID Page][2] at <http://www.usb.org>
+ *
+ *     - applicable Usage Types (from Section 3.4)
+ *       - OOC : On/Off Control
+ *       - Sel : Selector
+ *       - DV  : Dynamic Value
+ *       - US  : Usage Switch
+ *       - UM  : Usage Modifier
+ *
+ *     [1]: http://www.usb.org/developers/devclass_docs/Hut1_12v2.pdf
+ *     [2]: http://www.usb.org/developers/hidpage
+ */
 
 
 #ifndef ERGODOX_FIRMWARE__FIRMWARE__LIB__USB__USAGE_PAGE__LED__H

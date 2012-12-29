@@ -1,13 +1,18 @@
 /* ----------------------------------------------------------------------------
- * USB Keyboard Key Codes : short names
- *
- * These are for convenience (and to help with formatting, keeping stuff from
- * getting too long).  See "../keyboard.h" for definitions and everything.
- * ----------------------------------------------------------------------------
  * Copyright (c) 2012 Ben Blazak <benblazak.dev@gmail.com>
  * Released under The MIT License (see "license.md")
  * Project located at <https://github.com/benblazak/ergodox-firmware>
  * ------------------------------------------------------------------------- */
+
+/**
+ * - file description: |
+ *     USB Keyboard Key Codes : short names
+ *     
+ *     These are for convenience (and to help with formatting, keeping stuff
+ *     from getting too long).  See <../keyboard.h> for definitions and
+ *     everything.
+ * ----------------------------------------------------------------------------
+ */
 
 
 #ifndef ERGODOX_FIRMWARE__FIRMWARE__LIB__USB__USAGE_PAGE__KEYBOARD__SHORT_NAMES__H

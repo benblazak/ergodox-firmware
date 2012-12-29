@@ -491,11 +491,19 @@
   (http://net.tutsplus.com/tutorials/javascript-ajax/an-introduction-to-the-raphael-js-library/)  
   A good tutorial, it looks like.
 
+* [YAML (official site)]
+  (http://www.yaml.org)  
+  YAML is a great data serilization language.
+
+* [JS-YAML : online demo]
+  (http://nodeca.github.com/js-yaml/)  
+  The demo page of a YAML parser written in JavaScript.
+
 * [Lively Kernel]
   (http://www.lively-kernel.org)  
   I read about this a while ago, and just remembered it again while thinking
   about how I would write a keymap making thing in javascript.  Not sure how
-  good it'd be for that specifically, but the concept is just so **awesome***!
+  good it'd be for that specifically, but the concept is just so **awesome**!
 
 ### Other Random Stuff
 
@@ -518,8 +526,7 @@
   (http://stackoverflow.com/questions/1082751/what-are-the-available-interactive-languages-that-run-in-tiny-memory)
   (on <http://stackoverflow.com/>)  
   Didn't really see anything other than ooc and FORTH that might work for an
-  application like this firmware, so I decided I may as well just subset C++
-  like everyone else, and use that.  Shouldn't be too bad.
+  application like this firmware.
 
 * [ooc]
   (http://ooc-lang.org)
@@ -528,8 +535,7 @@
   so... not that it looks dead (and, acutally, I didn't check the IRC channel
   or forums or anything, so I could be completely wrong), just not very active.
   And the documentation's fairly incomplete (which is sad, it looks like a
-  really cool language :) ).  If C++ weren't available on the AVR, I'd
-  definitly be looking into using it anyway.
+  really cool language :) ).
 
 
 
