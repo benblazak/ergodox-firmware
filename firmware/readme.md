@@ -10,55 +10,76 @@
 
 ### Comments
 `/** ... */` comments are to be written in YAML, so they can be processed by
-external tools to generate documentation, and for other purposes.  The format
-is as follows (with all elements being optional):
+external tools to generate documentation, and for other purposes.
 
-    - .ignore: <anything>
+* When read the following will be stripped:
+    * The first line (typically `/**`)
+    * The last line (typically ` */`)
+    * The first two characters of each line (typically ` *`)
 
-    - file description: <string.markdown>
-
-    - function:
-        name: <string>
-        description: <string>
-        arguments:
-          - type: <string>
-            name: <string>
-            description: <string>
-            values:
-              - name: <string>
-                description: <string>
-                notes:
-                  - <string>
-            notes:
-              - <string>
-        return value:
-          type: <string>
-          description: <string>
-          values:
-            - name: <string>
-              description: <string>
-              notes:
-                - <string>
-          notes:
-            - <string>
-        notes:
-          - <string>
+* All elements are optional.
+* All list elements are repeatable.
+* All of these elements may all be specified from within any scanned file.
+* Some of these elements have defaults (commented below); giving them a value
+  explicitly will override that.
+* The element `.ignore` may appear in any list, and should be ignored.
 
 
-### "Namespace" prefixes
-"Namespace" prefixes are prepended to variables and macros (in lower and upper
-case, respectively), sometimes hierarchically, separated by `__`.  I call them
-what I do because this is somewhat similar to using `::` for namespace
-separation as in C++.
+    - &atom '<boolean>|<number>|<string.markdown>'
 
-* `KB`: from `firmware/keyboard/...`
+    - &value-map
+      type: *atom
+      name: *atom
+      description: *atom
+      values: [ *value-map ]
+      notes: [ *atom ]
 
-* `MAKE`: passed to the compiler by `make` (i.e. a global option)
+
+    - &description-map
+      # the file description
+      description: *atom
+
+    - &function-map
+      function:
+        << : *value-map
+        arguments: *value-map
+        return value: *value-map
+
+    - &macro-map
+      macro: { << : *value-map }
+
+    - &typedef-map
+      typedef: { << : *value-map }
+
+
+    - &file-map
+      file:
+        # name: taken from the filesystem
+        # description: taken from the '[filename].md' if it exists
+        << : [ *description-map, *value-map ]
+        functions: [ *function-map ]
+        macros: [ *macro-map ]
+        typedefs: [ *typedef-map ]
+
+    - &directory-map
+      directory:
+        # name: taken from filesystem
+        # description: taken from the 'readme.md' if it exists
+        << : *value-map
+        files: [ *file-map ]
+        directories: [ *directory-map ]
+
+    - &project-map
+      project:
+        << : *value-map
+        directories: [ *directory-map ]
+
+    - projects: [ *project-map ]
 
 
 -------------------------------------------------------------------------------
 
-Copyright &copy; 2012 Ben Blazak <benblazak.dev@gmail.com>  
+Copyright &copy; 2012, 2013 Ben Blazak <benblazak.dev@gmail.com>  
 Released under The MIT License (see "license.md")  
 Project located at <https://github.com/benblazak/ergodox-firmware>
 

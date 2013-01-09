@@ -1,3 +1,5 @@
+<!-- TODO: rewrite / rework -->
+
 # References
 
 
@@ -112,6 +114,11 @@
 * [gcc: why the -lm flag is needed to link the math library?]
   (http://stackoverflow.com/questions/4606301/gcc-why-the-lm-flag-is-needed-to-link-the-math-library)
   (on <http://stackoverflow.com/>)
+
+* [cdecl]
+  (http://cdecl.org)  
+  Nice little web interface to a really helpful (when you're dealing with
+  confusing type signatures in C) command line program.
 
 ### C++ Stuff
 

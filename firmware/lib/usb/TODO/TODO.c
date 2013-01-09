@@ -8,7 +8,7 @@
  *   - Device Class Definition for Human Interface Devices (HID): version 1.11
  * ----------------------------------------------------------------------------
  * Copyright (c) 2012 Ben Blazak <benblazak.dev@gmail.com>
- * Released under The MIT License (MIT) (see "license.md")
+ * Released under The MIT License (see "license.md")
  * Project located at <https://github.com/benblazak/ergodox-firmware>
  * ------------------------------------------------------------------------- */
 
