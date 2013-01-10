@@ -42,8 +42,6 @@ typedef struct {
     uint16_t                release_value;
 } kb__key_t;
 
-typedef  const kb__key_t * const PROGMEM  kb__key_pointer_t
-
 // ----------------------------------------------------------------------------
 
 // controller

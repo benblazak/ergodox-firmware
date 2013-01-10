@@ -26,19 +26,20 @@ typedef  void (*kf__function_pointer_t)(uint16_t value);
 // ----------------------------------------------------------------------------
 
 // basic
-void kf__press       (uint16_t value);
-void kf__release     (uint16_t value);
-void kf__send        (uint16_t value);
-void kf__toggle      (uint16_t value);
-void kf__macro       (uint16_t value);
-void kf__layer__push (uint16_t value);
-void kf__layer__pop  (uint16_t value);
+void kf__press          (uint16_t keycode);
+void kf__release        (uint16_t keycode);
+void kf__send           (uint16_t ignore);
+void kf__toggle         (uint16_t keycode);
+void kf__layer__push    (uint16_t layer_stack_id__layer_number);
+void kf__layer__pop     (uint16_t layer_stack_id);
+void kf__macro__progmem (uint16_t pointer);
+void kf__macro__eeprom  (uint16_t pointer);
 
 // device
-void kf__jump_to_bootloader (uint16_t value);
+void kf__jump_to_bootloader (uint16_t ignore);
 
 // special
-void kf__two_keys_capslock_press_release (uint16_t value);
+void kf__two_keys_capslock (uint16_t pressed);
 
 
 // ----------------------------------------------------------------------------

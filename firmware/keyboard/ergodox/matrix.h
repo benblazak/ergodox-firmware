@@ -54,7 +54,7 @@
  *         ----------------------------------------------------
  *         ```
  */
-#define MATRIX__LAYER(                                                \
+#define MATRIX__LAYER(                                                  \
             /* for unused positions */                                  \
             na,                                                         \
                                                                         \
