@@ -41,8 +41,9 @@
  *
  **************************************************************************/
 
+// TODO: make the product name, etc., makefile options
 // You can change these to give your code its own name.
-#define STR_MANUFACTURER	L"unspecified"  // TODO
+#define STR_MANUFACTURER	L"custom"
 #define STR_PRODUCT		L"ErgoDox ergonomic keyboard"
 
 

@@ -28,8 +28,7 @@
         .press_function   = &kf__press,         \
         .press_value      = value,              \
         .release_function = &kf__release,       \
-        .release_value    = value,              \
-    }                                          
+        .release_value    = value }                                          
 
 #define  KEYS__SHIFTED(name, value)                         \
     const uint16_t PROGMEM name##__press[] = {              \
@@ -40,10 +39,6 @@
            &kf__release, value };                           \
     key_t name = { &kf__macro__progmem, &name##__press,     \
                    &kf__macro__progmem, &name##__release }
-
-
-// default key definitions
-#include "../../../../firmware/lib/layout/keys.h"
 
 
 // other `keys__` macros (in the `keys__` namespace for consistency)
@@ -60,10 +55,15 @@
 
 // ----------------------------------------------------------------------------
 
+// default key definitions
+
+#include "../../../../firmware/lib/layout/keys.h"
+
+
 // special meaning
 
-key_t Transp   = NULL;  // transparent
-key_t NA       = { NULL, 0, NULL, 0 };  // do nothing
+key_t Transp   = NULL;                  // transparent
+key_t NA       = { NULL, 0, NULL, 0 };  // "not applicable" (do nothing)
 
 
 // special keycode
@@ -84,20 +84,6 @@ KEYS__TWO_KEYS_CAPSLOCK_PRESS_RELEASE( Sh2KCapR, KEY__RightShift );
 
 // --- Btldr
 key_t Btldr = { &kf__jump_to_bootloader, 0, NULL, 0 };
-
-// --- NumPush
-const uint16_t PROGMEM NumPush__press[] = {
-    2, &kf__layer__push, 0x0203,
-       &kf__press, KEY__LockingNumLock };
-key_t NumPush = { &kf__macro__progmem, &NumPush__press,
-                  &kf__release, KEY__LockingNumLock };
-
-// --- NumPop
-const uint16_t PROGMEM NumPop__press[] = {
-    2, &kf__layer__pop, 0x02,
-       &kf__press, KEY__LockingNumLock };
-key_t NumPop = { &kf__macro__progmem, &NumPop__press,
-                 &kf__release, KEY__LockingNumLock };
 
 
 // ----------------------------------------------------------------------------

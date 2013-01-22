@@ -6,7 +6,7 @@
 
 /**
  * - description: |
- *   A QWERTY layout adapted from the default Kinesis layout.  The position of
+ *   A Dvorak layout adapted from the default Kinesis layout.  The position of
  *   the symbol keys on the function layer was taken from the Arensito layout.
  */
 
@@ -88,18 +88,18 @@ key_t layout[][KB__ROWS][KB__COLUMNS] = {
 NA,
 // left hand ...... ......... ......... ......... ......... ......... .........
    Equal,       K1,       K2,       K3,       K4,       K5,      Esc,
- Bkslash,        Q,        W,        E,        R,        T,    L0pu1,
-     Tab,        A,        S,        D,        F,        G,
-Sh2KCapL,        Z,        X,        C,        V,        B,  L0pu1po,
+ Bkslash,    Quote,    Comma,   Period,        P,        Y,    L0pu1,
+     Tab,        A,        O,        E,        U,        I,
+Sh2KCapL,  Semicol,        Q,        J,        K,        X,  L0pu1po,
     GUIL,    Grave,  Bkslash,   ArrowL,   ArrowR,
                                                                CtrlL,     AltL,
                                                         NA,       NA,     Home,
                                                         Bs,      Del,      End,
 // right hand ..... ......... ......... ......... ......... ......... .........
            NumPush,       K6,       K7,       K8,       K9,       K0,     Dash,
-             BrktL,        Y,        U,        I,        O,        P,    BrktR,
-                           H,        J,        K,        L,  Semicol,    Quote,
-           L0pu1po,        N,        M,    Comma,   Period,    Slash, Sh2KCapR,
+             BrktL,        F,        G,        C,        R,        L,    BrktR,
+                           D,        H,        T,        N,        S,    Slash,
+           L0pu1po,        B,        M,        W,        V,        Z, Sh2KCapR,
                                 ArrowL,   ArrowD,   ArrowU,   ArrowR,     GUIR,
     AltR,    CtrlR,
    PageU,       NA,       NA,

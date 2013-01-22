@@ -25,56 +25,56 @@ external tools to generate documentation, and for other purposes.
 * The element `.ignore` may appear in any list, and should be ignored.
 
 
-    - &atom '<boolean>|<number>|<string.markdown>'
+        - &atom '<boolean>|<number>|<string.markdown>'
 
-    - &value-map
-      type: *atom
-      name: *atom
-      description: *atom
-      values: [ *value-map ]
-      notes: [ *atom ]
-
-
-    - &description-map
-      # the file description
-      description: *atom
-
-    - &function-map
-      function:
-        << : *value-map
-        arguments: *value-map
-        return value: *value-map
-
-    - &macro-map
-      macro: { << : *value-map }
-
-    - &typedef-map
-      typedef: { << : *value-map }
+        - &value-map
+          type: *atom
+          name: *atom
+          description: *atom
+          values: [ *value-map ]
+          notes: [ *atom ]
 
 
-    - &file-map
-      file:
-        # name: taken from the filesystem
-        # description: taken from the '[filename].md' if it exists
-        << : [ *description-map, *value-map ]
-        functions: [ *function-map ]
-        macros: [ *macro-map ]
-        typedefs: [ *typedef-map ]
+        - &description-map
+          # the file description
+          description: *atom
 
-    - &directory-map
-      directory:
-        # name: taken from filesystem
-        # description: taken from the 'readme.md' if it exists
-        << : *value-map
-        files: [ *file-map ]
-        directories: [ *directory-map ]
+        - &function-map
+          function:
+            << : *value-map
+            arguments: *value-map
+            return value: *value-map
 
-    - &project-map
-      project:
-        << : *value-map
-        directories: [ *directory-map ]
+        - &macro-map
+          macro: { << : *value-map }
 
-    - projects: [ *project-map ]
+        - &typedef-map
+          typedef: { << : *value-map }
+
+
+        - &file-map
+          file:
+            # name: taken from the filesystem
+            # description: taken from the '[filename].md' if it exists
+            << : [ *description-map, *value-map ]
+            functions: [ *function-map ]
+            macros: [ *macro-map ]
+            typedefs: [ *typedef-map ]
+
+        - &directory-map
+          directory:
+            # name: taken from filesystem
+            # description: taken from the 'readme.md' if it exists
+            << : *value-map
+            files: [ *file-map ]
+            directories: [ *directory-map ]
+
+        - &project-map
+          project:
+            << : *value-map
+            directories: [ *directory-map ]
+
+        - projects: [ *project-map ]
 
 
 -------------------------------------------------------------------------------
