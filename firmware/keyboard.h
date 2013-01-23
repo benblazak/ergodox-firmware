@@ -1,6 +1,6 @@
 /* ----------------------------------------------------------------------------
  * Copyright (c) 2012 Ben Blazak <benblazak.dev@gmail.com>
- * Released under The MIT License (see "license.md")
+ * Released under The MIT License (see "doc/license.md")
  * Project located at <https://github.com/benblazak/ergodox-firmware>
  * ------------------------------------------------------------------------- */
 
@@ -31,6 +31,10 @@
     #define  KB__ROWS      6
     #define  KB__COLUMNS  14
 
+#else
+
+    #error "A keyboard must be specified"
+
 #endif
 
 // ----------------------------------------------------------------------------
@@ -45,13 +49,13 @@ typedef struct {
 // ----------------------------------------------------------------------------
 
 // controller
-int8_t kb__init          (void);
-int8_t kb__update_matrix (bool matrix[KB__ROWS][KB__COLUMNS]);
+uint8_t kb__init          (void);
+uint8_t kb__update_matrix (bool matrix[KB__ROWS][KB__COLUMNS]);
 
 // LED
-void kb__led__on  (int8_t led);
-void kb__led__off (int8_t led);
-void kb__led__set (int8_t led, float n);
+void kb__led__on  (uint8_t led);
+void kb__led__off (uint8_t led);
+void kb__led__set (uint8_t led, float n);
 // -------
 void kb__led__all_on  (void);
 void kb__led__all_off (void);
@@ -65,10 +69,10 @@ void kb__led__delay__usb_init (void);
 void kb__led__logical_on  (char led);
 void kb__led__logical_off (char led);
 // -------
-void kb__layout__exec_key ( bool   pressed,
-                            int8_t layer,
-                            int8_t row,
-                            int8_t column );
+void kb__layout__exec_key ( bool    pressed,
+                            uint8_t layer,
+                            uint8_t row,
+                            uint8_t column );
 
 
 // ----------------------------------------------------------------------------

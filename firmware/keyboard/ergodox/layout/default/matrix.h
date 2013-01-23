@@ -1,26 +1,24 @@
 /* ----------------------------------------------------------------------------
  * Copyright (c) 2012, 2013 Ben Blazak <benblazak.dev@gmail.com>
- * Released under The MIT License (see "license.md")
+ * Released under The MIT License (see "doc/license.md")
  * Project located at <https://github.com/benblazak/ergodox-firmware>
  * ------------------------------------------------------------------------- */
 
 /**
  * - description: |
  *     Information about the matrix
- *
- *     Prefix: `MATRIX__`
  */
 
 
-#ifndef ERGODOX_FIRMWARE__FIRMWARE__KEYBOARD__ERGODOX__MATRIX_H
-#define ERGODOX_FIRMWARE__FIRMWARE__KEYBOARD__ERGODOX__MATRIX_H
+#ifndef ERGODOX_FIRMWARE__FIRMWARE__KEYBOARD__ERGODOX__LAYOUT__DEFAULT__MATRIX_H
+#define ERGODOX_FIRMWARE__FIRMWARE__KEYBOARD__ERGODOX__LAYOUT__DEFAULT__MATRIX_H
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 
 
 /**
  * - macro:
- *     name: '`MATRIX__LAYER`"
+ *     name: '`MATRIX_LAYER`"
  *     description: |
  *       Mapping from spatial position to matrix position.
  *
@@ -54,7 +52,7 @@
  *         ----------------------------------------------------
  *         ```
  */
-#define MATRIX__LAYER(                                                  \
+#define MATRIX_LAYER(                                                   \
             /* for unused positions */                                  \
             na,                                                         \
                                                                         \
@@ -89,5 +87,5 @@
 
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
-#endif  // ERGODOX_FIRMWARE__FIRMWARE__KEYBOARD__ERGODOX__MATRIX_H
+#endif  // ERGODOX_FIRMWARE__FIRMWARE__KEYBOARD__ERGODOX__LAYOUT__DEFAULT__MATRIX_H
 

@@ -1,12 +1,14 @@
 /* ----------------------------------------------------------------------------
  * Copyright (c) 2013 Ben Blazak <benblazak.dev@gmail.com>
- * Released under The MIT License (see "license.md")
+ * Released under The MIT License (see "doc/license.md")
  * Project located at <https://github.com/benblazak/ergodox-firmware>
  * ------------------------------------------------------------------------- */
 
 /**
  * - description: |
  *   A Colemak layout (modified from the Kinesis layout).
+ *
+ *   Implements the "layout" section of '.../firmware/keyboard.h'
  *
  *   Notes:
  *   * This layout *does not* contain a key mapped to the bootloader function.
@@ -104,7 +106,7 @@ key_t layout[][KB__ROWS][KB__COLUMNS] = {
 
 // ............................................................................
 
-    MATRIX__LAYER(  // layer 0 : default (colemak)
+    MATRIX_LAYER(  // layer 0 : default (colemak)
 
 // unused
 NA,
@@ -129,7 +131,7 @@ Sh2KCapL,        Z,        X,        C,        V,        B,  L1pu2po,
 
 // ............................................................................
 
-    MATRIX__LAYER(  // layer 1 : function and symbol keys
+    MATRIX_LAYER(  // layer 1 : function and symbol keys
 // unused
 NA,
 // left hand ...... ......... ......... ......... ......... ......... .........
@@ -153,7 +155,7 @@ NA,
 
 // ............................................................................
 
-    MATRIX__LAYER(  // layer 2 : QWERTY alphanum
+    MATRIX_LAYER(  // layer 2 : QWERTY alphanum
 // unused
 NA,
 // left hand ...... ......... ......... ......... ......... ......... .........
@@ -178,7 +180,7 @@ NA,
 
 // ............................................................................
 
-    MATRIX__LAYER(  // layer 3 : numpad
+    MATRIX_LAYER(  // layer 3 : numpad
 // unused
 NA,
 // left hand ...... ......... ......... ......... ......... ......... .........

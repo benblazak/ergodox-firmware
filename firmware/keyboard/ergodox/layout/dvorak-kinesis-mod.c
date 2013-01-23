@@ -1,6 +1,6 @@
 /* ----------------------------------------------------------------------------
  * Copyright (c) 2013 Ben Blazak <benblazak.dev@gmail.com>
- * Released under The MIT License (see "license.md")
+ * Released under The MIT License (see "doc/license.md")
  * Project located at <https://github.com/benblazak/ergodox-firmware>
  * ------------------------------------------------------------------------- */
 
@@ -8,6 +8,8 @@
  * - description: |
  *   A Dvorak layout adapted from the default Kinesis layout.  The position of
  *   the symbol keys on the function layer was taken from the Arensito layout.
+ *
+ *   Implements the "layout" section of '.../firmware/keyboard.h'
  */
 
 
@@ -82,7 +84,7 @@ key_t layout[][KB__ROWS][KB__COLUMNS] = {
 
 // ............................................................................
 
-    MATRIX__LAYER(  // layer 0 : default
+    MATRIX_LAYER(  // layer 0 : default
 
 // unused
 NA,
@@ -107,7 +109,7 @@ Sh2KCapL,  Semicol,        Q,        J,        K,        X,  L0pu1po,
 
 // ............................................................................
 
-    MATRIX__LAYER(  // layer 1 : function and symbol keys
+    MATRIX_LAYER(  // layer 1 : function and symbol keys
 // unused
 NA,
 // left hand ...... ......... ......... ......... ......... ......... .........
@@ -131,7 +133,7 @@ NA,
 
 // ............................................................................
 
-    MATRIX__LAYER(  // layer 2 : keyboard functions
+    MATRIX_LAYER(  // layer 2 : keyboard functions
 // unused
 NA,
 // left hand ...... ......... ......... ......... ......... ......... .........
@@ -155,7 +157,7 @@ NA,
 
 // ............................................................................
 
-    MATRIX__LAYER(  // layer 3 : numpad
+    MATRIX_LAYER(  // layer 3 : numpad
 // unused
 NA,
 // left hand ...... ......... ......... ......... ......... ......... .........
