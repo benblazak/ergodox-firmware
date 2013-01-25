@@ -4,11 +4,13 @@
  * Project located at <https://github.com/benblazak/ergodox-firmware>
  * ------------------------------------------------------------------------- */
 
-/**
- * - description: |
- *     The keyboard interface, and related definitions
+/**                                                                 description
+ * The keyboard interface, and related definitions.
  *
- *     Prefix: `kb__`
+ * Keyboard implementations must conditionally define their dimensions in this
+ * file, and implement all prototyped functions.
+ *
+ * Prefix: `kb__`
  */
 
 
@@ -20,9 +22,6 @@
 
 #include <stdbool.h>
 #include <stdint.h>
-#include <avr/pgmspace.h>
-
-#include "../firmware/lib/layout/key-functions.h"
 
 // ----------------------------------------------------------------------------
 
@@ -33,18 +32,9 @@
 
 #else
 
-    #error "A keyboard must be specified"
+    #error "Keyboard dimensions must be defined"
 
 #endif
-
-// ----------------------------------------------------------------------------
-
-typedef struct {
-    kf__function_pointer_t  press_function;
-    uint16_t                press_value;
-    kf__function_pointer_t  release_function;
-    uint16_t                release_value;
-} kb__key_t;
 
 // ----------------------------------------------------------------------------
 
@@ -80,81 +70,71 @@ void kb__layout__exec_key ( bool    pressed,
 #endif  // ERGODOX_FIRMWARE__FIRMWARE__KEYBOARD__H
 
 
+// ============================================================================
+// === documentation ==========================================================
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// macros ---------------------------------------------------------------------
+// ----------------------------------------------------------------------------
+
+// === KB__ROWS ===
+/*                                                  macros/KB__ROWS/description
+ * The number of rows in a given keyboard's matrix
+ */
+
+// === KB__COLUMNS ===
+/*                                               macros/KB__COLUMNS/description
+ * The number of columns in a given keyboard's matrix
+ */
+
+// ----------------------------------------------------------------------------
+// functions ------------------------------------------------------------------
+// ----------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------
+// controller -----------------------------------------------------------------
+
+// === kb__init() ===
+/*                                               functions/kb__init/description
+ * Initialize the keyboard.
+ *
+ * Returns:
+ * - success: `0`
+ * - failure: [other]
+ *
+ * Notes:
+ * - Should be called exactly once by `main()` before entering the run loop.
+ */
+
+// === kb__update_matrix() ===
+/*                                      functions/kb__update_matrix/description
+ * Update the given matrix to the current state of the keyboard.
+ *
+ * Arguments:
+ * - `matrix`: The keyboard matrix to update.
+ *
+ * Returns:
+ * - success: `0`
+ * - failure: [other]
+ */
+
+// ----------------------------------------------------------------------------
+// LED ------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------
+// layout ---------------------------------------------------------------------
+
+
 // TODO: rewrite, coz of changes
 /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # documentation ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  # macros ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~--
-
-   - macro:
-       name: '`KB__ROWS`'
-       values:
-         - { name: '`6`', description: for the ErgoDox }
-  
-   - macro:
-       name: '`KB__COLUMNS`'
-       values:
-         - { name: '`14`', description: for the ErgoDox }
-
-  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  # typedefs ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-   - typedef:
-       type: '`struct`'
-       name: '`kb__key_t`'
-       description: The type of each key in the layout matrix.
-       values:
-         - type: '`uint8_t`'
-           name: '`value`'
-           description:
-             The value passed to the appropriate function when the key changes
-             state.  The function may do as it wishes with this value, but it
-             will most commonly be a keycode to send to the host.
-         - type: '`kf__function_pointer_t`'
-           name: '`press`'
-           description:
-             The function to call when the key changes from 'released' to
-             'pressed'.
-         - type: '`kf__function_pointer_t`'
-           name: '`release`'
-           description:
-             The function to call when the key changes from 'pressed' to
-             'released'.
-
-  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   # controller ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-
-
-   - function:
-       name: '`kb__init`'
-       description: Initialize the keyboard.
-       return value:
-         type: '`int8_t`'
-         values:
-           - { name: '`0`', description: success }
-           - { name: '[other]', description: error }
-       notes:
-         - Should be called exactly once by `main()` before entering the run
-           loop.
-
-   - function:
-       name: '`kb__update_matrix`'
-       description:
-         Update the given matrix to the current state of the keyboard.
-       arguments:
-         - type: '`bool[][]`'
-           name: '`matrix`'
-           description: A pointer to the matrix to update.
-           notes:
-             - Matrix dimensions are `[KB__ROWS][KB__COLUMNS]`.
-       return value:
-         type: '`int8_t`'
-         values:
-           - { name: '`0`', description: success }
-           - { name: '[other]', description: error }
 
   # LED ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~--
 

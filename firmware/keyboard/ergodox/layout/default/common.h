@@ -4,11 +4,9 @@
  * Project located at <https://github.com/benblazak/ergodox-firmware>
  * ------------------------------------------------------------------------- */
 
-/**
- * - description: |
- *   A place for all things common to the other default files, including
- *   `#include`s.  Other code (especially functions defined in this directory)
- *   may break if you change things defined here, so be careful if you do.
+/**                                                                 description
+ * A place for all things common to the other default files, including
+ * `#include`s.
  */
 
 
@@ -29,7 +27,14 @@
 
 // ----------------------------------------------------------------------------
 
-typedef  const kb__key_t * const PROGMEM  key_t
+struct key_t {
+    kf__function_pointer_t  press_function;
+    uint16_t                press_value;
+    kf__function_pointer_t  release_function;
+    uint16_t                release_value;
+};
+
+typedef  const struct key_t * const PROGMEM  key_t
 
 
 // ----------------------------------------------------------------------------

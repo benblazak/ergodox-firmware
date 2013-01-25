@@ -3,10 +3,11 @@
 # Released under The MIT License (see "doc/license.md")
 # Project located at <https://github.com/benblazak/ergodox-firmware>
 # ----------------------------------------------------------------------------
-# -----------------------------------------------------------------------------
+
+##                                                                 description
 # Options, constants, etc. to be included in the toplevel Makefile for the
 # ErgoDox keyboard
-# -----------------------------------------------------------------------------
+#
 
 
 # -----------------------------------------------------------------------------
@@ -15,11 +16,6 @@
 
 MAKE__LED_BRIGHTNESS := 0.5
 # a multiplier, with 1 being the max
-
-MAKE__DEBOUNCE_TIME := 5
-# in milliseconds; 5ms should be good for cherry mx switches (per the
-# keyswitch spec)
-
 
 MAKE__TEENSY__DRIVE_ROWS    := 0
 MAKE__TEENSY__DRIVE_COLUMNS := 1
@@ -55,21 +51,37 @@ MAKE__MCP23018__DRIVE_COLUMNS := 1
 # constants
 # -----------------------------------------------------------------------------
 
+# TODO: move everything to the place it's required; or at least put some
+# documentation there (how shall i standardize it? - maybe put defaults, meant
+# to be overridden here...)
+
+# required by the makefile ----------------------------------------------------
+
 MCU := atmega32u4
 # processor type (for the teensy 2.0)
 
 F_CPU := 16000000
 # processor speed, in Hz; max value is 16000000 (16MHz)
 
+# required by the keyboard ----------------------------------------------------
+
 MAKE__TWI_FREQ := 400000
 # TWI frequency, in Hz; max value is 400000 (400kHz) (per the Teensy datasheet
 # sec 20.1)
+
+MAKE__DEBOUNCE_TIME := 5
+# in milliseconds; 5ms should be good for cherry mx switches (per the
+# keyswitch spec)
+
+# required by the libraries ---------------------------------------------------
 
 MAKE__USB__STR_MANUFACTURER := L"custom"
 MAKE__USB__STR_PRODUCT      := L"ErgoDox ergonomic keyboard"
 MAKE__USB__VENDOR_ID        := 0x1d50  # Openmoko, Inc.
 MAKE__USB__PRODUCT_ID       := 0x6028  # ErgoDox ergonomic keyboard
+# .............................................................................
 # USB identifier information
+# .............................................................................
 
 
 # -----------------------------------------------------------------------------
@@ -84,7 +96,7 @@ SCR += TODO
 # -----------------------------------------------------------------------------
 
 # DRIVE_ROWS and DRIVE_COLUMNS
-ERROR := "see the 'DRIVE_ROWS and DRIVE_COLUMNS section in 'options.mk'"
+ERROR := "see the 'DRIVE_ROWS and DRIVE_COLUMNS' section in '.../firmware/keyboard/ergodox/makefile-options'"
 # --- teensy
 ifeq($(MAKE__TEENSY__DRIVE_ROWS),1)
 	ifneq($(MAKE__TEENSY__DRIVE_COLUMNS),0)
