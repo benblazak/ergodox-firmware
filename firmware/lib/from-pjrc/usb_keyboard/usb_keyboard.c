@@ -1,6 +1,4 @@
 /* ----------------------------------------------------------------------------
- * Originally from PJRC
- * ----------------------------------------------------------------------------
  * USB Keyboard Example for Teensy USB Development Board
  * http://www.pjrc.com/teensy/usb_keyboard.html
  * Copyright (c) 2009 PJRC.COM, LLC
@@ -24,9 +22,14 @@
  * THE SOFTWARE.
  * ------------------------------------------------------------------------- */
 
-/* ----------------------------------------------------------------------------
- * Modified 2012 by Ben Blazak
- * ------------------------------------------------------------------------- */
+/**                                                                 description
+ * Implements the USB interface
+ *
+ * History:
+ * - Originally from [PJRC] (http://pjrc.com/teensy/) : [usb_keyboard]
+ *   (http://pjrc.com/teensy/usb_keyboard.zip)
+ * - Modified 2012, Ben Blazak
+ */
 
 
 // Version 1.0: Initial Release
@@ -42,16 +45,16 @@
  **************************************************************************/
 
 // You can change these to give your code its own name.
-#define STR_MANUFACTURER MAKE__USB__STR_MANUFACTURER
-#define STR_PRODUCT      MAKE__USB__STR_PRODUCT
+#define STR_MANUFACTURER OPT__USB__STR_MANUFACTURER
+#define STR_PRODUCT      OPT__USB__STR_PRODUCT
 
 
 // Mac OS-X and Linux automatically load the correct drivers.  On
 // Windows, even though the driver is supplied by Microsoft, an
 // INF file is needed to load the driver.  These numbers need to
 // match the INF file.
-#define VENDOR_ID  MAKE__USB__VENDOR_ID
-#define PRODUCT_ID MAKE__USB__PRODUCT_ID
+#define VENDOR_ID  OPT__USB__VENDOR_ID
+#define PRODUCT_ID OPT__USB__PRODUCT_ID
 
 
 // USB devices are supposed to implment a halt feature, which is

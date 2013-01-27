@@ -4,18 +4,17 @@
  * Project located at <https://github.com/benblazak/ergodox-firmware>
  * ------------------------------------------------------------------------- */
 
-/**
- * - description: |
- *     Partial key descriptions for the "Boot Keyboard Required" keys (see
- *     <../../../firmware/lib/usb/usage-page/keyboard.h>).
+/**                                                                 description
+ * Partial key descriptions for the "Boot Keyboard Required" keys (see
+ * <../../../firmware/lib/usb/usage-page/keyboard.h>).
  *
- *     Prefixes: `KEYS__`, [none]
+ * This header is meant to be included, not as an interface to anything, but in
+ * order to centralize a bit of code that would otherwise be duplicated by most
+ * layouts.
  *
- *     Usage: `#define` `KEYS__DEFAULT` before `#include`ing.
+ * Prefixes: `KEYS__`, [none]
  *
- *     Note: This header is meant to be included, not as an interface to
- *     anything, but in order to centralize a bit of code that would otherwise
- *     be duplicated by most layouts.
+ * Usage: `#define` `KEYS__DEFAULT` and `KEYS__SHIFTED` before `#include`ing.
  */
 
 

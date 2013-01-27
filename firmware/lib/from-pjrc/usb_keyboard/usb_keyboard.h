@@ -2,18 +2,17 @@
  * (See '.c' file for copyright and such)
  * ------------------------------------------------------------------------- */
 
-/**
- * - description: |
- *     The USB interface
+/**                                                                 description
+ * The USB interface
  *
- *     Prefix: `usb__`
+ * Prefix: `usb__`
  *
- *     File History:
- *     * Originally from [PJRC] (http://pjrc.com/teensy/) : [usb_keyboard]
- *       (http://pjrc.com/teensy/usb_keyboard.zip).  Modified 2012, Ben Blazak.
- *       I'd like to rewrite it someday (partly to add a few extra features
- *       (like mous keys), mostly to learn how); but alas, someday has not yet
- *       come.
+ * File History:
+ * - Originally from [PJRC] (http://pjrc.com/teensy/) : [usb_keyboard]
+ *   (http://pjrc.com/teensy/usb_keyboard.zip)
+ * - Modified 2012, Ben Blazak.  I'd like to rewrite it someday (partly to add
+ *   a few extra features (like mouse keys), mostly to learn how); but alas,
+ *   someday has not yet come.
  */
 
 

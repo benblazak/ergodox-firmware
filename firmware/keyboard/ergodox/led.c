@@ -4,7 +4,7 @@
  * Project located at <https://github.com/benblazak/ergodox-firmware>
  * ------------------------------------------------------------------------- */
 
-/*
+/**                                                                 description
  * Implements the "LED" section of '.../firmware/keyboard.h'
  *
  * Code is specific to Teensy 2.0
@@ -66,22 +66,22 @@ void kb__led__all_set(float n) {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 void kb__led__state__power_on(void) {
-    kb__led__all_set( MAKE__LED_BRIGHTNESS / 10 );
+    kb__led__all_set( OPT__LED_BRIGHTNESS / 10 );
     kb__led__all_on();
 }
 
 void kb__led__state__ready(void) {
     kb__led__all_off();
-    kb__led__all_set( MAKE__LED_BRIGHTNESS );
+    kb__led__all_set( OPT__LED_BRIGHTNESS );
 }
 
 void kb__led__delay__usb_init(void) {
 	// need to delay for a total of ~1 second
-    kb__led__set( 1, MAKE__LED_BRIGHTNESS );
+    kb__led__set( 1, OPT__LED_BRIGHTNESS );
     _delay_ms(333);
-    kb__led__set( 2, MAKE__LED_BRIGHTNESS );
+    kb__led__set( 2, OPT__LED_BRIGHTNESS );
     _delay_ms(333);
-    kb__led__set( 3, MAKE__LED_BRIGHTNESS );
+    kb__led__set( 3, OPT__LED_BRIGHTNESS );
     _delay_ms(333);
 }
 

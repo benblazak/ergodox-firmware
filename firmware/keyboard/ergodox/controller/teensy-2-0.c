@@ -4,7 +4,7 @@
  * Project located at <https://github.com/benblazak/ergodox-firmware>
  * ------------------------------------------------------------------------- */
 
-/*
+/**                                                                 description
  * Teensy 2.0 specific code, helping to implement the "controller" section of
  * '.../firmware/keyboard.h'
  */
@@ -25,6 +25,11 @@
 
 #if KB__ROWS != 6 || KB__COLUMNS != 14
 	#error "Expecting different keyboard dimensions"
+#endif
+
+#if  ( OPT__TEENSY__DRIVE_ROWS && OPT__TEENSY__DRIVE_COLUMNS )   \
+ || !( OPT__TEENSY__DRIVE_ROWS || OPT__TEENSY__DRIVE_COLUMNS )
+    #error "Teensy pin drive direction incorrectly set"
 #endif
 
 // ----------------------------------------------------------------------------
@@ -162,9 +167,9 @@
 
 // ----------------------------------------------------------------------------
 
-/*
- * returns
- * - success: 0
+/**                                          functions/teensy__init/description
+ * Returns
+ * - success: `0`
  */
 uint8_t teensy__init(void) {
     // CPU speed : should match F_CPU in makefile
@@ -194,10 +199,10 @@ uint8_t teensy__init(void) {
     // rows and columns
     teensypin_write_all_row(DDR, CLEAR);     // set as input (hi-Z)
     teensypin_write_all_column(DDR, CLEAR);  // set as input (hi-Z)
-    #if MAKE__TEENSY__DRIVE_ROWS
+    #if OPT__TEENSY__DRIVE_ROWS
         teensypin_write_all_row(PORT, CLEAR);   // pull-up disabled
         teensypin_write_all_column(PORT, SET);  // pull-up enabled
-    #elif MAKE__TEENSY__DRIVE_COLUMNS
+    #elif OPT__TEENSY__DRIVE_COLUMNS
         teensypin_write_all_row(PORT, SET);       // pull-up enabled
         teensypin_write_all_column(PORT, CLEAR);  // pull-up disabled
     #endif
@@ -205,19 +210,19 @@ uint8_t teensy__init(void) {
     return 0;  // success
 }
 
-/*
- * returns
- * - success: 0
+/**                                 functions/teensy__update_matrix/description
+ * Returns:
+ * - success: `0`
  */
 uint8_t teensy__update_matrix(bool matrix[KB__ROWS][KB__COLUMNS]) {
-    #if MAKE__TEENSY__DRIVE_ROWS
+    #if OPT__TEENSY__DRIVE_ROWS
         update_columns_for_row(matrix, 0);
         update_columns_for_row(matrix, 1);
         update_columns_for_row(matrix, 2);
         update_columns_for_row(matrix, 3);
         update_columns_for_row(matrix, 4);
         update_columns_for_row(matrix, 5);
-    #elif MAKE__TEENSY__DRIVE_COLUMNS
+    #elif OPT__TEENSY__DRIVE_COLUMNS
         update_rows_for_column(matrix, 7);
         update_rows_for_column(matrix, 8);
         update_rows_for_column(matrix, 9);

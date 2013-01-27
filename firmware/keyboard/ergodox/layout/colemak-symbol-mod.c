@@ -4,21 +4,20 @@
  * Project located at <https://github.com/benblazak/ergodox-firmware>
  * ------------------------------------------------------------------------- */
 
-/**
- * - description: |
- *   A Colemak layout (modified from the Kinesis layout).
+/**                                                                 description
+ * A Colemak layout (modified from the Kinesis layout).
  *
- *   Implements the "layout" section of '.../firmware/keyboard.h'
+ * Implements the "layout" section of '.../firmware/keyboard.h'
  *
- *   Notes:
- *   * This layout *does not* contain a key mapped to the bootloader function.
- *     To reflash from this layout, you will need to physically press the
- *     button on the top right of the Teensy.
+ * Notes:
+ * - This layout *does not* contain a key mapped to the bootloader function.
+ *   To reflash from this layout, you will need to physically press the button
+ *   on the top right of the Teensy.
  *
- *   History:
- *   * Originally submitted by Jason Trill [jjt] (https://github.com/jjt) (who
- *     declined to be added to the copyright above).
- *   * Transcribed by Ben Blazak when the layout format changed.
+ * History:
+ * - Originally submitted by Jason Trill [jjt] (https://github.com/jjt) (who
+ *   declined to be added to the copyright above).
+ * - Transcribed by Ben Blazak when the layout format changed.
  *
  */
 
@@ -66,10 +65,10 @@ void kb__led__logical_off(char led) {
 #include "./default/keys.h"
 
 // layer
-key_t L0pu1po  = { &kf__layer__push, 0x0001, &kf__layer__pop, 0x00 };
-key_t L1pu2    = { &kf__layer__push, 0x0102, NULL,            0    };
-key_t L1po     = { &kf__layer__pop,  0x01,   NULL,            0    };
-key_t L1pu2po  = { &kf__layer__push, 0x0102, &kf__layer__pop, 0x01 };
+key_t L0pu1po  = { &kf__layer__push, 0x0001, &kf__layer__pop, 0x0001 };
+key_t L1pu2    = { &kf__layer__push, 0x0102, NULL,                 0 };
+key_t L1po     = { &kf__layer__pop,  0x0100, NULL,                 0 };
+key_t L1pu2po  = { &kf__layer__push, 0x0102, &kf__layer__pop, 0x0102 };
 
 // --- NumPush
 const uint16_t PROGMEM NumPush__press[] = {
@@ -80,7 +79,7 @@ key_t NumPush = { &kf__macro__progmem, &NumPush__press,
 
 // --- NumPop
 const uint16_t PROGMEM NumPop__press[] = {
-    2, &kf__layer__pop, 0x02,
+    2, &kf__layer__pop, 0x0203,
        &kf__press, KEY__LockingNumLock };
 key_t NumPop = { &kf__macro__progmem, &NumPop__press,
                  &kf__release, KEY__LockingNumLock };
@@ -91,7 +90,7 @@ const uint16_t PROGMEM NumPuPo__press[] = {
        &kf__press,   KEY__LockingNumLock,
        &kf__release, KEY__LockingNumLock };
 const uint16_t PROGMEM NumPuPo__release[] = {
-    3, &kf__layer__pop, 0x02,
+    3, &kf__layer__pop, 0x0203,
        &kf__press,   KEY__LockingNumLock,
        &kf__release, KEY__LockingNumLock };
 key_t NumPuPo = { &kf__macro__progmem, &NumPuPo__press,
@@ -193,7 +192,7 @@ NA,
                                                     Transp,   Transp,   Transp,
                                                     Transp,   Transp,   Transp,
 // right hand ..... ......... ......... ......... ......... ......... .........
-            NumPop,   Transp,   NumPop,    Equal,    KPDiv,    KPMul,         
+            NumPop,   Transp,   NumPop,    Equal,    KPDiv,    KPMul,   Transp,
             Transp,   Transp,      KP7,      KP8,      KP9,    KPSub,   Transp,
                       Transp,      KP4,      KP5,      KP6,    KPAdd,   Transp,
             Transp,   Transp,      KP1,      KP2,      KP3,  KPEnter,   Transp,

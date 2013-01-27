@@ -4,7 +4,7 @@
  * Project located at <https://github.com/benblazak/ergodox-firmware>
  * ------------------------------------------------------------------------- */
 
-/*
+/**                                                                 description
  * MCP23018 (driven by Teensy 2.0 over TWI) specific code, helping to implement
  * the "controller" section of '.../firmware/keyboard.h'
  */
@@ -20,6 +20,11 @@
 
 #if KB__ROWS != 6 || KB__COLUMNS != 14
     #error "Expecting different keyboard dimensions"
+#endif
+
+#if  ( OPT__MCP23018__DRIVE_ROWS && OPT__MCP23018__DRIVE_COLUMNS )   \
+ || !( OPT__MCP23018__DRIVE_ROWS || OPT__MCP23018__DRIVE_COLUMNS )
+    #error "MCP23018 pin drive direction incorrectly set"
 #endif
 
 // ----------------------------------------------------------------------------
@@ -41,11 +46,12 @@
 
 // ----------------------------------------------------------------------------
 
-/* returns:
- * - success: 0
+/**                                        functions/mcp23018__init/description
+ * Returns:
+ * - success: `0`
  * - failure: twi status code
  *
- * notes:
+ * Notes:
  * - `twi__stop()` must be called *exactly once* for each twi block, the way
  *   things are currently set up.  this may change in the future.
  */
@@ -60,10 +66,10 @@ uint8_t mcp23018__init(void) {
     ret = twi__send(TWI_ADDR_WRITE);
     if (ret) goto out;  // make sure we got an ACK
     twi__send(IODIRA);
-    #if MAKE__MCP23018__DRIVE_ROWS
+    #if OPT__MCP23018__DRIVE_ROWS
         twi__send(0b11111111);  // IODIRA
         twi__send(0b11000000);  // IODIRB
-    #elif MAKE__MCP23018__DRIVE_COLUMNS
+    #elif OPT__MCP23018__DRIVE_COLUMNS
         twi__send(0b10000000);  // IODIRA
         twi__send(0b11111111);  // IODIRB
     #endif
@@ -77,10 +83,10 @@ uint8_t mcp23018__init(void) {
     ret = twi__send(TWI_ADDR_WRITE);
     if (ret) goto out;  // make sure we got an ACK
     twi__send(GPPUA);
-    #if MAKE__MCP23018__DRIVE_ROWS
+    #if OPT__MCP23018__DRIVE_ROWS
         twi__send(0b11111111);  // GPPUA
         twi__send(0b11000000);  // GPPUB
-    #elif MAKE__MCP23018__DRIVE_COLUMNS
+    #elif OPT__MCP23018__DRIVE_COLUMNS
         twi__send(0b10000000);  // GPPUA
         twi__send(0b11111111);  // GPPUB
     #endif
@@ -102,8 +108,9 @@ out:
     return ret;
 }
 
-/* returns:
- * - success: 0
+/**                               functions/mcp23018__update_matrix/description
+ * Returns:
+ * - success: `0`
  * - failure: twi status code
  */
 uint8_t mcp23018__update_matrix(bool matrix[KB__ROWS][KB__COLUMNS]) {
@@ -127,7 +134,7 @@ uint8_t mcp23018__update_matrix(bool matrix[KB__ROWS][KB__COLUMNS]) {
 
     // update our part of the matrix ..........................................
 
-    #if MAKE__MCP23018__DRIVE_ROWS
+    #if OPT__MCP23018__DRIVE_ROWS
         for (uint8_t row=0; row<=5; row++) {
             // set active row low  : 0
             // set other rows hi-Z : 1
@@ -159,7 +166,7 @@ uint8_t mcp23018__update_matrix(bool matrix[KB__ROWS][KB__COLUMNS]) {
         twi__send(0xFF);
         twi__stop();
 
-    #elif MAKE__MCP23018__DRIVE_COLUMNS
+    #elif OPT__MCP23018__DRIVE_COLUMNS
         for (uint8_t col=0; col<=6; col++) {
             // set active column low  : 0
             // set other columns hi-Z : 1

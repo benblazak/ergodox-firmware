@@ -4,28 +4,24 @@
  * Project located at <https://github.com/benblazak/ergodox-firmware>
  * ------------------------------------------------------------------------- */
 
-/**
- * - description: |
- *     USB Keyboard Key Codes (usage page 0x07)
+/**                                                                 description
+ * USB Keyboard Key Codes (usage page 0x07)
  *
- *     Prefixes: `KEY__`, `KEYPAD__`
+ * Prefixes: `KEY__`, `KEYPAD__`
  *
- *     Taken from [the HID Usage Tables pdf][1], Section 10, which can be
- *     found on [the HID Page][2] at <http://www.usb.org>
+ * Taken from [the HID Usage Tables pdf][1], Section 10, which can be found on
+ * [the HID Page][2] at <http://www.usb.org>
  *
- *     - `Boot Keyboard Req.` indicates that the usage code is one that
- *       should be supported by the listed types of keyboards (104-key, ...)
- *       on boot
+ * - `Boot Keyboard Req.` indicates that the usage code is one that should be
+ *   supported by the listed types of keyboards (104-key, ...) on boot
  *
- *     - `KEY_` indicates a Keyboard key
- *     - `KEYPAD_` indicates a Keypad key
- *     - Multiple names concatenated in CamelCase indicate a single value
- *     - Multiple names separated by `_`s indicate shifted or alternate
- *       values
+ * - `KEY_` indicates a Keyboard key
+ * - `KEYPAD_` indicates a Keypad key
+ * - Multiple names concatenated in CamelCase indicate a single value
+ * - Multiple names separated by `_`s indicate shifted or alternate values
  *
- *     [1]: http://www.usb.org/developers/devclass_docs/Hut1_12v2.pdf
- *     [2]: http://www.usb.org/developers/hidpage
- * ----------------------------------------------------------------------------
+ * [1]: http://www.usb.org/developers/devclass_docs/Hut1_12v2.pdf
+ * [2]: http://www.usb.org/developers/hidpage
  */
 
 

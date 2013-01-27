@@ -4,15 +4,14 @@
  * Project located at <https://github.com/benblazak/ergodox-firmware>
  * ------------------------------------------------------------------------- */
 
-/**
- * - description: |
- *   Extended (from the definitions in ".../lib/layout/keys.h") default key
- *   definitions.  Feel free not to use them, if they're not convenient.
+/**                                                                 description
+ * Extended (from the definitions in ".../lib/layout/keys.h") default key
+ * definitions.  Feel free not to use them, if they're not convenient.
  */
 
 
-#ifndef ERGODOX_FIRMWARE__KEYBOARD__ERGODOX__LAYOUT__DEFAULT__KEYS_H
-#define ERGODOX_FIRMWARE__KEYBOARD__ERGODOX__LAYOUT__DEFAULT__KEYS_H
+#ifndef ERGODOX_FIRMWARE__KEYBOARD__ERGODOX__LAYOUT__DEFAULT__KEYS__H
+#define ERGODOX_FIRMWARE__KEYBOARD__ERGODOX__LAYOUT__DEFAULT__KEYS__H
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 
@@ -24,7 +23,7 @@
 // `keys__` macros (needed by ".../lib/layout/keys.h")
 
 #define  KEYS__DEFAULT(name, value)             \
-    key_t name = {                              \
+    KEY_T name = {                              \
         .press_function   = &kf__press,         \
         .press_value      = value,              \
         .release_function = &kf__release,       \
@@ -37,7 +36,7 @@
     const uint16_t PROGMEM name##__release[] = {            \
         2, &kf__release, KEY__LeftShift,                    \
            &kf__release, value };                           \
-    key_t name = { &kf__macro__progmem, &name##__press,     \
+    KEY_T name = { &kf__macro__progmem, &name##__press,     \
                    &kf__macro__progmem, &name##__release }
 
 
@@ -50,7 +49,7 @@
     const uint16_t PROGMEM name##__release[] = {                \
         2, &kf__two_keys_capslock, 0,                           \
            &kf__release, value };                               \
-    key_t name = { &kf__macro__progmem, &name##__press,         \
+    KEY_T name = { &kf__macro__progmem, &name##__press,         \
                    &kf__macro__progmem, &name##release }         
 
 // ----------------------------------------------------------------------------
@@ -62,8 +61,8 @@
 
 // special meaning
 
-key_t Transp   = NULL;                  // transparent
-key_t NA       = { NULL, 0, NULL, 0 };  // "not applicable" (do nothing)
+KEY_T Transp   = NULL;                  // transparent
+KEY_T NA       = { NULL, 0, NULL, 0 };  // "not applicable" (do nothing)
 
 
 // special keycode
@@ -83,10 +82,10 @@ KEYS__TWO_KEYS_CAPSLOCK_PRESS_RELEASE( Sh2KCapL, KEY__LeftShift );
 KEYS__TWO_KEYS_CAPSLOCK_PRESS_RELEASE( Sh2KCapR, KEY__RightShift );
 
 // --- Btldr
-key_t Btldr = { &kf__jump_to_bootloader, 0, NULL, 0 };
+KEY_T Btldr = { &kf__jump_to_bootloader, 0, NULL, 0 };
 
 
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
-#endif  // ERGODOX_FIRMWARE__KEYBOARD__ERGODOX__LAYOUT__DEFAULT__KEYS_H
+#endif  // ERGODOX_FIRMWARE__KEYBOARD__ERGODOX__LAYOUT__DEFAULT__KEYS__H
 

@@ -4,7 +4,7 @@
  * Project located at <https://github.com/benblazak/ergodox-firmware>
  * ------------------------------------------------------------------------- */
 
-/*
+/**                                                                 description
  * For inclusion by '../controller.c'
  */
 

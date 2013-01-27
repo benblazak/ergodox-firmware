@@ -4,25 +4,25 @@
  * Project located at <https://github.com/benblazak/ergodox-firmware>
  * ------------------------------------------------------------------------- */
 
-/**
- * - description: |
- *   A default way to execute keys.  Meant to be included by the layout using
- *   it (and nowhere else, since it's actual code).
+/**                                                                 description
+ * A default way to execute keys.  Meant to be included by the layout using it
+ * (and nowhere else, since it's actual code).
  *
- *   Note:  This oddish setup is used to allow layouts to easily change some
- *   default things without having to deal with all of them.
+ * Notes:
+ * - This oddish setup is used to allow layouts to easily change some default
+ *   things without having to deal with all of them.
  */
 
 
-#ifndef ERGODOX_FIRMWARE__KEYBOARD__ERGODOX__LAYOUT__DEFAULT__EXEC_KEY_C_H
-#define ERGODOX_FIRMWARE__KEYBOARD__ERGODOX__LAYOUT__DEFAULT__EXEC_KEY_C_H
+#ifndef ERGODOX_FIRMWARE__KEYBOARD__ERGODOX__LAYOUT__DEFAULT__EXEC_KEY__C__H
+#define ERGODOX_FIRMWARE__KEYBOARD__ERGODOX__LAYOUT__DEFAULT__EXEC_KEY__C__H
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 
 
 #include "./common.h"
 
-extern key_t layout[][KB__ROWS][KB__COLUMNS];
+extern KEY_T layout[][KB__ROWS][KB__COLUMNS];
 
 // ----------------------------------------------------------------------------
 
@@ -44,5 +44,5 @@ void kb__layout__exec_key( bool   pressed,
 
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
-#endif  // ERGODOX_FIRMWARE__KEYBOARD__ERGODOX__LAYOUT__DEFAULT__EXEC_KEY_C_H
+#endif  // ERGODOX_FIRMWARE__KEYBOARD__ERGODOX__LAYOUT__DEFAULT__EXEC_KEY__C__H
 

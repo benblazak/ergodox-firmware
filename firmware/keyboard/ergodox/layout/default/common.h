@@ -10,8 +10,8 @@
  */
 
 
-#ifndef ERGODOX_FIRMWARE__KEYBOARD__ERGODOX__LAYOUT__DEFAULT__COMMON_H
-#define ERGODOX_FIRMWARE__KEYBOARD__ERGODOX__LAYOUT__DEFAULT__COMMON_H
+#ifndef ERGODOX_FIRMWARE__KEYBOARD__ERGODOX__LAYOUT__DEFAULT__COMMON__H
+#define ERGODOX_FIRMWARE__KEYBOARD__ERGODOX__LAYOUT__DEFAULT__COMMON__H
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 
@@ -27,17 +27,17 @@
 
 // ----------------------------------------------------------------------------
 
-struct key_t {
+typedef struct {
     kf__function_pointer_t  press_function;
     uint16_t                press_value;
     kf__function_pointer_t  release_function;
     uint16_t                release_value;
-};
+} key_t;
 
-typedef  const struct key_t * const PROGMEM  key_t
+#define  KEY_T  const key_t * const PROGMEM
 
 
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
-#endif  // ERGODOX_FIRMWARE__KEYBOARD__ERGODOX__LAYOUT__DEFAULT__COMMON_H
+#endif  // ERGODOX_FIRMWARE__KEYBOARD__ERGODOX__LAYOUT__DEFAULT__COMMON__H
 

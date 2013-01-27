@@ -4,24 +4,23 @@
  * Project located at <https://github.com/benblazak/ergodox-firmware>
  * ------------------------------------------------------------------------- */
 
-/**
- * - description: |
- *     USB LED Codes (usage page 0x08)
+/**                                                                 description
+ * USB LED Codes (usage page 0x08)
  *
- *     Prefix: `LED__`
+ * Prefix: `LED__`
  *
- *     Taken from [the HID Usage Tables pdf][1], Section 11,
- *     which can be found on [the HID Page][2] at <http://www.usb.org>
+ * Taken from [the HID Usage Tables pdf][1], Section 11, which can be found on
+ * [the HID Page][2] at <http://www.usb.org>
  *
- *     - applicable Usage Types (from Section 3.4)
- *       - OOC : On/Off Control
- *       - Sel : Selector
- *       - DV  : Dynamic Value
- *       - US  : Usage Switch
- *       - UM  : Usage Modifier
+ * - applicable Usage Types (from Section 3.4)
+ *   - OOC : On/Off Control
+ *   - Sel : Selector
+ *   - DV  : Dynamic Value
+ *   - US  : Usage Switch
+ *   - UM  : Usage Modifier
  *
- *     [1]: http://www.usb.org/developers/devclass_docs/Hut1_12v2.pdf
- *     [2]: http://www.usb.org/developers/hidpage
+ * [1]: http://www.usb.org/developers/devclass_docs/Hut1_12v2.pdf
+ * [2]: http://www.usb.org/developers/hidpage
  */
 
 
