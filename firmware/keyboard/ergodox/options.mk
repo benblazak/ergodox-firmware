@@ -7,6 +7,8 @@
 ##                                                                  description
 # A central place for all ErgoDox-specific Makefile-level things
 #
+# This file is meant to be included by '.../firmware/makefile'
+#
 
 
 # TODO: include the other 'options.mk' files that we need to

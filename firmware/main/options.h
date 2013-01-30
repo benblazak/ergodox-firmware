@@ -5,11 +5,13 @@
  * ------------------------------------------------------------------------- */
 
 /**                                                                 description
- * `main()` options
+ * A central place for all `main()` related source-level options (though, some
+ * of them aren't defined here)
  *
  * Prefix: `OPT__`
  *
- * This file is meant to be included by the using '.../options.h'
+ * This file is meant to be globally included on the command line (after
+ * '.../firmware/keyboard/.../options.h')
  */
 
 

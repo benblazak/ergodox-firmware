@@ -5,12 +5,15 @@
 # -----------------------------------------------------------------------------
 
 ##                                                                  description
-# `main()` options
+# A central place for all `main()` related Makefile-level options
 #
-# This file is meant to be included by the using '.../options.mk'
+# This file is meant to be included by '.../firmware/makefile' (after
+# '.../firmware/keyboard/.../options.mk')
 #
 
 
 SRC += $(wildcard ../main.c)
 SRC += $(wildcard main/*.c)
+
+CFLAGS += -include $(wildcard options.h)
 
