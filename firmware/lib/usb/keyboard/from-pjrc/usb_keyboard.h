@@ -3,7 +3,7 @@
  * ------------------------------------------------------------------------- */
 
 /**                                                                 description
- * The USB interface
+ * The PJRC USB interface
  *
  * Prefix: `usb__`
  *

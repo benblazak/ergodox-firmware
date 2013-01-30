@@ -270,7 +270,7 @@
 #define KEY__RightAlt                0xE6  // √  √   √        101/104
 #define KEY__RightGUI                0xE7  // √  √   √            104
 
-//     (Reserved)            0xE8..0xFFFF  // -  -   -     -
+//      (Reserved)           0xE8..0xFFFF  // -  -   -     -
 
 
 // ----------------------------------------------------------------------------

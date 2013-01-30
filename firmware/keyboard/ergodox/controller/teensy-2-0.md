@@ -1,5 +1,3 @@
-# Documentation : Teensy 2.0
-
 ## Pinout and Pin assignments
 
 * `+` indicates connected pin

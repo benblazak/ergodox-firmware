@@ -9,11 +9,20 @@
 #
 
 
+# TODO: include the other 'options.mk' files that we need to
+
+
+BINARY_FORMAT := ihex
+# the binary format to generate
+
 MCU := atmega32u4
 # processor type (for the teensy 2.0)
 
 F_CPU := 16000000
 # processor speed, in Hz; max value is 16000000 (16MHz)
+
+KEYBOARD_LAYOUT := qwerty-kinesis-mod
+# default layout for this keyboard
 
 KEYBOARD_LAYOUTS := \
 	colemak-symbol-mod \
@@ -26,4 +35,6 @@ KEYBOARD_LAYOUTS := \
 SCR += $(wildcard *.c)
 SRC += $(wildcard controller/*.c)
 SRC += $(wildcard layout/$(KEYBOARD_LAYOUT)*.c)
+
+CFLAGS += -include $(wildcard options.h)
 

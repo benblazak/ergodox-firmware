@@ -26,6 +26,28 @@
  || !( OPT__MCP23018__DRIVE_ROWS || OPT__MCP23018__DRIVE_COLUMNS )
     #error "MCP23018 pin drive direction incorrectly set"
 #endif
+/**                                          macros/(group) pin drive direction
+ * Select which set of pins (rows or columns) will drive (alternate between
+ * hi-Z and drive low), and which will be inputs (hi-Z)
+ *
+ * Members:
+ * - `OPT__MCP23018__DRIVE_ROWS`
+ * - `OPT__MCP23018__DRIVE_COLUMNS`
+ *
+ * 
+ * Notes:
+ *
+ * - You must set exactly one of these variables to `1`, and the other to `0`
+ *
+ * - If you are using internal diodes (inside the key switches), set
+ *   `OPT__MCP23018__DRIVE_ROWS` to `1`
+ * 
+ * - If the diode cathode is towards the square solder pad, set
+ *   `OPT__MCP23018__DRIVE_COLUMNS` to `1`
+ * 
+ * - If the diode cathode is towards the circular solder pad, set
+ *   `OPT__MCP23018__DRIVE_ROWS` to `1`
+ */
 
 // ----------------------------------------------------------------------------
 

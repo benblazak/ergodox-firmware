@@ -22,6 +22,10 @@
  * THE SOFTWARE.
  * ------------------------------------------------------------------------- */
 
+// Version 1.0: Initial Release
+// Version 1.1: Add support for Teensy 2.0
+
+
 /**                                                                 description
  * Implements the USB interface
  *
@@ -32,8 +36,32 @@
  */
 
 
-// Version 1.0: Initial Release
-// Version 1.1: Add support for Teensy 2.0
+// ----------------------------------------------------------------------------
+
+#ifndef OPT__USB__STR_MANUFACTURER
+    #error "OPT__USB__STR_MANUFACTURER not defined"
+#endif
+#ifndef OPT__USB__STR_PRODUCT
+    #error "OPT__USB__STR_PRODUCT not defined"
+#endif
+#ifndef OPT__USB__VENDOR_ID
+    #error "OPT__USB__VENDOR_ID not defined"
+#endif
+#ifndef OPT__USB__PRODUCT_ID
+    #error "OPT__USB__PRODUCT_ID not defined"
+#endif
+
+/**                                              macros/(group) USB/description
+ * USB identifier information
+ *
+ * Members:
+ * - `OPT__USB__STR_MANUFACTURER`
+ * - `OPT__USB__STR_PRODUCT`
+ * - `OPT__USB__VENDOR_ID`
+ * - `OPT__USB__PRODUCT_ID`
+ */
+
+// ----------------------------------------------------------------------------
 
 #define USB_SERIAL_PRIVATE_INCLUDE
 #include "usb_keyboard.h"

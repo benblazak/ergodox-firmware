@@ -514,6 +514,8 @@
 
 ### Other Random Stuff
 
+#### Software
+
 * [Tutorial: Metacompilers Part 1]
   (http://www.bayfronttechnologies.com/mc_tutorial.html)  
   Probably doesn't have anything to do with microprocessors *or* web
@@ -543,6 +545,21 @@
   or forums or anything, so I could be completely wrong), just not very active.
   And the documentation's fairly incomplete (which is sad, it looks like a
   really cool language :) ).
+
+#### Hardware
+
+* [Working with Acrylic]
+  (http://www.bcae1.com/plexi.htm)
+
+    * mentioned in [this post]
+      (http://geekhack.org/index.php?topic=22780.msg782192#msg782192)
+      by [sordna] (http://geekhack.org/index.php?action=profile;u=9426)
+      (on <http://geekhack.org/>)
+
+    * also see [this post]
+      (http://geekhack.org/index.php?topic=22780.msg782080#msg782080)
+      by [kurplop] (http://geekhack.org/index.php?action=profile;u=17045)
+      (on <http://geekhack.org/>)
 
 
 

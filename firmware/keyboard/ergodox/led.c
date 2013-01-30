@@ -16,6 +16,16 @@
 
 // ----------------------------------------------------------------------------
 
+#ifndef OPT__LED_BRIGHTNESS
+    #error "OPT__LED_BRIGHTNESS not defined"
+#endif
+/**                                      macros/OPT__LED_BRIGHTNESS/description
+ * A percentage of maximum brightness, with '1' being greatest and '0' being
+ * not quite off
+ */
+
+// ----------------------------------------------------------------------------
+
 void kb__led__on(uint8_t led) {
     switch(led) {
         case 1: (DDRB |=  (1<<5)); break;  // topmost
