@@ -80,6 +80,6 @@ external tools to generate documentation, and for other purposes.
 -------------------------------------------------------------------------------
 
 Copyright &copy; 2012, 2013 Ben Blazak <benblazak.dev@gmail.com>  
-Released under The MIT License (see "doc/license.md")  
+Released under The MIT License (see "doc/licenses/MIT.md")  
 Project located at <https://github.com/benblazak/ergodox-firmware>
 
