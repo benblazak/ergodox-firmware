@@ -59,10 +59,9 @@ void kb__led__delay__usb_init (void);
 void kb__led__logical_on  (char led);
 void kb__led__logical_off (char led);
 // -------
-uint8_t kb__layout__exec_key ( bool    pressed,
-                               uint8_t layer,
-                               uint8_t row,
-                               uint8_t column );
+void kb__layout__exec_key ( bool    pressed,
+                            uint8_t row,
+                            uint8_t column );
 
 
 // ----------------------------------------------------------------------------
@@ -250,19 +249,13 @@ uint8_t kb__layout__exec_key ( bool    pressed,
  * - `pressed`:
  *     - `true`: Indicates that the key to be "executed" has been pressed
  *     - `false`: Indicates that the key to be "executed" has been released
- * - `layer`: The layer of the key to be "executed"
  * - `row`: The row of the key to be "executed"
  * - `column`: The column of the key to be "executed"
  *
- * Returns:
- * - success: The layer of the key that was "executed"; this should be passed
- *   back by `main()` as `layer` when the key at the same `[row][column]` is
- *   released.
- *
  * Notes:
- * - This function is responsible for quite a bit of a keyboard's apparent
+ * - This function is responsible for almost all of a keyboard's apparent
  *   functionality.  It needs to be implemented at this level in order to hide
- *   the actual representation of keys, where they are stored, etc. from
- *   `main()`.
+ *   the actual representation of layers, keys, how and where they are stored,
+ *   etc. from `main()`.
  */
 

@@ -11,5 +11,5 @@
 #
 
 
-SRC += $(wildcard $(MCU).c
+SRC += $(wildcard $(MCU).c)
 

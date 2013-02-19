@@ -30,7 +30,6 @@
 #ifndef OPT__TWI__FREQUENCY
     #error "OPT__TWI__FREQUENCY not defined"
 #endif
-
 /**                                      macros/OPT__TWI__FREQUENCY/description
  * The TWI Frequency, in Hz.
  *
