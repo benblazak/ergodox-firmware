@@ -5,25 +5,31 @@
  * ------------------------------------------------------------------------- */
 
 /**                                                                 description
- * A central place for all `main()` related source-level options (though, some
- * of them aren't defined here)
- *
- * Prefix: `OPT__`
- *
- * This file is meant to be globally included on the command line
+ * `main()`: tying it all together
  */
 
 
-#ifndef ERGODOX_FIRMWARE__FIRMWARE__MAIN__OPTIONS__H
-#define ERGODOX_FIRMWARE__FIRMWARE__MAIN__OPTIONS__H
-// ----------------------------------------------------------------------------
-// ----------------------------------------------------------------------------
-
-
-// (nothing here for now)
-
+// TODO: includes
 
 // ----------------------------------------------------------------------------
+
+#ifndef OPT__DEBOUNCE_TIME
+    #error "OPT__DEBOUNCE_TIME not defined"
+#endif
+/**                                       macros/OPT__DEBOUNCE_TIME/description
+ * The minimum amount of time to wait between two scans of a key, in
+ * milliseconds
+ *
+ * Notes:
+ * - Cherry MX bounce time <= 5ms (at 16 in/sec actuation speed) (spec)
+ */
+
 // ----------------------------------------------------------------------------
-#endif  // ERGODOX_FIRMWARE__FIRMWARE__MAIN__OPTIONS__H
+
+// TODO: macros, if any
+
+// ----------------------------------------------------------------------------
+
+void main(void) {
+}
 

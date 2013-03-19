@@ -69,8 +69,6 @@
 
 #define  OPT__TWI__FREQENCY  400000
 
-#include "../../../firmware/lib/twi/options.h"
-
 
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
@@ -80,11 +78,8 @@
 #define  OPT__USB__VENDOR_ID         0x1d50  // Openmoko, Inc.
 #define  OPT__USB__PRODUCT_ID        0x6028  // ErgoDox ergonomic keyboard
 
-#include "../../../firmware/lib/usb/keyboard/options.h"
-
 
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 #endif  // ERGODOX_FIRMWARE__FIRMWARE__KEYBOARD__ERGODOX__OPTIONS__H
-
 

@@ -1,8 +1,3 @@
-<!-- TODO: rewrite / rework -->
-
-# References
-
-
 ## Electronics Stuff
 
 * [Resistor Color Codes]
@@ -512,17 +507,30 @@
   about how I would write a keymap making thing in javascript.  Not sure how
   good it'd be for that specifically, but the concept is just so **awesome**!
 
-### Other Random Stuff
+### Hardware Stuff (for the keyboard case)
 
-#### Software
+* [Working with Acrylic]
+  (http://www.bcae1.com/plexi.htm)
+
+    * mentioned in [this post]
+      (http://geekhack.org/index.php?topic=22780.msg782192#msg782192)
+      by [sordna] (http://geekhack.org/index.php?action=profile;u=9426)
+      (on <http://geekhack.org/>)
+
+    * also see [this post]
+      (http://geekhack.org/index.php?topic=22780.msg782080#msg782080)
+      by [kurplop] (http://geekhack.org/index.php?action=profile;u=17045)
+      (on <http://geekhack.org/>)
+
+### Some Random Software Stuff
 
 * [Tutorial: Metacompilers Part 1]
   (http://www.bayfronttechnologies.com/mc_tutorial.html)  
   Probably doesn't have anything to do with microprocessors *or* web
-  development (at least at the moment)... but once again, the concept is really
-  awesome :) .  I included it here because, as I was writing in C, the thought
-  "I could write a script to generate this code in Python *so* easily..." went
-  through my head quite often.
+  development (at least at the moment)... but the concept is really awesome :)
+  .  I included it here because, as I was writing in C, the thought "I could
+  write a script to generate this code in Python *so* easily..." went through
+  my head quite often.
 
 * [Towards Moore's Law Software: Part 1 of 3]
   (http://www.moserware.com/2008/04/towards-moores-law-software-part-1-of-3.html)  
@@ -544,22 +552,7 @@
   so... not that it looks dead (and, acutally, I didn't check the IRC channel
   or forums or anything, so I could be completely wrong), just not very active.
   And the documentation's fairly incomplete (which is sad, it looks like a
-  really cool language :) ).
-
-#### Hardware
-
-* [Working with Acrylic]
-  (http://www.bcae1.com/plexi.htm)
-
-    * mentioned in [this post]
-      (http://geekhack.org/index.php?topic=22780.msg782192#msg782192)
-      by [sordna] (http://geekhack.org/index.php?action=profile;u=9426)
-      (on <http://geekhack.org/>)
-
-    * also see [this post]
-      (http://geekhack.org/index.php?topic=22780.msg782080#msg782080)
-      by [kurplop] (http://geekhack.org/index.php?action=profile;u=17045)
-      (on <http://geekhack.org/>)
+  really cool language...).
 
 
 

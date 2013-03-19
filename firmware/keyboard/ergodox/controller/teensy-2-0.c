@@ -31,7 +31,7 @@
  || !( OPT__TEENSY__DRIVE_ROWS || OPT__TEENSY__DRIVE_COLUMNS )
     #error "Teensy pin drive direction incorrectly set"
 #endif
-/**                                          macros/(group) pin drive direction
+/**                              macros/(group) pin drive direction/description
  * Select which set of pins (rows or columns) will drive (alternate between
  * hi-Z and drive low), and which will be inputs (hi-Z)
  *
@@ -190,7 +190,7 @@
 // ----------------------------------------------------------------------------
 
 /**                                          functions/teensy__init/description
- * Returns
+ * Returns:
  * - success: `0`
  */
 uint8_t teensy__init(void) {

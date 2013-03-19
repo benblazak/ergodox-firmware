@@ -26,7 +26,7 @@
  || !( OPT__MCP23018__DRIVE_ROWS || OPT__MCP23018__DRIVE_COLUMNS )
     #error "MCP23018 pin drive direction incorrectly set"
 #endif
-/**                                          macros/(group) pin drive direction
+/**                              macros/(group) pin drive direction/description
  * Select which set of pins (rows or columns) will drive (alternate between
  * hi-Z and drive low), and which will be inputs (hi-Z)
  *
