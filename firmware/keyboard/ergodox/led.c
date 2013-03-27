@@ -10,7 +10,6 @@
  * Code is specific to Teensy 2.0
  */
 
-
 #include <stdint.h>
 #include <avr/io.h>
 

@@ -11,5 +11,6 @@
 #
 
 
-SRC += $(wildcard from-pjrc/*.c)
+SRC += $(wildcard *.c)
+SRC += $(wildcard keyboard/from-pjrc/*.c)
 

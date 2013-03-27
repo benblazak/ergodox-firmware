@@ -27,7 +27,6 @@ typedef  void (*kf__function_pointer_t)(uint16_t value);
 // basic
 void kf__press          (uint16_t keycode);
 void kf__release        (uint16_t keycode);
-void kf__send           (uint16_t ignore);
 void kf__toggle         (uint16_t keycode);
 void kf__layer__push    (uint16_t id__layer);
 void kf__layer__pop     (uint16_t id__ignore);
@@ -35,11 +34,29 @@ void kf__macro__sram    (uint16_t pointer);
 void kf__macro__progmem (uint16_t pointer);
 void kf__macro__eeprom  (uint16_t pointer);
 
+// TODO: chording
+//
+// - consider making a 'kf__chord(uint16_t pointer)' that takes a pointer to an
+//   array containing whatever's needed to specify [ which group of keys it
+//   belongs to; whether to increment or decrement the counter for that group;
+//   the threshold for action for that group; the action (possibly a
+//   layer/row/col tuple for a key to call exec on, or possible just a row/col,
+//   and a layer shift some other way, ...) ]
+//
+// - create a auto-resizing array ('flex_array'?) for use with this function,
+//   and probably with the the layer stack functions as well.  IDs can be
+//   treated as array indices (the burden being on the user not to use indices
+//   that are too large...)
+//
+// TODO: rewrite layouts to reflect
+// - kf__two_keys_capslock() -> kf__toggle_capslock()
+// - the removal of kf__send()
+
 // device
 void kf__jump_to_bootloader (uint16_t ignore);
 
 // special
-void kf__two_keys_capslock (uint16_t pressed);
+void kf__toggle_capslock (uint16_t ignore);
 
 
 // ----------------------------------------------------------------------------
@@ -78,7 +95,7 @@ void kf__two_keys_capslock (uint16_t pressed);
 
 // === kf__press() ===
 /**                                             functions/kf__press/description
- * Generate a normal keypress.
+ * Generate a normal keypress (and send the USB report).
  *
  * Arguments:
  * - `keycode`: The keycode to "press"
@@ -86,19 +103,10 @@ void kf__two_keys_capslock (uint16_t pressed);
 
 // === kf__release() ===
 /**                                           functions/kf__release/description
- * Generate a normal keyrelease.
+ * Generate a normal keyrelease (and send the USB report).
  *
  * Arguments:
  * - `keycode`: The keycode to "release"
- */
-
-// === kf__send() ===
-/**                                              functions/kf__send/description
- * Send the USB report (immediately, instead of waiting for the scan cycle to
- * end).
- *
- * Arguments:
- * - `ignore`: [ignore]
  */
 
 // === kf__toggle() ===
@@ -201,26 +209,17 @@ void kf__two_keys_capslock (uint16_t pressed);
 // ----------------------------------------------------------------------------
 // special --------------------------------------------------------------------
 
-// === kf__two_keys_capslock() ===
-/**                                 functions/kf__two_keys_capslock/description
- * For implementing the behavior wherein pressing both shift keys at the same
- * time toggles capslock.
- *
- * If the count of pressed keys with this function assigned is greater than or
- * equal to 1, any subsequent "presses" of this function will toggle capslock.
+// === kf__toggle_capslock() ===
+/**                                   functions/kf__toggle_capslock/description
+ * Toggle the state of 'capslock'
  *
  * Arguments:
- * - `pressed`:
- *     - `true`: Add `1` to the count of pressed keys with this function
- *       assigned.
- *     - `false`: Subtract `1` from the count of pressed keys with this
- *       function assigned.
+ * - `ignore`: [ignore]
  *
  * Notes:
- * - If either or both of the two shifts is active when capslock is toggled
- *   (which should usually be the case), they will be released so that capslock
- *   will register properly when toggled (that is, when we automatically press
- *   then release it).  After this, the original state of the shifts will be
- *   restored.
+ * - This requires special handling because neither of the shift keys may be
+ *   active when 'capslock' is pressed, or it will not register properly.  This
+ *   function disables both shift keys, toggles 'capslock', and then restores
+ *   the state of both shift keys before exiting.
  */
 

@@ -98,6 +98,7 @@ Sh2KCapL,        Z,        X,        C,        V,        B,  L0pu1po,
                                                         Bs,      Del,      End,
 // right hand ..... ......... ......... ......... ......... ......... .........
            NumPush,       K6,       K7,       K8,       K9,       K0,     Dash,
+//       capslock)
              BrktL,        Y,        U,        I,        O,        P,    BrktR,
                            H,        J,        K,        L,  Semicol,    Quote,
            L0pu1po,        N,        M,    Comma,   Period,    Slash, Sh2KCapR,

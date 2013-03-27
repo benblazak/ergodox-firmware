@@ -1,5 +1,4 @@
-/* ----------------------------------------------------------------------------
- * USB Keyboard Example for Teensy USB Development Board
+/* USB Keyboard Example for Teensy USB Development Board
  * http://www.pjrc.com/teensy/usb_keyboard.html
  * Copyright (c) 2009 PJRC.COM, LLC
  * 
@@ -20,19 +19,22 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
- * ------------------------------------------------------------------------- */
+ */
 
 // Version 1.0: Initial Release
 // Version 1.1: Add support for Teensy 2.0
 
 
 /**                                                                 description
- * Implements the USB interface
+ * The PJRC USB keyboard implementation
  *
  * History:
- * - Originally from [PJRC] (http://pjrc.com/teensy/) : [usb_keyboard]
- *   (http://pjrc.com/teensy/usb_keyboard.zip)
- * - Modified 2012, Ben Blazak
+ * - Modified 2013, Ben Blazak
+ *
+ * Notes:
+ * - 'description' added
+ * - `usb_keyboard_press()` removed
+ * - `OPT__` macros added (and other code modified accordingly)
  */
 
 
@@ -128,7 +130,7 @@ static const uint8_t PROGMEM endpoint_config_table[] = {
 // spec and relevant portions of any USB class specifications!
 
 
-static const uint8_t PROGMEM device_descriptor[] = {
+static uint8_t PROGMEM device_descriptor[] = {
 	18,					// bLength
 	1,					// bDescriptorType
 	0x00, 0x02,				// bcdUSB
@@ -146,7 +148,7 @@ static const uint8_t PROGMEM device_descriptor[] = {
 };
 
 // Keyboard Protocol 1, HID 1.11 spec, Appendix B, page 59-60
-static const uint8_t PROGMEM keyboard_hid_report_desc[] = {
+static uint8_t PROGMEM keyboard_hid_report_desc[] = {
         0x05, 0x01,          // Usage Page (Generic Desktop),
         0x09, 0x06,          // Usage (Keyboard),
         0xA1, 0x01,          // Collection (Application),
@@ -183,7 +185,7 @@ static const uint8_t PROGMEM keyboard_hid_report_desc[] = {
 
 #define CONFIG1_DESC_SIZE        (9+9+9+7)
 #define KEYBOARD_HID_DESC_OFFSET (9+9)
-static const uint8_t PROGMEM config1_descriptor[CONFIG1_DESC_SIZE] = {
+static uint8_t PROGMEM config1_descriptor[CONFIG1_DESC_SIZE] = {
 	// configuration descriptor, USB spec 9.6.3, page 264-266, Table 9-10
 	9, 					// bLength;
 	2,					// bDescriptorType;
@@ -230,17 +232,17 @@ struct usb_string_descriptor_struct {
 	uint8_t bDescriptorType;
 	int16_t wString[];
 };
-static const struct usb_string_descriptor_struct PROGMEM string0 = {
+static struct usb_string_descriptor_struct PROGMEM string0 = {
 	4,
 	3,
 	{0x0409}
 };
-static const struct usb_string_descriptor_struct PROGMEM string1 = {
+static struct usb_string_descriptor_struct PROGMEM string1 = {
 	sizeof(STR_MANUFACTURER),
 	3,
 	STR_MANUFACTURER
 };
-static const struct usb_string_descriptor_struct PROGMEM string2 = {
+static struct usb_string_descriptor_struct PROGMEM string2 = {
 	sizeof(STR_PRODUCT),
 	3,
 	STR_PRODUCT
@@ -253,7 +255,7 @@ static struct descriptor_list_struct {
 	uint16_t	wIndex;
 	const uint8_t	*addr;
 	uint8_t		length;
-} const PROGMEM descriptor_list[] = {
+} PROGMEM descriptor_list[] = {
 	{0x0100, 0x0000, device_descriptor, sizeof(device_descriptor)},
 	{0x0200, 0x0000, config1_descriptor, sizeof(config1_descriptor)},
 	{0x2200, KEYBOARD_INTERFACE, keyboard_hid_report_desc, sizeof(keyboard_hid_report_desc)},
@@ -277,10 +279,10 @@ static volatile uint8_t usb_configuration=0;
 // which modifier keys are currently pressed
 // 1=left ctrl,    2=left shift,   4=left alt,    8=left gui
 // 16=right ctrl, 32=right shift, 64=right alt, 128=right gui
-uint8_t usb__kb__modifier_keys=0;
+uint8_t keyboard_modifier_keys=0;
 
 // which keys are currently pressed, up to 6 keys may be down at once
-uint8_t usb__kb__keys[6]={0,0,0,0,0,0};
+uint8_t keyboard_keys[6]={0,0,0,0,0,0};
 
 // protocol setting from the host.  We use exactly the same report
 // either way, so this variable only stores the setting since we
@@ -295,7 +297,7 @@ static uint8_t keyboard_idle_config=125;
 static uint8_t keyboard_idle_count=0;
 
 // 1=num lock, 2=caps lock, 4=scroll lock, 8=compose, 16=kana
-volatile uint8_t usb__kb__leds=0;
+volatile uint8_t keyboard_leds=0;
 
 
 /**************************************************************************
@@ -306,7 +308,7 @@ volatile uint8_t usb__kb__leds=0;
 
 
 // initialize USB
-void usb__init(void)
+void usb_init(void)
 {
 	HW_CONFIG();
 	USB_FREEZE();	// enable USB
@@ -321,14 +323,13 @@ void usb__init(void)
 
 // return 0 if the USB is not configured, or the configuration
 // number selected by the HOST
-uint8_t usb__is_configured(void)
+uint8_t usb_configured(void)
 {
 	return usb_configuration;
 }
 
-
-// send the contents of usb__kb__keys and usb__kb__modifier_keys
-int8_t usb__kb__send(void)
+// send the contents of keyboard_keys and keyboard_modifier_keys
+int8_t usb_keyboard_send(void)
 {
 	uint8_t i, intr_state, timeout;
 
@@ -350,10 +351,10 @@ int8_t usb__kb__send(void)
 		cli();
 		UENUM = KEYBOARD_ENDPOINT;
 	}
-	UEDATX = usb__kb__modifier_keys;
+	UEDATX = keyboard_modifier_keys;
 	UEDATX = 0;
 	for (i=0; i<6; i++) {
-		UEDATX = usb__kb__keys[i];
+		UEDATX = keyboard_keys[i];
 	}
 	UEINTX = 0x3A;
 	keyboard_idle_count = 0;
@@ -374,8 +375,7 @@ int8_t usb__kb__send(void)
 //
 ISR(USB_GEN_vect)
 {
-	uint8_t intbits, i;  // used to declare a variable `t` as well, but it
-			     //   wasn't used ::Ben Blazak, 2012::
+	uint8_t intbits, t, i;
 	static uint8_t div4=0;
 
         intbits = UDINT;
@@ -395,10 +395,10 @@ ISR(USB_GEN_vect)
 				keyboard_idle_count++;
 				if (keyboard_idle_count == keyboard_idle_config) {
 					keyboard_idle_count = 0;
-					UEDATX = usb__kb__modifier_keys;
+					UEDATX = keyboard_modifier_keys;
 					UEDATX = 0;
 					for (i=0; i<6; i++) {
-						UEDATX = usb__kb__keys[i];
+						UEDATX = keyboard_keys[i];
 					}
 					UEINTX = 0x3A;
 				}
@@ -569,10 +569,10 @@ ISR(USB_COM_vect)
 			if (bmRequestType == 0xA1) {
 				if (bRequest == HID_GET_REPORT) {
 					usb_wait_in_ready();
-					UEDATX = usb__kb__modifier_keys;
+					UEDATX = keyboard_modifier_keys;
 					UEDATX = 0;
 					for (i=0; i<6; i++) {
-						UEDATX = usb__kb__keys[i];
+						UEDATX = keyboard_keys[i];
 					}
 					usb_send_in();
 					return;
@@ -593,7 +593,7 @@ ISR(USB_COM_vect)
 			if (bmRequestType == 0x21) {
 				if (bRequest == HID_SET_REPORT) {
 					usb_wait_receive_out();
-					usb__kb__leds = UEDATX;
+					keyboard_leds = UEDATX;
 					usb_ack_out();
 					usb_send_in();
 					return;

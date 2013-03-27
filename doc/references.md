@@ -115,6 +115,10 @@
   Nice little web interface to a really helpful (when you're dealing with
   confusing type signatures in C) command line program.
 
+* [changing a 16-bit binary number into two 8-bit binary numbers]
+  (http://arduino.cc/forum/index.php/topic,44830.0.html)  
+  (on <http://arduino.cc/>)
+
 ### C++ Stuff
 
 * [Google C++ Style Guide]

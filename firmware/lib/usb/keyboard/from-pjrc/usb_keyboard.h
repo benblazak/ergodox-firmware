@@ -1,46 +1,40 @@
-/* ----------------------------------------------------------------------------
- * (See '.c' file for copyright and such)
- * ------------------------------------------------------------------------- */
-
 /**                                                                 description
- * The PJRC USB interface
+ * The PJRC USB keyboard interface
  *
- * Prefix: `usb__`
+ * See the '.c' file for copyright and such
  *
- * File History:
- * - Originally from [PJRC] (http://pjrc.com/teensy/) : [usb_keyboard]
- *   (http://pjrc.com/teensy/usb_keyboard.zip)
- * - Modified 2012, Ben Blazak.  I'd like to rewrite it someday (partly to add
- *   a few extra features (like mouse keys), mostly to learn how); but alas,
- *   someday has not yet come.
+ * Modified 2013, Ben Blazak
+ *
+ * Should be included only by those files that wrap parts of it to conform with
+ * '.../firmware/lib/usb.h'
+ *
+ * Notes:
+ * - 'description' added
+ * - `usb_keyboard_press()` removed
+ * - the empty macros for `usb_debug_putchar()` and `usb_debug_flush_output()`
+ *   removed
+ * - keycode macros removed
  */
 
+// ----------------------------------------------------------------------------
 
-#ifndef ERGODOX_FIRMWARE__FIRMWARE__LIB__FROM_PJRC__USB_KEYBOARD__USB_KEYBOARD__H
-#define ERGODOX_FIRMWARE__FIRMWARE__LIB__FROM_PJRC__USB_KEYBOARD__USB_KEYBOARD__H
-// ----------------------------------------------------------------------------
-// ----------------------------------------------------------------------------
+#ifndef usb_serial_h__
+#define usb_serial_h__
 
 #include <stdint.h>
 
-// ----------------------------------------------------------------------------
+void usb_init(void);			// initialize everything
+uint8_t usb_configured(void);		// is the USB port configured
 
-void    usb__init          (void);  // initialize everything
-uint8_t usb__is_configured (void);  // is the USB port configured?
-
-int8_t  usb__kb__send      (void);
-
-extern          uint8_t usb__kb__modifier_keys;
-extern          uint8_t usb__kb__keys[6];
-extern volatile uint8_t usb__kb__leds;
-
+int8_t usb_keyboard_send(void);
+extern uint8_t keyboard_modifier_keys;
+extern uint8_t keyboard_keys[6];
+extern volatile uint8_t keyboard_leds;
 
 // ----------------------------------------------------------------------------
-// Everything below this point is only intended for usb_serial.c --------------
-// ----------------------------------------------------------------------------
 
+// Everything below this point is only intended for usb_serial.c
 #ifdef USB_SERIAL_PRIVATE_INCLUDE
-
 #include <avr/io.h>
 #include <avr/pgmspace.h>
 #include <avr/interrupt.h>
@@ -86,7 +80,7 @@ extern volatile uint8_t usb__kb__leds;
 #define PLL_CONFIG() (PLLCSR = 0x16)
 #define USB_CONFIG() (USBCON = ((1<<USBE)|(1<<OTGPADE)))
 #define USB_FREEZE() (USBCON = ((1<<USBE)|(1<<FRZCLK)))
-#endif  // defined(__AVR_AT90USB162__)
+#endif
 
 // standard control endpoint request types
 #define GET_STATUS			0
@@ -109,12 +103,5 @@ extern volatile uint8_t usb__kb__leds;
 #define CDC_SET_LINE_CODING		0x20
 #define CDC_GET_LINE_CODING		0x21
 #define CDC_SET_CONTROL_LINE_STATE	0x22
-
-
-#endif  // USB_SERIAL_PRIVATE_INCLUDE
-
-
-// ----------------------------------------------------------------------------
-// ----------------------------------------------------------------------------
-#endif  // ERGODOX_FIRMWARE__FIRMWARE__LIB__FROM_PJRC__USB_KEYBOARD__USB_KEYBOARD__H
-
+#endif
+#endif

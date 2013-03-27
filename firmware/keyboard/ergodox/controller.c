@@ -8,7 +8,6 @@
  * Implements the "controller" section of '.../firmware/keyboard.h'
  */
 
-
 #include <stdbool.h>
 #include <stdint.h>
 #include "../../../firmware/keyboard.h"
@@ -17,11 +16,6 @@
 
 // ----------------------------------------------------------------------------
 
-/**                                              functions/kb__init/description
- * Returns:
- * - success: `0`
- * - failure: the number of the function that failed
- */
 uint8_t kb__init(void) {
     if (teensy__init())    // must be first (to initialize twi, and such)
         return 1;
@@ -31,11 +25,6 @@ uint8_t kb__init(void) {
     return 0;  // success
 }
 
-/**                                     functions/kb__update_matrix/description
- * Returns:
- * - success: `0`
- * - failure: number of the function that failed
- */
 uint8_t kb__update_matrix(bool matrix[KB__ROWS][KB__COLUMNS]) {
     if (teensy__update_matrix(matrix))
         return 1;
