@@ -30,9 +30,9 @@ void kf__release        (uint16_t keycode);
 void kf__toggle         (uint16_t keycode);
 void kf__layer__push    (uint16_t id__layer);
 void kf__layer__pop     (uint16_t id__ignore);
-void kf__macro__sram    (uint16_t pointer);
+// void kf__macro__sram    (uint16_t pointer);  // TODO
 void kf__macro__progmem (uint16_t pointer);
-void kf__macro__eeprom  (uint16_t pointer);
+// void kf__macro__eeprom  (uint16_t pointer);  // TODO
 
 // TODO: chording
 //
@@ -47,6 +47,15 @@ void kf__macro__eeprom  (uint16_t pointer);
 //   and probably with the the layer stack functions as well.  IDs can be
 //   treated as array indices (the burden being on the user not to use indices
 //   that are too large...)
+//
+// TODO: kf__macro__eeprom
+// - this should probably go into its own little place in 'lib'; it'll need a
+//   function to write the macro to memory, code to keep track of what's
+//   written in the eeprom, and stuff like that
+//
+// TODO: kf__macro__sram
+// - is this necessary?  will it be confusing (if we already have
+//   kf__macro__eeprom)?  we should probably remove it.
 //
 // TODO: rewrite layouts to reflect
 // - kf__two_keys_capslock() -> kf__toggle_capslock()

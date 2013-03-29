@@ -13,6 +13,7 @@
 #include <avr/pgmspace.h>
 #include "../../../../firmware/lib/usb.h"
 #include "../../../../firmware/lib/layout/layer-stack.h"
+#include "../key-functions.h"
 
 // ----------------------------------------------------------------------------
 
@@ -42,12 +43,18 @@ void kf__layer__pop(uint16_t id__ignore) {
     layer_stack__pop_id( ((uint8_t)(id__ignore >> 8)) );
 }
 
-void kf__macro__sram(uint16_t pointer) {  // TODO
-}
+void kf__macro__progmem(uint16_t pointer) {  // TODO: test
+    uint16_t last_element = pointer + 2 * (uint16_t) pgm_read_word(pointer);
 
-void kf__macro__progmem(uint16_t pointer) {  // TODO
-}
+    kf__function_pointer_t function;
+    uint16_t               argument;
 
-void kf__macro__eeprom(uint16_t pointer) {  // TODO
+    for(pointer += 1; pointer <= last_element; pointer += 2) {
+        function = (kf__function_pointer_t) pgm_read_word( pointer   );
+        argument = (uint16_t)               pgm_read_word( pointer+1 );
+
+        if (function)
+            (*function)(argument);
+    }
 }
 

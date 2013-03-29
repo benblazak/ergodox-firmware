@@ -119,6 +119,12 @@
   (http://arduino.cc/forum/index.php/topic,44830.0.html)  
   (on <http://arduino.cc/>)
 
+* [what happens in os when we dereference a null pointer in c]
+  (http://stackoverflow.com/questions/12645647/what-happens-in-os-when-we-dereference-a-null-pointer-in-c)  
+  Doesn't apply to AVRs really (since what happens in implementation defined
+  according to the C standard, and I didn't see AVRs mentioned; and AVRs don't
+  typically run an OS anyway), but still quite interesting.
+
 ### C++ Stuff
 
 * [Google C++ Style Guide]
