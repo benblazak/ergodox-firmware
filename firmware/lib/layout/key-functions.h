@@ -40,6 +40,11 @@ void kf__macro__progmem          (uint16_t pointer);
 void kf__chord__press__progmem   (uint16_t pointer);  // TODO: write doc.
 void kf__chord__release__progmem (uint16_t pointer);  // TODO: write doc.
 
+// TODO: switch to using two functions per key.  pay *careful* attention to how
+// much space the functions are likely to use, lol (but, a function that simply
+// calls another function with one argument looks like it might be only 4
+// bytes? which is just fine)
+
 // TODO: kf__macro__eeprom
 // - this should probably go into its own little place in 'lib'; it'll need a
 //   function to write the macro to memory, code to keep track of what's
