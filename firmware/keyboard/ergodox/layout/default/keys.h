@@ -34,23 +34,26 @@
         2, &kf__press, KEY__LeftShift,                      \
            &kf__press, value };                             \
     const uint16_t PROGMEM name##__release[] = {            \
-        2, &kf__release, KEY__LeftShift,                    \
-           &kf__release, value };                           \
+        2, &kf__release, value,                             \
+           &kf__release, KEY__LeftShift };                  \
     KEY_T name = { &kf__macro__progmem, &name##__press,     \
                    &kf__macro__progmem, &name##__release }
 
 
 // other `keys__` macros (in the `keys__` namespace for consistency)
 
-#define  KEYS__TWO_KEYS_CAPSLOCK_PRESS_RELEASE(name, value)     \
-    const uint16_t PROGMEM name##__press[] = {                  \
-        2, &kf__two_keys_capslock, 1,                           \
-           &kf__press, value };                                 \
-    const uint16_t PROGMEM name##__release[] = {                \
-        2, &kf__two_keys_capslock, 0,                           \
-           &kf__release, value };                               \
-    KEY_T name = { &kf__macro__progmem, &name##__press,         \
-                   &kf__macro__progmem, &name##release }         
+// TODO: rewrite to reflect: kf__two_keys_capslock() -> kf__toggle_capslock() +
+//       kf__chord__progmem() (or some such thing)
+// #define  KEYS__TWO_KEYS_CAPSLOCK(name, value)               \
+//     const uint16_t PROGMEM name##__press[] = {              \
+//         2, &kf__two_keys_capslock, 1,                       \
+//            &kf__press, value };                             \
+//     const uint16_t PROGMEM name##__release[] = {            \
+//         2, &kf__two_keys_capslock, 0,                       \
+//            &kf__release, value };                           \
+//     KEY_T name = { &kf__macro__progmem, &name##__press,     \
+//                    &kf__macro__progmem, &name##__release }         
+#define  KEYS__TWO_KEYS_CAPSLOCK(name, value)  KEYS__DEFAULT(name, value)
 
 // ----------------------------------------------------------------------------
 
@@ -76,10 +79,10 @@ KEYS__DEFAULT( Mute,     KEY__Mute       );
 // special function
 
 // --- Sh2KCapL
-KEYS__TWO_KEYS_CAPSLOCK_PRESS_RELEASE( Sh2KCapL, KEY__LeftShift );
+KEYS__TWO_KEYS_CAPSLOCK( Sh2KCapL, KEY__LeftShift );
 
 // --- Sh2KCapR
-KEYS__TWO_KEYS_CAPSLOCK_PRESS_RELEASE( Sh2KCapR, KEY__RightShift );
+KEYS__TWO_KEYS_CAPSLOCK( Sh2KCapR, KEY__RightShift );
 
 // --- Btldr
 KEY_T Btldr = { &kf__jump_to_bootloader, 0, NULL, 0 };

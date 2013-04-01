@@ -25,12 +25,13 @@
 extern KEY_T layout[][KB__ROWS][KB__COLUMNS];
 
 // ----------------------------------------------------------------------------
+void kb__layout__exec_key_pointer(key_t * pointer) {  // TODO
+}
 
-void kb__layout__exec_key( bool   pressed,
-                           int8_t layer,
-                           int8_t row,
-                           int8_t column ) {
-    // TODO
+void kb__layout__exec_key_location( bool   pressed,  // TODO
+                                    int8_t layer,
+                                    int8_t row,
+                                    int8_t column ) {
     // - check for key redefinition in the EEPROM
     //   - if there is one, execute it, according to the appropriate rules
     // - lookup key in PROGMEM

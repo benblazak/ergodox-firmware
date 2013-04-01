@@ -12,9 +12,27 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <avr/pgmspace.h>
+#include "../../../../firmware/keyboard.h"
 #include "../../../../firmware/lib/usb.h"
 #include "../../../../firmware/lib/layout/layer-stack.h"
 #include "../key-functions.h"
+
+// ----------------------------------------------------------------------------
+
+static void _chord__progmem(bool pressed, void * pointer) {  // TODO: test
+    uint8_t * count       = (uint8_t *) pgm_read_word( pointer   );
+    uint16_t  threshold   = (uint16_t)  pgm_read_word( pointer+2 );
+    void *    key_pointer = (void *)    pgm_read_word( pointer+4 );
+
+    if (pressed)
+        *count++;
+
+    if (*count == threshold)
+        kb__layout__exec_key_pointer(key_pointer);
+
+    if (!pressed)
+        *count--;
+}
 
 // ----------------------------------------------------------------------------
 
@@ -57,36 +75,6 @@ void kf__macro__progmem(uint16_t pointer) {  // TODO: test
         if (function)
             (*function)(argument);
     }
-}
-
-// TODO: write documentation for this function
-// TODO: this is a mistakenly written function; i'm going to change it.  what
-//       we really want is a way to generate a "press" above a certain
-//       threshold, and "release" going back the other way; this function would
-//       make that possible, since it's quite general, but difficult and
-//       space-consuming.
-static void _chord__progmem(bool pressed, uint16_t pointer) {  // TODO: test
-    #define  funptr  kf__function_pointer_t
-    uint8_t * count                 = (uint8_t *) pgm_read_word( pointer   );
-    uint16_t  threshold             = (uint16_t)  pgm_read_word( pointer+2 );
-    funptr    function              = (funptr)    pgm_read_word( pointer+4 );
-    uint16_t  argument              = (uint16_t)  pgm_read_word( pointer+6 );
-    uint16_t  direction__comparison = (uint16_t)  pgm_read_word( pointer+8 );
-    #undef  funptr
-
-    char direction  = ((char)(behavior >> 8));
-    char comparison = ((char)(behavior & 0xff));
-
-    if (pressed) *count++;
-    else         *count--;
-
-    if ( (pressed  && direction == 'p') ||
-         (!pressed && direction == 'r') )
-        if ( (comparison == '=' && *count == threshold) ||
-             (comparison == '<' && *count <  threshold) ||
-             (comparison == '>' && *count >  threshold) )
-            if (function)
-                (*function)();
 }
 
 void kf__chord__press__progmem(uint16_t pointer) {

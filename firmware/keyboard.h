@@ -59,9 +59,8 @@ void kb__led__delay__usb_init (void);
 void kb__led__logical_on  (char led);
 void kb__led__logical_off (char led);
 // -------
-void kb__layout__exec_key ( bool    pressed,
-                            uint8_t row,
-                            uint8_t column );
+void kb__layout__exec_key_pointer  (bool pressed, void * pointer);
+void kb__layout__exec_key_location (bool pressed, uint8_t row, uint8_t column);
 
 
 // ----------------------------------------------------------------------------
@@ -240,8 +239,25 @@ void kb__layout__exec_key ( bool    pressed,
 
 // ----------------------------------------------------------------------------
 
-// === kb__layout__exec_key ===
-/**                                  functions/kb__layout__exec_key/description
+// === kb__layout__exec_key_pointer ===
+/**                          functions/kb__layout__exec_key_pointer/description
+ * Perform a "press" or "release" of the key pointed to
+ *
+ * Arguments:
+ * - `pressed`:
+ *     - `true`: Indicates that the key to be "executed" has been pressed
+ *     - `false`: Indicates that the key to be "executed" has been released
+ * - `pointer`: A pointer to the key to execute
+ *
+ * Notes:
+ * - The pointer may be of any type, and to a value in any address space.  It
+ *   is up to the keyboard implementation to define this.  Since this is the
+ *   only `exec_key_pointer` function though, all the keys should probably be
+ *   in the same address space, wherever they are.
+ */
+
+// === kb__layout__exec_key_location ===
+/**                         functions/kb__layout__exec_key_location/description
  * Perform the appropriate actions for a "press" or "release" of the key at the
  * given position.
  *

@@ -8,6 +8,10 @@
  * Some generally useful key-functions, and related definitions
  *
  * Prefix: `kf__`
+ *
+ * Notes:
+ * - Several of these functions depend on the fact that (on an AVR) pointers
+ *   are 16-bit.
  */
 
 
@@ -25,29 +29,17 @@ typedef  void (*kf__function_pointer_t)(uint16_t value);
 // ----------------------------------------------------------------------------
 
 // basic
-void kf__press          (uint16_t keycode);
-void kf__release        (uint16_t keycode);
-void kf__toggle         (uint16_t keycode);
-void kf__layer__push    (uint16_t id__layer);
-void kf__layer__pop     (uint16_t id__ignore);
-// void kf__macro__sram    (uint16_t pointer);  // TODO
-void kf__macro__progmem (uint16_t pointer);
-// void kf__macro__eeprom  (uint16_t pointer);  // TODO
+void kf__press                   (uint16_t keycode);
+void kf__release                 (uint16_t keycode);
+void kf__toggle                  (uint16_t keycode);
+void kf__layer__push             (uint16_t id__layer);
+void kf__layer__pop              (uint16_t id__ignore);
+// void kf__macro__sram             (uint16_t pointer);  // TODO
+void kf__macro__progmem          (uint16_t pointer);
+// void kf__macro__eeprom           (uint16_t pointer);  // TODO
+void kf__chord__press__progmem   (uint16_t pointer);  // TODO: write doc.
+void kf__chord__release__progmem (uint16_t pointer);  // TODO: write doc.
 
-// TODO: chording
-//
-// - consider making a 'kf__chord(uint16_t pointer)' that takes a pointer to an
-//   array containing whatever's needed to specify [ which group of keys it
-//   belongs to; whether to increment or decrement the counter for that group;
-//   the threshold for action for that group; the action (possibly a
-//   layer/row/col tuple for a key to call exec on, or possible just a row/col,
-//   and a layer shift some other way, ...) ]
-//
-// - create a auto-resizing array ('flex_array'?) for use with this function,
-//   and probably with the the layer stack functions as well.  IDs can be
-//   treated as array indices (the burden being on the user not to use indices
-//   that are too large...)
-//
 // TODO: kf__macro__eeprom
 // - this should probably go into its own little place in 'lib'; it'll need a
 //   function to write the macro to memory, code to keep track of what's
@@ -56,10 +48,6 @@ void kf__macro__progmem (uint16_t pointer);
 // TODO: kf__macro__sram
 // - is this necessary?  will it be confusing (if we already have
 //   kf__macro__eeprom)?  we should probably remove it.
-//
-// TODO: rewrite layouts to reflect
-// - kf__two_keys_capslock() -> kf__toggle_capslock()
-// - the removal of kf__send()
 
 // device
 void kf__jump_to_bootloader (uint16_t ignore);
