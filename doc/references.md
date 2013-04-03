@@ -186,6 +186,10 @@
       (http://www.fourwalledcubicle.com/AVRArticles.php), along with a few
       other good articles on AVR programming
 
+* [Components of the AVR-GCC Toolchain]
+  (http://www.avrfreaks.net/wiki/index.php/Documentation:AVR_GCC/AVR_GCC_Tool_Collection)  
+  Nice picture, and short descriptions of the relevent command line tools.
+
 
 ## Protocol Stuff
 

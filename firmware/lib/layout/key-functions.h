@@ -44,6 +44,12 @@ void kf__chord__release__progmem (uint16_t pointer);  // TODO: write doc.
 // much space the functions are likely to use, lol (but, a function that simply
 // calls another function with one argument looks like it might be only 4
 // bytes? which is just fine)
+//
+// also, think about how to best implement
+// - macros
+// - chords
+// - sticky keys
+// - dead keys
 
 // TODO: kf__macro__eeprom
 // - this should probably go into its own little place in 'lib'; it'll need a
