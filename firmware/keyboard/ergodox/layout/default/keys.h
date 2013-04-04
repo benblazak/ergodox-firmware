@@ -20,24 +20,85 @@
 
 // ----------------------------------------------------------------------------
 
-// `keys__` macros (needed by ".../lib/layout/keys.h")
+// note: needed by ".../lib/layout/keys.h"
+#define  KEYS__DEFAULT(name, value)                             \
+    void keys__press__##name   (void) { kf__press(value);   }   \
+    void keys__release__##name (void) { kf__release(value); }
 
-#define  KEYS__DEFAULT(name, value)             \
-    KEY_T name = {                              \
-        .press_function   = &kf__press,         \
-        .press_value      = value,              \
-        .release_function = &kf__release,       \
-        .release_value    = value }                                          
+// note: needed by ".../lib/layout/keys.h"
+#define  KEYS__SHIFTED(name, value)                                     \
+    void keys__press__##name   (void) { kf__press(KEY__LeftShift);      \
+                                        kf__press(value); }             \
+    void keys__release__##name (void) { kf__release(value);             \
+                                        kf__release(KEY__LeftShift); }
 
-#define  KEYS__SHIFTED(name, value)                         \
-    const uint16_t PROGMEM name##__press[] = {              \
-        2, &kf__press, KEY__LeftShift,                      \
-           &kf__press, value };                             \
-    const uint16_t PROGMEM name##__release[] = {            \
-        2, &kf__release, value,                             \
-           &kf__release, KEY__LeftShift };                  \
-    KEY_T name = { &kf__macro__progmem, &name##__press,     \
-                   &kf__macro__progmem, &name##__release }
+// TODO: this probably isn't right...
+#define  KEYS__CHORD__SETUP(chordname, init, comparison, threshold) \
+    bool keys__chord__##chordname (bool pressed) {                  \
+        static counter = (init);                                    \
+        if (pressed) counter++;                                     \
+        if (counter comparison (threshold))                         \
+            return true;                                            \
+        if (!pressed) counter--;                                    \
+    }
+
+// TODO: this probably isn't either
+#define KEYS__CHORD(chordname, keyname, value)  \
+    void keys__press__##name (void) {           \
+        if (keys__chord__##chordname(true))     \
+            kf__press(value);                   \
+    }                                           \
+    void keys__release__##name (void) {         \
+        if (keys__chord__##chordname(false))    \
+            kf__release(value);                 \
+    }
+
+// TODO: dunno if this is how we want to do things (or if it would even work)
+#define  KEYS__MACRO(name, pressfunctions, releasefunctions)    \
+    void keys__press__##name   (void) { pressfunctions }        \
+    void keys__release__##name (void) { releasefunctions }      \
+
+// the whole key
+#define  K(name)   { &keys__press__##name, &keys__release__##name }
+
+// just the press function of the key (without the preceding '&')
+#define  KP(name)    keys__press__##name
+
+// just the release function of the key (without the preceding '&')
+#define  KR(name)    keys__release__##name
+
+// TODO: and we could do a lot better than this too.  lol
+void keys__chord__2kcaps(pressed, keycode) {  // TODO: check
+    static counter = 0;
+    if (pressed) {
+        counter++;
+        kf__press(keycode);
+    }
+    if (counter == 2) {
+        kf__toggle_capslock();
+    }
+    if (!pressed) {
+        counter--;
+        kf__release(keycode);
+    }
+}
+void keys__press__shL2kcaps(void) {
+    keys__chord__2kcaps(true);
+    kf__press(KEY__LeftShift);
+}
+void keys__release__shL2kcaps(void) {
+    keys__chord__2kcaps(false);
+    kf__release(KEY__LeftShift);
+}
+void keys__press__shR2kcaps(void) {
+    keys__chord__2kcaps(true);
+    kf__press(KEY__RightShift);
+}
+void keys__release__shR2kcaps(void) {
+    keys__chord__2kcaps(false);
+    kf__release(KEY__RightShift);
+}
+
 
 
 // other `keys__` macros (in the `keys__` namespace for consistency)
