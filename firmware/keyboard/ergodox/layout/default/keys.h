@@ -20,61 +20,79 @@
 
 // ----------------------------------------------------------------------------
 
-// note: needed by ".../lib/layout/keys.h"
-#define  KEYS__DEFAULT(name, value)                             \
-    void keys__press__##name   (void) { kf__press(value);   }   \
-    void keys__release__##name (void) { kf__release(value); }
+// the "press" function for "name"
+#define  P(name)  keys__press__##name
+
+// the "release" function for "name"
+#define  R(name)  keys__release__##name
+
+// the "chord" function for "name"
+#define  C(name)  keys__chord__##name
+
+// the "key"; for putting the keys into the layout matrix
+#define  K(name)  { &P(name), &R(name) }
+
+// the "function" for "name"
+#define F(name)  keys__function__##name
+
+// ----------------------------------------------------------------------------
 
 // note: needed by ".../lib/layout/keys.h"
-#define  KEYS__SHIFTED(name, value)                                     \
-    void keys__press__##name   (void) { kf__press(KEY__LeftShift);      \
-                                        kf__press(value); }             \
-    void keys__release__##name (void) { kf__release(value);             \
-                                        kf__release(KEY__LeftShift); }
+#define  KEYS__DEFAULT(name, value)             \
+    void P(name) (void) { F(press)(value); }    \
+    void R(name) (void) { F(release)(value); }
 
-// TODO: this probably isn't right...
-#define  KEYS__CHORD__SETUP(chordname, init, comparison, threshold) \
-    bool keys__chord__##chordname (bool pressed) {                  \
-        static counter = (init);                                    \
-        if (pressed) counter++;                                     \
-        if (counter comparison (threshold))                         \
-            return true;                                            \
-        if (!pressed) counter--;                                    \
+// note: needed by ".../lib/layout/keys.h"
+#define  KEYS__SHIFTED(name, value)                         \
+    void P(name) (void) { F(press)(KEY__LeftShift);         \
+                          F(press)(value); }                \
+    void R(name) (void) { F(release)(value);                \
+                          F(release)(KEY__LeftShift); }
+
+// note: for implementing chorded layouts such as asetniop (or chordmak)
+// TODO: not sure if this is how we want to do this
+#define  KEYS__CHORD__CHARACTER(name, threshold, keycode)   \
+    void C(char__##name) (bool pressed) {                   \
+        static counter = 0;                                 \
+        if (pressed) {                                      \
+            counter++;                                      \
+        }                                                   \
+        if (counter == (threshold) && !pressed) {           \
+            F(press)(keycode);                              \
+            usb__kb__send_report();                         \
+            F(release)(keycode);                            \
+        }                                                   \
+        if (!pressed) {                                     \
+            counter--;                                      \
+        }                                                   \
+    }
+// TODO: dunno if this is right at all.....
+#define  KEYS__CHORD__COMBINATION(name, threshold, names...)    \
+    void C(comb__##name) (bool pressed) {                       \
+        static counter = 0;                                     \
+        if (pressed) {                                          \
+            counter++;                                          \
+        }                                                       \
+        if (counter == (threshold) && !pressed) {               \
+            names                                               \
+        }                                                       \
+        if (!pressed) {                                         \
+            counter--;                                          \
+        }                                                       \
     }
 
-// TODO: this probably isn't either
-#define KEYS__CHORD(chordname, keyname, value)  \
-    void keys__press__##name (void) {           \
-        if (keys__chord__##chordname(true))     \
-            kf__press(value);                   \
-    }                                           \
-    void keys__release__##name (void) {         \
-        if (keys__chord__##chordname(false))    \
-            kf__release(value);                 \
-    }
+// ----------------------------------------------------------------------------
 
-// TODO: dunno if this is how we want to do things (or if it would even work)
-#define  KEYS__MACRO(name, pressfunctions, releasefunctions)    \
-    void keys__press__##name   (void) { pressfunctions }        \
-    void keys__release__##name (void) { releasefunctions }      \
+void F(press)   (uint8_t keycode) { usb__kb__set_key(true, keycode); }
+void F(release) (uint8_t keycode) { usb__kb__set_key(false, keycode); }
 
-// the whole key
-#define  K(name)   { &keys__press__##name, &keys__release__##name }
-
-// just the press function of the key (without the preceding '&')
-#define  KP(name)    keys__press__##name
-
-// just the release function of the key (without the preceding '&')
-#define  KR(name)    keys__release__##name
-
-// TODO: and we could do a lot better than this too.  lol
-void keys__chord__2kcaps(pressed, keycode) {  // TODO: check
+void C(2_keys_caps)(bool pressed, uint8_t keycode) {
     static counter = 0;
     if (pressed) {
         counter++;
         kf__press(keycode);
     }
-    if (counter == 2) {
+    if (counter == 2 && pressed) {
         kf__toggle_capslock();
     }
     if (!pressed) {
@@ -82,71 +100,46 @@ void keys__chord__2kcaps(pressed, keycode) {  // TODO: check
         kf__release(keycode);
     }
 }
-void keys__press__shL2kcaps(void) {
-    keys__chord__2kcaps(true);
-    kf__press(KEY__LeftShift);
-}
-void keys__release__shL2kcaps(void) {
-    keys__chord__2kcaps(false);
-    kf__release(KEY__LeftShift);
-}
-void keys__press__shR2kcaps(void) {
-    keys__chord__2kcaps(true);
-    kf__press(KEY__RightShift);
-}
-void keys__release__shR2kcaps(void) {
-    keys__chord__2kcaps(false);
-    kf__release(KEY__RightShift);
-}
-
-
-
-// other `keys__` macros (in the `keys__` namespace for consistency)
-
-// TODO: rewrite to reflect: kf__two_keys_capslock() -> kf__toggle_capslock() +
-//       kf__chord__progmem() (or some such thing)
-// #define  KEYS__TWO_KEYS_CAPSLOCK(name, value)               \
-//     const uint16_t PROGMEM name##__press[] = {              \
-//         2, &kf__two_keys_capslock, 1,                       \
-//            &kf__press, value };                             \
-//     const uint16_t PROGMEM name##__release[] = {            \
-//         2, &kf__two_keys_capslock, 0,                       \
-//            &kf__release, value };                           \
-//     KEY_T name = { &kf__macro__progmem, &name##__press,     \
-//                    &kf__macro__progmem, &name##__release }         
-#define  KEYS__TWO_KEYS_CAPSLOCK(name, value)  KEYS__DEFAULT(name, value)
 
 // ----------------------------------------------------------------------------
 
-// default key definitions
+// --- default key definitions ------------------------------------------------
 
 #include "../../../../firmware/lib/layout/keys.h"
 
 
-// special meaning
+// --- special meaning --------------------------------------------------------
 
-KEY_T Transp   = NULL;                  // transparent
-KEY_T NA       = { NULL, 0, NULL, 0 };  // "not applicable" (do nothing)
+// transp : transparent
+#define  keys__press__transp    NULL
+#define  keys__release__transp  NULL
 
-
-// special keycode
-
-KEYS__DEFAULT( Power,    KEY__Power      );
-KEYS__DEFAULT( VolumeU,  KEY__VolumeUp   );
-KEYS__DEFAULT( VolumeD,  KEY__VolumeDown );
-KEYS__DEFAULT( Mute,     KEY__Mute       );
+// nop : no operation
+void P(nop) (void) {}
+void R(nop) (void) {}
 
 
-// special function
+// --- special keycode --------------------------------------------------------
 
-// --- Sh2KCapL
-KEYS__TWO_KEYS_CAPSLOCK( Sh2KCapL, KEY__LeftShift );
+KEYS__DEFAULT( power,    KEY__Power      );
+KEYS__DEFAULT( volumeU,  KEY__VolumeUp   );
+KEYS__DEFAULT( volumeD,  KEY__VolumeDown );
+KEYS__DEFAULT( mute,     KEY__Mute       );
 
-// --- Sh2KCapR
-KEYS__TWO_KEYS_CAPSLOCK( Sh2KCapR, KEY__RightShift );
 
-// --- Btldr
-KEY_T Btldr = { &kf__jump_to_bootloader, 0, NULL, 0 };
+// --- special function -------------------------------------------------------
+
+// shL2kcaps : left shift + toggle capslock (if both shifts are pressed)
+void P(shL2kcaps) (void) { C(2_keys_caps)(true, KEY__LeftShift); }
+void R(shL2kcaps) (void) { C(2_keys_caps)(false, KEY__LeftShift); }
+
+// shR2kcaps : right shift + toggle capslock (if both shifts are pressed)
+void P(shR2kcaps) (void) { C(2_keys_caps)(true, KEY__RightShift); }
+void R(shR2kcaps) (void) { C()2_keys_caps(false, KEY__RightShift); }
+
+// btldr : jump to the bootloader
+void P(btldr) (void) { kf__jump_to_bootloader(); }
+void R(btldr) (void) {}
 
 
 // ----------------------------------------------------------------------------
