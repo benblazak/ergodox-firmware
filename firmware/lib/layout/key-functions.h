@@ -28,18 +28,6 @@ typedef  void (*kf__function_pointer_t)(uint16_t value);
 
 // ----------------------------------------------------------------------------
 
-// basic
-void kf__press                   (uint16_t keycode);
-void kf__release                 (uint16_t keycode);
-void kf__toggle                  (uint16_t keycode);
-void kf__layer__push             (uint16_t id__layer);
-void kf__layer__pop              (uint16_t id__ignore);
-// void kf__macro__sram             (uint16_t pointer);  // TODO
-void kf__macro__progmem          (uint16_t pointer);
-// void kf__macro__eeprom           (uint16_t pointer);  // TODO
-void kf__chord__press__progmem   (uint16_t pointer);  // TODO: write doc.
-void kf__chord__release__progmem (uint16_t pointer);  // TODO: write doc.
-
 // TODO: switch to using two functions per key.  pay *careful* attention to how
 // much space the functions are likely to use, lol (but, a function that simply
 // calls another function with one argument looks like it might be only 4
@@ -49,17 +37,12 @@ void kf__chord__release__progmem (uint16_t pointer);  // TODO: write doc.
 // - macros
 // - chords
 // - sticky keys
-// - dead keys
 
 // TODO: kf__macro__eeprom
 // - this should probably go into its own little place in 'lib'; it'll need a
 //   function to write the macro to memory, code to keep track of what's
 //   written in the eeprom, and stuff like that
 //
-// TODO: kf__macro__sram
-// - is this necessary?  will it be confusing (if we already have
-//   kf__macro__eeprom)?  we should probably remove it.
-
 // device
 void kf__jump_to_bootloader (uint16_t ignore);
 

@@ -9,10 +9,11 @@
  * the symbol keys on the function layer was taken from the Arensito layout.
  *
  * Implements the "layout" section of '.../firmware/keyboard.h'
+ *
+ * TODO: fix this file, after the qwerty layout is done
  */
 
 
-#include "../../../../firmware/keyboard/ergodox/matrix.h"
 #include "./default/common.h"
 
 

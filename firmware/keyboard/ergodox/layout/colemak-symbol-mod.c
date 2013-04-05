@@ -19,10 +19,11 @@
  *   declined to be added to the copyright above).
  * - Transcribed by Ben Blazak when the layout format changed.
  *
+ * TODO: fix this file, after the qwerty layout is done
+ * TODO: rearrange things to put a btldr key somewhere
  */
 
 
-#include "../../../../firmware/keyboard/ergodox/matrix.h"
 #include "./default/common.h"
 
 
