@@ -7,6 +7,7 @@
 /**                                                                 description
  * Implements the "device" section of
  * ".../firmware/lib/layout/key-functions.h"
+ * for the ATMega23U4
  */
 
 

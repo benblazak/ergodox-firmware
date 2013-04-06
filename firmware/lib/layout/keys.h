@@ -12,7 +12,7 @@
  * order to centralize a bit of code that would otherwise be duplicated by most
  * layouts.
  *
- * Prefixes: `KEYS__`, [none]
+ * Prefixes: `keys__`, [none]
  *
  * Usage: `#define` `KEYS__DEFAULT` and `KEYS__SHIFTED` before `#include`ing.
  */

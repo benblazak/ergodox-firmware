@@ -12,4 +12,5 @@
 
 
 SRC += $(wildcard *.c)
+SRC += $(wildcard device/$(MCU).c)
 

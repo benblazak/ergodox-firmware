@@ -5,27 +5,21 @@
  * ------------------------------------------------------------------------- */
 
 /**                                                                 description
- * A default way to execute keys.  Meant to be included by the layout using it
- * (and nowhere else, since it's actual code).
+ * A default way to execute keys.
  *
- * Notes:
- * - This oddish setup is used to allow layouts to easily change some default
- *   things without having to deal with all of them.
+ * Meant to be included *only* by the layout using it.
  */
 
 
-#ifndef ERGODOX_FIRMWARE__KEYBOARD__ERGODOX__LAYOUT__DEFAULT__EXEC_KEY__C__H
-#define ERGODOX_FIRMWARE__KEYBOARD__ERGODOX__LAYOUT__DEFAULT__EXEC_KEY__C__H
+#ifndef ERGODOX_FIRMWARE__KEYBOARD__ERGODOX__LAYOUT__COMMON__EXEC_KEY__C__H
+#define ERGODOX_FIRMWARE__KEYBOARD__ERGODOX__LAYOUT__COMMON__EXEC_KEY__C__H
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 
-#include "./common.h"
+#include "./definitions.h"
 
 // ----------------------------------------------------------------------------
 
-extern KEY_T layout[][KB__ROWS][KB__COLUMNS];
-
-// ----------------------------------------------------------------------------
 void kb__layout__exec_key_pointer(key_t * pointer) {  // TODO
 }
 
@@ -46,5 +40,5 @@ void kb__layout__exec_key_location( bool   pressed,  // TODO
 
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
-#endif  // ERGODOX_FIRMWARE__KEYBOARD__ERGODOX__LAYOUT__DEFAULT__EXEC_KEY__C__H
+#endif  // ERGODOX_FIRMWARE__KEYBOARD__ERGODOX__LAYOUT__COMMON__EXEC_KEY__C__H
 

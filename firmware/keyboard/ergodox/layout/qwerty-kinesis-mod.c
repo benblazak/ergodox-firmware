@@ -9,10 +9,13 @@
  * the symbol keys on the function layer was taken from the Arensito layout.
  *
  * Implements the "layout" section of '.../firmware/keyboard.h'
+ *
+ * TODO: put a note about where to look for more information if people are
+ * trying to make their own layout
  */
 
 
-#include "./default/common.h"
+#include "./common/definitions.h"
 
 
 // ----------------------------------------------------------------------------
@@ -51,135 +54,116 @@ void kb__led__logical_off(char led) {
 // keys
 // ----------------------------------------------------------------------------
 
-#include "./default/keys.h"
+#include "./common/keys.c.h"
 
-// layer
-KEY_T L0pu1    = { &kf__layer__push, 0x0001, NULL,                 0 };
-KEY_T L0po     = { &kf__layer__pop,  0x0000, NULL,                 0 };
-KEY_T L0pu1po  = { &kf__layer__push, 0x0001, &kf__layer__pop, 0x0001 };
-KEY_T L1pu2po  = { &kf__layer__push, 0x0102, &kf__layer__pop, 0x0102 };
-
-// --- NumPush
-const uint16_t PROGMEM NumPush__press[] = {
-    2, &kf__layer__push, 0x0203,
-       &kf__press, KEY__LockingNumLock };
-KEY_T NumPush = { &kf__macro__progmem, &NumPush__press,
-                  &kf__release, KEY__LockingNumLock };
-
-// --- NumPop
-const uint16_t PROGMEM NumPop__press[] = {
-    2, &kf__layer__pop, 0x0203,
-       &kf__press, KEY__LockingNumLock };
-KEY_T NumPop = { &kf__macro__progmem, &NumPop__press,
-                 &kf__release, KEY__LockingNumLock };
+KEYS__LAYER__NUM_PUSH(10, 3);
+KEYS__LAYER__NUM_POP(10);
 
 
 // ----------------------------------------------------------------------------
 // layout
 // ----------------------------------------------------------------------------
 
-#include "./default/matrix.h"
+#include "./common/matrix.h"
 
 
-KEY_T layout[][KB__ROWS][KB__COLUMNS] = {
+layout_t layout = {
 
 // ............................................................................
 
     MATRIX_LAYER(  // layer 0 : default
-
-// unused
-NA,
+// macro, unused,
+       K,    nop,
 // left hand ...... ......... ......... ......... ......... ......... .........
-   Equal,       K1,       K2,       K3,       K4,       K5,      Esc,
- Bkslash,        Q,        W,        E,        R,        T,    L0pu1,
-     Tab,        A,        S,        D,        F,        G,
-Sh2KCapL,        Z,        X,        C,        V,        B,  L0pu1po,
-    GUIL,    Grave,  Bkslash,   ArrowL,   ArrowR,
-                                                               CtrlL,     AltL,
-                                                        NA,       NA,     Home,
-                                                        Bs,      Del,      End,
+   equal,        1,        2,        3,        4,        5,      esc,
+ bkslash,        q,        w,        e,        r,        t,   lpu1l1,
+     tab,        a,        s,        d,        f,        g,
+sh2KCapL,        z,        x,        c,        v,        b, lpupo1l1,
+    guiL,    grave,  bkslash,   arrowL,   arrowR,
+                                                               ctrlL,     altL,
+                                                       nop,      nop,     home,
+                                                        bs,      del,      end,
 // right hand ..... ......... ......... ......... ......... ......... .........
-           NumPush,       K6,       K7,       K8,       K9,       K0,     Dash,
-//       capslock)
-             BrktL,        Y,        U,        I,        O,        P,    BrktR,
-                           H,        J,        K,        L,  Semicol,    Quote,
-           L0pu1po,        N,        M,    Comma,   Period,    Slash, Sh2KCapR,
-                                ArrowL,   ArrowD,   ArrowU,   ArrowR,     GUIR,
-    AltR,    CtrlR,
-   PageU,       NA,       NA,
-   PageD,    Enter,    Space  ),
+           numPush,        6,        7,        8,        9,        0,     dash,
+             brktL,        y,        u,        i,        o,        p,    brktR,
+                           h,        j,        k,        l,  semicol,    quote,
+          lpupo1l1,        n,        m,    comma,   period,    slash, sh2KCapR,
+                                arrowL,   arrowD,   arrowU,   arrowR,     guiR,
+    altR,    ctrlR,
+   pageU,      nop,      nop,
+   pageD,    enter,    space  ),
 
 // ............................................................................
 
     MATRIX_LAYER(  // layer 1 : function and symbol keys
-// unused
-NA,
+// macro, unused,
+       K,    nop,
 // left hand ...... ......... ......... ......... ......... ......... .........
-      NA,       F1,       F2,       F3,       F4,       F5,      F11,
-  Transp,   BraceL,   BraceR,    BrktL,    BrktR,       NA,     L0po,
-  Transp,  Semicol,    Slash,     Dash,      KP0,    Colon,
-  Transp,      KP6,      KP7,      KP8,      KP9,     Plus,  L1pu2po,
-  Transp,   Transp,   Transp,   Transp,   Transp,
-                                                              Transp,   Transp,
-                                                    Transp,   Transp,   Transp,
-                                                    Transp,   Transp,   Transp,
+     nop,       F1,       F2,       F3,       F4,       F5,      F11,
+  transp,   braceL,   braceR,    brktL,    brktR,      nop,   lpo1l1,
+  transp,  semicol,    slash,     dash,      kp0,    colon,
+  transp,      kp6,      kp7,      kp8,      kp9,     plus, lpupo2l2,
+  transp,   transp,   transp,   transp,   transp,
+                                                              transp,   transp,
+                                                    transp,   transp,   transp,
+                                                    transp,   transp,   transp,
 // right hand ..... ......... ......... ......... ......... ......... .........
-               F12,       F6,       F7,       F8,       F9,      F10,    Power,
-            Transp,       NA,  Undersc, LessThan, GrtrThan,   Dollar,  VolumeU,
-                     Bkslash,      KP1,   ParenL,   ParenR,    Equal,  VolumeD,
-           L1pu2po, Asterisk,      KP2,      KP3,      KP4,      KP5,     Mute,
-                                Transp,   Transp,   Transp,   Transp,   Transp,
-  Transp,   Transp,
-  Transp,   Transp,   Transp,
-  Transp,   Transp,   Transp  ),
+               F12,       F6,       F7,       F8,       F9,      F10,    power,
+            transp,      nop,  undersc, lessThan, grtrThan,   dollar,  volumeU,
+                     bkslash,      kp1,   parenL,   parenR,    equal,  volumeD,
+          lpupo2l2, asterisk,      kp2,      kp3,      kp4,      kp5,     mute,
+                                transp,   transp,   transp,   transp,   transp,
+  transp,   transp,
+  transp,   transp,   transp,
+  transp,   transp,   transp  ),
 
 // ............................................................................
 
     MATRIX_LAYER(  // layer 2 : keyboard functions
-// unused
-NA,
+// macro, unused,
+       K,    nop,
 // left hand ...... ......... ......... ......... ......... ......... .........
-   Btldr,       NA,       NA,       NA,       NA,       NA,       NA,
-      NA,       NA,       NA,       NA,       NA,       NA,       NA,
-      NA,       NA,       NA,       NA,       NA,       NA,
-      NA,       NA,       NA,       NA,       NA,       NA,       NA,
-      NA,       NA,       NA,       NA,       NA,
-                                                                  NA,       NA,
-                                                        NA,       NA,       NA,
-                                                        NA,       NA,       NA,
+   btldr,      nop,      nop,      nop,      nop,      nop,      nop,
+     nop,      nop,      nop,      nop,      nop,      nop,      nop,
+     nop,      nop,      nop,      nop,      nop,      nop,
+     nop,      nop,      nop,      nop,      nop,      nop,      nop,
+     nop,      nop,      nop,      nop,      nop,
+                                                                 nop,      nop,
+                                                       nop,      nop,      nop,
+                                                       nop,      nop,      nop,
 // right hand ..... ......... ......... ......... ......... ......... .........
-                NA,       NA,       NA,       NA,       NA,       NA,       NA,
-                NA,       NA,       NA,       NA,       NA,       NA,       NA,
-                          NA,       NA,       NA,       NA,       NA,       NA,
-                NA,       NA,       NA,       NA,       NA,       NA,       NA,
-                                    NA,       NA,       NA,       NA,       NA,
-      NA,       NA,
-      NA,       NA,       NA,
-      NA,       NA,       NA  ),
+               nop,      nop,      nop,      nop,      nop,      nop,      nop,
+               nop,      nop,      nop,      nop,      nop,      nop,      nop,
+                         nop,      nop,      nop,      nop,      nop,      nop,
+               nop,      nop,      nop,      nop,      nop,      nop,      nop,
+                                   nop,      nop,      nop,      nop,      nop,
+     nop,      nop,
+     nop,      nop,      nop,
+     nop,      nop,      nop  ),
 
 // ............................................................................
 
     MATRIX_LAYER(  // layer 3 : numpad
-// unused
-NA,
+// macro, unused,
+       K,    nop,
 // left hand ...... ......... ......... ......... ......... ......... .........
-  Transp,   Transp,   Transp,   Transp,   Transp,   Transp,   Transp,
-  Transp,   Transp,   Transp,   Transp,   Transp,   Transp,   Transp,
-  Transp,   Transp,   Transp,   Transp,   Transp,   Transp,
-  Transp,   Transp,   Transp,   Transp,   Transp,   Transp,   Transp,
-  Transp,      Ins,   Transp,   Transp,   Transp,
-                                                              Transp,   Transp,
-                                                    Transp,   Transp,   Transp,
-                                                    Transp,   Transp,   Transp,
+  transp,   transp,   transp,   transp,   transp,   transp,   transp,
+  transp,   transp,   transp,   transp,   transp,   transp,   transp,
+  transp,   transp,   transp,   transp,   transp,   transp,
+  transp,   transp,   transp,   transp,   transp,   transp,   transp,
+  transp,      ins,   transp,   transp,   transp,
+                                                              transp,   transp,
+                                                    transp,   transp,   transp,
+                                                    transp,   transp,   transp,
 // right hand ..... ......... ......... ......... ......... ......... .........
-            NumPop,   Transp,   NumPop,    Equal,    KPDiv,    KPMul,   Transp,
-            Transp,   Transp,      KP7,      KP8,      KP9,    KPSub,   Transp,
-                      Transp,      KP4,      KP5,      KP6,    KPAdd,   Transp,
-            Transp,   Transp,      KP1,      KP2,      KP3,  KPEnter,   Transp,
-                                Transp,   Transp,   Period,  KPEnter,   Transp,
-  Transp,   Transp,
-  Transp,   Transp,   Transp,
-  Transp,   Transp,      KP0  ),
+            numPop,   transp,   numPop,    equal,    kpDiv,    kpMul,   transp,
+            transp,   transp,      kp7,      kp8,      kp9,    kpSub,   transp,
+                      transp,      kp4,      kp5,      kp6,    kpAdd,   transp,
+            transp,   transp,      kp1,      kp2,      kp3,  kpEnter,   transp,
+                                transp,   transp,   period,  kpEnter,   transp,
+  transp,   transp,
+  transp,   transp,   transp,
+  transp,   transp,      kp0  ),
 
 // ............................................................................
 };

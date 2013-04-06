@@ -5,13 +5,12 @@
  * ------------------------------------------------------------------------- */
 
 /**                                                                 description
- * A place for all things common to the other default files, including
- * `#include`s.
+ * A central place for the `#include`s relevant to the layout files
  */
 
 
-#ifndef ERGODOX_FIRMWARE__KEYBOARD__ERGODOX__LAYOUT__DEFAULT__COMMON__H
-#define ERGODOX_FIRMWARE__KEYBOARD__ERGODOX__LAYOUT__DEFAULT__COMMON__H
+#ifndef ERGODOX_FIRMWARE__KEYBOARD__ERGODOX__LAYOUT__COMMON__DEFINITIONS__H
+#define ERGODOX_FIRMWARE__KEYBOARD__ERGODOX__LAYOUT__COMMON__DEFINITIONS__H
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 
@@ -25,8 +24,28 @@
 #include "../../../../../firmware/lib/usb/usage-page/keyboard.h"
 #include "../../../../../firmware/lib/layout/key-functions.h"
 
+// ----------------------------------------------------------------------------
+
+/**                                                  typedefs/key_t/description
+ * The type we will use for our "key"s
+ *
+ * Notes:
+ * - Keys will be of the form
+ *   `key_t key = { &press_function, &release_function };`
+ */
+typedef  void (*key_t[2])(void);
+
+/**                                               typedefs/layout_t/description
+ * The type we will use for our layout matrix
+ *
+ * Notes:
+ * - The first dimension of the matrix (left blank in the typedef since it
+ *   varies between layouts) is "layers"
+ */
+typedef  key_t PROGMEM layout_t[][KB__ROWS][KB__COLUMNS];
+
 
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
-#endif  // ERGODOX_FIRMWARE__KEYBOARD__ERGODOX__LAYOUT__DEFAULT__COMMON__H
+#endif  // ERGODOX_FIRMWARE__KEYBOARD__ERGODOX__LAYOUT__COMMON__DEFINITIONS__H
 
