@@ -16,25 +16,32 @@
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 
+
 #include "./definitions.h"
 
 // ----------------------------------------------------------------------------
 
-void kb__layout__exec_key_pointer(key_t * pointer) {  // TODO
-}
+void kb__layout__exec_key(bool pressed, int8_t row, int8_t column) {
+    void (*function)(void);
 
-void kb__layout__exec_key_location( bool   pressed,  // TODO
-                                    int8_t layer,
-                                    int8_t row,
-                                    int8_t column ) {
-    // - check for key redefinition in the EEPROM
-    //   - if there is one, execute it, according to the appropriate rules
-    // - lookup key in PROGMEM
-    //   - if it's transparent, look up the one below it, and so on
-    //     - NULL key pointers are transparent
-    //     - { NULL, 0, NULL, 0 } keys do nothing; this is the default, if no
-    //       key can be found
-    //   - call the press or release function, with the appropriate argument
+    for(uint8_t i=0; i<layer_stack__size(); i++) {
+        function = _layout[ layer_stack__peek(i) ]
+                          [ row                  ]
+                          [ column               ]
+                          [ (pressed) ? 0 : 1    ];
+        if (function) {
+            (*function)();
+
+            if (pressed && _sticky_key) {
+                (*_sticky_key)();
+                _sticky_key = NULL;
+            }
+
+            return;
+        }
+    }
+
+    // if we get here, there was a transparent key in layer 0; do nothing
 }
 
 

@@ -9,14 +9,23 @@
  * and extends the definitions in ".../lib/layout/key-functions.h"
  *
  * Meant to be included *only* by the layout using it.
- *
- * TODO: put a note about where to look for more information if people are
- * trying to learn more about how to make key functions (probably, the usb,
- * key_functions, and keys headers; and others?)
  */
 
 // TODO: implement chords (as in, for a chorded key layout)
 // TODO: implement sticky keys
+
+// TODO: write tutorials
+// - about 
+//   - basic key functions
+//     - mention where people should look for more information; probably, the
+//       usb, key_functions, and keys headers; and others?
+//   - sticky keys
+//   - macros
+//   - chorded keys
+//   - layers
+//   - making layouts
+// - put the tutorials in the readme.md of
+//   ".../firmware/keyboard/ergodox/layout"
 
 #ifndef ERGODOX_FIRMWARE__KEYBOARD__ERGODOX__LAYOUT__COMMON__KEYS__C__H
 #define ERGODOX_FIRMWARE__KEYBOARD__ERGODOX__LAYOUT__COMMON__KEYS__C__H
@@ -92,6 +101,9 @@
  *   push the layer onto the stack, not pop anything out of it.  A key with
  *   only `po` should *only* pop the layer out of the stack.
  *
+ * - If the function *only* pops the layer-element, the `layer_number` is not
+ *   important: layers are popped based only on their `layer_id`.
+ *
  * Notes:
  * - To save space, if you define a push-pop function, the push (only) and pop
  *   (only) functions may be defined as follows (using the example `lpupo1l1`
@@ -101,10 +113,6 @@
  *       #define  keys__release__lpu1l1  P(nop)
  *       #define  keys__press__lpo1l1    R(lpupo1l1)
  *       #define  keys__release__lpo1l1  P(nop)
- *
- * - It is recommended (as a general rule) to allocate `layer_id`s as follows:
- *     - 0-9   : leave alone (for use in default layer key definitions)
- *     - 10-19 : for custom things like 'numPush' and 'numPop'
  */
 #define  KEYS__LAYER__PUSH_POP(ID, LAYER)                                   \
     void P(l##ID##pupo##LAYER) (void) { layer_stack__push(ID, LAYER); }     \
@@ -150,8 +158,7 @@
  * Press the given keycode, and also press "capslock" if this is the second
  * consecutive time this function has been called with `pressed == true`.
  *
- * Notes:
- * - Meant to be used with the left and right "shift" keys.
+ * Meant to be used with the left and right "shift" keys.
  */
 void KF(2_keys_capslock)(bool pressed, uint8_t keycode) {
     static counter = 0;
@@ -212,23 +219,23 @@ KEYS__DEFAULT( mute,    KEY__Mute       );
 
 // --- special function -------------------------------------------------------
 
-/**                                                  keys/shL2kcaps/description
+/**                                                   keys/shL2kcap/description
  * left shift + toggle capslock (if both shifts are pressed)
  *
- * This key always generates a left shift.  If the `shR2kcaps` is pressed at
+ * This key always generates a left shift.  If the `shR2kcap` is pressed at
  * the same time, "capslock" will be toggled.
  */
-void P(shL2kcaps) (void) { KF(2_keys_capslock)(true, KEY__LeftShift); }
-void R(shL2kcaps) (void) { KF(2_keys_capslock)(false, KEY__LeftShift); }
+void P(shL2kcap) (void) { KF(2_keys_capslock)(true, KEY__LeftShift); }
+void R(shL2kcap) (void) { KF(2_keys_capslock)(false, KEY__LeftShift); }
 
-/**                                                  keys/shR2kcaps/description
+/**                                                   keys/shR2kcap/description
  * right shift + toggle capslock (if both shifts are pressed)
  *
  * This key always generates a right shift.  If the `shL2kcaps` is pressed at
  * the same time, "capslock" will be toggled.
  */
-void P(shR2kcaps) (void) { KF(2_keys_capslock)(true, KEY__RightShift); }
-void R(shR2kcaps) (void) { KF(2_keys_capslock)(false, KEY__RightShift); }
+void P(shR2kcap) (void) { KF(2_keys_capslock)(true, KEY__RightShift); }
+void R(shR2kcap) (void) { KF(2_keys_capslock)(false, KEY__RightShift); }
 
 /**                                                      keys/btldr/description
  * jump to the bootloader
@@ -294,6 +301,18 @@ KEYS__LAYER__PUSH_POP(7, 7);
 #define  keys__release__lpu7l7  P(nop)
 #define  keys__press__lpo7l7    R(lpupo7l7)
 #define  keys__release__lpo7l7  P(nop)
+
+KEYS__LAYER__PUSH_POP(8, 8);
+#define  keys__press__lpu8l8    P(lpupo8l8)
+#define  keys__release__lpu8l8  P(nop)
+#define  keys__press__lpo8l8    R(lpupo8l8)
+#define  keys__release__lpo8l8  P(nop)
+
+KEYS__LAYER__PUSH_POP(9, 9);
+#define  keys__press__lpu9l9    P(lpupo9l9)
+#define  keys__release__lpu9l9  P(nop)
+#define  keys__press__lpo9l9    R(lpupo9l9)
+#define  keys__release__lpo9l9  P(nop)
 
 
 // ----------------------------------------------------------------------------

@@ -6,12 +6,10 @@
 
 /**                                                                 description
  * A QWERTY layout adapted from the default Kinesis layout.  The position of
- * the symbol keys on the function layer was taken from the Arensito layout.
+ * the symbol keys on the function layer was (roughly) taken from the Arensito
+ * layout.
  *
  * Implements the "layout" section of '.../firmware/keyboard.h'
- *
- * TODO: put a note about where to look for more information if people are
- * trying to make their own layout
  */
 
 
@@ -22,7 +20,7 @@
 // matrix control
 // ----------------------------------------------------------------------------
 
-#include "./default/exec_key.c.h"
+#include "./common/exec_key.c.h"
 
 
 // ----------------------------------------------------------------------------
@@ -67,7 +65,7 @@ KEYS__LAYER__NUM_POP(10);
 #include "./common/matrix.h"
 
 
-layout_t layout = {
+layout_t _layout = {
 
 // ............................................................................
 
@@ -78,7 +76,7 @@ layout_t layout = {
    equal,        1,        2,        3,        4,        5,      esc,
  bkslash,        q,        w,        e,        r,        t,   lpu1l1,
      tab,        a,        s,        d,        f,        g,
-sh2KCapL,        z,        x,        c,        v,        b, lpupo1l1,
+shL2kcap,        z,        x,        c,        v,        b, lpupo1l1,
     guiL,    grave,  bkslash,   arrowL,   arrowR,
                                                                ctrlL,     altL,
                                                        nop,      nop,     home,
@@ -87,7 +85,7 @@ sh2KCapL,        z,        x,        c,        v,        b, lpupo1l1,
            numPush,        6,        7,        8,        9,        0,     dash,
              brktL,        y,        u,        i,        o,        p,    brktR,
                            h,        j,        k,        l,  semicol,    quote,
-          lpupo1l1,        n,        m,    comma,   period,    slash, sh2KCapR,
+          lpupo1l1,        n,        m,    comma,   period,    slash, shR2kcap,
                                 arrowL,   arrowD,   arrowU,   arrowR,     guiR,
     altR,    ctrlR,
    pageU,      nop,      nop,

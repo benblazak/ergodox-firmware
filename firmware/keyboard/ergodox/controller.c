@@ -25,7 +25,7 @@ uint8_t kb__init(void) {
     return 0;  // success
 }
 
-uint8_t kb__update_matrix(bool matrix[KB__ROWS][KB__COLUMNS]) {
+uint8_t kb__update_matrix(bool matrix[OPT__KB__ROWS][OPT__KB__COLUMNS]) {
     if (teensy__update_matrix(matrix))
         return 1;
     if (mcp23018__update_matrix(matrix))

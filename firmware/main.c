@@ -5,11 +5,11 @@
  * ------------------------------------------------------------------------- */
 
 /**                                                                 description
- * `main()`: tying it all together
+ * `main()`: tying it all together  // TODO
  */
 
 
-// TODO: includes
+#include "./main.h"
 
 // ----------------------------------------------------------------------------
 
@@ -26,7 +26,20 @@
 
 // ----------------------------------------------------------------------------
 
-// TODO: macros, if any
+#define  main__is_pressed   is_pressed
+#define  main__was_pressed  was_pressed
+#define  main__row          row
+#define  main__col          col
+
+// ----------------------------------------------------------------------------
+
+bool _pressed_1[OPT__KB__ROWS][OPT__KB__COLUMNS];
+bool _pressed_2[OPT__KB__ROWS][OPT__KB__COLUMNS];
+
+bool (* is_pressed) [OPT__KB__ROWS][OPT__KB__COLUMNS] = &_pressed_1;
+bool (* was_pressed) [OPT__KB__ROWS][OPT__KB__COLUMNS] = &_pressed_2;
+uint8_t row;
+uint8_t col;
 
 // ----------------------------------------------------------------------------
 

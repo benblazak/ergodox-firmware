@@ -23,7 +23,7 @@
     #error "Expecting different CPU frequency"
 #endif
 
-#if KB__ROWS != 6 || KB__COLUMNS != 14
+#if OPT__KB__ROWS != 6 || OPT__KB__COLUMNS != 14
 	#error "Expecting different keyboard dimensions"
 #endif
 
@@ -236,7 +236,7 @@ uint8_t teensy__init(void) {
  * Returns:
  * - success: `0`
  */
-uint8_t teensy__update_matrix(bool matrix[KB__ROWS][KB__COLUMNS]) {
+uint8_t teensy__update_matrix(bool matrix[OPT__KB__ROWS][OPT__KB__COLUMNS]) {
     #if OPT__TEENSY__DRIVE_ROWS
         update_columns_for_row(matrix, 0);
         update_columns_for_row(matrix, 1);

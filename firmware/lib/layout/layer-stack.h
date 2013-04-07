@@ -23,6 +23,7 @@
 uint8_t layer_stack__peek   (uint8_t offset);
 uint8_t layer_stack__push   (uint8_t layer_id, uint8_t layer_number);
 uint8_t layer_stack__pop_id (uint8_t layer_id);
+uint8_t layer_stack__size   (void);
 
 
 // ----------------------------------------------------------------------------
@@ -76,5 +77,13 @@ uint8_t layer_stack__pop_id (uint8_t layer_id);
  *
  * Returns:
  * - success: the offset of the element that was pushed (or pudated)
+ */
+
+// === layer_stack__size ===
+/**                                     functions/layer_stack__size/description
+ * Return the current size (height) of the layer stack
+ *
+ * Returns:
+ * - success: the current size (height) of the layer stack (`0` if empty)
  */
 

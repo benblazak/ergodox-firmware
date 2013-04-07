@@ -18,7 +18,7 @@
 
 // ----------------------------------------------------------------------------
 
-#if KB__ROWS != 6 || KB__COLUMNS != 14
+#if OPT__KB__ROWS != 6 || OPT__KB__COLUMNS != 14
     #error "Expecting different keyboard dimensions"
 #endif
 
@@ -135,7 +135,7 @@ out:
  * - success: `0`
  * - failure: twi status code
  */
-uint8_t mcp23018__update_matrix(bool matrix[KB__ROWS][KB__COLUMNS]) {
+uint8_t mcp23018__update_matrix(bool matrix[OPT__KB__ROWS][OPT__KB__COLUMNS]) {
     uint8_t ret, data;
 
     // initialize things, just to make sure

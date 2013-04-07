@@ -22,7 +22,7 @@
 // ----------------------------------------------------------------------------
 
 uint8_t mcp23018__init          (void);
-uint8_t mcp23018__update_matrix (bool matrix[KB__ROWS][KB__COLUMNS]);
+uint8_t mcp23018__update_matrix (bool matrix[OPT__KB__ROWS][OPT__KB__COLUMNS]);
 
 
 // ----------------------------------------------------------------------------

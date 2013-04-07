@@ -25,22 +25,18 @@
 
 // ----------------------------------------------------------------------------
 
-#if MAKE__KEYBOARD == 'ergodox'
-
-    #define  KB__ROWS      6
-    #define  KB__COLUMNS  14
-
-#else
-
-    #error "Keyboard dimensions must be defined"
-
+#ifndef OPT__KB__ROWS
+    #error  "OPT__KB__ROWS not defined"
+#endif
+#ifndef OPT__KB__COLUMNS
+    #error  "OPT__KB__COLUMNS not defined"
 #endif
 
 // ----------------------------------------------------------------------------
 
 // controller
 uint8_t kb__init          (void);
-uint8_t kb__update_matrix (bool matrix[KB__ROWS][KB__COLUMNS]);
+uint8_t kb__update_matrix (bool matrix[OPT__KB__ROWS][OPT__KB__COLUMNS]);
 
 // LED
 void kb__led__on  (uint8_t led);
@@ -59,8 +55,7 @@ void kb__led__delay__usb_init (void);
 void kb__led__logical_on  (char led);
 void kb__led__logical_off (char led);
 // -------
-void kb__layout__exec_key_pointer  (bool pressed, void * pointer);
-void kb__layout__exec_key_location (bool pressed, uint8_t row, uint8_t column);
+void kb__layout__exec_key (bool pressed, uint8_t row, uint8_t column);
 
 
 // ----------------------------------------------------------------------------
@@ -78,13 +73,13 @@ void kb__layout__exec_key_location (bool pressed, uint8_t row, uint8_t column);
 // macros ---------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 
-// === KB__ROWS ===
-/**                                                 macros/KB__ROWS/description
+// === OPT__KB__ROWS ===
+/**                                            macros/OPT__KB__ROWS/description
  * The number of rows in a given keyboard's matrix
  */
 
-// === KB__COLUMNS ===
-/**                                              macros/KB__COLUMNS/description
+// === OPT__KB__COLUMNS ===
+/**                                         macros/OPT__KB__COLUMNS/description
  * The number of columns in a given keyboard's matrix
  */
 
@@ -239,25 +234,8 @@ void kb__layout__exec_key_location (bool pressed, uint8_t row, uint8_t column);
 
 // ----------------------------------------------------------------------------
 
-// === kb__layout__exec_key_pointer ===
-/**                          functions/kb__layout__exec_key_pointer/description
- * Perform a "press" or "release" of the key pointed to
- *
- * Arguments:
- * - `pressed`:
- *     - `true`: Indicates that the key to be "executed" has been pressed
- *     - `false`: Indicates that the key to be "executed" has been released
- * - `pointer`: A pointer to the key to execute
- *
- * Notes:
- * - The pointer may be of any type, and to a value in any address space.  It
- *   is up to the keyboard implementation to define this.  Since this is the
- *   only `exec_key_pointer` function though, all the keys should probably be
- *   in the same address space, wherever they are.
- */
-
-// === kb__layout__exec_key_location ===
-/**                         functions/kb__layout__exec_key_location/description
+// === kb__layout__exec_key ===
+/**                                  functions/kb__layout__exec_key/description
  * Perform the appropriate actions for a "press" or "release" of the key at the
  * given position.
  *

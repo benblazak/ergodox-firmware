@@ -23,6 +23,7 @@
 #include "../../../../../firmware/lib/usb.h"
 #include "../../../../../firmware/lib/usb/usage-page/keyboard.h"
 #include "../../../../../firmware/lib/layout/key-functions.h"
+#include "../../../../../firmware/lib/layout/layer-stack.h"
 
 // ----------------------------------------------------------------------------
 
@@ -32,6 +33,10 @@
  * Notes:
  * - Keys will be of the form
  *   `key_t key = { &press_function, &release_function };`
+ *
+ * - The fact that keys are of this type (composed of two
+ *   `void (*function)(void)` pointers) is assumed throughout most of these
+ *   layout files
  */
 typedef  void (*key_t[2])(void);
 
@@ -42,7 +47,28 @@ typedef  void (*key_t[2])(void);
  * - The first dimension of the matrix (left blank in the typedef since it
  *   varies between layouts) is "layers"
  */
-typedef  key_t PROGMEM layout_t[][KB__ROWS][KB__COLUMNS];
+typedef  const key_t PROGMEM layout_t[][OPT__KB__ROWS][OPT__KB__COLUMNS];
+
+/**                                                variables/layout/description
+ * The variable containing our layout matrix
+ */
+layout_t _layout;
+
+/**                                            variables/sticky_key/description
+ * A pointer to the release function of the last sticky key pressed
+ *
+ * The function pointed to by this should be executed directly after executing
+ * the "press" function of the next key pressed.
+ *
+ * Notes:
+ * - In order for things to work right, sticky keys should either execute this
+ *   stored function themselves before placing their own "release" function
+ *   value here, or else save the value that's here and call it as part of
+ *   their own "release" function.  If this isn't done, and the key pressed
+ *   directly before this was a sticky key as well, then the previous sticky
+ *   key will never be released.
+ */
+void (*_sticky_key)(void);
 
 
 // ----------------------------------------------------------------------------

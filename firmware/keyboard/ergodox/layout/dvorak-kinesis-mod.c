@@ -6,22 +6,21 @@
 
 /**                                                                 description
  * A Dvorak layout adapted from the default Kinesis layout.  The position of
- * the symbol keys on the function layer was taken from the Arensito layout.
+ * the symbol keys on the function layer was (roughly) taken from the Arensito
+ * layout.
  *
  * Implements the "layout" section of '.../firmware/keyboard.h'
- *
- * TODO: fix this file, after the qwerty layout is done
  */
 
 
-#include "./default/common.h"
+#include "./common/definitions.h"
 
 
 // ----------------------------------------------------------------------------
 // matrix control
 // ----------------------------------------------------------------------------
 
-#include "./default/exec_key.c.h"
+#include "./common/exec_key.c.h"
 
 
 // ----------------------------------------------------------------------------
@@ -29,7 +28,7 @@
 // ----------------------------------------------------------------------------
 
 void kb__led__logical_on(char led) {
-    switch led {
+    switch(led) {
         case 'N': kb__led__on(1); break;  // numlock
         case 'C': kb__led__on(2); break;  // capslock
         case 'S': kb__led__on(3); break;  // scroll lock
@@ -39,7 +38,7 @@ void kb__led__logical_on(char led) {
 }
 
 void kb__led__logical_off(char led) {
-    switch led {
+    switch(led) {
         case 'N': kb__led__off(1); break;  // numlock
         case 'C': kb__led__off(2); break;  // capslock
         case 'S': kb__led__off(3); break;  // scroll lock
@@ -53,131 +52,116 @@ void kb__led__logical_off(char led) {
 // keys
 // ----------------------------------------------------------------------------
 
-#include "./default/keys.h"
+#include "./common/keys.c.h"
 
-// layer
-key_t L0pu1    = { &kf__layer__push, 0x0001, NULL,                 0 };
-key_t L0po     = { &kf__layer__pop,  0x0000, NULL,                 0 };
-key_t L0pu1po  = { &kf__layer__push, 0x0001, &kf__layer__pop, 0x0001 };
-key_t L1pu2po  = { &kf__layer__push, 0x0102, &kf__layer__pop, 0x0102 };
-
-// --- NumPush
-const uint16_t PROGMEM NumPush__press[] = {
-    2, &kf__layer__push, 0x0203,
-       &kf__press, KEY__LockingNumLock };
-key_t NumPush = { &kf__macro__progmem, &NumPush__press,
-                  &kf__release, KEY__LockingNumLock };
-
-// --- NumPop
-const uint16_t PROGMEM NumPop__press[] = {
-    2, &kf__layer__pop, 0x0203,
-       &kf__press, KEY__LockingNumLock };
-key_t NumPop = { &kf__macro__progmem, &NumPop__press,
-                 &kf__release, KEY__LockingNumLock };
+KEYS__LAYER__NUM_PUSH(10, 3);
+KEYS__LAYER__NUM_POP(10);
 
 
 // ----------------------------------------------------------------------------
 // layout
 // ----------------------------------------------------------------------------
 
-key_t layout[][KB__ROWS][KB__COLUMNS] = {
+#include "./common/matrix.h"
+
+
+layout_t _layout = {
 
 // ............................................................................
 
     MATRIX_LAYER(  // layer 0 : default
-
-// unused
-NA,
+// macro, unused,
+       K,    nop,
 // left hand ...... ......... ......... ......... ......... ......... .........
-   Equal,       K1,       K2,       K3,       K4,       K5,      Esc,
- Bkslash,    Quote,    Comma,   Period,        P,        Y,    L0pu1,
-     Tab,        A,        O,        E,        U,        I,
-Sh2KCapL,  Semicol,        Q,        J,        K,        X,  L0pu1po,
-    GUIL,    Grave,  Bkslash,   ArrowL,   ArrowR,
-                                                               CtrlL,     AltL,
-                                                        NA,       NA,     Home,
-                                                        Bs,      Del,      End,
+   equal,        1,        2,        3,        4,        5,      esc,
+ bkslash,    quote,    comma,   period,        p,        y,   lpu1l1,
+     tab,        a,        o,        e,        u,        i,
+shL2kcap,  semicol,        q,        j,        k,        x, lpupo1l1,
+    guiL,    grave,  bkslash,   arrowL,   arrowR,
+                                                               ctrlL,     altL,
+                                                       nop,      nop,     home,
+                                                        bs,      del,      end,
 // right hand ..... ......... ......... ......... ......... ......... .........
-           NumPush,       K6,       K7,       K8,       K9,       K0,     Dash,
-             BrktL,        F,        G,        C,        R,        L,    BrktR,
-                           D,        H,        T,        N,        S,    Slash,
-           L0pu1po,        B,        M,        W,        V,        Z, Sh2KCapR,
-                                ArrowL,   ArrowD,   ArrowU,   ArrowR,     GUIR,
-    AltR,    CtrlR,
-   PageU,       NA,       NA,
-   PageD,    Enter,    Space  ),
+           numPush,        6,        7,        8,        9,        0,     dash,
+             brktL,        f,        g,        c,        r,        l,    brktR,
+                           d,        h,        t,        n,        s,    slash,
+          lpupo1l1,        b,        m,        w,        v,        z, shR2kcap,
+                                arrowL,   arrowD,   arrowU,   arrowR,     guiR,
+    altR,    ctrlR,
+   pageU,      nop,      nop,
+   pageD,    enter,    space  ),
 
 // ............................................................................
 
     MATRIX_LAYER(  // layer 1 : function and symbol keys
-// unused
-NA,
+// macro, unused,
+       K,    nop,
 // left hand ...... ......... ......... ......... ......... ......... .........
-      NA,       F1,       F2,       F3,       F4,       F5,      F11,
-  Transp,   BraceL,   BraceR,    BrktL,    BrktR,       NA,     L0po,
-  Transp,  Semicol,    Slash,     Dash,      KP0,    Colon,
-  Transp,      KP6,      KP7,      KP8,      KP9,     Plus,  L1pu2po,
-  Transp,   Transp,   Transp,   Transp,   Transp,
-                                                              Transp,   Transp,
-                                                    Transp,   Transp,   Transp,
-                                                    Transp,   Transp,   Transp,
+     nop,       F1,       F2,       F3,       F4,       F5,      F11,
+  transp,   braceL,   braceR,    brktL,    brktR,      nop,   lpo1l1,
+  transp,  semicol,    slash,     dash,      kp0,    colon,
+  transp,      kp6,      kp7,      kp8,      kp9,     plus, lpupo2l2,
+  transp,   transp,   transp,   transp,   transp,
+                                                              transp,   transp,
+                                                    transp,   transp,   transp,
+                                                    transp,   transp,   transp,
 // right hand ..... ......... ......... ......... ......... ......... .........
-               F12,       F6,       F7,       F8,       F9,      F10,    Power,
-            Transp,       NA,  Undersc, LessThan, GrtrThan,   Dollar,  VolumeU,
-                     Bkslash,      KP1,   ParenL,   ParenR,    Equal,  VolumeD,
-           L1pu2po, Asterisk,      KP2,      KP3,      KP4,      KP5,     Mute,
-                                Transp,   Transp,   Transp,   Transp,   Transp,
-  Transp,   Transp,
-  Transp,   Transp,   Transp,
-  Transp,   Transp,   Transp  ),
+               F12,       F6,       F7,       F8,       F9,      F10,    power,
+            transp,      nop,  undersc, lessThan, grtrThan,   dollar,  volumeU,
+                     bkslash,      kp1,   parenL,   parenR,    equal,  volumeD,
+          lpupo2l2, asterisk,      kp2,      kp3,      kp4,      kp5,     mute,
+                                transp,   transp,   transp,   transp,   transp,
+  transp,   transp,
+  transp,   transp,   transp,
+  transp,   transp,   transp  ),
 
 // ............................................................................
 
     MATRIX_LAYER(  // layer 2 : keyboard functions
-// unused
-NA,
+// macro, unused,
+       K,    nop,
 // left hand ...... ......... ......... ......... ......... ......... .........
-   Btldr,       NA,       NA,       NA,       NA,       NA,       NA,
-      NA,       NA,       NA,       NA,       NA,       NA,       NA,
-      NA,       NA,       NA,       NA,       NA,       NA,
-      NA,       NA,       NA,       NA,       NA,       NA,       NA,
-      NA,       NA,       NA,       NA,       NA,
-                                                                  NA,       NA,
-                                                        NA,       NA,       NA,
-                                                        NA,       NA,       NA,
+   btldr,      nop,      nop,      nop,      nop,      nop,      nop,
+     nop,      nop,      nop,      nop,      nop,      nop,      nop,
+     nop,      nop,      nop,      nop,      nop,      nop,
+     nop,      nop,      nop,      nop,      nop,      nop,      nop,
+     nop,      nop,      nop,      nop,      nop,
+                                                                 nop,      nop,
+                                                       nop,      nop,      nop,
+                                                       nop,      nop,      nop,
 // right hand ..... ......... ......... ......... ......... ......... .........
-                NA,       NA,       NA,       NA,       NA,       NA,       NA,
-                NA,       NA,       NA,       NA,       NA,       NA,       NA,
-                          NA,       NA,       NA,       NA,       NA,       NA,
-                NA,       NA,       NA,       NA,       NA,       NA,       NA,
-                                    NA,       NA,       NA,       NA,       NA,
-      NA,       NA,
-      NA,       NA,       NA,
-      NA,       NA,       NA  ),
+               nop,      nop,      nop,      nop,      nop,      nop,      nop,
+               nop,      nop,      nop,      nop,      nop,      nop,      nop,
+                         nop,      nop,      nop,      nop,      nop,      nop,
+               nop,      nop,      nop,      nop,      nop,      nop,      nop,
+                                   nop,      nop,      nop,      nop,      nop,
+     nop,      nop,
+     nop,      nop,      nop,
+     nop,      nop,      nop  ),
 
 // ............................................................................
 
     MATRIX_LAYER(  // layer 3 : numpad
-// unused
-NA,
+// macro, unused,
+       K,    nop,
 // left hand ...... ......... ......... ......... ......... ......... .........
-  Transp,   Transp,   Transp,   Transp,   Transp,   Transp,   Transp,
-  Transp,   Transp,   Transp,   Transp,   Transp,   Transp,   Transp,
-  Transp,   Transp,   Transp,   Transp,   Transp,   Transp,
-  Transp,   Transp,   Transp,   Transp,   Transp,   Transp,   Transp,
-  Transp,      Ins,   Transp,   Transp,   Transp,
-                                                              Transp,   Transp,
-                                                    Transp,   Transp,   Transp,
-                                                    Transp,   Transp,   Transp,
+  transp,   transp,   transp,   transp,   transp,   transp,   transp,
+  transp,   transp,   transp,   transp,   transp,   transp,   transp,
+  transp,   transp,   transp,   transp,   transp,   transp,
+  transp,   transp,   transp,   transp,   transp,   transp,   transp,
+  transp,      ins,   transp,   transp,   transp,
+                                                              transp,   transp,
+                                                    transp,   transp,   transp,
+                                                    transp,   transp,   transp,
 // right hand ..... ......... ......... ......... ......... ......... .........
-            NumPop,   Transp,   NumPop,    Equal,    KPDiv,    KPMul,   Transp,
-            Transp,   Transp,      KP7,      KP8,      KP9,    KPSub,   Transp,
-                      Transp,      KP4,      KP5,      KP6,    KPAdd,   Transp,
-            Transp,   Transp,      KP1,      KP2,      KP3,  KPEnter,   Transp,
-                                Transp,   Transp,   Period,  KPEnter,   Transp,
-  Transp,   Transp,
-  Transp,   Transp,   Transp,
-  Transp,   Transp,      KP0  ),
+            numPop,   transp,   numPop,    equal,    kpDiv,    kpMul,   transp,
+            transp,   transp,      kp7,      kp8,      kp9,    kpSub,   transp,
+                      transp,      kp4,      kp5,      kp6,    kpAdd,   transp,
+            transp,   transp,      kp1,      kp2,      kp3,  kpEnter,   transp,
+                                transp,   transp,   period,  kpEnter,   transp,
+  transp,   transp,
+  transp,   transp,   transp,
+  transp,   transp,      kp0  ),
 
 // ............................................................................
 };
