@@ -30,6 +30,8 @@ bool (*main_kb_is_pressed)[KB_ROWS][KB_COLUMNS] = &_main_kb_is_pressed;
 static bool _main_kb_was_pressed[KB_ROWS][KB_COLUMNS];
 bool (*main_kb_was_pressed)[KB_ROWS][KB_COLUMNS] = &_main_kb_was_pressed;
 
+static bool main_kb_was_transparent[KB_ROWS][KB_COLUMNS];
+
 uint8_t main_layers_pressed[KB_ROWS][KB_COLUMNS];
 
 uint8_t main_loop_row;
@@ -92,16 +94,18 @@ int main(void) {
 					if (is_pressed) {
 						layer = main_layers_peek(0);
 						main_layers_pressed[row][col] = layer;
+						main_arg_trans_key_pressed = false;
 					} else {
 						layer = main_layers_pressed[row][col];
+						main_arg_trans_key_pressed = main_kb_was_transparent[row][col];
 					}
 
 					// set remaining vars, and "execute" key
 					main_arg_row          = row;
 					main_arg_col          = col;
 					main_arg_layer_offset = 0;
-					main_arg_trans_key_pressed = false;
 					main_exec_key();
+					main_kb_was_transparent[row][col] = main_arg_trans_key_pressed;
 				}
 			}
 		}
