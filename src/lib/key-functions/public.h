@@ -30,6 +30,16 @@
 	void kbfun_layer_push_8  (void);
 	void kbfun_layer_push_9  (void);
 	void kbfun_layer_push_10 (void);
+	void kbfun_layer_sticky_1  (void);
+	void kbfun_layer_sticky_2  (void);
+	void kbfun_layer_sticky_3  (void);
+	void kbfun_layer_sticky_4  (void);
+	void kbfun_layer_sticky_5  (void);
+	void kbfun_layer_sticky_6  (void);
+	void kbfun_layer_sticky_7  (void);
+	void kbfun_layer_sticky_8  (void);
+	void kbfun_layer_sticky_9  (void);
+	void kbfun_layer_sticky_10 (void);
 	void kbfun_layer_pop_1   (void);
 	void kbfun_layer_pop_2   (void);
 	void kbfun_layer_pop_3   (void);
