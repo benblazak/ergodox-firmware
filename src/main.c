@@ -100,6 +100,7 @@ int main(void) {
 					main_arg_row          = row;
 					main_arg_col          = col;
 					main_arg_layer_offset = 0;
+					main_arg_trans_key_pressed = false;
 					main_exec_key();
 				}
 			}
@@ -176,7 +177,6 @@ void main_exec_key(void) {
 		  ? kb_layout_press_get(layer, row, col)
 		  : kb_layout_release_get(layer, row, col) );
 
-	main_arg_trans_key_pressed = false;
 	if (key_function)
 		(*key_function)();
 
