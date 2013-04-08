@@ -36,12 +36,31 @@
  *   Generate a normal keypress or keyrelease
  */
 void kbfun_press_release(void) {
-	uint8_t keycode = kb_layout_get(LAYER, ROW, COL);
 	if (!main_arg_trans_key_pressed)
 		main_arg_any_non_trans_key_pressed = true;
+	kbfun_press_release_preserve_sticky();
+}
+//TODO: 
+
+/*
+ * [name]
+ *   Press|Release and preserve top layer sticky key state
+ *
+ * [description]
+ *   Generate a normal keypress or keyrelease
+ *   While basing the sticky key state transition on whether
+ *    kbfun_press_release() was called after kbfun_transparent() generally
+ *    works in practice, it is not always the desired behavior. One of the
+ *    benefits of sticky keys is avoiding key chording, so we want to make sure
+ *    that standard modifiers do not interrupt the sticky key cycle. Use
+ *    kbfun_press_release_preserve_sticky() if you want to define a standard
+ *    modifier key (shift, control, alt, gui) on the sticky layer instead of
+ *    defining the key to be transparent for the layer.
+ */
+void kbfun_press_release_preserve_sticky(void) {
+	uint8_t keycode = kb_layout_get(LAYER, ROW, COL);
 	_kbfun_press_release(IS_PRESSED, keycode);
 }
-
 /*
  * [name]
  *   Toggle

@@ -17,6 +17,7 @@
 
 	// basic
 	void kbfun_press_release (void);
+	void kbfun_press_release_preserve_sticky (void);
 	void kbfun_toggle        (void);
 	void kbfun_transparent   (void);
 	// --- layer push/pop functions
