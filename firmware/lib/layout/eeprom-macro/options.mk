@@ -5,15 +5,11 @@
 # -----------------------------------------------------------------------------
 
 ##                                                                  description
-# USB keyboard options
+# eeprom-macro options
 #
 # This file is meant to be included by the using '.../options.mk'
 #
 
 
-SRC += $(wildcard $(MCU)/*.c)
-
-ifeq '$(MCU)' 'atmega32u4'
-	SRC += $(wildcard $(MCU)/keyboard/from-pjrc/*.c)
-endif
+SRC += $(wildcard $(MCU).c)
 

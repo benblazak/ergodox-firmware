@@ -13,8 +13,9 @@
 
 include ../../../firmware/lib/twi/options.mk
 include ../../../firmware/lib/usb/options.mk
+include ../../../firmware/lib/layout/eeprom-macro/options.mk
 include ../../../firmware/lib/layout/key-functions/options.mk
-# TODO: add other 'options.mk' files as they appear
+include ../../../firmware/lib/layout/layer-stack/options.mk
 
 
 BINARY_FORMAT := ihex

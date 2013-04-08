@@ -11,8 +11,8 @@
  * Meant to be included *only* by the layout using it.
  */
 
-// TODO: implement chords (as in, for a chorded key layout)
-// TODO: implement sticky keys
+// TODO: write a chordmak (or asetniop) layout, on top of a standard colemak
+// layout, using chained sticky keys for the modifiers
 
 // TODO: write tutorials
 // - about 

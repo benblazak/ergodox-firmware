@@ -5,8 +5,7 @@
  * ------------------------------------------------------------------------- */
 
 /**                                                                 description
- * Implements the "basic" section of
- * ".../firmware/lib/layout/key-functions.h"
+ * Implements the "basic" section of "../key-functions.h"
  */
 
 
