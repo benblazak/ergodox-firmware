@@ -19,7 +19,6 @@
 	typedef enum StickyState
 	{
 		eStickyNone,
-		eStickyOff,
 		eStickyOnceDown,
 		eStickyOnceUp,
 		eStickyLock
