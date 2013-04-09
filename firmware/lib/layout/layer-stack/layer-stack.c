@@ -44,10 +44,10 @@ stack_t _stack = {
     .data      = (element_t *) malloc( TYPE_SIZE * BLOCK_SIZE ),
 };
 
-// todo: this should not be the final function
+// TODO: this should not be the final function
 static uint8_t _resize_stack(stack_t stack) {
     uint8_t margin = stack.allocated - stack.filled;
-    if (margin == 0 || margin > MARGIN) {
+    if (margin == 0 || margin > MARGIN + BLOCK_SIZE) {
         uint8_t new_size = stack.allocated + TYPE_SIZE * (margin == 0)
                                                          ?  BLOCK_SIZE
                                                          : -BLOCK_SIZE;
