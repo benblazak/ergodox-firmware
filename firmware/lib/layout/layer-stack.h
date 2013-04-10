@@ -11,6 +11,10 @@
  *
  * This file is meant to be included and used by the keyboard layout
  * implemenmtation.
+ *
+ * TODO: add
+ * - `layer_stack__find_id()`
+ * - `uint8_t offset` as an argument to ...push()
  */
 
 
@@ -59,7 +63,7 @@ uint8_t layer_stack__size   (void);
  * - `layer_number`: the layer-number of the layer to push
  *
  * Returns:
- * - success: the offset of the element that was pushed (or pudated)
+ * - success: the offset of the element that was pushed (or updated)
  *
  * Notes:
  * - If the given layer-id is not present in the stack, a new element is
@@ -73,10 +77,10 @@ uint8_t layer_stack__size   (void);
  * Pop the given element (by ID) out from the layer stack
  *
  * Arguments:
- * - `layer_id`: the ID of the layer to push
+ * - `layer_id`: the ID of the layer to pop (remove)
  *
  * Returns:
- * - success: the offset of the element that was pushed (or pudated)
+ * - success: the offset of the element that was popped (removed)
  */
 
 // === layer_stack__size ===
