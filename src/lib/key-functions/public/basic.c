@@ -40,7 +40,6 @@ void kbfun_press_release(void) {
 		main_arg_any_non_trans_key_pressed = true;
 	kbfun_press_release_preserve_sticky();
 }
-//TODO: 
 
 /*
  * [name]
@@ -61,6 +60,7 @@ void kbfun_press_release_preserve_sticky(void) {
 	uint8_t keycode = kb_layout_get(LAYER, ROW, COL);
 	_kbfun_press_release(IS_PRESSED, keycode);
 }
+
 /*
  * [name]
  *   Toggle
