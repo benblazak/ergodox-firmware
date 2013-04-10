@@ -1,12 +1,6 @@
 /* ----------------------------------------------------------------------------
 * ergoDOX layout : COLEMAK JC Sticky Keys Mod
-* The ErgoDox Layout Configurator layout that best approximates the layout
-*     defined in this file is available here:
-*     https://www.massdrop.com/ext/ergodox/?referer=EAZJPJ&hash=f26761358ba99e21ae937173da512849
-*     The differences are mainly the use of layer toggles instead of sticky
-*     layer keys and many of the symbols add the kbfun_shift_press_release()
-*     which is not accessible for all keys in the cofigurator (as of
-*     2013-04-10).
+*     created by Ryan Prince
 * Description: This layout is designed for programming with a focus on
 *     minimizing/elimnating the need to take the hands out of home-row position
 *     to reach other keys. Layer sticky keys are used to reduce the average
@@ -30,6 +24,13 @@
 *     with the kbfun_shift_press_release() behavior which implicitly adds the
 *     shift down modifier to output symbols that require it without knowledge
 *     of the virtual sticky state maintained by the operating system.
+*   The ErgoDox Layout Configurator layout that best approximates the layout
+*     defined in this file is available here:
+*     https://www.massdrop.com/ext/ergodox/?referer=EAZJPJ&hash=f26761358ba99e21ae937173da512849
+*     The differences are mainly the use of layer toggles instead of sticky
+*     layer keys and many of the symbols add the kbfun_shift_press_release()
+*     which is not accessible for all keys in the cofigurator (as of
+*     2013-04-10).
 * -----------------------------------------------------------------------------
 * Copyright (c) 2012 Ben Blazak <benblazak.dev@gmail.com>,
 *    2013 Ryan Prince <judascleric@gmail.com>
