@@ -124,7 +124,7 @@ static inline void numpad_toggle_numlock(void) {
 void kbfun_layer_push_numpad(void) {
 	uint8_t keycode = kb_layout_get(LAYER, ROW, COL);
 	main_layers_pop_id(numpad_layer_id);
-	numpad_layer_id = main_layers_push(keycode);
+	numpad_layer_id = main_layers_push(keycode, eStickyNone);
 	numpad_toggle_numlock();
 }
 

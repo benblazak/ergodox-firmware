@@ -30,6 +30,8 @@ bool (*main_kb_is_pressed)[KB_ROWS][KB_COLUMNS] = &_main_kb_is_pressed;
 static bool _main_kb_was_pressed[KB_ROWS][KB_COLUMNS];
 bool (*main_kb_was_pressed)[KB_ROWS][KB_COLUMNS] = &_main_kb_was_pressed;
 
+static bool main_kb_was_transparent[KB_ROWS][KB_COLUMNS];
+
 uint8_t main_layers_pressed[KB_ROWS][KB_COLUMNS];
 
 uint8_t main_loop_row;
@@ -41,6 +43,8 @@ uint8_t main_arg_row;
 uint8_t main_arg_col;
 bool    main_arg_is_pressed;
 bool    main_arg_was_pressed;
+bool    main_arg_any_non_trans_key_pressed;
+bool    main_arg_trans_key_pressed;
 
 // ----------------------------------------------------------------------------
 
@@ -90,8 +94,10 @@ int main(void) {
 					if (is_pressed) {
 						layer = main_layers_peek(0);
 						main_layers_pressed[row][col] = layer;
+						main_arg_trans_key_pressed = false;
 					} else {
 						layer = main_layers_pressed[row][col];
+						main_arg_trans_key_pressed = main_kb_was_transparent[row][col];
 					}
 
 					// set remaining vars, and "execute" key
@@ -99,6 +105,7 @@ int main(void) {
 					main_arg_col          = col;
 					main_arg_layer_offset = 0;
 					main_exec_key();
+					main_kb_was_transparent[row][col] = main_arg_trans_key_pressed;
 				}
 			}
 		}
@@ -139,22 +146,6 @@ int main(void) {
 
 // ----------------------------------------------------------------------------
 
-/*
- * Exec key
- * - Execute the keypress or keyrelease function (if it exists) of the key at
- *   the current possition.
- */
-void main_exec_key(void) {
-	void (*key_function)(void) =
-		( (is_pressed)
-		  ? kb_layout_press_get(layer, row, col)
-		  : kb_layout_release_get(layer, row, col) );
-
-	if (key_function)
-		(*key_function)();
-}
-
-
 /* ----------------------------------------------------------------------------
  * Layer Functions
  * ----------------------------------------------------------------------------
@@ -170,6 +161,7 @@ void main_exec_key(void) {
 struct layers {
 	uint8_t layer;
 	uint8_t id;
+	uint8_t sticky;
 };
 
 // ----------------------------------------------------------------------------
@@ -177,6 +169,26 @@ struct layers {
 struct layers layers[MAX_ACTIVE_LAYERS];
 uint8_t       layers_head = 0;
 uint8_t       layers_ids_in_use[MAX_ACTIVE_LAYERS] = {true};
+
+/*
+ * Exec key
+ * - Execute the keypress or keyrelease function (if it exists) of the key at
+ *   the current possition.
+ */
+void main_exec_key(void) {
+	void (*key_function)(void) =
+		( (is_pressed)
+		  ? kb_layout_press_get(layer, row, col)
+		  : kb_layout_release_get(layer, row, col) );
+
+	if (key_function)
+		(*key_function)();
+
+	// If the current layer is in the sticky once up state and a key defined
+	//  for this layer (a non-transparent key) was pressed, pop the layer
+	if (layers[layers_head].sticky == eStickyOnceUp && main_arg_any_non_trans_key_pressed)
+		main_layers_pop_id(layers_head);
+}
 
 /*
  * peek()
@@ -195,6 +207,13 @@ uint8_t main_layers_peek(uint8_t offset) {
 	return 0;  // default, or error
 }
 
+uint8_t main_layers_peek_sticky(uint8_t offset) {
+	if (offset <= layers_head)
+		return layers[layers_head - offset].sticky;
+
+	return 0;  // default, or error
+}
+
 /*
  * push()
  *
@@ -205,17 +224,19 @@ uint8_t main_layers_peek(uint8_t offset) {
  * - success: the id assigned to the newly added element
  * - failure: 0 (the stack was already full)
  */
-uint8_t main_layers_push(uint8_t layer) {
+uint8_t main_layers_push(uint8_t layer, uint8_t sticky) {
 	// look for an available id
-	for (uint8_t id=1; id<MAX_ACTIVE_LAYERS; id++)
+	for (uint8_t id=1; id<MAX_ACTIVE_LAYERS; id++) {
 		// if one is found
 		if (layers_ids_in_use[id] == false) {
 			layers_ids_in_use[id] = true;
 			layers_head++;
 			layers[layers_head].layer = layer;
 			layers[layers_head].id = id;
+			layers[layers_head].sticky = sticky;
 			return id;
 		}
+	}
 
 	return 0;  // default, or error
 }
