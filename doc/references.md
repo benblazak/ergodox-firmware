@@ -286,6 +286,15 @@
     * mentioned on [the designer's blog]
       (http://humblehacker.com/blog/)
 
+* githug: [chrisandreae / kinesis-firmware]
+  (https://github.com/chrisandreae/kinesis-firmware)  
+  Another firmware using the ATMega32u4.
+
+    * mentioned in [this post] (http://deskthority.net/post106621.html#p106621)
+      by [vvp] (http://deskthority.net/vvp-u3812/) on
+      <http://deskthority.net/>.  he's thinking about using it on a hardware
+      modded ErgoDox.
+
 ### USB Libraries
 
 * [LUFA (2012) (Lightweight USB Framework for AVRs)]
