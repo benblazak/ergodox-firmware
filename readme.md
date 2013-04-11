@@ -8,7 +8,7 @@ and [deskthority]
 discussion threads.
 
 
-### Notes:
+### Notes
 A rewrite is currently underway (see the 'partial-rewrite' branch) and so this
 branch isn't quite receiving the attention it used to.  Things that have
 changed since this document was last properly updated:
