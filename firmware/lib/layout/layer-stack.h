@@ -45,12 +45,12 @@ uint8_t layer_stack__size   (void);
  * Return the `offset`th element of the layer stack
  *
  * Arguments:
- * - `offset`: the offset of the element to return (with the top being
+ * - `offset`: the offset of the element to return (with the top element being
  *   `offset = 0`)
  *
  * Returns:
- * - success: the layer-number of the `offset`th element, or `0` if `offset`
- *   was out of bounds
+ * - success: the layer-number of the `offset`th element (which may be `0`), or
+ *   `0` if `offset` was out of bounds
  */
 
 // === layer_stack__push() ===
