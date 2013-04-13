@@ -31,7 +31,7 @@
  */
 
 #include <stdint.h>
-#include "usb.h"
+//#include "usb.h"
 
 
 #define EXTRA_INTERFACE		3

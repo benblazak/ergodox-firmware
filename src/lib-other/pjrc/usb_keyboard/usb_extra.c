@@ -21,11 +21,47 @@
  * THE SOFTWARE.
  */
 
+#define USB_SERIAL_PRIVATE_INCLUDE
+#include "usb_extra.h"
+#include "usb_keyboard.h"
 #include <util/delay.h>
 #include <avr/interrupt.h>
-#include "host.h"
-#include "usb_extra.h"
 
+/* report id */
+#define REPORT_ID_MOUSE     1
+#define REPORT_ID_SYSTEM    2
+#define REPORT_ID_CONSUMER  3
+
+// audio controls & system controls
+// http://www.microsoft.com/whdc/archive/w2kbd.mspx
+static const uint8_t PROGMEM extra_hid_report_desc[] = {
+    /* system control */
+    0x05, 0x01,                    // USAGE_PAGE (Generic Desktop)
+    0x09, 0x80,                    // USAGE (System Control)
+    0xa1, 0x01,                    // COLLECTION (Application)
+    0x85, REPORT_ID_SYSTEM,        //   REPORT_ID (2)
+    0x15, 0x01,                    //   LOGICAL_MINIMUM (0x1)
+    0x25, 0xb7,                    //   LOGICAL_MAXIMUM (0xb7)
+    0x19, 0x01,                    //   USAGE_MINIMUM (0x1)
+    0x29, 0xb7,                    //   USAGE_MAXIMUM (0xb7)
+    0x75, 0x10,                    //   REPORT_SIZE (16)
+    0x95, 0x01,                    //   REPORT_COUNT (1)
+    0x81, 0x00,                    //   INPUT (Data,Array,Abs)
+    0xc0,                          // END_COLLECTION
+    /* consumer */
+    0x05, 0x0c,                    // USAGE_PAGE (Consumer Devices)
+    0x09, 0x01,                    // USAGE (Consumer Control)
+    0xa1, 0x01,                    // COLLECTION (Application)
+    0x85, REPORT_ID_CONSUMER,      //   REPORT_ID (3)
+    0x15, 0x01,                    //   LOGICAL_MINIMUM (0x1)
+    0x26, 0x9c, 0x02,              //   LOGICAL_MAXIMUM (0x29c)
+    0x19, 0x01,                    //   USAGE_MINIMUM (0x1)
+    0x2a, 0x9c, 0x02,              //   USAGE_MAXIMUM (0x29c)
+    0x75, 0x10,                    //   REPORT_SIZE (16)
+    0x95, 0x01,                    //   REPORT_COUNT (1)
+    0x81, 0x00,                    //   INPUT (Data,Array,Abs)
+    0xc0,                          // END_COLLECTION
+};
 
 int8_t usb_extra_send(uint8_t report_id, uint16_t data)
 {
