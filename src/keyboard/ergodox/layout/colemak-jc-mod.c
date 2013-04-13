@@ -107,7 +107,7 @@ KB_MATRIX_LAYER(
 	0,	0,	0,	0,	0,	0,	0,	
 	0,	KEY_1_Exclamation,	KEY_2_At,	KEY_3_Pound,	KEY_4_Dollar,	KEY_5_Percent,	0,	
 	0,	KEY_SingleQuote_DoubleQuote,	0x34,	0x2F,	0x30,	KEY_Equal_Plus,	
-	0,	0x31,	KEY_Backslash_Pipe,	KEY_Dash_Underscore,	KEY_DeleteForward,	KEY_DeleteBackspace,	0,	
+	0,	0x31,	KEY_Backslash_Pipe,	KEY_Dash_Underscore,	KEY_DeleteBackspace,	KEY_Tab,	0,	
 	KEY_LeftArrow,	KEY_RightArrow,	KEY_UpArrow,	KEY_DownArrow,	0,	
 	0,	0,	
 	0,	0,	0,	
