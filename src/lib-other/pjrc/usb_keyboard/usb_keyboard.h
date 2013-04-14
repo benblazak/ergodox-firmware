@@ -12,12 +12,15 @@ extern uint8_t keyboard_modifier_keys;
 extern uint8_t keyboard_keys[6];
 extern volatile uint8_t keyboard_leds;
 
+extern uint16_t consumer_key;
+
 // This file does not include the HID debug functions, so these empty
 // macros replace them with nothing, so users can compile code that
 // has calls to these functions.
 #define usb_debug_putchar(c)
 #define usb_debug_flush_output()
 
+int8_t usb_extra_consumer_send();
 
 #if 0  // removed in favor of equivalent code elsewhere ::Ben Blazak, 2012::
 
@@ -133,8 +136,40 @@ extern volatile uint8_t keyboard_leds;
 
 #endif
 
+/* Consumer Page(0x0C)
+ * following are supported by Windows: http://msdn.microsoft.com/en-us/windows/hardware/gg463372.aspx
+ */
+#define AUDIO_MUTE              0x00E2
+#define AUDIO_VOL_UP            0x00E9
+#define AUDIO_VOL_DOWN          0x00EA
+#define TRANSPORT_NEXT_TRACK    0x00B5
+#define TRANSPORT_PREV_TRACK    0x00B6
+#define TRANSPORT_STOP          0x00B7
+#define TRANSPORT_PLAY_PAUSE    0x00CD
+/* application launch */
+#define AL_CC_CONFIG            0x0183
+#define AL_EMAIL                0x018A
+#define AL_CALCULATOR           0x0192
+#define AL_LOCAL_BROWSER        0x0194
+/* application control */
+#define AC_SEARCH               0x0221
+#define AC_HOME                 0x0223
+#define AC_BACK                 0x0224
+#define AC_FORWARD              0x0225
+#define AC_STOP                 0x0226
+#define AC_REFRESH              0x0227
+#define AC_BOOKMARKS            0x022A
+/* supplement for Bluegiga iWRAP HID(not supported by Windows?) */
+#define AL_LOCK                 0x019E
+#define TRANSPORT_RECORD        0x00B2
+#define TRANSPORT_REWIND        0x00B4
+#define TRANSPORT_EJECT         0x00B8
+#define AC_MINIMIZE             0x0206
 
-
+/* Generic Desktop Page(0x01) - system power control */
+#define SYSTEM_POWER_DOWN       0x0081
+#define SYSTEM_SLEEP            0x0082
+#define SYSTEM_WAKE_UP          0x0083
 
 // Everything below this point is only intended for usb_serial.c
 #ifdef USB_SERIAL_PRIVATE_INCLUDE

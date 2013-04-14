@@ -117,6 +117,7 @@ int main(void) {
 
 		// send the USB report (even if nothing's changed)
 		usb_keyboard_send();
+		usb_extra_consumer_send();
 		_delay_ms(MAKEFILE_DEBOUNCE_TIME);
 
 		// update LEDs

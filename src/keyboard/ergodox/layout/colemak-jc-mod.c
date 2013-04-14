@@ -62,6 +62,7 @@ void kbfun_layer_pop_all(void) {
 // DEFINITIONS ----------------------------------------------------------------
 #define  kprrel   &kbfun_press_release
 #define  kprpst   &kbfun_press_release_preserve_sticky
+#define  mprrel   &kbfun_mediakey_press_release
 #define  ktrans   &kbfun_transparent
 #define  lpush1   &kbfun_layer_push_1
 #define  lpush2   &kbfun_layer_push_2
@@ -113,7 +114,7 @@ KB_MATRIX_LAYER(
 	0,	0,	0,	
 	0,	0,	0,	
 	// right hand
-	0,	0,	0,	0,	0,	0,	0,	
+	0,	0,	MEDIAKEY_PREV_TRACK,	MEDIAKEY_PLAY_PAUSE,	MEDIAKEY_NEXT_TRACK,	0,	0,	
 	0,	KEY_6_Caret,	KEY_7_Ampersand,	KEYPAD_Asterisk,	KEYPAD_Minus,	KEY_GraveAccent_Tilde,	0,	
 	KEYPAD_Plus,	KEY_9_LeftParenthesis,	KEY_0_RightParenthesis,	KEY_LeftBracket_LeftBrace,	KEY_RightBracket_RightBrace,	0,	
 	0,	KEY_GraveAccent_Tilde,	KEY_DownArrow,	KEY_UpArrow,	KEY_LeftArrow,	KEY_RightArrow,	0,	
@@ -187,7 +188,7 @@ KB_MATRIX_LAYER(
 	NULL,	NULL,	ktrans,	
 	ktrans,	ktrans,	ktrans,	
 	// right hand
-	ktrans,	ktrans,	ktrans,	ktrans,	ktrans,	ktrans,	ktrans,	
+	ktrans,	ktrans,	mprrel,	mprrel,	mprrel,	ktrans,	ktrans,	
 	ktrans,	sshprre,	sshprre,	kprrel,	kprrel,	kprrel,	ktrans,	
 	kprrel,	sshprre,	sshprre,	kprrel,	kprrel,	ktrans,	
 	ktrans,	sshprre,	kprrel,	kprrel,	kprrel,	kprrel,	ktrans,	
@@ -261,7 +262,7 @@ KB_MATRIX_LAYER(
 	NULL,	NULL,	ktrans,	
 	ktrans,	ktrans,	ktrans,	
 	// right hand
-	ktrans,	ktrans,	ktrans,	ktrans,	ktrans,	ktrans,	ktrans,	
+	ktrans,	ktrans,	mprrel,	mprrel,	mprrel,	ktrans,	ktrans,	
 	ktrans,	sshprre,	sshprre,	kprrel,	kprrel,	kprrel,	ktrans,	
 	kprrel,	sshprre,	sshprre,	kprrel,	kprrel,	ktrans,	
 	ktrans,	sshprre,	kprrel,	kprrel,	kprrel,	kprrel,	ktrans,	

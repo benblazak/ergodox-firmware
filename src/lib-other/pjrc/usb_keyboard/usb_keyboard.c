@@ -53,25 +53,31 @@
 // operating systems.
 #define SUPPORT_ENDPOINT_HALT
 
-
+/* report id */
+#define REPORT_ID_SYSTEM    2
+#define REPORT_ID_CONSUMER  3
 
 /**************************************************************************
  *
  *  Endpoint Buffer Configuration
  *
  **************************************************************************/
-
 #define ENDPOINT0_SIZE		32
 
 #define KEYBOARD_INTERFACE	0
-#define KEYBOARD_ENDPOINT	3
+#define KEYBOARD_ENDPOINT	1
 #define KEYBOARD_SIZE		8
 #define KEYBOARD_BUFFER		EP_DOUBLE_BUFFER
 
+#define EXTRA_INTERFACE		1
+#define EXTRA_ENDPOINT		2
+#define EXTRA_SIZE		8
+#define EXTRA_BUFFER		EP_DOUBLE_BUFFER
+
+
 static const uint8_t PROGMEM endpoint_config_table[] = {
-	0,
-	0,
 	1, EP_TYPE_INTERRUPT_IN,  EP_SIZE(KEYBOARD_SIZE) | KEYBOARD_BUFFER,
+	1, EP_TYPE_INTERRUPT_IN,  EP_SIZE(EXTRA_SIZE)    | EXTRA_BUFFER,    // 4
 	0
 };
 
@@ -142,15 +148,40 @@ static const uint8_t PROGMEM keyboard_hid_report_desc[] = {
         0xc0                 // End Collection
 };
 
-#define CONFIG1_DESC_SIZE        (9+9+9+7)
-#define KEYBOARD_HID_DESC_OFFSET (9+9)
+// audio controls & system controls
+// http://www.microsoft.com/whdc/archive/w2kbd.mspx
+static const uint8_t PROGMEM extra_hid_report_desc[] = {
+    /* consumer */
+    0x05, 0x0c,                    // USAGE_PAGE (Consumer Devices)
+    0x09, 0x01,                    // USAGE (Consumer Control)
+    0xa1, 0x01,                    // COLLECTION (Application)
+    0x85, REPORT_ID_CONSUMER,      //   REPORT_ID (3)
+    0x15, 0x01,                    //   LOGICAL_MINIMUM (0x1)
+    0x26, 0x9c, 0x02,              //   LOGICAL_MAXIMUM (0x29c)
+    0x19, 0x01,                    //   USAGE_MINIMUM (0x1)
+    0x2a, 0x9c, 0x02,              //   USAGE_MAXIMUM (0x29c)
+    0x75, 0x10,                    //   REPORT_SIZE (16)
+    0x95, 0x01,                    //   REPORT_COUNT (1)
+    0x81, 0x00,                    //   INPUT (Data,Array,Abs)
+    0xc0,                          // END_COLLECTION
+};
+
+#define KEYBOARD_HID_DESC_NUM                0
+#define KEYBOARD_HID_DESC_OFFSET             (9+(9+9+7)*KEYBOARD_HID_DESC_NUM+9)
+
+#   define EXTRA_HID_DESC_NUM           (KEYBOARD_HID_DESC_NUM + 1)
+#   define EXTRA_HID_DESC_OFFSET        (9+(9+9+7)*EXTRA_HID_DESC_NUM+9)
+
+#define NUM_INTERFACES                  (EXTRA_HID_DESC_NUM + 1)
+#define CONFIG1_DESC_SIZE               (9+(9+9+7)*NUM_INTERFACES)
+//#define KEYBOARD_HID_DESC_OFFSET (9+9)
 static const uint8_t PROGMEM config1_descriptor[CONFIG1_DESC_SIZE] = {
 	// configuration descriptor, USB spec 9.6.3, page 264-266, Table 9-10
 	9, 					// bLength;
 	2,					// bDescriptorType;
 	LSB(CONFIG1_DESC_SIZE),			// wTotalLength
 	MSB(CONFIG1_DESC_SIZE),
-	1,					// bNumInterfaces
+	NUM_INTERFACES,					// bNumInterfaces
 	1,					// bConfigurationValue
 	0,					// iConfiguration
 	0xC0,					// bmAttributes
@@ -165,22 +196,50 @@ static const uint8_t PROGMEM config1_descriptor[CONFIG1_DESC_SIZE] = {
 	0x01,					// bInterfaceSubClass (0x01 = Boot)
 	0x01,					// bInterfaceProtocol (0x01 = Keyboard)
 	0,					// iInterface
-	// HID interface descriptor, HID 1.11 spec, section 6.2.1
+
+		// HID descriptor, HID 1.11 spec, section 6.2.1
 	9,					// bLength
 	0x21,					// bDescriptorType
 	0x11, 0x01,				// bcdHID
 	0,					// bCountryCode
 	1,					// bNumDescriptors
 	0x22,					// bDescriptorType
-	sizeof(keyboard_hid_report_desc),	// wDescriptorLength
+	sizeof(keyboard_hid_report_desc),     	// wDescriptorLength
 	0,
 	// endpoint descriptor, USB spec 9.6.6, page 269-271, Table 9-13
 	7,					// bLength
 	5,					// bDescriptorType
-	KEYBOARD_ENDPOINT | 0x80,		// bEndpointAddress
+	KEYBOARD_ENDPOINT | 0x80,			// bEndpointAddress
 	0x03,					// bmAttributes (0x03=intr)
-	KEYBOARD_SIZE, 0,			// wMaxPacketSize
-	1					// bInterval
+	KEYBOARD_SIZE, 0,				// wMaxPacketSize
+	10,					// bInterval
+
+	// interface descriptor, USB spec 9.6.5, page 267-269, Table 9-12
+	9,					// bLength
+	4,					// bDescriptorType
+	EXTRA_INTERFACE,			// bInterfaceNumber
+	0,					// bAlternateSetting
+	1,					// bNumEndpoints
+	0x03,					// bInterfaceClass (0x03 = HID)
+	0x00,					// bInterfaceSubClass
+	0x00,					// bInterfaceProtocol
+	0,					// iInterface
+	// HID descriptor, HID 1.11 spec, section 6.2.1
+	9,					// bLength
+	0x21,					// bDescriptorType
+	0x11, 0x01,				// bcdHID
+	0,					// bCountryCode
+	1,					// bNumDescriptors
+	0x22,					// bDescriptorType
+	sizeof(extra_hid_report_desc),		// wDescriptorLength
+	0,
+	// endpoint descriptor, USB spec 9.6.6, page 269-271, Table 9-13
+	7,					// bLength
+	5,					// bDescriptorType
+	EXTRA_ENDPOINT | 0x80,			// bEndpointAddress
+	0x03,					// bmAttributes (0x03=intr)
+	EXTRA_SIZE, 0,				// wMaxPacketSize
+	10,					// bInterval
 };
 
 // If you're desperate for a little extra code memory, these strings
@@ -215,10 +274,17 @@ static struct descriptor_list_struct {
 	const uint8_t	*addr;
 	uint8_t		length;
 } const PROGMEM descriptor_list[] = {
+        // DEVICE descriptor
 	{0x0100, 0x0000, device_descriptor, sizeof(device_descriptor)},
+        // CONFIGURATION descriptor
 	{0x0200, 0x0000, config1_descriptor, sizeof(config1_descriptor)},
-	{0x2200, KEYBOARD_INTERFACE, keyboard_hid_report_desc, sizeof(keyboard_hid_report_desc)},
+        // HID/REPORT descriptors
 	{0x2100, KEYBOARD_INTERFACE, config1_descriptor+KEYBOARD_HID_DESC_OFFSET, 9},
+	{0x2200, KEYBOARD_INTERFACE, keyboard_hid_report_desc, sizeof(keyboard_hid_report_desc)},
+	    // Extra HID Descriptor
+	{0x2100, EXTRA_INTERFACE, config1_descriptor+EXTRA_HID_DESC_OFFSET, 9},
+	{0x2200, EXTRA_INTERFACE, extra_hid_report_desc, sizeof(extra_hid_report_desc)},
+        // STRING descriptors
 	{0x0300, 0x0000, (const uint8_t *)&string0, 4},
 	{0x0301, 0x0409, (const uint8_t *)&string1, sizeof(STR_MANUFACTURER)},
 	{0x0302, 0x0409, (const uint8_t *)&string2, sizeof(STR_PRODUCT)}
@@ -257,6 +323,9 @@ static uint8_t keyboard_idle_count=0;
 
 // 1=num lock, 2=caps lock, 4=scroll lock, 8=compose, 16=kana
 volatile uint8_t keyboard_leds=0;
+
+// which consumer key is currently pressed
+uint16_t consumer_key;
 
 
 /**************************************************************************
@@ -590,4 +659,40 @@ ISR(USB_COM_vect)
 	UECONX = (1<<STALLRQ) | (1<<EPEN);	// stall
 }
 
+int8_t usb_extra_send(uint8_t report_id, uint16_t data)
+{
+	uint8_t intr_state, timeout;
+
+	if (!usb_configured()) return -1;
+	intr_state = SREG;
+	cli();
+	UENUM = EXTRA_ENDPOINT;
+	timeout = UDFNUML + 50;
+	while (1) {
+		// are we ready to transmit?
+		if (UEINTX & (1<<RWAL)) break;
+		SREG = intr_state;
+		// has the USB gone offline?
+		if (!usb_configured()) return -1;
+		// have we waited too long?
+		if (UDFNUML == timeout) return -1;
+		// get ready to try checking again
+		intr_state = SREG;
+		cli();
+		UENUM = EXTRA_ENDPOINT;
+	}
+
+	UEDATX = report_id;
+        UEDATX = data&0xFF;
+        UEDATX = (data>>8)&0xFF;
+
+	UEINTX = 0x3A;
+	SREG = intr_state;
+	return 0;
+}
+
+int8_t usb_extra_consumer_send()
+{
+	return usb_extra_send(REPORT_ID_CONSUMER, consumer_key);
+}
 
