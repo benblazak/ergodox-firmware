@@ -190,6 +190,8 @@
 // ----------------------------------------------------------------------------
 
 /**                                          functions/teensy__init/description
+ * Initialize the Teensy
+ *
  * Returns:
  * - success: `0`
  */
@@ -233,6 +235,12 @@ uint8_t teensy__init(void) {
 }
 
 /**                                 functions/teensy__update_matrix/description
+ * Update the Teensy (right hand) half of the given matrix
+ *
+ * Arguments:
+ * - `matrix`: A matrix of booleans, indicating whether the key at the given
+ *   matrix location is pressed or released
+ *
  * Returns:
  * - success: `0`
  */

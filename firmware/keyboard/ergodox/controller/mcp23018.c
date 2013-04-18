@@ -69,6 +69,8 @@
 // ----------------------------------------------------------------------------
 
 /**                                        functions/mcp23018__init/description
+ * Initialize the MCP23018
+ *
  * Returns:
  * - success: `0`
  * - failure: twi status code
@@ -131,6 +133,12 @@ out:
 }
 
 /**                               functions/mcp23018__update_matrix/description
+ * Update the MCP23018 (left hand) half of the given matrix
+ *
+ * Arguments:
+ * - `matrix`: A matrix of booleans, indicating whether the key at the given
+ *   matrix location is pressed or released
+ *
  * Returns:
  * - success: `0`
  * - failure: twi status code

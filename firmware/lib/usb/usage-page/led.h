@@ -12,12 +12,26 @@
  * Taken from [the HID Usage Tables pdf][1], Section 11, which can be found on
  * [the HID Page][2] at <http://www.usb.org>
  *
- * - applicable Usage Types (from Section 3.4)
- *   - OOC : On/Off Control
- *   - Sel : Selector
- *   - DV  : Dynamic Value
- *   - US  : Usage Switch
- *   - UM  : Usage Modifier
+ * - Usage Types (from Section 3.4)
+ *   - Controls
+ *       - LC   : Linear Control
+ *       - OOC  : On/Off Control
+ *       - MC   : Momentary Control
+ *       - OSC  : One Shot Control
+ *       - RTC  : Re-Trigger Control
+ *   - Data
+ *       - Sel  : Selector
+ *       - SV   : Static Value
+ *       - SF   : Static Flag
+ *       - DF   : Dynamic Flag
+ *       - DV   : Dynamic Value
+ *   - Collection
+ *       - NAry : Named Array
+ *       - CA   : Collection Application
+ *       - CL   : Collection Logical
+ *       - CP   : Collection Physical
+ *       - US   : Usage Switch
+ *       - UM   : Usage Modifier
  *
  * [1]: http://www.usb.org/developers/devclass_docs/Hut1_12v2.pdf
  * [2]: http://www.usb.org/developers/hidpage
