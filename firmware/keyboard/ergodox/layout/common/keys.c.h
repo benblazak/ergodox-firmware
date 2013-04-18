@@ -75,11 +75,11 @@
  *
  * Needed by ".../lib/layout/keys.h"
  */
-#define  KEYS__SHIFTED(name, value)                         \
-    void P(name) (void) { KF(press)(KEY__LeftShift);        \
-                          KF(press)(value); }               \
-    void R(name) (void) { KF(release)(value);               \
-                          KF(release)(KEY__LeftShift); }
+#define  KEYS__SHIFTED(name, value)                             \
+    void P(name) (void) { KF(press)(KEYBOARD__LeftShift);       \
+                          KF(press)(value); }                   \
+    void R(name) (void) { KF(release)(value);                   \
+                          KF(release)(KEYBOARD__LeftShift); }
 
 /**                                    macros/KEYS__LAYER__PUSH_POP/description
  * Define the functions for a layer push-pop key (i.e. a layer shift key).
@@ -130,27 +130,27 @@
  * These macros are meant to be used (if necessary) in the layout file, since
  * they need to know the layer on which the number pad has been placed.
  */
-#define  KEYS__LAYER__NUM_PU_PO(ID, LAYER)                          \
-    void P(numPuPo) (void) { layer_stack__push(ID, LAYER);          \
-                             KF(press)(KEY__LockingNumLock);        \
-                             usb__kb__send_report();                \
-                             KF(release)(KEY__LockingNumLock);      \
-                             usb__kb__send_report(); }              \
-    void R(numPuPo) (void) { layer_stack__pop_id(ID);               \
-                             KF(press)(KEY__LockingNumLock);        \
-                             usb__kb__send_report();                \
-                             KF(release)(KEY__LockingNumLock);      \
+#define  KEYS__LAYER__NUM_PU_PO(ID, LAYER)                              \
+    void P(numPuPo) (void) { layer_stack__push(ID, LAYER);              \
+                             KF(press)(KEYBOARD__LockingNumLock);       \
+                             usb__kb__send_report();                    \
+                             KF(release)(KEYBOARD__LockingNumLock);     \
+                             usb__kb__send_report(); }                  \
+    void R(numPuPo) (void) { layer_stack__pop_id(ID);                   \
+                             KF(press)(KEYBOARD__LockingNumLock);       \
+                             usb__kb__send_report();                    \
+                             KF(release)(KEYBOARD__LockingNumLock);     \
                              usb__kb__send_report(); }
 
-#define  KEYS__LAYER__NUM_PUSH(LAYER, ID)                           \
-    void P(numPush) (void) { layer_stack__push(ID, LAYER);          \
-                             KF(press)(KEY__LockingNumLock); }      \
-    void R(numPush) (void) { KF(release)(KEY__LockingNumLock); }
+#define  KEYS__LAYER__NUM_PUSH(LAYER, ID)                               \
+    void P(numPush) (void) { layer_stack__push(ID, LAYER);              \
+                             KF(press)(KEYBOARD__LockingNumLock); }     \
+    void R(numPush) (void) { KF(release)(KEYBOARD__LockingNumLock); }
 
-#define  KEYS__LAYER__NUM_POP(LAYER, ID)                            \
-    void P(numPop) (void) { layer_stack__pop_id(ID);                \
-                            KF(press)(KEY__LockingNumLock); }       \
-    void R(numPop) (void) { KF(release)(KEY__LockingNumLock); }
+#define  KEYS__LAYER__NUM_POP(LAYER, ID)                                \
+    void P(numPop) (void) { layer_stack__pop_id(ID);                    \
+                            KF(press)(KEYBOARD__LockingNumLock); }      \
+    void R(numPop) (void) { KF(release)(KEYBOARD__LockingNumLock); }
 
 // ----------------------------------------------------------------------------
 
@@ -193,9 +193,9 @@ void KF(2_keys_capslock)(bool pressed, uint8_t keycode) {
  * non-transparent key at the same position.
  *
  * Notes:
- * - Keys may be half transparent; that is, the "press" part of a key may be
- *   transparent while the "release" part isn't, or vice versa.  I expect this
- *   to be fairly uncommon though.
+ * - With this scheme, keys may be half transparent; that is, the "press" part
+ *   of a key may be transparent while the "release" part isn't, or vice versa.
+ *   I expect this to be fairly uncommon though.
  */
 #define  keys__press__transp    NULL
 #define  keys__release__transp  NULL
@@ -211,10 +211,10 @@ void R(nop) (void) {}
 
 // --- special keycode --------------------------------------------------------
 
-KEYS__DEFAULT( power,   KEY__Power      );
-KEYS__DEFAULT( volumeU, KEY__VolumeUp   );
-KEYS__DEFAULT( volumeD, KEY__VolumeDown );
-KEYS__DEFAULT( mute,    KEY__Mute       );
+KEYS__DEFAULT( power,   KEYBOARD__Power      );
+KEYS__DEFAULT( volumeU, KEYBOARD__VolumeUp   );
+KEYS__DEFAULT( volumeD, KEYBOARD__VolumeDown );
+KEYS__DEFAULT( mute,    KEYBOARD__Mute       );
 
 
 // --- special function -------------------------------------------------------
@@ -225,8 +225,8 @@ KEYS__DEFAULT( mute,    KEY__Mute       );
  * This key always generates a left shift.  If the `shR2kcap` is pressed at
  * the same time, "capslock" will be toggled.
  */
-void P(shL2kcap) (void) { KF(2_keys_capslock)(true, KEY__LeftShift); }
-void R(shL2kcap) (void) { KF(2_keys_capslock)(false, KEY__LeftShift); }
+void P(shL2kcap) (void) { KF(2_keys_capslock)(true, KEYBOARD__LeftShift); }
+void R(shL2kcap) (void) { KF(2_keys_capslock)(false, KEYBOARD__LeftShift); }
 
 /**                                                   keys/shR2kcap/description
  * right shift + toggle capslock (if both shifts are pressed)
@@ -234,8 +234,8 @@ void R(shL2kcap) (void) { KF(2_keys_capslock)(false, KEY__LeftShift); }
  * This key always generates a right shift.  If the `shL2kcaps` is pressed at
  * the same time, "capslock" will be toggled.
  */
-void P(shR2kcap) (void) { KF(2_keys_capslock)(true, KEY__RightShift); }
-void R(shR2kcap) (void) { KF(2_keys_capslock)(false, KEY__RightShift); }
+void P(shR2kcap) (void) { KF(2_keys_capslock)(true, KEYBOARD__RightShift); }
+void R(shR2kcap) (void) { KF(2_keys_capslock)(false, KEYBOARD__RightShift); }
 
 /**                                                      keys/btldr/description
  * jump to the bootloader

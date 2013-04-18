@@ -22,38 +22,38 @@ uint8_t usb__kb__set_key(bool pressed, uint8_t keycode) {
 
     // modifier keys
     switch (keycode) {
-        case KEY__LeftControl:  (pressed)
-                                ? (keyboard_modifier_keys |=  (1<<0))
-                                : (keyboard_modifier_keys &= ~(1<<0));
-                                return 0;
-        case KEY__LeftShift:    (pressed)
-                                ? (keyboard_modifier_keys |=  (1<<1))
-                                : (keyboard_modifier_keys &= ~(1<<1));
-                                return 0;
-        case KEY__LeftAlt:      (pressed)
-                                ? (keyboard_modifier_keys |=  (1<<2))
-                                : (keyboard_modifier_keys &= ~(1<<2));
-                                return 0;
-        case KEY__LeftGUI:      (pressed)
-                                ? (keyboard_modifier_keys |=  (1<<3))
-                                : (keyboard_modifier_keys &= ~(1<<3));
-                                return 0;
-        case KEY__RightControl: (pressed)
-                                ? (keyboard_modifier_keys |=  (1<<4))
-                                : (keyboard_modifier_keys &= ~(1<<4));
-                                return 0;
-        case KEY__RightShift:   (pressed)
-                                ? (keyboard_modifier_keys |=  (1<<5))
-                                : (keyboard_modifier_keys &= ~(1<<5));
-                                return 0;
-        case KEY__RightAlt:     (pressed)
-                                ? (keyboard_modifier_keys |=  (1<<6))
-                                : (keyboard_modifier_keys &= ~(1<<6));
-                                return 0;
-        case KEY__RightGUI:     (pressed)
-                                ? (keyboard_modifier_keys |=  (1<<7))
-                                : (keyboard_modifier_keys &= ~(1<<7));
-                                return 0;
+        case KEYBOARD__LeftControl:  (pressed)
+                                     ? (keyboard_modifier_keys |=  (1<<0))
+                                     : (keyboard_modifier_keys &= ~(1<<0));
+                                     return 0;
+        case KEYBOARD__LeftShift:    (pressed)
+                                     ? (keyboard_modifier_keys |=  (1<<1))
+                                     : (keyboard_modifier_keys &= ~(1<<1));
+                                     return 0;
+        case KEYBOARD__LeftAlt:      (pressed)
+                                     ? (keyboard_modifier_keys |=  (1<<2))
+                                     : (keyboard_modifier_keys &= ~(1<<2));
+                                     return 0;
+        case KEYBOARD__LeftGUI:      (pressed)
+                                     ? (keyboard_modifier_keys |=  (1<<3))
+                                     : (keyboard_modifier_keys &= ~(1<<3));
+                                     return 0;
+        case KEYBOARD__RightControl: (pressed)
+                                     ? (keyboard_modifier_keys |=  (1<<4))
+                                     : (keyboard_modifier_keys &= ~(1<<4));
+                                     return 0;
+        case KEYBOARD__RightShift:   (pressed)
+                                     ? (keyboard_modifier_keys |=  (1<<5))
+                                     : (keyboard_modifier_keys &= ~(1<<5));
+                                     return 0;
+        case KEYBOARD__RightAlt:     (pressed)
+                                     ? (keyboard_modifier_keys |=  (1<<6))
+                                     : (keyboard_modifier_keys &= ~(1<<6));
+                                     return 0;
+        case KEYBOARD__RightGUI:     (pressed)
+                                     ? (keyboard_modifier_keys |=  (1<<7))
+                                     : (keyboard_modifier_keys &= ~(1<<7));
+                                     return 0;
     }
 
     // all others
@@ -81,22 +81,22 @@ bool usb__kb__read_key(uint8_t keycode) {
 
     // modifier keys
     switch (keycode) {
-        case KEY__LeftControl:  if (keyboard_modifier_keys & (1<<0))
-                                    return true;
-        case KEY__LeftShift:    if (keyboard_modifier_keys & (1<<1))
-                                    return true;
-        case KEY__LeftAlt:      if (keyboard_modifier_keys & (1<<2))
-                                    return true;
-        case KEY__LeftGUI:      if (keyboard_modifier_keys & (1<<3))
-                                    return true;
-        case KEY__RightControl: if (keyboard_modifier_keys & (1<<4))
-                                    return true;
-        case KEY__RightShift:   if (keyboard_modifier_keys & (1<<5))
-                                    return true;
-        case KEY__RightAlt:     if (keyboard_modifier_keys & (1<<6))
-                                    return true;
-        case KEY__RightGUI:     if (keyboard_modifier_keys & (1<<7))
-                                    return true;
+        case KEYBOARD__LeftControl:  if (keyboard_modifier_keys & (1<<0))
+                                         return true;
+        case KEYBOARD__LeftShift:    if (keyboard_modifier_keys & (1<<1))
+                                         return true;
+        case KEYBOARD__LeftAlt:      if (keyboard_modifier_keys & (1<<2))
+                                         return true;
+        case KEYBOARD__LeftGUI:      if (keyboard_modifier_keys & (1<<3))
+                                         return true;
+        case KEYBOARD__RightControl: if (keyboard_modifier_keys & (1<<4))
+                                         return true;
+        case KEYBOARD__RightShift:   if (keyboard_modifier_keys & (1<<5))
+                                         return true;
+        case KEYBOARD__RightAlt:     if (keyboard_modifier_keys & (1<<6))
+                                         return true;
+        case KEYBOARD__RightGUI:     if (keyboard_modifier_keys & (1<<7))
+                                         return true;
     }
 
     // all others

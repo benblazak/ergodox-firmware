@@ -19,21 +19,21 @@
 void kf__toggle_capslock (uint16_t ignore) {
 
     // save the state of left and right shift
-    bool lshift_pressed = usb__kb__read_key(KEY__LeftShift);
-    bool rshift_pressed = usb__kb__read_key(KEY__RightShift);
+    bool lshift_pressed = usb__kb__read_key(KEYBOARD__LeftShift);
+    bool rshift_pressed = usb__kb__read_key(KEYBOARD__RightShift);
 
     // disable both shifts
-    usb__kb__set_key(false, KEY__LeftShift);
-    usb__kb__set_key(false, KEY_RightShift);
+    usb__kb__set_key(false, KEYBOARD__LeftShift);
+    usb__kb__set_key(false, KEYBOARD__RightShift);
 
     // toggle capslock
-    usb__kb__set_key(true,  KEY_CapsLock);
+    usb__kb__set_key(true,  KEYBOARD__CapsLock);
     usb_keyboard_send();
-    usb__kb__set_key(false, KEY_CapsLock);
+    usb__kb__set_key(false, KEYBOARD__CapsLock);
     usb_keyboard_send();
 
     // restore the state of both shifts
-    if (lshift_pressed) usb__kb__set_key(true, KEY_LeftShift);
-    if (rshift_pressed) usb__kb__set_key(true, KEY_RightShift);
+    if (lshift_pressed) usb__kb__set_key(true, KEYBOARD__LeftShift);
+    if (rshift_pressed) usb__kb__set_key(true, KEYBOARD__RightShift);
 }
 
