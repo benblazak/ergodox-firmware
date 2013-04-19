@@ -10,6 +10,7 @@
  * This is currently a wrapper for the PJRC code
  */
 
+#include <stdbool.h>
 #include "./keyboard/from-pjrc/usb_keyboard.h"
 
 // ----------------------------------------------------------------------------

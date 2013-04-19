@@ -21,7 +21,7 @@
 
 // ----------------------------------------------------------------------------
 
-void kb__layout__exec_key(bool pressed, int8_t row, int8_t column) {
+void kb__layout__exec_key(bool pressed, uint8_t row, uint8_t column) {
     void (*function)(void);
 
     for(uint8_t i=0; i<layer_stack__size(); i++) {
@@ -29,6 +29,10 @@ void kb__layout__exec_key(bool pressed, int8_t row, int8_t column) {
                           [ row                  ]
                           [ column               ]
                           [ (pressed) ? 0 : 1    ];
+
+        if (function == &KF(transp))
+            function = NULL;
+
         if (function) {
             (*function)();
 

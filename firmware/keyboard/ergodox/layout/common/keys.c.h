@@ -37,28 +37,6 @@
 
 // ----------------------------------------------------------------------------
 
-/**                                                        macros/P/description
- * Expand `name` into the corresponding "press" function name
- */
-#define  P(name)  keys__press__##name
-
-/**                                                        macros/R/description
- * Expand `name` into the corresponding "release" function name
- */
-#define  R(name)  keys__release__##name
-
-/**                                                        macros/K/description
- * Expand into a "key" suitable for putting into the layout matrix
- */
-#define  K(name)  { &P(name), &R(name) }
-
-/**                                                       macros/KF/description
- * Expand `name` into the corresponding "key_functions" function name
- */
-#define  KF(name)  key_functions__##name
-
-// ----------------------------------------------------------------------------
-
 /**                                            macros/KEYS__DEFAULT/description
  * Define the functions for a default key (i.e. a normal key that presses and
  * releases a keycode as you'd expect)
@@ -110,13 +88,13 @@
  *   from above):
  *
  *       #define  keys__press__lpu1l1    P(lpupo1l1)
- *       #define  keys__release__lpu1l1  P(nop)
+ *       #define  keys__release__lpu1l1  KF(nop)
  *       #define  keys__press__lpo1l1    R(lpupo1l1)
- *       #define  keys__release__lpo1l1  P(nop)
+ *       #define  keys__release__lpo1l1  KF(nop)
  */
 #define  KEYS__LAYER__PUSH_POP(ID, LAYER)                                   \
-    void P(l##ID##pupo##LAYER) (void) { layer_stack__push(ID, LAYER); }     \
-    void R(l##ID##pupo##LAYER) (void) { layer_stack__pop_id(ID); }
+    void P(lpupo##ID##l##LAYER) (void) { layer_stack__push(0, ID, LAYER); } \
+    void R(lpupo##ID##l##LAYER) (void) { layer_stack__pop_id(ID); }
 
 /**                               macros/(group) layer : number pad/description
  * Define function for pushing and popping the number pad (namely `numPush`,
@@ -131,7 +109,7 @@
  * they need to know the layer on which the number pad has been placed.
  */
 #define  KEYS__LAYER__NUM_PU_PO(ID, LAYER)                              \
-    void P(numPuPo) (void) { layer_stack__push(ID, LAYER);              \
+    void P(numPuPo) (void) { layer_stack__push(0, ID, LAYER);           \
                              KF(press)(KEYBOARD__LockingNumLock);       \
                              usb__kb__send_report();                    \
                              KF(release)(KEYBOARD__LockingNumLock);     \
@@ -142,12 +120,12 @@
                              KF(release)(KEYBOARD__LockingNumLock);     \
                              usb__kb__send_report(); }
 
-#define  KEYS__LAYER__NUM_PUSH(LAYER, ID)                               \
-    void P(numPush) (void) { layer_stack__push(ID, LAYER);              \
+#define  KEYS__LAYER__NUM_PUSH(ID, LAYER)                               \
+    void P(numPush) (void) { layer_stack__push(0, ID, LAYER);           \
                              KF(press)(KEYBOARD__LockingNumLock); }     \
     void R(numPush) (void) { KF(release)(KEYBOARD__LockingNumLock); }
 
-#define  KEYS__LAYER__NUM_POP(LAYER, ID)                                \
+#define  KEYS__LAYER__NUM_POP(ID)                                       \
     void P(numPop) (void) { layer_stack__pop_id(ID);                    \
                             KF(press)(KEYBOARD__LockingNumLock); }      \
     void R(numPop) (void) { KF(release)(KEYBOARD__LockingNumLock); }
@@ -161,7 +139,7 @@
  * Meant to be used with the left and right "shift" keys.
  */
 void KF(2_keys_capslock)(bool pressed, uint8_t keycode) {
-    static counter = 0;
+    static uint8_t counter = 0;
     if (pressed) {
         counter++;
         KF(press)(keycode);
@@ -179,34 +157,7 @@ void KF(2_keys_capslock)(bool pressed, uint8_t keycode) {
 
 // --- default key definitions ------------------------------------------------
 
-#include "../../../../firmware/lib/layout/keys.h"
-
-
-// --- special meaning --------------------------------------------------------
-
-/**                                                     keys/transp/description
- * transparent
- *
- * This key signals to the firmware (specifically the
- * `kb__layout__exec_key_location()` function) that it should look for what key
- * to "press" or "release" by going down the layer-stack until it finds a
- * non-transparent key at the same position.
- *
- * Notes:
- * - With this scheme, keys may be half transparent; that is, the "press" part
- *   of a key may be transparent while the "release" part isn't, or vice versa.
- *   I expect this to be fairly uncommon though.
- */
-#define  keys__press__transp    NULL
-#define  keys__release__transp  NULL
-
-/**                                                        keys/nop/desctiption
- * no operation
- *
- * This key does nothing (and is not transparent).
- */
-void P(nop) (void) {}
-void R(nop) (void) {}
+#include "../../../../../firmware/lib/layout/keys.h"
 
 
 // --- special keycode --------------------------------------------------------
@@ -256,63 +207,63 @@ void R(btldr) (void) {}
 
 KEYS__LAYER__PUSH_POP(0, 0);
 #define  keys__press__lpu0l0    P(lpupo0l0)
-#define  keys__release__lpu0l0  P(nop)
+#define  keys__release__lpu0l0  KF(nop)
 #define  keys__press__lpo0l0    R(lpupo0l0)
-#define  keys__release__lpo0l0  P(nop)
+#define  keys__release__lpo0l0  KF(nop)
 
 KEYS__LAYER__PUSH_POP(1, 1);
-#define  keys__press__lpu1l1    P(lpupo1l1)
-#define  keys__release__lpu1l1  P(nop)
+#define  keys__press__lpu1l1    R(lpupo1l1)
+#define  keys__release__lpu1l1  KF(nop)
 #define  keys__press__lpo1l1    R(lpupo1l1)
-#define  keys__release__lpo1l1  P(nop)
+#define  keys__release__lpo1l1  KF(nop)
 
 KEYS__LAYER__PUSH_POP(2, 2);
 #define  keys__press__lpu2l2    P(lpupo2l2)
-#define  keys__release__lpu2l2  P(nop)
+#define  keys__release__lpu2l2  KF(nop)
 #define  keys__press__lpo2l2    R(lpupo2l2)
-#define  keys__release__lpo2l2  P(nop)
+#define  keys__release__lpo2l2  KF(nop)
 
 KEYS__LAYER__PUSH_POP(3, 3);
 #define  keys__press__lpu3l3    P(lpupo3l3)
-#define  keys__release__lpu3l3  P(nop)
+#define  keys__release__lpu3l3  KF(nop)
 #define  keys__press__lpo3l3    R(lpupo3l3)
-#define  keys__release__lpo3l3  P(nop)
+#define  keys__release__lpo3l3  KF(nop)
 
 KEYS__LAYER__PUSH_POP(4, 4);
 #define  keys__press__lpu4l4    P(lpupo4l4)
-#define  keys__release__lpu4l4  P(nop)
+#define  keys__release__lpu4l4  KF(nop)
 #define  keys__press__lpo4l4    R(lpupo4l4)
-#define  keys__release__lpo4l4  P(nop)
+#define  keys__release__lpo4l4  KF(nop)
 
 KEYS__LAYER__PUSH_POP(5, 5);
 #define  keys__press__lpu5l5    P(lpupo5l5)
-#define  keys__release__lpu5l5  P(nop)
+#define  keys__release__lpu5l5  KF(nop)
 #define  keys__press__lpo5l5    R(lpupo5l5)
-#define  keys__release__lpo5l5  P(nop)
+#define  keys__release__lpo5l5  KF(nop)
 
 KEYS__LAYER__PUSH_POP(6, 6);
 #define  keys__press__lpu6l6    P(lpupo6l6)
-#define  keys__release__lpu6l6  P(nop)
+#define  keys__release__lpu6l6  KF(nop)
 #define  keys__press__lpo6l6    R(lpupo6l6)
-#define  keys__release__lpo6l6  P(nop)
+#define  keys__release__lpo6l6  KF(nop)
 
 KEYS__LAYER__PUSH_POP(7, 7);
 #define  keys__press__lpu7l7    P(lpupo7l7)
-#define  keys__release__lpu7l7  P(nop)
+#define  keys__release__lpu7l7  KF(nop)
 #define  keys__press__lpo7l7    R(lpupo7l7)
-#define  keys__release__lpo7l7  P(nop)
+#define  keys__release__lpo7l7  KF(nop)
 
 KEYS__LAYER__PUSH_POP(8, 8);
 #define  keys__press__lpu8l8    P(lpupo8l8)
-#define  keys__release__lpu8l8  P(nop)
+#define  keys__release__lpu8l8  KF(nop)
 #define  keys__press__lpo8l8    R(lpupo8l8)
-#define  keys__release__lpo8l8  P(nop)
+#define  keys__release__lpo8l8  KF(nop)
 
 KEYS__LAYER__PUSH_POP(9, 9);
 #define  keys__press__lpu9l9    P(lpupo9l9)
-#define  keys__release__lpu9l9  P(nop)
+#define  keys__release__lpu9l9  KF(nop)
 #define  keys__press__lpo9l9    R(lpupo9l9)
-#define  keys__release__lpo9l9  P(nop)
+#define  keys__release__lpo9l9  KF(nop)
 
 
 // ----------------------------------------------------------------------------

@@ -18,7 +18,7 @@
 
 // from PJRC (slightly modified)
 // <http://www.pjrc.com/teensy/jump_to_bootloader.html>
-void kf__jump_to_bootloader (uint16_t ignore) {
+void key_functions__jump_to_bootloader (uint16_t ignore) {
     // --- for all Teensy boards ---
 
     cli();

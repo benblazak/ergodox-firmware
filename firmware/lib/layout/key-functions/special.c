@@ -16,7 +16,7 @@
 
 // ----------------------------------------------------------------------------
 
-void kf__toggle_capslock (uint16_t ignore) {
+void key_functions__toggle_capslock (uint16_t ignore) {
 
     // save the state of left and right shift
     bool lshift_pressed = usb__kb__read_key(KEYBOARD__LeftShift);

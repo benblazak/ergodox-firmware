@@ -41,7 +41,7 @@
 
 // ----------------------------------------------------------------------------
 
-void twi_init(void) {
+void twi__init(void) {
 	// set the prescaler value to 0
 	TWSR &= ~( (1<<TWPS1)|(1<<TWPS0) );
 	// set the bit rate
@@ -49,7 +49,7 @@ void twi_init(void) {
 	TWBR = ((F_CPU / OPT__TWI__FREQUENCY) - 16) / 2;
 }
 
-uint8_t twi_start(void) {
+uint8_t twi__start(void) {
 	// send start
 	TWCR = (1<<TWINT)|(1<<TWEN)|(1<<TWSTA);
 	// wait for transmission to complete
@@ -61,14 +61,14 @@ uint8_t twi_start(void) {
 	return 0;  // success
 }
 
-void twi_stop(void) {
+void twi__stop(void) {
 	// send stop
 	TWCR = (1<<TWINT)|(1<<TWEN)|(1<<TWSTO);
 	// wait for transmission to complete
 	while (TWCR & (1<<TWSTO));
 }
 
-uint8_t twi_send(uint8_t data) {
+uint8_t twi__send(uint8_t data) {
 	// load data into the data register
 	TWDR = data;
 	// send data
@@ -83,7 +83,7 @@ uint8_t twi_send(uint8_t data) {
 	return 0;  // success
 }
 
-uint8_t twi_read(uint8_t * data) {
+uint8_t twi__read(uint8_t * data) {
 	// read 1 byte to TWDR, send ACK
 	TWCR = (1<<TWINT)|(1<<TWEN)|(1<<TWEA);
 	// wait for transmission to complete
@@ -95,9 +95,4 @@ uint8_t twi_read(uint8_t * data) {
 		return TW_STATUS;  // error
 	return 0;  // success
 }
-
-
-// ----------------------------------------------------------------------------
-#endif
-// ----------------------------------------------------------------------------
 

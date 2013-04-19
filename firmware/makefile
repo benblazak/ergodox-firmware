@@ -18,11 +18,6 @@
 #   [pjrc : usb_keyboard] (http://pjrc.com/teensy/usb_keyboard.zip).
 #
 
-# TODO: generate symbol table ('.sym' file) instead of the '.map' file
-# - (make sure it's more readable first)
-# - (change the documentation (search for '.map' in this file))
-# - use 'avr-nm' to generate $(TARGET).sym separately from the compile
-
 # -----------------------------------------------------------------------------
 
 KEYBOARD_NAME := ergodox
@@ -31,13 +26,29 @@ KEYBOARD_NAME := ergodox
 TARGET := firmware
 # default name for the '.hex', '.eep', and '.map' files we'll be generating
 
-OLD_CURDIR := $(CURDIR)
+# -----------------------------------------------------------------------------
+
+CURDIR  := .
+ROOTDIR := .
+# note: by default, `CURDIR` is initialized to (an absolute path to) the
+# current working directory
+
+SRC         :=
+CFLAGS      :=
+LDFLAGS     :=
+GENDEPFLAGS :=
+# (initialize the variables so we can use `+=` below and in the included files)
+
+CURDIRS := $(CURDIR) $(CURDIRS)
 # -------
-CURDIR := $(CURDIR)/keyboard/$(KEYBOARD_NAME)
+CURDIR := $(ROOTDIR)/keyboard/$(KEYBOARD_NAME)
 include $(CURDIR)/options.mk
 # (the place for everything a keyboard implementation might want to change)
 # -------
-CURDIR := $(OLD_CURDIR)
+CURDIR := $(firstword $(CURDIRS))
+CURDIRS := $(wordlist 2,$(words $(CURDIRS)),$(CURDIRS))
+
+# -----------------------------------------------------------------------------
 
 SRC += $(wildcard $(CURDIR)/main.c)
 # (other source files included through the makefile included above)
@@ -66,13 +77,13 @@ CFLAGS += -fdata-sections      # /   section in the output file if the
 			       #     unused code.
 # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-LDFLAGS := -Wl,-Map=$(TARGET).map,--cref  # generate a link map, with a cross
+LDFLAGS += -Wl,-Map=$(TARGET).map,--cref  # generate a link map, with a cross
 					  #   reference table
 LDFLAGS += -Wl,--relax        # for some linker optimizations
 LDFLAGS += -Wl,--gc-sections  # discard unused functions and data
 # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-GENDEPFLAGS += -MMD -MP -MF '$@.dep'  # generate dependency files
+GENDEPFLAGS += -MMD -MP -MF $@.dep  # generate dependency files
 
 # -----------------------------------------------------------------------------
 
@@ -82,7 +93,7 @@ SIZE    := avr-size
 
 # -----------------------------------------------------------------------------
 
-OBJ = $(SRC:%.c=%.o)
+OBJ := $(SRC:%.c=%.o)
 
 
 # -----------------------------------------------------------------------------
@@ -95,9 +106,9 @@ all: $(TARGET).hex $(TARGET).eep
 	@echo '---------------------------------------------------------------'
 	@echo '------- done --------------------------------------------------'
 	@echo
-	$(SIZE) --target=$(FORMAT) $(TARGET).hex
+	$(SIZE) --target=$(BINARY_FORMAT) $(TARGET).hex
 	@echo
-	$(SIZE) --target=$(FORMAT) $(TARGET).eep
+	$(SIZE) --target=$(BINARY_FORMAT) $(TARGET).eep
 	@echo
 	@echo 'you can load "$(TARGET).hex" and "$(TARGET).eep" onto the'
 	@echo 'Teensy using the Teensy loader'
@@ -118,30 +129,30 @@ clean:
 	@echo
 	@echo '--- making $@ ---'
 	# from the WinAVR makefile template (modified)
-	$(OBJCOPY) -O $(FORMAT) \
+	$(OBJCOPY) -O $(BINARY_FORMAT) \
 		-R .eeprom -R .fuse -R .lock -R .signature \
-		'$<' '$@'
+		$< $@
 
 %.eep: %.elf
 	@echo
 	@echo '--- making $@ ---'
 	# from the WinAVR makefile template (modified)
-	-$(OBJCOPY) -O $(FORMAT) \
+	-$(OBJCOPY) -O $(BINARY_FORMAT) \
 		-j .eeprom \
 		--set-section-flags=.eeprom="alloc,load" \
 		--change-section-lma .eeprom=0 \
 		--no-change-warnings \
-		'$<' '$@' || exit 0
+		$< $@ || exit 0
 
 $(TARGET).elf: $(OBJ)
 	@echo
 	@echo '--- making $@ ---'
-	$(CC) $(strip $(CFLAGS)) $(strip $(LDFLAGS)) '$^' --output '$@'
+	$(CC) $(strip $(CFLAGS)) $(strip $(LDFLAGS)) $^ --output $@
 
 %.o: %.c
 	@echo
 	@echo '--- making $@ ---'
-	$(CC) -c $(strip $(CFLAGS)) $(strip $(GENDEPFLAGS)) '$<' -o '$@'
+	$(CC) -c $(strip $(CFLAGS)) $(strip $(GENDEPFLAGS)) $< -o $@
 
 # -----------------------------------------------------------------------------
 

@@ -13,6 +13,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <avr/io.h>
+#include <util/delay.h>
 
 // ----------------------------------------------------------------------------
 
@@ -63,9 +64,10 @@ bool kb__led__read(uint8_t led) {
         case 1: return (PINB & (1<<5));  // topmost
 	    case 2: return (PINB & (1<<6));  // middle
 	    case 3: return (PINB & (1<<7));  // bottommost
-        case 4: return false;
-        case 5: return false;
+        case 4: ;
+        case 5: ;
     };
+    return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 

@@ -12,6 +12,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <util/delay.h>
+#include "../firmware/keyboard.h"
+#include "../firmware/lib/usb.h"
 #include "./main.h"
 
 // ----------------------------------------------------------------------------
@@ -26,13 +28,6 @@
  * Notes:
  * - Cherry MX bounce time <= 5ms (at 16 in/sec actuation speed) (spec)
  */
-
-// ----------------------------------------------------------------------------
-
-#include <stdbool.h>
-#include <stdint.h>
-#include "../firmware/keyboard.h"
-#include "../firmware/lib/usb.h"
 
 // ----------------------------------------------------------------------------
 
@@ -64,15 +59,17 @@ uint8_t col;
  * look through the source, especially the documentation, to see how things are
  * defined and what's actually happening.
  */
-void main(void) {
+int main(void) {
     static bool (*temp)[OPT__KB__ROWS][OPT__KB__COLUMNS]; // for swapping below
+    static bool key_is_pressed;
+    static bool key_was_pressed;
 
     kb__init();  // initialize hardware (besides USB)
 
     kb__led__state__power_on();
 
     usb__init();
-    while (!usb__configured());
+    while (!usb__is_configured());
     kb__led__delay__usb_init();  // give the OS time to load drivers, etc.
 
     kb__led__state__ready();
@@ -112,5 +109,7 @@ void main(void) {
         #undef on
         #undef off
     }
+
+    return 0;
 }
 

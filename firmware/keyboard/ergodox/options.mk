@@ -11,26 +11,6 @@
 #
 
 
-OLD_CURDIR := $(CURDIR)
-# -------
-CURDIR := $(OLD_CURDIR)/../../../firmware/lib/twi
-include $(CURDIR)/options.mk
-# -------
-CURDIR := $(OLD_CURDIR)/../../../firmware/lib/usb
-include $(CURDIR)/options.mk
-# -------
-CURDIR := $(OLD_CURDIR)/../../../firmware/lib/layout/eeprom-macro
-include $(CURDIR)/options.mk
-# -------
-CURDIR := $(OLD_CURDIR)/../../../firmware/lib/layout/key-functions
-include $(CURDIR)/options.mk
-# -------
-CURDIR := $(OLD_CURDIR)/../../../firmware/lib/layout/layer-stack
-include $(CURDIR)/options.mk
-# -------
-CURDIR := $(OLD_CURDIR)
-
-
 BINARY_FORMAT := ihex
 # the binary format to generate
 
@@ -52,9 +32,31 @@ KEYBOARD_LAYOUTS := \
 
 # -----------------------------------------------------------------------------
 
-SCR += $(wildcard $(CURDIR)/*.c)
+CURDIRS := $(CURDIR) $(CURDIRS)
+# -------
+CURDIR := $(ROOTDIR)/lib/twi
+include $(CURDIR)/options.mk
+# -------
+CURDIR := $(ROOTDIR)/lib/usb
+include $(CURDIR)/options.mk
+# -------
+CURDIR := $(ROOTDIR)/lib/layout/eeprom-macro
+include $(CURDIR)/options.mk
+# -------
+CURDIR := $(ROOTDIR)/lib/layout/key-functions
+include $(CURDIR)/options.mk
+# -------
+CURDIR := $(ROOTDIR)/lib/layout/layer-stack
+include $(CURDIR)/options.mk
+# -------
+CURDIR := $(firstword $(CURDIRS))
+CURDIRS := $(wordlist 2,$(words $(CURDIRS)),$(CURDIRS))
+
+# -----------------------------------------------------------------------------
+
+SRC += $(wildcard $(CURDIR)/*.c)
 SRC += $(wildcard $(CURDIR)/controller/*.c)
 SRC += $(wildcard $(CURDIR)/layout/$(KEYBOARD_LAYOUT)*.c)
 
-CFLAGS += -include '$(wildcard $(CURDIR)/options.h)'
+CFLAGS += -include $(wildcard $(CURDIR)/options.h)
 

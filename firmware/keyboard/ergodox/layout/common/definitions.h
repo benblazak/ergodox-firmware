@@ -27,6 +27,57 @@
 
 // ----------------------------------------------------------------------------
 
+/**                                                        macros/P/description
+ * Expand `name` into the corresponding "press" function name
+ */
+#define  P(name)  keys__press__##name
+
+/**                                                        macros/R/description
+ * Expand `name` into the corresponding "release" function name
+ */
+#define  R(name)  keys__release__##name
+
+/**                                                        macros/K/description
+ * Expand into a "key" suitable for putting into the layout matrix
+ */
+#define  K(name)  { &P(name), &R(name) }
+
+/**                                                       macros/KF/description
+ * Expand `name` into the corresponding "key_functions" function name
+ */
+#define  KF(name)  key_functions__##name
+
+// ----------------------------------------------------------------------------
+// special meaning keys (may be used by `exec_key()`)
+
+/**                                                     keys/transp/description
+ * transparent
+ *
+ * This key signals to the firmware (specifically the
+ * `kb__layout__exec_key_location()` function) that it should look for what key
+ * to "press" or "release" by going down the layer-stack until it finds a
+ * non-transparent key at the same position.
+ *
+ * Notes:
+ * - With this scheme, keys may be half transparent; that is, the "press" part
+ *   of a key may be transparent while the "release" part isn't, or vice versa.
+ *   I expect this to be fairly uncommon though.
+ */
+void KF(transp) (void) {}
+#define  keys__press__transp    KF(transp)
+#define  keys__release__transp  KF(transp)
+
+/**                                                        keys/nop/desctiption
+ * no operation
+ *
+ * This key does nothing (and is not transparent).
+ */
+void KF(nop) (void) {}
+#define  keys__press__nop    KF(nop)
+#define  keys__release__nop  KF(nop)
+
+// ----------------------------------------------------------------------------
+
 /**                                                  typedefs/key_t/description
  * The type we will use for our "key"s
  *
