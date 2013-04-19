@@ -69,7 +69,7 @@ KEYS__LAYER__NUM_POP(10);
 #include "./common/matrix.h"
 
 
-layout_t _layout = {
+_layout_t _layout = {
 
 // ............................................................................
 
