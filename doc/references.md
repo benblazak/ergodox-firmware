@@ -125,6 +125,15 @@
   according to the C standard, and I didn't see AVRs mentioned; and AVRs don't
   typically run an OS anyway), but still quite interesting.
 
+* [integral conversion from negative signed to unsigned integer]
+  (http://www.rhinocerus.net/forum/language-c-moderated/649336-integral-conversion-negative-signed-unsigned-integer.html)  
+  What happens if you return `-1` from a `uint8_t` function (or assign `-1` to
+  a `uint8_t`)?
+
+  * [Mod Function and Negative Numbers]
+    (http://mathforum.org/library/drmath/view/52343.html)  
+    `(-1)%5` in python returns `4` (just like it should)
+
 ### C++ Stuff
 
 * [Google C++ Style Guide]

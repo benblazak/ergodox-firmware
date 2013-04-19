@@ -15,6 +15,9 @@
  * Prefixes: `keys__`, [none]
  *
  * Usage: `#define` `KEYS__DEFAULT` and `KEYS__SHIFTED` before `#include`ing.
+ *
+ * TODO: add media and mouse keys (after i figure out which OSs are supposed to
+ * support which keys)
  */
 
 

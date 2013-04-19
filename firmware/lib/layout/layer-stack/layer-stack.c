@@ -6,17 +6,13 @@
 
 /**                                                                 description
  * Implements the layer-stack defined in "../layer-stack.h"
- *
- * TODO:
- * - see the '.h' for interface TODOs
- * - should we split most of this functionality into a general 'flex_array' or
- *   something?  we probably should...  think about how to do that.
  */
 
 
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include "../layer-stack.h"
 
 // ----------------------------------------------------------------------------
 
@@ -42,6 +38,21 @@ uint8_t     _filled    = 0;     // the number of positions filled
 element_t * _stack     = NULL;  // (to be used as an array)
 
 // ----------------------------------------------------------------------------
+
+/**                                      functions/_is_valid_offset/description
+ * Predicate indicating whether the given offset is valid
+ *
+ * Arguments:
+ * - `offset`: the offset to test
+ *
+ * Returns:
+ * - `true`: if the offset is valid
+ * - `false`: if the offset is not valid
+ */
+static bool _is_valid_offset(uint8_t offset) {
+    // both values are `uint8_t`, so no need to check `offset >= 0`
+    return ( offset < _filled );
+}
 
 /**                                         functions/_resize_stack/description
  * Resize the stack (in increments of `BLOCK_SIZE` positions) so that at least
@@ -71,9 +82,9 @@ static uint8_t _resize_stack(void) {
  * Shift the elements above the given location either up or down by one.
  *
  * Arguments:
- * - `offset`: The offset of the element above which to operate (with the top
+ * - `offset`: the offset of the element above which to operate (with the top
  *   element being `offset = 0`)
- * - `up` : Whether to shift the elements "up" or "down" the stack
+ * - `up` : whether to shift the elements "up" or "down" the stack
  *
  * Returns:
  * - success: `0`
@@ -100,7 +111,7 @@ static uint8_t _resize_stack(void) {
  * | 0 | 1 | 2 | 3 | 4 | 5 | 6 |       allocated = 7   filled = 5
  * +---+---+---+---+---+---+---+
  *       ^
- *       ` offset = 3
+ *       `- offset = 3
  *
  *
  * copy up: start = 4 = top = filled-1
@@ -114,7 +125,7 @@ static uint8_t _resize_stack(void) {
  */
 static uint8_t _shift_elements(uint8_t offset, bool up) {
     uint8_t margin = _allocated - _filled;
-    if ( offset < 0 || offset > _filled-1 || (up && (margin==0)) )
+    if ( (!_is_valid_offset(offset)) || (up && (margin==0)) )
         return 1;  // failure
 
     uint8_t start     = (up) ? _filled-1        : _filled-offset ;
@@ -131,26 +142,68 @@ static uint8_t _shift_elements(uint8_t offset, bool up) {
 
 // ----------------------------------------------------------------------------
 
-uint8_t layer_stack__peek   (uint8_t offset) {
-    if ( offset < 0 || offset > _filled-1 )
+uint8_t layer_stack__peek(uint8_t offset) {
+    if (! _is_valid_offset(offset) )
         return 0;  // default
 
-    return _stack[filled-1-offset].number;
+    return _stack[_filled-1-offset].number;
 }
 
 // note: must resize before shifting up, otherwise there may not be enough room
-// for the new element
-uint8_t layer_stack__push   (uint8_t layer_id, uint8_t layer_number) {
-    // need to add `offset` as an argument; see '.h'
+// for the new element; should resize before incrementing `_filled`, so as not
+// to grow the stack unless we actually need to
+uint8_t layer_stack__push( uint8_t offset,
+                           uint8_t layer_id,
+                           uint8_t layer_number ) {
+
+    uint8_t ret = 0;
+    uint8_t existing_element_offset = layer_stack__find_id(layer_id);
+
+    if ( _is_valid_offset(existing_element_offset) ) {
+        offset = existing_element_offset;
+
+    } else {
+        _resize_stack();  // at least 1 element will be open after this
+
+        if (offset != 0)
+            // this will catch invalid offsets
+            ret = _shift_elements(offset-1, true);
+
+        if (!ret)
+            _filled++;  // (effects the meaning of `offset` below)
+    }
+
+    if (ret) {
+        return -1;  // failure: return an invalid offset
+    } else {
+        _stack[_filled-1-offset].id     = layer_id;
+        _stack[_filled-1-offset].number = layer_number;
+        return offset;  // success
+    }
 }
 
-// note: should resize after shifting down, so as to only leave `MARGIN`
-// elements free in the stack
-uint8_t layer_stack__pop_id (uint8_t layer_id) {
-    // will use find_id(), which isn't written yet; see '.h'
+// note: should resize after shifting down and decrementing `_filled`, so as to
+// only leave `MARGIN` elements free in the stack
+uint8_t layer_stack__pop_id(uint8_t layer_id) {
+    uint8_t offset = layer_stack__find_id(layer_id);
+    uint8_t ret = _shift_elements(offset, false); // will catch invalid offsets
+    if (ret) {
+        return -1;  // failure: return an invalid offset
+    } else {
+        _filled--;
+        _resize_stack();
+        return offset;  // success
+    }
 }
 
-uint8_t layer_stack__size   (void) {
+uint8_t layer_stack__find_id(uint8_t layer_id) {
+    for(uint8_t i=0; i<_filled; i++)
+        if (_stack[i].id == layer_id)
+            return _filled-1-i;  // offset
+    return -1;  // failure: return an invalid offset
+}
+
+uint8_t layer_stack__size(void) {
     return _filled;
 }
 
