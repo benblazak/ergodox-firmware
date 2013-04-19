@@ -39,12 +39,12 @@ include $(CURDIR)/options.mk
 # -------
 CURDIR := $(OLD_CURDIR)
 
-SRC += $(CURDIR)/main.c
+SRC += $(wildcard $(CURDIR)/main.c)
 # (other source files included through the makefile included above)
 
 # -----------------------------------------------------------------------------
 
-CFLAGS := -mmcu=$(MCU)      # processor type; must match real life
+CFLAGS += -mmcu=$(MCU)      # processor type; must match real life
 CFLAGS += -DF_CPU=$(F_CPU)  # processor frequency; must match initialization
 			    #   in source
 # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
@@ -133,7 +133,7 @@ clean:
 		--no-change-warnings \
 		'$<' '$@' || exit 0
 
-%.elf: $(OBJ)
+$(TARGET).elf: $(OBJ)
 	@echo
 	@echo '--- making $@ ---'
 	$(CC) $(strip $(CFLAGS)) $(strip $(LDFLAGS)) '$^' --output '$@'

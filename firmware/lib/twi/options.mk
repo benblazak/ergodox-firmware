@@ -11,5 +11,5 @@
 #
 
 
-SRC += $(CURDIR)/$(MCU).c
+SRC += $(wildcard $(CURDIR)/$(MCU).c)
 

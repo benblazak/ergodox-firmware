@@ -56,5 +56,5 @@ SCR += $(wildcard $(CURDIR)/*.c)
 SRC += $(wildcard $(CURDIR)/controller/*.c)
 SRC += $(wildcard $(CURDIR)/layout/$(KEYBOARD_LAYOUT)*.c)
 
-CFLAGS += -include $(wildcard $(CURDIR)/options.h)
+CFLAGS += -include '$(wildcard $(CURDIR)/options.h)'
 
