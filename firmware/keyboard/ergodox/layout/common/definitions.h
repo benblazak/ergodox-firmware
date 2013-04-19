@@ -5,7 +5,8 @@
  * ------------------------------------------------------------------------- */
 
 /**                                                                 description
- * A central place for the `#include`s relevant to the layout files
+ * A central place for all `#include`s and common definitions relevant to the
+ * layout files
  */
 
 
@@ -78,32 +79,32 @@ void KF(nop) (void) {}
 
 // ----------------------------------------------------------------------------
 
-/**                                                  typedefs/key_t/description
+/**                                                 typedefs/_key_t/description
  * The type we will use for our "key"s
  *
  * Notes:
  * - Keys will be of the form
- *   `key_t key = { &press_function, &release_function };`
+ *   `_key_t key = { &press_function, &release_function };`
  *
  * - The fact that keys are of this type (composed of two
  *   `void (*function)(void)` pointers) is assumed throughout most of these
  *   layout files
  */
-typedef  void (*key_t[2])(void);
+typedef  void (*_key_t[2])(void);
 
-/**                                               typedefs/layout_t/description
+/**                                              typedefs/_layout_t/description
  * The type we will use for our layout matrix
  *
  * Notes:
  * - The first dimension of the matrix (left blank in the typedef since it
  *   varies between layouts) is "layers"
  */
-typedef  const key_t PROGMEM layout_t[][OPT__KB__ROWS][OPT__KB__COLUMNS];
+typedef  const _key_t PROGMEM _layout_t[][OPT__KB__ROWS][OPT__KB__COLUMNS];
 
 /**                                                variables/layout/description
  * The variable containing our layout matrix
  */
-layout_t _layout;
+_layout_t _layout;
 
 /**                                            variables/sticky_key/description
  * A pointer to the release function of the last sticky key pressed
