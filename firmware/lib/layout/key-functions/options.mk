@@ -11,6 +11,6 @@
 #
 
 
-SRC += $(wildcard *.c)
-SRC += $(wildcard device/$(MCU).c)
+SRC += $(wildcard $(CURDIR)/*.c)
+SRC += $(wildcard $(CURDIR)/device/$(MCU).c)
 

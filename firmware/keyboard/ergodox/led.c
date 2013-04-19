@@ -10,6 +10,7 @@
  * Code is specific to Teensy 2.0
  */
 
+#include <stdbool.h>
 #include <stdint.h>
 #include <avr/io.h>
 
@@ -52,6 +53,18 @@ void kb__led__set(uint8_t led, float n) {
         case 3: (OCR1C = (uint8_t)((n) * 0xFF)); break;  // bottommost
         case 4:                                  break;
         case 5:                                  break;
+    };
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+bool kb__led__read(uint8_t led) {
+    switch(led) {
+        case 1: return (PINB & (1<<5));  // topmost
+	    case 2: return (PINB & (1<<6));  // middle
+	    case 3: return (PINB & (1<<7));  // bottommost
+        case 4: return false;
+        case 5: return false;
     };
 }
 

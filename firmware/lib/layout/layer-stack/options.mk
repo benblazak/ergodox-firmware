@@ -11,5 +11,5 @@
 #
 
 
-SRC += $(wildcard *.c)
+SRC += $(wildcard $(CURDIR)/*.c)
 

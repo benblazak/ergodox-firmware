@@ -43,6 +43,8 @@ void kb__led__on  (uint8_t led);
 void kb__led__off (uint8_t led);
 void kb__led__set (uint8_t led, float n);
 // -------
+bool kb__led__read (uint8_t led);
+// -------
 void kb__led__all_on  (void);
 void kb__led__all_off (void);
 void kb__led__all_set (float percent);
@@ -156,6 +158,25 @@ void kb__layout__exec_key (bool pressed, uint8_t row, uint8_t column);
  * - `percent`: The percent of the highest possible brightness at which to set
  *   the LED.  Should be a float between 0 and 1 inclusive; behavior is
  *   undefined otherwise.
+ *
+ * Notes:
+ * - For US keyboards, likely only LEDs 1 through 3 will be physically present;
+ *   but the function should handle 4 through 5 gracefully anyway.
+ */
+
+// ----------------------------------------------------------------------------
+
+// === kb__led__read() ===
+/**                                         functions/kb__led__read/description
+ * Return whether the given LED is on (`true`) or off (`false`)
+ *
+ * Arguments:
+ * - `led`: The number of the LED to read.  Should be an integer between 1 and
+ *   5 inclusive; behavior is undefined otherwise.
+ *
+ * Returns:
+ * - success: `true` if the given LED is on, and `false` otherwise; LEDs that
+ *   don't exist (and can't be set) should always be `false`
  *
  * Notes:
  * - For US keyboards, likely only LEDs 1 through 3 will be physically present;

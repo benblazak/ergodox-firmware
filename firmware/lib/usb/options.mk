@@ -11,9 +11,9 @@
 #
 
 
-SRC += $(wildcard $(MCU)/*.c)
+SRC += $(wildcard $(CURDIR)/$(MCU)/*.c)
 
 ifeq '$(MCU)' 'atmega32u4'
-	SRC += $(wildcard $(MCU)/keyboard/from-pjrc/*.c)
+	SRC += $(wildcard $(CURDIR)/$(MCU)/keyboard/from-pjrc/*.c)
 endif
 
