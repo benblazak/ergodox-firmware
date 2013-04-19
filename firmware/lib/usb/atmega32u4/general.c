@@ -17,5 +17,5 @@
 
 void usb__init(void) { usb_init(); }
 
-bool usb__is_configured(void) { usb_configured(); }
+bool usb__is_configured(void) { return usb_configured(); }
 

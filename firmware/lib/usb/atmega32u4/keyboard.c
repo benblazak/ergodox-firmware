@@ -115,9 +115,10 @@ bool usb__kb__read_led(char led) {
         case 'O': return keyboard_leds & (1<<3);  // compose
         case 'K': return keyboard_leds & (1<<4);  // kana
     };
+    return false;
 }
 
 uint8_t usb__kb__send_report(void) {
-    return (uint8_t) usb_keyboard_send();
+    return usb_keyboard_send();
 }
 

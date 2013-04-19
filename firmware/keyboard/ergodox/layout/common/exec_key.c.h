@@ -8,6 +8,9 @@
  * A default way to execute keys.
  *
  * Meant to be included *only* by the layout using it.
+ *
+ * TODO: oops... need to keep track of which layer keys were pressed on, so we
+ * can release on the same layer
  */
 
 
@@ -23,12 +26,13 @@
 
 void kb__layout__exec_key(bool pressed, uint8_t row, uint8_t column) {
     void (*function)(void);
+    uint8_t offset = 0;
 
-    for(uint8_t i=0; i<layer_stack__size(); i++) {
-        function = _layout[ layer_stack__peek(i) ]
-                          [ row                  ]
-                          [ column               ]
-                          [ (pressed) ? 0 : 1    ];
+    do {
+        function = _layout[ layer_stack__peek(offset) ]
+                          [ row                       ]
+                          [ column                    ]
+                          [ (pressed) ? 0 : 1         ];
 
         if (function == &KF(transp))
             function = NULL;
@@ -43,7 +47,9 @@ void kb__layout__exec_key(bool pressed, uint8_t row, uint8_t column) {
 
             return;
         }
-    }
+
+        offset++;
+    } while (offset < layer_stack__size());
 
     // if we get here, there was a transparent key in layer 0; do nothing
 }

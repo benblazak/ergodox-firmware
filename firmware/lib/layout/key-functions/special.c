@@ -28,9 +28,9 @@ void key_functions__toggle_capslock (uint16_t ignore) {
 
     // toggle capslock
     usb__kb__set_key(true,  KEYBOARD__CapsLock);
-    usb_keyboard_send();
+    usb__kb__send_report();
     usb__kb__set_key(false, KEYBOARD__CapsLock);
-    usb_keyboard_send();
+    usb__kb__send_report();
 
     // restore the state of both shifts
     if (lshift_pressed) usb__kb__set_key(true, KEYBOARD__LeftShift);

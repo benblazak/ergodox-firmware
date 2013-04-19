@@ -74,8 +74,8 @@ layout_t _layout = {
        K,    nop,
 // left hand ...... ......... ......... ......... ......... ......... .........
    equal,        1,        2,        3,        4,        5,      esc,
- bkslash,        q,        w,        e,        r,        t,   lpu1l1,
-     tab,        a,        s,        d,        f,        g,
+     tab,        q,        w,        e,        r,        t,   lpu1l1,
+ bkslash,        a,        s,        d,        f,        g,
 shL2kcap,        z,        x,        c,        v,        b, lpupo1l1,
     guiL,    grave,  bkslash,   arrowL,   arrowR,
                                                                ctrlL,     altL,

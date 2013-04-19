@@ -71,11 +71,11 @@ static uint8_t _resize_stack(void) {
         if (temp) {
             _stack = temp;
             _allocated += change;
-            return 0;  // success
         } else {
             return 1;  // error
         }
     }
+    return 0;  // success
 }
 
 /**                                       functions/_shift_elements/description

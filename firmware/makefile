@@ -28,6 +28,9 @@ TARGET := firmware
 
 # -----------------------------------------------------------------------------
 
+default-target: all
+# (to retain default behavior when included makefiles specify dependencies)
+
 CURDIR  := .
 ROOTDIR := .
 # note: by default, `CURDIR` is initialized to (an absolute path to) the
