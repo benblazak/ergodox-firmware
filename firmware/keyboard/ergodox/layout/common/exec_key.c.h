@@ -46,10 +46,11 @@ void kb__layout__exec_key(bool pressed, uint8_t row, uint8_t column) {
         else
             layer = layer_stack__peek(i-1);
 
-        function = _layout[ layer             ]
-                          [ row               ]
-                          [ column            ]
-                          [ (pressed) ? 0 : 1 ];
+        function = (void (*)(void))
+                   pgm_read_word( &( _layout[ layer             ]
+                                            [ row               ]
+                                            [ column            ]
+                                            [ (pressed) ? 0 : 1 ] ) );
 
         if (function == &KF(transp))
             function = NULL;

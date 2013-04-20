@@ -99,12 +99,12 @@ typedef  void (*_key_t[2])(void);
  * - The first dimension of the matrix (left blank in the typedef since it
  *   varies between layouts) is "layers"
  */
-typedef  const _key_t PROGMEM _layout_t[][OPT__KB__ROWS][OPT__KB__COLUMNS];
+typedef  const _key_t _layout_t[][OPT__KB__ROWS][OPT__KB__COLUMNS];
 
 /**                                                variables/layout/description
  * The variable containing our layout matrix
  */
-_layout_t _layout;
+_layout_t PROGMEM _layout;
 
 /**                                            variables/sticky_key/description
  * A pointer to the release function of the last sticky key pressed

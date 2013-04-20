@@ -40,7 +40,7 @@ SRC         :=
 CFLAGS      :=
 LDFLAGS     :=
 GENDEPFLAGS :=
-# (initialize the variables so we can use `+=` below and in the included files)
+# (initialize variables, so we can use `+=` below and in the included files)
 
 CURDIRS := $(CURDIR) $(CURDIRS)
 # -------
