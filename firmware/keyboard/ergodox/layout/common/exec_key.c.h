@@ -8,9 +8,6 @@
  * A default way to execute keys.
  *
  * Meant to be included *only* by the layout using it.
- *
- * TODO: oops... need to keep track of which layer keys were pressed on, so we
- * can release on the same layer
  */
 
 

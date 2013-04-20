@@ -48,6 +48,9 @@ CURDIR := $(ROOTDIR)/keyboard/$(KEYBOARD_NAME)
 include $(CURDIR)/options.mk
 # (the place for everything a keyboard implementation might want to change)
 # -------
+CURDIR := $(ROOTDIR)/lib/timer
+include $(CURDIR)/options.mk
+# -------
 CURDIR := $(firstword $(CURDIRS))
 CURDIRS := $(wordlist 2,$(words $(CURDIRS)),$(CURDIRS))
 
