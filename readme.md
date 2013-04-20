@@ -14,6 +14,10 @@ branch isn't quite receiving the attention it used to.  Things that have
 changed since this document was last properly updated:
 * Ryan Prince ([judascleric] (https://github.com/judascleric)) implemented
   sticky keys, and added a Colemak layout using them.
+* Revision 2 of the firmware (on the 'partial-rewrite' branch) is working!  Not
+  ready for merging or a general release though, and I'm not ready to declare
+  anything final, so you may not want to switch yet; but developers may want to
+  think about checking it out. :)
 
 
 ### Table of Contents
