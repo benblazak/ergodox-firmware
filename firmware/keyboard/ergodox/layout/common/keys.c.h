@@ -103,7 +103,7 @@
     void R(lpupo##ID##l##LAYER) (void) { layer_stack__pop_id(ID); }
 
 /**                               macros/(group) layer : number pad/description
- * Define function for pushing and popping the number pad (namely `numPush`,
+ * Define functions for pushing and popping the number pad (namely `numPush`,
  * `numPop`, and `numPuPo`)
  *
  * Members:
@@ -138,7 +138,7 @@
 
 // ----------------------------------------------------------------------------
 
-/**                           functions/key__functions__2_keys_caps/description
+/**                                       functions/KF(2_keys_caps)/description
  * Press the given keycode, and also press "capslock" if this is the second
  * consecutive time this function has been called with `pressed == true`.
  *
