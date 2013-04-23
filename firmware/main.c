@@ -54,10 +54,11 @@ uint8_t col;
  * Mostly all that happens here after initialization is that current and
  * previous key states are tracked, keys that change state are "executed", the
  * USB report is sent, and the LEDs are updated.  We also have a delay, to make
- * sure the keys have time to debounce.  Almost everything interesting happens
- * somewhere else (especially in ".../firmware/keyboard/.../layout"); have a
- * look through the source, especially the documentation, to see how things are
- * defined and what's actually happening.
+ * sure we don't detect switch bounce from the keys.  Almost everything
+ * interesting happens somewhere else (especially in
+ * ".../firmware/keyboard/.../layout"); have a look through the source,
+ * especially the documentation, to see how things are defined and what's
+ * actually happening.
  */
 int main(void) {
     static bool (*temp)[OPT__KB__ROWS][OPT__KB__COLUMNS]; // for swapping below
