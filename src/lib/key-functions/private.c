@@ -16,6 +16,16 @@
 #include "../../main.h"
 #include "./public.h"
 
+/*
+ * MediaCodeLookupTable is used to translate from enumeration in keyboard.h to
+ *  consumer key scan code in usb_keyboard.h
+ */
+static const uint16_t _media_code_lookup_table[] = {
+	TRANSPORT_PLAY_PAUSE, /* MEDIAKEY_PLAY_PAUSE */
+	TRANSPORT_PREV_TRACK, /* MEDIAKEY_PREV_TRACK */
+	TRANSPORT_NEXT_TRACK, /* MEDIAKEY_NEXT_TRACK */
+};
+
 // ----------------------------------------------------------------------------
 
 /*
@@ -117,5 +127,18 @@ bool _kbfun_is_pressed(uint8_t keycode) {
 			return true;
 
 	return false;
+}
+
+void _kbfun_mediakey_press_release(bool press, uint8_t keycode) {
+	uint16_t mediakey_code = _media_code_lookup_table[keycode];
+	if (press) {
+		consumer_key = mediakey_code;
+	} else {
+		// Only one key can be pressed at a time so only clear the keypress for
+		//  active key (most recently pressed)
+		if (mediakey_code == consumer_key) {
+			consumer_key = 0;
+		}
+	}
 }
 
