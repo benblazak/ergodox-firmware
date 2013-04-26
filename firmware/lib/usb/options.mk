@@ -7,7 +7,7 @@
 ##                                                                  description
 # USB keyboard options
 #
-# This file is meant to be included by the using '.../options.mk'
+# This file is meant to be included by '.../firmware/makefile'
 #
 
 

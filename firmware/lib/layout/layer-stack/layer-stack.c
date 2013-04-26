@@ -33,9 +33,9 @@ typedef struct {
     uint8_t number;  // layer-number
 }  element_t;
 
-uint8_t     _allocated = 0;     // the number of positions allocated
-uint8_t     _filled    = 0;     // the number of positions filled
-element_t * _stack     = NULL;  // (to be used as an array)
+static uint8_t     _allocated = 0;     // the number of positions allocated
+static uint8_t     _filled    = 0;     // the number of positions filled
+static element_t * _stack     = NULL;  // (to be used as an array)
 
 // ----------------------------------------------------------------------------
 

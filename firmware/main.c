@@ -38,8 +38,8 @@
 
 // ----------------------------------------------------------------------------
 
-bool _pressed_1[OPT__KB__ROWS][OPT__KB__COLUMNS];
-bool _pressed_2[OPT__KB__ROWS][OPT__KB__COLUMNS];
+static bool _pressed_1[OPT__KB__ROWS][OPT__KB__COLUMNS];
+static bool _pressed_2[OPT__KB__ROWS][OPT__KB__COLUMNS];
 
 bool (* is_pressed) [OPT__KB__ROWS][OPT__KB__COLUMNS] = &_pressed_1;
 bool (* was_pressed) [OPT__KB__ROWS][OPT__KB__COLUMNS] = &_pressed_2;

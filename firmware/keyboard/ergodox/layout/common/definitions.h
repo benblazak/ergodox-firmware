@@ -104,7 +104,7 @@ typedef  const _key_t _layout_t[][OPT__KB__ROWS][OPT__KB__COLUMNS];
 /**                                                variables/layout/description
  * The variable containing our layout matrix
  */
-_layout_t PROGMEM _layout;
+static _layout_t PROGMEM _layout;
 
 /**                                            variables/sticky_key/description
  * A pointer to the release function of the last sticky key pressed
@@ -120,7 +120,7 @@ _layout_t PROGMEM _layout;
  *   directly before this was a sticky key as well, then the previous sticky
  *   key will never be released.
  */
-void (*_sticky_key)(void);
+static void (*_sticky_key)(void);
 
 
 // ----------------------------------------------------------------------------
