@@ -67,7 +67,7 @@ static uint8_t _resize_stack(void) {
     if (margin == 0 || margin >= MARGIN + BLOCK_SIZE) {
         uint8_t change = (margin == 0) ? BLOCK_SIZE : -BLOCK_SIZE;
         uint8_t new_size = sizeof(element_t) * (_allocated + change);
-        element_t * temp = (element_t *) realloc(_stack, new_size);
+        element_t * temp = realloc(_stack, new_size);
         if (temp) {
             _stack = temp;
             _allocated += change;
