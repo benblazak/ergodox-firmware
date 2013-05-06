@@ -458,6 +458,13 @@
   (which is the spec'ed high value for Cherry MX switches) would give us a max
   scan rate of 200Hz.
 
+### Hardware Mods to the ErgoDox (horribly incomplete list)
+
+* [LEDs on the left (MCP23018) side]
+  (http://geekhack.org/index.php?topic=22780.msg873819#msg873819)  
+  : post by [Unix Guru] (http://geekhack.org/index.php?action=profile;u=24565)
+  on <http://geekhack.org/>  
+
 ### Other Awesome Keyboard Projects
 
 * [My DIY keyboard collection (or how I became a KB-geek...)]
