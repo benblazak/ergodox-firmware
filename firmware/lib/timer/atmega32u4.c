@@ -9,15 +9,24 @@
  *
  * Prefix: `timer__`
  *
- * TODO: make sure this is how we want to do things...
- * TODO: document and write header
- * TODO: notes
- * - it's unnecessary to keep 32 (or even 16) bit resolution if you don't need
- *   it;  functions that don't should cast to uint8_t or uint16_t
- * - use `end-start` for determining time difference.  since the values are
- *   unsigned, this will work across overflows, for up to the maximum amount of
- *   time representable by the type you're using
- * - `timer__init()` should be called once by `main()`
+ * `timer__init()` is meant to be called once, on startup, by `main()`
+ *
+ * See the accompanying '.md' file for more documentation.
+ *
+ *
+ * Usage Notes:
+ *
+ * - It's unnecessary to keep 32-bit (or even 16-bit) resolution when storing
+ *   the value returned by `timer__get_milliseconds()` if you don't need it.
+ *   Casting to a smaller unsigned value should be safe (as long as you cast
+ *   *all* the values you plan to compare with each other to the same type!).
+ *
+ * - Use `end_time - start_time` for determining time difference.  Since the
+ *   returned values are unsigned (and you should be storing them in unsigned
+ *   variables as well) this will work across overflows, for up to the maximum
+ *   amount of milliseconds representable by the type you're using.  (See [this
+ *   answer] (http://stackoverflow.com/a/50632) on <http://stackoverflow.com/>
+ *   if you're curious as to why.)
  */
 
 
@@ -31,43 +40,10 @@ static volatile uint32_t _milliseconds;
 // ----------------------------------------------------------------------------
 
 void timer__init(void) {
-    // /TODO
-
-    // references:
-    //
-    // Newbie's Guide to AVR Timers
-    // tutorial by Dean Camera
-    // http://www.avrfreaks.net/index.php?name=PNphpBB2&file=viewtopic&t=50106
-    //
-    // the atmega32u4 spec sheet
-    //
-    // the reference somewhere about what happens to unsigned things when
-    // negative values are assigned to them
-
-    // --- python3 ---
-    // >>> f_cpu = 16000000
-    // >>> .001/((1/f_cpu)*64)
-    // 250.00000000000003
-    // >>> (.001*f_cpu)/(64)
-    // 250.0
-    // ---------------
-
-    // table
-    // ------------------------------------------
-    // prescale value       ticks per millisecond
-    // --------------       ---------------------
-    // 1                    16000
-    // 8                     2000
-    // 64                     250
-    // 256                    62.5
-    // 1024                   15.625
-
-    // - we want a period = 1 millisecond = .001 seconds
-    // - cpu = 16 MHz; we can prescale at clk_io/64 to get 250 prescaled ticks
-    //   per millisecond (which fits into a uint8_t, just barely)
-    //
-    // so we want to use TCCR0A, on the CTC (clear timer on compare match)
-    // mode, with compare interrupt enabled
+    TCCR0A = 0b10000010;
+    TCCR0B = 0b00000011;
+    TIMSK0 = 0b00000010;
+    OCR0A  = 250;
 }
 
 uint32_t timer__get_milliseconds(void) {
@@ -76,6 +52,7 @@ uint32_t timer__get_milliseconds(void) {
 
 // ----------------------------------------------------------------------------
 
+// TODO: document this in the '.md' file too
 ISR(TIMER0_COMPA_vect) {
     _milliseconds++;
 }

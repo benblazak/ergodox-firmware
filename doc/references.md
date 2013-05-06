@@ -125,8 +125,8 @@
   according to the C standard, and I didn't see AVRs mentioned; and AVRs don't
   typically run an OS anyway), but still quite interesting.
 
-* [integral conversion from negative signed to unsigned integer]
-  (http://www.rhinocerus.net/forum/language-c-moderated/649336-integral-conversion-negative-signed-unsigned-integer.html)  
+* [Signed to unsigned conversion in C - is it always safe?]
+  (http://stackoverflow.com/questions/50605/signed-to-unsigned-conversion-in-c-is-it-always-safe)  
   What happens if you return `-1` from a `uint8_t` function (or assign `-1` to
   a `uint8_t`)?
 

@@ -24,6 +24,7 @@
 //   - chorded keys
 //   - layers
 //   - making layouts
+//   - changing the meaning of the LEDs
 // - put the tutorials in the readme.md of
 //   ".../firmware/keyboard/ergodox/layout"
 

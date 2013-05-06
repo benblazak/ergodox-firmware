@@ -210,8 +210,8 @@ uint8_t teensy__init(void) {
 
     // keyboard LEDs (see "PWM on ports OC1(A|B|C)" in "teensy-2-0.md")
     kb__led__all_off();  // (just to put the pins in a known state)
-    TCCR1A  = 0b10101001;  // set and configure fast PWM
-    TCCR1B  = 0b00001001;  // set and configure fast PWM
+    TCCR1A = 0b10101001;  // set and configure fast PWM
+    TCCR1B = 0b00001001;  // set and configure fast PWM
 
     // I2C (TWI)
     twi__init();  // on pins D(1,0)
