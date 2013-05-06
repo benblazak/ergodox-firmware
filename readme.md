@@ -18,6 +18,11 @@ changed since this document was last properly updated:
   ready for merging or a general release though, and I'm not ready to declare
   anything final, so you may not want to switch yet; but developers may want to
   think about checking it out. :)
+* Ryan Prince ([judascleric] (https://github.com/judascleric)) implemented 3
+  media keys (play/pause, previous track, and next track) in Revision 1, using
+  a bit of code from [hasu's tmk firmware]
+  (https://github.com/tmk/tmk_keyboard).  Revision 2 probably won't have this
+  functionality for a while.
 
 
 ### Table of Contents
