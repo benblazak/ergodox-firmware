@@ -268,6 +268,11 @@
 
 //     (Reserved)           0xE8..0xFFFF  // -  -   -     -
 
+// Media key codes are not real scan codes, they must be translated to a 16
+//  bit number by the consumer key key function
+#define MEDIAKEY_PLAY_PAUSE    0x00
+#define MEDIAKEY_PREV_TRACK    0x01
+#define MEDIAKEY_NEXT_TRACK    0x02
 
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------

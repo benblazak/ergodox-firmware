@@ -147,6 +147,20 @@ void kbfun_layer_pop_numpad(void) {
 	numpad_toggle_numlock();
 }
 
+/*
+ * [name]
+ *   Media Key Press Release
+ *
+ * [description]
+ *   Generate a keypress for a media key, such as play/pause, next track, or
+ *   previous track
+ *
+ */
+void kbfun_mediakey_press_release(void) {
+	uint8_t keycode = kb_layout_get(LAYER, ROW, COL);
+	_kbfun_mediakey_press_release(IS_PRESSED, keycode);
+}
+
 /* ----------------------------------------------------------------------------
  * ------------------------------------------------------------------------- */
 
