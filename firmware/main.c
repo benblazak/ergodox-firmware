@@ -13,6 +13,7 @@
 #include <stdint.h>
 #include <util/delay.h>
 #include "../firmware/keyboard.h"
+#include "../firmware/lib/timer.h"
 #include "../firmware/lib/usb.h"
 #include "./main.h"
 
@@ -65,7 +66,9 @@ int main(void) {
     static bool key_is_pressed;
     static bool key_was_pressed;
 
-    kb__init();  // initialize hardware (besides USB)
+    static uint8_t time_scan_started;
+
+    kb__init();     // initialize hardware (besides USB and timer)
 
     kb__led__state__power_on();
 
@@ -73,13 +76,24 @@ int main(void) {
     while (!usb__is_configured());
     kb__led__delay__usb_init();  // give the OS time to load drivers, etc.
 
+    timer__init();
+
     kb__led__state__ready();
+
+    time_scan_started  // first iteration, scan immediately
+        = (uint8_t)timer__get_milliseconds() - OPT__DEBOUNCE_TIME;
 
     for(;;) {
         temp = is_pressed;
         is_pressed = was_pressed;
         was_pressed = temp;
 
+        // delay if necessary, then rescan
+        // - add 1 to `OPT__DEBOUNCE_TIME` in case `time_scan_started` caught
+        //   the tail end of the millisecond it recorded
+        while( (uint8_t)timer__get_milliseconds() - time_scan_started
+               < OPT__DEBOUNCE_TIME + 1 );
+        time_scan_started = timer__get_milliseconds();
         kb__update_matrix(*is_pressed);
 
         // "execute" keys that have changed state
@@ -94,7 +108,6 @@ int main(void) {
         }
 
         usb__kb__send_report();  // (even if nothing's changed)
-        _delay_ms(OPT__DEBOUNCE_TIME);
 
         // note: only use the `kb__led__logical...` functions here, since the
         // meaning of the physical LEDs should be controlled by the layout
