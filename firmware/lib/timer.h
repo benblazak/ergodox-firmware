@@ -8,8 +8,6 @@
  * Timer interface
  *
  * Prefix: `timer__`
- *
- * `timer__init()` is meant to be called once, on startup, by `main()`
  */
 
 
@@ -19,9 +17,16 @@
 // ----------------------------------------------------------------------------
 
 
-void timer__init(void);
+uint8_t timer__init(void);
 /**                                           functions/timer__init/description
  * Initialize the timer
+ *
+ * Returns:
+ * - success: `0`
+ * - failure: [other]
+ *
+ * Notes:
+ * - Should be called exactly once by `main()` before entering the run loop.
  */
 
 uint32_t timer__get_milliseconds(void);

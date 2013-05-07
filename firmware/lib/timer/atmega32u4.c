@@ -22,11 +22,13 @@ static volatile uint32_t _milliseconds;
 
 // ----------------------------------------------------------------------------
 
-void timer__init(void) {
+uint8_t timer__init(void) {
     TCCR0A = 0b10000010;
     TCCR0B = 0b00000011;
     TIMSK0 = 0b00000010;
     OCR0A  = 250;
+
+    return 0;  // success
 }
 
 uint32_t timer__get_milliseconds(void) {

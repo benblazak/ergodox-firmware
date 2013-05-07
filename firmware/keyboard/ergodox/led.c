@@ -73,17 +73,17 @@ bool kb__led__read(uint8_t led) {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 void kb__led__all_on(void) {
-    for(int8_t i=1; i<=3; i++)
+    for(uint8_t i=1; i<=3; i++)
         kb__led__on(i);
 }
 
 void kb__led__all_off(void) {
-    for(int8_t i=1; i<=3; i++)
+    for(uint8_t i=1; i<=3; i++)
         kb__led__off(i);
 }
 
 void kb__led__all_set(float n) {
-    for(int8_t i=1; i<=3; i++)
+    for(uint8_t i=1; i<=3; i++)
         kb__led__set(i, n);
 }
 
