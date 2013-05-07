@@ -82,13 +82,6 @@ int main(void) {
     time_scan_started  // on the first iteration, scan immediately
         = timer__get_milliseconds() - OPT__DEBOUNCE_TIME;
 
-    // TODO
-    // - test the scan rate, to make sure it's what we want
-    // - write a nice note about not casting `timer__get_milliseconds()` inside
-    //   while loops... or maybe write a `timer__diff_with_now()` or something
-    //   function
-    // - look at the generated asm for these things, maybe, to see what's going
-    // on
     for(;;) {
         temp = is_pressed;
         is_pressed = was_pressed;
@@ -97,7 +90,7 @@ int main(void) {
         // delay if necessary, then rescan
         // - add 1 to `OPT__DEBOUNCE_TIME` in case `time_scan_started` caught
         //   the tail end of the millisecond it recorded
-        while( timer__get_milliseconds() - time_scan_started
+        while( (uint8_t)(timer__get_milliseconds()-time_scan_started)
                < OPT__DEBOUNCE_TIME + 1 );
         time_scan_started = timer__get_milliseconds();
         kb__update_matrix(*is_pressed);
