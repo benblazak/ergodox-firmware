@@ -3,6 +3,7 @@
 - the gnu avr toolchain
 - python 3
   - markdown `sudo pip install markdown`
+- git (for cleaning)
 
 
 -------------------------------------------------------------------------------

@@ -8,6 +8,12 @@
  * Timer interface
  *
  * Prefix: `timer__`
+ *
+ * TODO:
+ * - write `timer__schedule(uint32_t milliseconds, void(*)(void) function)`, to
+ *   schedule `function` to run in `milliseconds`.
+ *   - will need to be careful with this function, as everything called by it
+ *     will be executing within an interrupt vector.
  */
 
 
