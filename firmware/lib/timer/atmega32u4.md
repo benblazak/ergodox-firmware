@@ -1,13 +1,13 @@
 ## 8-bit Timer/Counter Register Description (see datasheet section 13.8)
 
-    TCCR0A : Timer/Counter Control Register A
+    TCCR0A : Timer/Counter 0 Control Register A
     .---------------------------------------------------------------.
     |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
     |---------------------------------------------------------------|
     | COM0A | COM0A | COM0B | COM0B |    Reserved   |  WGM1 |  WGM0 |
     '---------------------------------------------------------------'
 
-    TCCR0B : Timer/Counter Control Register B
+    TCCR0B : Timer/Counter 0 Control Register B
     .---------------------------------------------------------------.
     |   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
     |---------------------------------------------------------------|
@@ -22,7 +22,7 @@
         * `CS` = `0b011` : clk_i/o / 64 (from prescaler)
 
 
-    TIMSK0 : Timer/Counter Interrupt Mask Register
+    TIMSK0 : Timer/Counter 0 Interrupt Mask Register
     .-----------------------------------------------------------------.
     |   7   |   6   |   5   |   4   |   3   |   2    |   1    |   0   |
     |-----------------------------------------------------------------|
@@ -30,7 +30,7 @@
     '-----------------------------------------------------------------'
 
     * We want:
-        * `OCIE0A` = `0b1` : enable  the Timer/Counter0 Compare Match A
+        * `OCIE0A` = `0b1` : enable  the Timer/Counter 0 Compare Match A
           interrupt
 
 
@@ -72,8 +72,12 @@
     * `COM`: Compare
     * `CS`: Clock Select
     * `FOC`: Force Output Compare
+    * `OCIE`: Output Compare Interrupt Enable
+    * `OCR`: Output Compare Register
     * `TCCR: Timer/Counter Control Register
+    * `TCCR`: Timer/Counter Control Register
     * `TIMSK`: Timer/Counter Interrupt Mask Register
+    * `TOIE`: Timer/Counter Overflow Interrupt Enable
     * `WGM`: Waveform Generation Module
 
 
