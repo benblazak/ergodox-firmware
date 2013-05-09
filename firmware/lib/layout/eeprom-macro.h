@@ -14,8 +14,8 @@
  */
 
 
-#ifndef ERGODOX_FIRMWARE__LIB__LAYOUT__EEPROM_MACRO__H
-#define ERGODOX_FIRMWARE__LIB__LAYOUT__EEPROM_MACRO__H
+#ifndef ERGODOX_FIRMWARE__FIRMWARE__LIB__LAYOUT__EEPROM_MACRO__H
+#define ERGODOX_FIRMWARE__FIRMWARE__LIB__LAYOUT__EEPROM_MACRO__H
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 
@@ -25,5 +25,5 @@
 
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
-#endif  // ERGODOX_FIRMWARE__LIB__LAYOUT__EEPROM_MACRO__H
+#endif  // ERGODOX_FIRMWARE__FIRMWARE__LIB__LAYOUT__EEPROM_MACRO__H
 

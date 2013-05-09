@@ -14,10 +14,13 @@
  *
  * Prefixes: `keys__`, [none]
  *
- * Usage: `#define` `KEYS__DEFAULT` and `KEYS__SHIFTED` before `#include`ing.
- *
- * TODO: add media and mouse keys (after i figure out which OSs are supposed to
- * support which keys)
+ * Usage:
+ * - `#define` `KEYS__DEFAULT` and `KEYS__SHIFTED` before `#include`ing.
+ *   - These macros should probably do what their names imply (i.e. define a
+ *     "default" or "shifted" key, respectively, whatever that means to the
+ *     implementing layout), but in a practical sense they can be used however
+ *     one wants.  They're simply a really convenient way to generate almost
+ *     the same bit of code for a lot of (key_name, key_code) pairs.
  */
 
 

@@ -34,7 +34,7 @@ void kb__layout__exec_key(bool pressed, uint8_t row, uint8_t column) {
     void (*function)(void);
     uint8_t layer;
 
-    for(uint8_t i = 0; i < layer_stack__size()+1+1; i++) {  // i = offset+1
+    for (uint8_t i=0; i < layer_stack__size()+1+1; i++) {  // i = offset+1
         if (i == 0)
             if (!pressed)
                 layer = pressed_layer[row][column];

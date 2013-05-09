@@ -82,7 +82,7 @@ int main(void) {
     time_scan_started  // on the first iteration, scan immediately
         = timer__get_milliseconds() - OPT__DEBOUNCE_TIME;
 
-    for(;;) {
+    for (;;) {
         temp = is_pressed;
         is_pressed = was_pressed;
         was_pressed = temp;
@@ -96,8 +96,8 @@ int main(void) {
         kb__update_matrix(*is_pressed);
 
         // "execute" keys that have changed state
-        for(row=0; row<OPT__KB__ROWS; row++) {
-            for(col=0; col<OPT__KB__COLUMNS; col++) {
+        for (row=0; row<OPT__KB__ROWS; row++) {
+            for (col=0; col<OPT__KB__COLUMNS; col++) {
                 key_is_pressed = (*is_pressed)[row][col];
                 key_was_pressed = (*was_pressed)[row][col];
 

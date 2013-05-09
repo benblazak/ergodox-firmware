@@ -7,8 +7,6 @@
 /**                                                                 description
  * Implements the timer functions defined in "../timer.h" for the ATMega32U4
  *
- * Prefix: `timer__`
- *
  * See the accompanying '.md' file for documentation.
  */
 

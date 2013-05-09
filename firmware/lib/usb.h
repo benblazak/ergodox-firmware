@@ -59,7 +59,7 @@ uint8_t usb__kb__send_report (void);
  */
 
 // === usb__is_configured ===
-/**                                    variables/usb__is_configured/description
+/**                                    functions/usb__is_configured/description
  * Check whether this device has been configured by the host
  *
  * Returns:

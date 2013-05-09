@@ -46,6 +46,9 @@ include $(CURDIR)/options.mk
 CURDIR := $(ROOTDIR)/lib/layout/layer-stack
 include $(CURDIR)/options.mk
 # -------
+CURDIR := $(ROOTDIR)/lib/data-types/list
+include $(CURDIR)/options.mk
+# -------
 CURDIR := $(firstword $(CURDIRS))
 CURDIRS := $(wordlist 2,$(words $(CURDIRS)),$(CURDIRS))
 

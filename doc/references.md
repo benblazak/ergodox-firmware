@@ -134,6 +134,15 @@
     (http://mathforum.org/library/drmath/view/52343.html)  
     `(-1)%5` in python returns `4` (just like it should)
 
+* [Is it safe to free `void *`?]
+  (http://stackoverflow.com/a/2182522/2360353)  
+  Yes.  The memory manager keeps track of the size of allocations - and the
+  pointer you pass to `free()` is cast to `void *` before deallocation anyway.
+
+* [Why do we need C Unions?]
+  (http://stackoverflow.com/questions/252552/why-do-we-need-c-unions)  
+  Some good examples of what Unions are good for.
+
 ### C++ Stuff
 
 * [Google C++ Style Guide]

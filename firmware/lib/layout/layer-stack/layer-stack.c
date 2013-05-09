@@ -132,7 +132,7 @@ static uint8_t _shift_elements(uint8_t offset, bool up) {
     uint8_t increment = (up) ? -1               : 1              ;
     uint8_t end       = (up) ? _filled-1-offset : _filled-1      ;
 
-    for(uint8_t i=start; i!=(end+increment); i+=increment) {
+    for (uint8_t i=start; i!=(end+increment); i+=increment) {
         _stack[i-increment].id     = _stack[i].id;
         _stack[i-increment].number = _stack[i].number;
     }
@@ -197,7 +197,7 @@ uint8_t layer_stack__pop_id(uint8_t layer_id) {
 }
 
 uint8_t layer_stack__find_id(uint8_t layer_id) {
-    for(uint8_t i=0; i<_filled; i++)
+    for (uint8_t i=0; i<_filled; i++)
         if (_stack[i].id == layer_id)
             return _filled-1-i;  // offset
     return -1;  // failure: return an invalid offset
