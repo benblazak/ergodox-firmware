@@ -10,13 +10,11 @@
  *
  * Prefix: `list__`
  *
- *
  * Implementation notes:
- *
- * - All functions that accept an `index` should set `index %= list->length`
- *   before using it.  This will make all passed indices valid.  It will also
- *   provide a convenient way to reference the last element of a list, by
- *   passing `-1` as the index (as in Python).
+ * - All functions that accept an `index` set `index %= list->length` before
+ *   using it.  This will make all passed indices valid.  It will also provide
+ *   a convenient way to reference the last element of a list, by passing `-1`
+ *   as the index (as in Python).
  */
 
 

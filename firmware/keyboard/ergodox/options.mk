@@ -37,6 +37,9 @@ CURDIRS := $(CURDIR) $(CURDIRS)
 CURDIR := $(ROOTDIR)/lib/twi
 include $(CURDIR)/options.mk
 # -------
+CURDIR := $(ROOTDIR)/lib/data-types/list
+include $(CURDIR)/options.mk
+# -------
 CURDIR := $(ROOTDIR)/lib/layout/eeprom-macro
 include $(CURDIR)/options.mk
 # -------
@@ -44,9 +47,6 @@ CURDIR := $(ROOTDIR)/lib/layout/key-functions
 include $(CURDIR)/options.mk
 # -------
 CURDIR := $(ROOTDIR)/lib/layout/layer-stack
-include $(CURDIR)/options.mk
-# -------
-CURDIR := $(ROOTDIR)/lib/data-types/list
 include $(CURDIR)/options.mk
 # -------
 CURDIR := $(firstword $(CURDIRS))

@@ -6,6 +6,15 @@
 
 /**                                                                 description
  * Implements the layer-stack defined in "../layer-stack.h"
+ *
+ * Notes:
+ * - This would be relatively trivial to implement using
+ *   ".../lib/data-types/list.h"; but it was written before bringing linked
+ *   lists back into the code base, and while I'm sure it takes more PROGMEM to
+ *   keep doing it this way, it uses less SRAM, and is also probably faster on
+ *   average.  I also think it's a nice example of how to resize arrays in C
+ *   based on demand.  So, those things considered, it seems better not to
+ *   rewrite it.
  */
 
 
