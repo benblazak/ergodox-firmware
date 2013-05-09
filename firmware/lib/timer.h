@@ -20,8 +20,8 @@
 uint8_t  timer__init             (void);
 uint16_t timer__get_milliseconds (void);
 
-uint8_t  timer__schedule         ( uint16_t      milliseconds,
-                                   void(*)(void) function );
+uint8_t  timer__schedule         ( uint16_t milliseconds,
+                                   void(*function)(void) );
 
 // TODO: document and implement `timer__schedule()`, to schedule `function` to
 // run in `milliseconds`
