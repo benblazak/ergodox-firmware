@@ -114,11 +114,11 @@ void           list__free         (list__list_t * list);
  * - success: A `void *` pointer to the new node
  * - failure: `NULL`
  *
- * Warning:
+ * Warnings:
  * - For any given list, the `size` passed to this function should always be
  *   the same.
  *
- * Caution:
+ * Cautions:
  * - Initialization of the data to be stored in the node is the calling
  *   function's responsibility.
  */
@@ -141,7 +141,7 @@ void           list__free         (list__list_t * list);
  * Return a pointer to the node at position `index % list->length`, and remove
  * the node from the list
  *
- * Warning:
+ * Warnings:
  * - Does not free the node's memory - this is the calling function's
  *   responsibility.  If you want to pop the node and free its memory without
  *   looking at it, call `free( list__pop__no_free( node ) )`.
