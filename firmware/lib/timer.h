@@ -22,15 +22,19 @@ uint16_t timer__get_milliseconds (void);
 
 uint8_t  timer__schedule         ( uint16_t      milliseconds,
                                    void(*)(void) function );
-// TODO: `timer__schedule()`, to schedule `function` to run in `milliseconds`
+
+// TODO: document and implement `timer__schedule()`, to schedule `function` to
+// run in `milliseconds`
 // - will need to be careful with this function, as everything called by it
 //   will be executing within an interrupt vector.
-// TODO: after this, should probably make a `main__schedule()`, to schedule
-// `function` to run in `cycles` (or `scans`).  this will have the benefit of
-// being lower resolution (while still high enough resolution for a lot of
-// things; and perhaps exactly what other things call for).  Also, functions
-// scheduled that way will not be executing from within an interrupt vector, so
-// they could, within reason, do more or less what they want.
+// - if functions need a longer amount of time than is possible with a 16-bit
+//   millisecond resolution counter, they can repeatedly schedule themselves to
+//   run in, say, 1 minute, increment a counter each time, and then only
+//   execute their body after, say, 5 calls (for a 5 minute delay)
+//
+// TODO: should probably make a corresponding `main__schedule()`, and
+// `main__get_cycles()` too, to operate at the resolution of cycles (and
+// outside any interrupt vectors)
 
 
 // ----------------------------------------------------------------------------
@@ -72,6 +76,8 @@ uint8_t  timer__schedule         ( uint16_t      milliseconds,
  *          16              65535         65.5        1.1       0.0     0.0
  *          32         4294967295    4294967.3    71582.8    1193.0    49.7
  *     ---------------------------------------------------------------------
+ *
+ *     note: 32-bit values given for reference only
  *
  *
  * Usage notes:
