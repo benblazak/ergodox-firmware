@@ -88,10 +88,8 @@ int main(void) {
         was_pressed = temp;
 
         // delay if necessary, then rescan
-        // - add 1 to `OPT__DEBOUNCE_TIME` in case `time_scan_started` caught
-        //   the tail end of the millisecond it recorded
         while( (uint8_t)(timer__get_milliseconds()-time_scan_started)
-               < OPT__DEBOUNCE_TIME + 1 );
+               < OPT__DEBOUNCE_TIME );
         time_scan_started = timer__get_milliseconds();
         kb__update_matrix(*is_pressed);
 

@@ -16,7 +16,13 @@
 
 // ----------------------------------------------------------------------------
 
-static volatile uint32_t _milliseconds;
+#if F_CPU != 16000000
+    #error "Expecting different CPU frequency"
+#endif
+
+// ----------------------------------------------------------------------------
+
+static volatile uint16_t _milliseconds;
 
 // ----------------------------------------------------------------------------
 
@@ -29,7 +35,7 @@ uint8_t timer__init(void) {
     return 0;  // success
 }
 
-uint32_t timer__get_milliseconds(void) {
+uint16_t timer__get_milliseconds(void) {
     return _milliseconds;
 }
 

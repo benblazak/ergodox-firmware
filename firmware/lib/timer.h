@@ -8,12 +8,6 @@
  * Timer interface
  *
  * Prefix: `timer__`
- *
- * TODO:
- * - write `timer__schedule(uint32_t milliseconds, void(*)(void) function)`, to
- *   schedule `function` to run in `milliseconds`.
- *   - will need to be careful with this function, as everything called by it
- *     will be executing within an interrupt vector.
  */
 
 
@@ -23,7 +17,38 @@
 // ----------------------------------------------------------------------------
 
 
-uint8_t timer__init(void);
+uint8_t  timer__init             (void);
+uint16_t timer__get_milliseconds (void);
+
+uint8_t  timer__schedule         ( uint16_t      milliseconds,
+                                   void(*)(void) function );
+// TODO: `timer__schedule()`, to schedule `function` to run in `milliseconds`
+// - will need to be careful with this function, as everything called by it
+//   will be executing within an interrupt vector.
+// TODO: after this, should probably make a `main__schedule()`, to schedule
+// `function` to run in `cycles` (or `scans`).  this will have the benefit of
+// being lower resolution (while still high enough resolution for a lot of
+// things; and perhaps exactly what other things call for).  Also, functions
+// scheduled that way will not be executing from within an interrupt vector, so
+// they could, within reason, do more or less what they want.
+
+
+// ----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
+#endif  // ERGODOX_FIRMWARE__LIB__TIMER__H
+
+
+
+// ============================================================================
+// === documentation ==========================================================
+// ============================================================================
+
+
+// ----------------------------------------------------------------------------
+// functions ------------------------------------------------------------------
+// ----------------------------------------------------------------------------
+
+// === timer__init() ===
 /**                                           functions/timer__init/description
  * Initialize the timer
  *
@@ -35,9 +60,9 @@ uint8_t timer__init(void);
  * - Should be called exactly once by `main()` before entering the run loop.
  */
 
-uint32_t timer__get_milliseconds(void);
+// === timer__get_milliseconds() ===
 /**                               functions/timer__get_milliseconds/description
- * Return the number of milliseconds since the timer was initialized (mod 2^32)
+ * Return the number of milliseconds since the timer was initialized (mod 2^16)
  *
  *     ---------------------------------------------------------------------
  *      number     highest value        in          in        in        in
@@ -51,7 +76,7 @@ uint32_t timer__get_milliseconds(void);
  *
  * Usage notes:
  *
- * - It's unnecessary to keep 32-bit resolution when storing the value returned
+ * - It's unnecessary to keep 16-bit resolution when storing the value returned
  *   by `timer__get_milliseconds()` if you don't need it.  Use variables of the
  *   smallest type that can (*always*) hold the amount of time you'll be
  *   dealing with.
@@ -98,9 +123,4 @@ uint32_t timer__get_milliseconds(void);
  *
  *   except within the first 255 milliseconds of the timer being initialized.
  */
-
-
-// ----------------------------------------------------------------------------
-// ----------------------------------------------------------------------------
-#endif  // ERGODOX_FIRMWARE__LIB__TIMER__H
 
