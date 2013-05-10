@@ -54,6 +54,9 @@ include $(CURDIR)/options.mk
 CURDIR := $(ROOTDIR)/lib/timer
 include $(CURDIR)/options.mk
 # -------
+CURDIR := $(ROOTDIR)/lib/data-types/list
+include $(CURDIR)/options.mk
+# -------
 CURDIR := $(firstword $(CURDIRS))
 CURDIRS := $(wordlist 2,$(words $(CURDIRS)),$(CURDIRS))
 

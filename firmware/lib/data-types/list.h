@@ -10,11 +10,50 @@
  *
  * Prefix: `list__`
  *
- * Implementation notes:
+ *
+ * Usage notes:
+ *
  * - All functions that accept an `index` set `index %= list->length` before
  *   using it.  This will make all passed indices valid.  It will also provide
  *   a convenient way to reference the last element of a list, by passing `-1`
  *   as the index (as in Python).
+ *
+ * - All pointers to `list__node_t` are stored, returned, etc. as as `void`
+ *   pointers until use, so that using files won't have to do so much work
+ *   casting things.  They are converted internally to `list__node_t` before
+ *   use, and should be stored by using code in pointers of appropriate (non
+ *   `void *`) type.
+ *
+ * - Full node types should be defined in the using '.c' or '.h' file, with
+ *   something like
+ *
+ *       typedef struct {
+ *           list__node_t _private;  // must be the first element
+ *           uint8_t      data;
+ *       } node_t;
+ *
+ * - If you want to iterate through a list, use something like
+ *
+ *       for (node_t * node = list->head; node; node = node->_private.next) {
+ *           // do stuff
+ *       }
+ *
+ * - If you want to insert a new node at the end of `list` (for example), use
+ *   something like
+ *
+ *       node_t * node = list__insert(list, -1, malloc(sizeof(node_t)));
+ *       if (!node) return 1;  // error
+ *
+ *   Keep in mind that the initialization of the data stored in the node is the
+ *   calling function's responsibility.
+ *
+ *
+ * Assumptions:
+ *
+ * - Lists will never contain more elements than can be indexed by an `int8_t`
+ *
+ *
+ * TODO: go over this again, in a little while, to make sure i like it
  */
 
 
@@ -29,24 +68,26 @@
 // ----------------------------------------------------------------------------
 
 typedef struct list__node_t {
-    struct list__node_t * next;
+    void * next;  // will be cast to `list__node_t` before use
 } list__node_t;
 
 typedef struct list__list_t {
-    list__node_t * head;
-    list__node_t * tail;
-    uint8_t        length;
+    void *  head;  // will be cast to `list__node_t` before use
+    void *  tail;  // will be cast to `list__node_t` before use
+    uint8_t length;
 } list__list_t;
 
 // ----------------------------------------------------------------------------
 
-list__list_t * list__new          (void);
-void *         list__insert       ( list__list_t * list,
-                                    int8_t         index,
-                                    uint8_t        size );
-void *         list__peek         (list__list_t * list, int8_t index);
-void *         list__pop__no_free (list__list_t * list, int8_t index);
-void           list__free         (list__list_t * list);
+list__list_t * list__new           (void);
+void *         list__insert        ( list__list_t * list,
+                                     int8_t         index,
+                                     void *         node );
+void *         list__peek          (list__list_t * list, int8_t index);
+void *         list__pop_index     (list__list_t * list, int8_t index);
+void *         list__pop_node      (list__list_t * list, void * node);
+void *         list__pop_node_next (list__list_t * list, void * node);
+void           list__free          (list__list_t * list);
 
 
 // ----------------------------------------------------------------------------
@@ -67,18 +108,6 @@ void           list__free         (list__list_t * list);
 // === list__node_t ===
 /**                                           typedefs/list__node_t/description
  * The type of a "node", for the purposes of this library
- *
- * Full node types should be defined in the using '.c' or '.h' file, with
- * something like
- *
- *     typedef struct {
- *         list__node_t _private;
- *         uint8_t      data;
- *     } node_t;
- *
- * The functions that return pointers to nodes will return `void *` pointers,
- * so functions in the using '.c' file also need to cast these return values to
- * the appropriate type before use.
  */
 
 // === list__list_t ===
@@ -101,26 +130,17 @@ void           list__free         (list__list_t * list);
  */
 
 // === list__insert() ===
-/**                                          functions/list__insert/description
+/**                                     functions/list__insert/description
  * Insert `node` at position `index % list->length`
  *
  * Arguments:
  * - `list`: A pointer to the list to be operated on
  * - `index`: An `int8_t` indicating the position the new node will occupy
- * - `size`: The size of the full node type (as in `sizeof(node_t)`) defined in
- *   the using '.c' or '.h' file, so we know how much memory to allocate
+ * - `node`: A pointer to the node to insert
  *
  * Returns:
  * - success: A `void *` pointer to the new node
  * - failure: `NULL`
- *
- * Warnings:
- * - For any given list, the `size` passed to this function should always be
- *   the same.
- *
- * Cautions:
- * - Initialization of the data to be stored in the node is the calling
- *   function's responsibility.
  */
 
 // === list__peek() ===
@@ -136,15 +156,14 @@ void           list__free         (list__list_t * list);
  * - failure: `NULL`
  */
 
-// === list__pop__no_free() ===
-/**                                    functions/list__pop__no_free/description
+// === list__pop_index() ===
+/**                                       functions/list__pop_index/description
  * Return a pointer to the node at position `index % list->length`, and remove
  * the node from the list
  *
  * Warnings:
  * - Does not free the node's memory - this is the calling function's
- *   responsibility.  If you want to pop the node and free its memory without
- *   looking at it, call `free( list__pop__no_free( node ) )`.
+ *   responsibility.
  *
  * Arguments:
  * - `list`: A pointer to the list to be operated on
@@ -152,6 +171,36 @@ void           list__free         (list__list_t * list);
  *
  * Returns:
  * - success: A `void *` pointer to the node at position `index % list->length`
+ * - failure: `NULL`
+ */
+
+// === list__pop_node() ===
+/**                                        functions/list__pop_node/description
+ * Remove `node` from the list, and return a pointer to it
+ *
+ * Warnings:
+ * - Does not free the node's memory - this is the calling function's
+ *   responsibility.
+ *
+ * Arguments:
+ * - `list`: A pointer to the list to be operated on
+ * - `node`: A pointer to the node to pop (and free)
+ *
+ * Returns:
+ * - success: A `void *` pointer to `node`
+ */
+
+// === list__pop_node_next() ===
+/**                                   functions/list__pop_node_next/description
+ * Remove `node` from the list, free its memory, and return a pointer to the
+ * next element, if the node exists
+ *
+ * Arguments:
+ * - `list`: A pointer to the list to be operated on
+ * - `node`: A pointer to the node to pop (and free)
+ *
+ * Returns:
+ * - success: A `void *` pointer to the next node in the list
  * - failure: `NULL`
  */
 

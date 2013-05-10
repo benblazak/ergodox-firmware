@@ -11,9 +11,11 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdlib.h>
 #include "../firmware/keyboard.h"
 #include "../firmware/lib/timer.h"
 #include "../firmware/lib/usb.h"
+#include "../firmware/lib/data-types/list.h"
 #include "./main.h"
 
 // ----------------------------------------------------------------------------
@@ -38,6 +40,8 @@
 
 // ----------------------------------------------------------------------------
 
+// --- for main() loop ---
+
 static bool _pressed_1[OPT__KB__ROWS][OPT__KB__COLUMNS];
 static bool _pressed_2[OPT__KB__ROWS][OPT__KB__COLUMNS];
 
@@ -46,19 +50,30 @@ bool (* was_pressed) [OPT__KB__ROWS][OPT__KB__COLUMNS] = &_pressed_2;
 uint8_t row;
 uint8_t col;
 
+// --- for `main__timer__` functions ---
+
+typedef struct {
+    list__node_t _private;
+    uint16_t cycles;
+    void(*function)(void);
+} event_t;
+
+
+static uint16_t       _cycles;
+static list__list_t * _scheduled;
+
+
+// ----------------------------------------------------------------------------
+// --- main() loop ------------------------------------------------------------
 // ----------------------------------------------------------------------------
 
 /**                                                  functions/main/description
  * Initialize things, then loop forever
  *
- * Mostly all that happens here after initialization is that current and
- * previous key states are tracked, keys that change state are "executed", the
- * USB report is sent, and the LEDs are updated.  We also have a delay, to make
- * sure we don't detect switch bounce from the keys.  Almost everything
- * interesting happens somewhere else (especially in
- * ".../firmware/keyboard/.../layout"); have a look through the source,
- * especially the documentation, to see how things are defined and what's
- * actually happening.
+ * There are a few interesting things that happen here, but most things happen
+ * elsewhere.  Have a look through the source, especially the documentation,
+ * and especially in ".../firmware/keyboard/.../layout", to see what's going
+ * on.
  */
 int main(void) {
     static bool (*temp)[OPT__KB__ROWS][OPT__KB__COLUMNS]; // for swapping below
@@ -76,6 +91,7 @@ int main(void) {
     kb__led__delay__usb_init();  // give the OS time to load drivers, etc.
 
     timer__init();
+    main__timer__init();
 
     kb__led__state__ready();
 
@@ -119,8 +135,49 @@ int main(void) {
         #undef read
         #undef on
         #undef off
+
+        // take care of `main__timer__` stuff
+        _cycles++;
+
+        for (event_t * event = _scheduled->head; event;) {
+            if (event->cycles == 0) {
+                (*event->function)();
+                event = list__pop_node_next(_scheduled, event);
+            } else {
+                event->cycles--;
+                event = event->_private.next;
+            }
+        }
     }
 
     return 0;
+}
+
+
+// ----------------------------------------------------------------------------
+// --- `main__timer__` functions ----------------------------------------------
+// ----------------------------------------------------------------------------
+
+uint8_t main__timer__init(void) {
+    _scheduled = list__new();
+    if (!_scheduled) return 1;  // error
+
+    return 0;  // success
+}
+
+uint16_t main__timer__cycles(void) {
+    return _cycles;
+}
+
+uint8_t  main__timer__schedule(uint16_t cycles, void(*function)(void)) {
+    if (!function) return 0;  // success: there is no function to add
+
+    event_t * event = list__insert(_scheduled, -1, malloc(sizeof(event_t)));
+    if (!event) return 1;  // error
+
+    event->cycles   = cycles;
+    event->function = function;
+
+    return 0;  // success
 }
 

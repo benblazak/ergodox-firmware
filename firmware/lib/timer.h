@@ -23,19 +23,6 @@ uint16_t timer__get_milliseconds (void);
 uint8_t  timer__schedule         ( uint16_t milliseconds,
                                    void(*function)(void) );
 
-// TODO: document and implement `timer__schedule()`, to schedule `function` to
-// run in `milliseconds`
-// - will need to be careful with this function, as everything called by it
-//   will be executing within an interrupt vector.
-// - if functions need a longer amount of time than is possible with a 16-bit
-//   millisecond resolution counter, they can repeatedly schedule themselves to
-//   run in, say, 1 minute, increment a counter each time, and then only
-//   execute their body after, say, 5 calls (for a 5 minute delay)
-//
-// TODO: should probably make a corresponding `main__schedule()`, and
-// `main__get_cycles()` too, to operate at the resolution of cycles (and
-// outside any interrupt vectors)
-
 
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
@@ -78,6 +65,11 @@ uint8_t  timer__schedule         ( uint16_t milliseconds,
  *     ---------------------------------------------------------------------
  *
  *     note: 32-bit values given for reference only
+ *
+ *
+ * Returns:
+ * - success: The number of milliseconds since the timer was initialized (mod
+ *   2^16)
  *
  *
  * Usage notes:
@@ -128,5 +120,28 @@ uint8_t  timer__schedule         ( uint16_t milliseconds,
  *       timer__get_milliseconds() - start_time
  *
  *   except within the first 255 milliseconds of the timer being initialized.
+ */
+
+// === timer__schedule() ===
+/**                                       functions/timer__schedule/description
+ * Schedule `function` to run in the given number of milliseconds
+ *
+ * Arguments:
+ * - `milliseconds`: The number of milliseconds to wait
+ * - `function`: A pointer to the function to run
+ *
+ * Returns:
+ * - success: `0`
+ * - failure: [other]
+ *
+ * Warnings:
+ * - Be careful when scheduling using this function.  Keep in mind that the
+ *   function that is scheduled will be run within an interrupt vector.
+ *
+ * Usage notes:
+ * - If a function needs a longer wait time than is possible with a 16-bit
+ *   millisecond resolution counter, it can repeatedly schedule itself to run
+ *   in, say, 1 minute, increment a counter each time, and then only execute
+ *   its body code after, say 5 calls (for a 5 minute delay).
  */
 
