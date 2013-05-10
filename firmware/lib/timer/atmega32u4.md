@@ -15,7 +15,7 @@
     '---------------------------------------------------------------'
 
     * We want:
-        * `COM0A` = `0b10` : Clear `OC0A` on Compare Match
+        * `COM0A` = `0b00` : Normal port operation, `OC0A` disconnected
         * `COM0B` = `0b00` : Normal port operation, `OC0B` disconnected
         * `WGM` = `0b010` : CTC (see section 13.6.2 "Clear Timer on Compare
           Match (CTC) Mode")
@@ -34,7 +34,8 @@
           interrupt
 
 
-    * We also want to set `OCR0A` (Output Compare Register A) to `250`
+    * We also want to set `OCR0A` (Output Compare Register A) to `250` for the
+      number of "ticks per millisecond" (see below)
 
     * Since we're using CTC mode with `OCIE0A` enabled, we will be using the
       `TIMER0_COMPA_vect` interrupt vector (see
@@ -66,6 +67,10 @@
     * So if we set the prescaler to 64, we can just barely get to a millisecond
       within the range of an 8-bit counter (2^8-1 = 255, and we need 250
       ticks).
+
+* Setting `COM0A` and `COM0B` to `0` (or, rather, leaving them that way) is
+  very important: other things may be operating on those pins (`PB7` and `PD0`
+  respectively), and we don't want normal port functionality to be overridden.
 
 
 * Abbreviations:
