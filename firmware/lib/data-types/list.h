@@ -51,9 +51,7 @@
  * Assumptions:
  *
  * - Lists will never contain more elements than can be indexed by an `int8_t`
- *
- *
- * TODO: go over this again, in a little while, to make sure i like it
+ *   (i.e. 128)
  */
 
 

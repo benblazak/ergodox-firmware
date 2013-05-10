@@ -6,9 +6,6 @@
 
 /**                                                                 description
  * Implements the list type in "../list.h"
- *
- *
- * TODO: go over this again, in a little while, to make sure i like it
  */
 
 
@@ -18,7 +15,7 @@
 
 // ----------------------------------------------------------------------------
 
-#define  N(name)  ((list__node_t *)name)
+#define  N(name)  ((list__node_t *)name)  // cast to `list__node_t *`
 
 // ----------------------------------------------------------------------------
 
