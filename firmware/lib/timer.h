@@ -142,6 +142,6 @@ uint8_t  timer__schedule         ( uint16_t milliseconds,
  * - If a function needs a longer wait time than is possible with a 16-bit
  *   millisecond resolution counter, it can repeatedly schedule itself to run
  *   in, say, 1 minute, increment a counter each time, and then only execute
- *   its body code after, say 5 calls (for a 5 minute delay).
+ *   its body code after, say, 5 calls (for a 5 minute delay).
  */
 

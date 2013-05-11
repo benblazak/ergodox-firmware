@@ -14,9 +14,9 @@
  * Usage notes:
  *
  * - All functions that accept an `index` set `index %= list->length` before
- *   using it.  This will make all passed indices valid.  It will also provide
- *   a convenient way to reference the last element of a list, by passing `-1`
- *   as the index (as in Python).
+ *   using it.  This will make all passed indices valid.  It also provides a
+ *   convenient way to reference the last element of a list, by passing `-1` as
+ *   the index (as in Python).
  *
  * - All pointers to `list__node_t` are stored, returned, etc. as as `void`
  *   pointers until use, so that using files won't have to do so much work
@@ -50,8 +50,8 @@
  *
  * Assumptions:
  *
- * - Lists will never contain more elements than can be indexed by an `int8_t`
- *   (i.e. 128)
+ * - Lists will never contain more than 128 elements (the number of elements
+ *   that can be indexed by an `int8_t`).
  */
 
 
@@ -186,6 +186,7 @@ void           list__free          (list__list_t * list);
  *
  * Returns:
  * - success: A `void *` pointer to `node`
+ * - failure: `NULL`
  */
 
 // === list__pop_node_next() ===
@@ -200,6 +201,12 @@ void           list__free          (list__list_t * list);
  * Returns:
  * - success: A `void *` pointer to the next node in the list
  * - failure: `NULL`
+ *
+ * Notes:
+ * - This is helpful, sometimes, when iterating through a list, some of who's
+ *   members need to be removed.  If performance is critical, keep in mind that
+ *   it does have the O(n) time penalty of having to re-search the list for the
+ *   given node's predecesor before removing the node.
  */
 
 // === list__free() ===

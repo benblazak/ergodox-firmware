@@ -42,6 +42,8 @@ extern bool (* main__was_pressed) [OPT__KB__ROWS][OPT__KB__COLUMNS];
 extern uint8_t main__row;
 extern uint8_t main__col;
 
+extern bool main__update_leds;
+
 // ----------------------------------------------------------------------------
 
 uint8_t  main__timer__init     (void);
@@ -84,6 +86,18 @@ uint8_t  main__timer__schedule (uint16_t cycles, void(*function)(void));
 // === main__col ===
 /**                                             variables/main__col/description
  * Indicates which column is currently being tested for changes of key state
+ */
+
+// === main__update_leds ===
+/**                                     variables/main__update_leds/description
+ * A predicate indicating whether to update the keyboard LED state based on the
+ * USB LED state
+ *
+ * This is for taking over control the LEDs temporarily, as one may want to
+ * do when in a special mode, etc.  If you want to change the meaning of the
+ * LEDs under normal use, the correct place to do that is in the layout file,
+ * where the `kb__led__logical_*()` functions are defined (see the
+ * documentation in that and related files for more information).
  */
 
 

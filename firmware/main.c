@@ -37,6 +37,7 @@
 #define  main__was_pressed  was_pressed
 #define  main__row          row
 #define  main__col          col
+#define  main__update_leds  update_leds
 
 // ----------------------------------------------------------------------------
 
@@ -47,8 +48,11 @@ static bool _pressed_2[OPT__KB__ROWS][OPT__KB__COLUMNS];
 
 bool (* is_pressed) [OPT__KB__ROWS][OPT__KB__COLUMNS] = &_pressed_1;
 bool (* was_pressed) [OPT__KB__ROWS][OPT__KB__COLUMNS] = &_pressed_2;
+
 uint8_t row;
 uint8_t col;
+
+bool update_leds = true;
 
 // --- for `main__timer__` functions ---
 
@@ -124,17 +128,19 @@ int main(void) {
 
         // note: only use the `kb__led__logical...` functions here, since the
         // meaning of the physical LEDs should be controlled by the layout
-        #define  read  usb__kb__read_led
-        #define  on    kb__led__logical_on
-        #define  off   kb__led__logical_off
-        read('N') ? on('N') : off('N');  // numlock
-        read('C') ? on('C') : off('C');  // capslock
-        read('S') ? on('S') : off('S');  // scroll lock
-        read('O') ? on('O') : off('O');  // compose
-        read('K') ? on('K') : off('K');  // kana
-        #undef read
-        #undef on
-        #undef off
+        if (update_leds) {
+            #define  read  usb__kb__read_led
+            #define  on    kb__led__logical_on
+            #define  off   kb__led__logical_off
+            read('N') ? on('N') : off('N');  // numlock
+            read('C') ? on('C') : off('C');  // capslock
+            read('S') ? on('S') : off('S');  // scroll lock
+            read('O') ? on('O') : off('O');  // compose
+            read('K') ? on('K') : off('K');  // kana
+            #undef read
+            #undef on
+            #undef off
+        }
 
         // take care of `main__timer__` stuff
         _cycles++;

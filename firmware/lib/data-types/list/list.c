@@ -15,7 +15,8 @@
 
 // ----------------------------------------------------------------------------
 
-#define  N(name)  ((list__node_t *)name)  // cast to `list__node_t *`
+// since we'll be casting to type `list__node_t *` a lot
+#define  N(name)  ((list__node_t *)name)
 
 // ----------------------------------------------------------------------------
 
@@ -153,9 +154,12 @@ void * list__pop_node(list__list_t * list, void * node) {
 }
 
 void * list__pop_node_next(list__list_t * list, void * node) {
-    list__pop_node(list, node);
+    if (!list__pop_node(list, node))
+        return NULL;
+
     void * next = N(node)->next;
     free(node);
+
     return next;
 }
 

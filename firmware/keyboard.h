@@ -5,10 +5,9 @@
  * ------------------------------------------------------------------------- */
 
 /**                                                                 description
- * The keyboard interface, and related definitions.
+ * The keyboard interface
  *
- * Keyboard implementations must conditionally define their dimensions in this
- * file, and implement all prototyped functions.
+ * Keyboard implementations must implement all prototyped functions.
  *
  * Prefix: `kb__`
  */
