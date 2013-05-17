@@ -54,18 +54,6 @@ uint8_t col;
 
 bool update_leds = true;
 
-// --- for `main__timer__` functions ---
-
-typedef struct {
-    list__node_t _private;
-    uint16_t cycles;
-    void(*function)(void);
-} event_t;
-
-
-static uint16_t       _cycles;
-static list__list_t * _scheduled;
-
 
 // ----------------------------------------------------------------------------
 // --- main() loop ------------------------------------------------------------
@@ -95,7 +83,6 @@ int main(void) {
     kb__led__delay__usb_init();  // give the OS time to load drivers, etc.
 
     timer__init();
-    main__timer__init();
 
     kb__led__state__ready();
 
@@ -142,48 +129,9 @@ int main(void) {
             #undef off
         }
 
-        // take care of `main__timer__` stuff
-        _cycles++;
-
-        for (event_t * event = _scheduled->head; event;) {
-            if (event->cycles == 0) {
-                (*event->function)();
-                event = list__pop_node_next(_scheduled, event);
-            } else {
-                event->cycles--;
-                event = event->_private.next;
-            }
-        }
+        timer___increment_cycles();
     }
 
     return 0;
-}
-
-
-// ----------------------------------------------------------------------------
-// --- `main__timer__` functions ----------------------------------------------
-// ----------------------------------------------------------------------------
-
-uint8_t main__timer__init(void) {
-    _scheduled = list__new();
-    if (!_scheduled) return 1;  // error
-
-    return 0;  // success
-}
-
-uint16_t main__timer__cycles(void) {
-    return _cycles;
-}
-
-uint8_t  main__timer__schedule(uint16_t cycles, void(*function)(void)) {
-    if (!function) return 0;  // success: there is no function to add
-
-    event_t * event = list__insert(_scheduled, -1, malloc(sizeof(event_t)));
-    if (!event) return 1;  // error
-
-    event->cycles   = cycles;
-    event->function = function;
-
-    return 0;  // success
 }
 

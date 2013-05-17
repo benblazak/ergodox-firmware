@@ -7,7 +7,7 @@
 /**                                                                 description
  * Timer interface
  *
- * Prefix: `timer__`
+ * Prefixes: `timer__`, `timer___`
  */
 
 
@@ -18,10 +18,19 @@
 
 
 uint8_t  timer__init             (void);
+
+uint16_t timer__get_cycles       (void);
 uint16_t timer__get_milliseconds (void);
 
-uint8_t  timer__schedule         ( uint16_t milliseconds,
-                                   void(*function)(void) );
+uint8_t  timer__schedule__cycles       ( uint16_t cycles,
+                                         void(*function)(void) );
+uint8_t  timer__schedule__milliseconds ( uint16_t milliseconds,
+                                         void(*function)(void) );
+
+// ----------------------------------------------------------------------------
+// private
+
+void timer___increment_cycles (void);
 
 
 // ----------------------------------------------------------------------------
@@ -49,6 +58,17 @@ uint8_t  timer__schedule         ( uint16_t milliseconds,
  *
  * Notes:
  * - Should be called exactly once by `main()` before entering the run loop.
+ */
+
+// === timer__get_cycles() ===
+/**                                     functions/timer__get_cycles/description
+ * Return the number of cycles since the timer was initialized (mod 2^16)
+ *
+ * Returns:
+ * - success: The number of cycles since the timer was initialized (mod 2^16)
+ *
+ * Usage notes:
+ * - See the documentation for `timer__get_milliseconds()`
  */
 
 // === timer__get_milliseconds() ===
@@ -122,8 +142,28 @@ uint8_t  timer__schedule         ( uint16_t milliseconds,
  *   except within the first 255 milliseconds of the timer being initialized.
  */
 
-// === timer__schedule() ===
-/**                                       functions/timer__schedule/description
+// === timer__schedule__cycles() ===
+/**                               functions/timer__schedule__cycles/description
+ * Schedule `function` to run in the given number of cycles
+ *
+ * Arguments:
+ * - `cycles`: The number of cycles to wait
+ * - `function`: A pointer to the function to run
+ *
+ * Returns:
+ * - success: `0`
+ * - failure: [other]
+ *
+ * Usage notes:
+ * - If possible, prefer scheduling using this function over scheduling using
+ *   `timer__schedule__milliseconds()`.  Functions run by this scheduler don't
+ *   have to be quite as careful about finishing quickly, repeating too soon,
+ *   or modifying shared variables, since they will not be executing inside an
+ *   interrupt vector.
+ */
+
+// === timer__schedule__milliseconds() ===
+/**                         functions/timer__schedule__milliseconds/description
  * Schedule `function` to run in the given number of milliseconds
  *
  * Arguments:
@@ -141,7 +181,23 @@ uint8_t  timer__schedule         ( uint16_t milliseconds,
  * Usage notes:
  * - If a function needs a longer wait time than is possible with a 16-bit
  *   millisecond resolution counter, it can repeatedly schedule itself to run
- *   in, say, 1 minute, increment a counter each time, and then only execute
- *   its body code after, say, 5 calls (for a 5 minute delay).
+ *   in, say, 1 minute (= 1000*60 milliseconds), increment a counter each time,
+ *   and then only execute its body code after, say, 5 calls (for a 5 minute
+ *   delay).
+ */
+
+// ----------------------------------------------------------------------------
+// private
+
+// === timer___increment_cycles() ===
+/**                              functions/timer___increment_cycles/description
+ * Increment the counter for the number of cycles, and perform scheduled tasks
+ *
+ * Meant to be used only by `main()`
+ *
+ * Notes:
+ * - The corresponding real-time function (dealing with milliseconds instead of
+ *   cycles) will be in an interrupt vector, and not explicitly called anywhere
+ *   in the code.
  */
 

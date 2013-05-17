@@ -164,12 +164,14 @@ void * list__pop_node_next(list__list_t * list, void * node) {
 }
 
 void list__free(list__list_t * list) {
-    void * node;
-    while (list->head) {
-        node = list->head;
-        list->head = N(list->head)->next;
-        free(node);
+    if (list) {
+        void * node;
+        while (list->head) {
+            node = list->head;
+            list->head = N(list->head)->next;
+            free(node);
+        }
+        free(list);
     }
-    free(list);
 }
 
