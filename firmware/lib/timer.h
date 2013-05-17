@@ -22,10 +22,10 @@ uint8_t  timer__init             (void);
 uint16_t timer__get_cycles       (void);
 uint16_t timer__get_milliseconds (void);
 
-uint8_t  timer__schedule__cycles       ( uint16_t cycles,
-                                         void(*function)(void) );
-uint8_t  timer__schedule__milliseconds ( uint16_t milliseconds,
-                                         void(*function)(void) );
+uint8_t  timer__schedule_cycles       ( uint16_t cycles,
+                                        void(*function)(void) );
+uint8_t  timer__schedule_milliseconds ( uint16_t milliseconds,
+                                        void(*function)(void) );
 
 // ----------------------------------------------------------------------------
 // private
@@ -62,7 +62,7 @@ void timer___tick_cycles (void);
 
 // === timer__get_cycles() ===
 /**                                     functions/timer__get_cycles/description
- * Return the number of cycles since the timer was initialized (mod 2^16)
+ * Return the number of scan cycles since the timer was initialized (mod 2^16)
  *
  * Returns:
  * - success: The number of cycles since the timer was initialized (mod 2^16)
@@ -142,8 +142,8 @@ void timer___tick_cycles (void);
  *   except within the first 255 milliseconds of the timer being initialized.
  */
 
-// === timer__schedule__cycles() ===
-/**                               functions/timer__schedule__cycles/description
+// === timer__schedule_cycles() ===
+/**                                functions/timer__schedule_cycles/description
  * Schedule `function` to run in the given number of cycles
  *
  * Arguments:
@@ -155,15 +155,16 @@ void timer___tick_cycles (void);
  * - failure: [other]
  *
  * Usage notes:
- * - If possible, prefer scheduling using this function over scheduling using
- *   `timer__schedule__milliseconds()`.  Functions run by this scheduler don't
- *   have to be quite as careful about finishing quickly, repeating too soon,
- *   or modifying shared variables, since they will not be executing inside an
- *   interrupt vector.
+ * - See the documentation for `timer__schedule_milliseconds()`
+ * - This function should only be preferable to
+ *   `timer__schedule_milliseconds()` (performance wise) due to the cycles
+ *   counter having a lower real time resolution (and therefore slightly lower
+ *   bookkeeping overhead).  Functions scheduled with either will be run with
+ *   interrupts enabled.  Use whichever function makes more sense logically.
  */
 
-// === timer__schedule__milliseconds() ===
-/**                         functions/timer__schedule__milliseconds/description
+// === timer__schedule_milliseconds() ===
+/**                          functions/timer__schedule_milliseconds/description
  * Schedule `function` to run in the given number of milliseconds
  *
  * Arguments:
@@ -173,10 +174,6 @@ void timer___tick_cycles (void);
  * Returns:
  * - success: `0`
  * - failure: [other]
- *
- * Warnings:
- * - Be careful when scheduling using this function.  Keep in mind that the
- *   function that is scheduled will be run within an interrupt vector.
  *
  * Usage notes:
  * - If a function needs a longer wait time than is possible with a 16-bit
