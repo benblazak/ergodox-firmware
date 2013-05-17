@@ -20,7 +20,8 @@
  *   the completion of a scan cycle.
  *
  * - To "tick" (as a verb) is to denote the passage of a "tick" of time by
- *   performing the actions corresponding thereto.
+ *   performing the actions corresponding thereto (i.e. incrementing the
+ *   counter and running any scheduled events).
  *
  * - All functions declared here should be safe for use within interrupt
  *   routines, as long as you pay attention to the warnings below.

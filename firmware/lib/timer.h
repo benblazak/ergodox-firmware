@@ -139,7 +139,7 @@ void timer___tick_cycles (void);
  *
  *       timer__get_milliseconds() - start_time
  *
- *   except within the first 255 milliseconds of the timer being initialized.
+ *   except within the first 2^8 milliseconds of the timer being initialized.
  */
 
 // === timer__schedule_cycles() ===
@@ -155,12 +155,11 @@ void timer___tick_cycles (void);
  * - failure: [other]
  *
  * Usage notes:
- * - See the documentation for `timer__schedule_milliseconds()`
- * - This function should only be preferable to
- *   `timer__schedule_milliseconds()` (performance wise) due to the cycles
- *   counter having a lower real time resolution (and therefore slightly lower
- *   bookkeeping overhead).  Functions scheduled with either will be run with
- *   interrupts enabled.  Use whichever function makes more sense logically.
+ * - If possible, prefer this function to `timer__schedule_milliseconds()`: it
+ *   has slightly lower overhead (since scan cycles are going to be longer than
+ *   1 millisecond); and since functions scheduled here are not executed inside
+ *   an interrupt vector, you need not worry about any of them messing with
+ *   access to a shared resource.
  */
 
 // === timer__schedule_milliseconds() ===
@@ -176,11 +175,20 @@ void timer___tick_cycles (void);
  * - failure: [other]
  *
  * Usage notes:
+ * - Functions will be run with interrupts enabled, so you need not worry more
+ *   than usual about how long your function takes.
  * - If a function needs a longer wait time than is possible with a 16-bit
  *   millisecond resolution counter, it can repeatedly schedule itself to run
  *   in, say, 1 minute (= 1000*60 milliseconds), increment a counter each time,
  *   and then only execute its body code after, say, 5 calls (for a 5 minute
  *   delay).
+ *
+ * Warnings:
+ * - Be *very* careful when using this to schedule functions that share
+ *   resources: functions scheduled here are still called from within an
+ *   interrupt vector, and the interrupt vector may have interrupted something
+ *   else in the middle of an access to that resource.  You must pay full
+ *   attention to all the issues this could possibly cause.
  */
 
 // ----------------------------------------------------------------------------

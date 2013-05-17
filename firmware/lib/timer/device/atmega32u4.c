@@ -99,8 +99,8 @@ uint8_t timer__schedule_milliseconds( uint16_t milliseconds,
 // ----------------------------------------------------------------------------
 
 void timer___tick_cycles (void) {
-        _cycles++;
-        event_list__tick(_cycles__scheduled);
+    _cycles++;
+    event_list__tick(_cycles__scheduled);
 }
 
 // ----------------------------------------------------------------------------

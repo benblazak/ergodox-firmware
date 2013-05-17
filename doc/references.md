@@ -208,6 +208,10 @@
   (http://www.avrfreaks.net/wiki/index.php/Documentation:AVR_GCC/AVR_GCC_Tool_Collection)  
   Nice picture, and short descriptions of the relevent command line tools.
 
+* [A Very Simple Arduino Task Manager]
+  (http://bleaklow.com/2010/07/20/a_very_simple_arduino_task_manager.html)  
+  A nice little write up on cooperative multitasking with an AVR.
+
 
 ## Protocol Stuff
 

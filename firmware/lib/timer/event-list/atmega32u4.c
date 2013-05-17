@@ -6,12 +6,16 @@
 
 /**                                                                 description
  * Implements the event-list interface defined in "../event-list.h" for the
- * ATMega32U4 (though, the code should be the same for anything in the AVR
- * family)
+ * ATMega32U4
+ *
+ * Notes:
+ * - The code should be the same for anything in the AVR family.  It's the
+ *   `<util/atomic>` macros that make this non-universal.
  */
 
 
 #include <stdint.h>
+#include <stdlib.h>
 #include <util/atomic.h>
 #include "../../../../firmware/lib/data-types/list.h"
 
@@ -46,17 +50,34 @@ uint8_t event_list__append( list__list_t * list,
 void event_list__tick(list__list_t * list) {
     if (!list) return;
 
+    event_t * next;
+    event_t * run = NULL;  // for keeping track of events to run
+
+    // go through the list
+    // - keep track of the events that need to be run this "tick"
+    // - note that every other event is one "tick" closer to being run
     ATOMIC_BLOCK( ATOMIC_RESTORESTATE ) {
         for (event_t * event = list->head; event;) {
             if (event->ticks == 0) {
-                NONATOMIC_BLOCK( NONATOMIC_RESTORESTATE ) {
-                    (*event->function)();
-                }
-                event = list__pop_node_next(list, event);
+                next = event->_private.next;
+                list__pop_node(list, event);
+                event->_private.next = run;
+                run = event;
+                event = next;
             } else {
                 event->ticks--;
                 event = event->_private.next;
             }
+        }
+    }
+
+    // run all the scheduled events, with interrupts enabled
+    NONATOMIC_BLOCK( NONATOMIC_RESTORESTATE ) {
+        while (run) {
+            next = run->_private.next;
+            (*run->function)();
+            free(run);
+            run = next;
         }
     }
 }
