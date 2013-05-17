@@ -30,7 +30,7 @@ uint8_t  timer__schedule__milliseconds ( uint16_t milliseconds,
 // ----------------------------------------------------------------------------
 // private
 
-void timer___increment_cycles (void);
+void timer___tick_cycles (void);
 
 
 // ----------------------------------------------------------------------------
@@ -189,13 +189,14 @@ void timer___increment_cycles (void);
 // ----------------------------------------------------------------------------
 // private
 
-// === timer___increment_cycles() ===
-/**                              functions/timer___increment_cycles/description
+// === timer___tick_cycles() ===
+/**                                   functions/timer___tick_cycles/description
  * Increment the counter for the number of cycles, and perform scheduled tasks
  *
  * Meant to be used only by `main()`
  *
  * Notes:
+ * - See "./event-list.h" regarding the function name.
  * - The corresponding real-time function (dealing with milliseconds instead of
  *   cycles) will be in an interrupt vector, and not explicitly called anywhere
  *   in the code.

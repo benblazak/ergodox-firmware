@@ -129,7 +129,7 @@ int main(void) {
             #undef off
         }
 
-        timer___increment_cycles();
+        timer___tick_cycles();
     }
 
     return 0;

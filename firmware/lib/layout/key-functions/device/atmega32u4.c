@@ -10,9 +10,9 @@
  */
 
 
+#include <stdint.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
-#include <stdint.h>
 
 // ----------------------------------------------------------------------------
 
