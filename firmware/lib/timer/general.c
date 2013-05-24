@@ -17,15 +17,15 @@
 // ----------------------------------------------------------------------------
 
 #define  DEFINE_TIMER(name)                                                 \
-    static uint16_t _##name##__counter;                                     \
-    static list__list_t * _##name##__scheduled_events = &(list__list_t){};  \
+    static uint16_t     _##name##__counter;                                 \
+    static list__list_t _##name##__scheduled_events;                        \
                                                                             \
     uint16_t timer__get_##name(void) {                                      \
         return _##name##__counter;                                          \
     }                                                                       \
-    uint8_t timer__schedule_##name(uint16_t name, void(*function)(void)) {  \
+    uint8_t timer__schedule_##name(uint16_t ticks, void(*function)(void)) { \
         return event_list__append(                                          \
-                _##name##__scheduled_events, name, function );              \
+                _##name##__scheduled_events, ticks, function );             \
     }                                                                       \
     void timer___tick_##name(void) {                                        \
         _##name##__counter++;                                               \

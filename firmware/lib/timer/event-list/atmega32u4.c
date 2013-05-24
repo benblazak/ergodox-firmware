@@ -29,10 +29,10 @@ typedef struct {
 
 // ----------------------------------------------------------------------------
 
-uint8_t event_list__append( list__list_t * list,
-                            uint16_t       ticks,
+uint8_t event_list__append( list__list_t list,
+                            uint16_t     ticks,
                             void(*function)(void) ) {
-    if (!function || !list) return 0;  // success: nothing to do
+    if (!function) return 0;  // success: nothing to do
 
     event_t * event = malloc(sizeof(event_t));
     if (!event) return 1;  // error
@@ -47,9 +47,7 @@ uint8_t event_list__append( list__list_t * list,
     return 0;  // success
 }
 
-void event_list__tick(list__list_t * list) {
-    if (!list) return;
-
+void event_list__tick(list__list_t list) {
     event_t * next;
     event_t * run = NULL;  // for keeping track of events to run
 
@@ -57,7 +55,7 @@ void event_list__tick(list__list_t * list) {
     // - keep track of the events that need to be run this "tick"
     // - note that every other event is one "tick" closer to being run
     ATOMIC_BLOCK( ATOMIC_RESTORESTATE ) {
-        for (event_t * event = list->head; event;) {
+        for (event_t * event = list.head; event;) {
             if (event->ticks == 0) {
                 next = event->_private.next;
                 list__pop_node(list, event);

@@ -27,7 +27,7 @@
 // ----------------------------------------------------------------------------
 
 static volatile uint16_t _milliseconds__counter;
-static list__list_t * _milliseconds__scheduled_events = &(list__list_t){};
+static list__list_t      _milliseconds__scheduled_events;
 
 // ----------------------------------------------------------------------------
 

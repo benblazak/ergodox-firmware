@@ -45,10 +45,10 @@
 
 // ----------------------------------------------------------------------------
 
-uint8_t event_list__append ( list__list_t * list,
-                             uint16_t       ticks,
+uint8_t event_list__append ( list__list_t list,
+                             uint16_t     ticks,
                              void(*function)(void) );
-void    event_list__tick   (list__list_t * list);
+void    event_list__tick   (list__list_t list);
 
 
 // ----------------------------------------------------------------------------
