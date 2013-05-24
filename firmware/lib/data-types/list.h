@@ -18,11 +18,11 @@
  *   convenient way to reference the last element of a list, by passing `-1` as
  *   the index (as in Python).
  *
- * - All pointers to `list__node_t` are stored, returned, etc. as as `void`
- *   pointers until use, so that using files won't have to do so much work
- *   casting things.  They are converted internally to `list__node_t` before
- *   use, and should be stored by using code in pointers of appropriate (non
- *   `void *`) type.
+ * - All pointers to `list__node_t` are accepted and returned as as `void`
+ *   pointers, so that using files won't have to do so much work casting
+ *   things.  They are converted internally to `list__node_t` before use, and
+ *   should be stored by using code in pointers of appropriate (non `void *`)
+ *   type.
  *
  * - Full node types should be defined in the using '.c' or '.h' file, with
  *   something like
