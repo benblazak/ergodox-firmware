@@ -20,17 +20,6 @@
 
 // ----------------------------------------------------------------------------
 
-list__list_t * list__new(void) {
-    list__list_t * list = malloc( sizeof(list__list_t) );
-    if (!list) return NULL;
-
-    list->head = NULL;
-    list->tail = NULL;
-    list->length = 0;
-
-    return list;
-}
-
 void * list__insert(list__list_t * list, int8_t index, void * node) {
     if (!node) return NULL;
 
@@ -171,7 +160,6 @@ void list__free(list__list_t * list) {
             list->head = N(list->head)->next;
             free(node);
         }
-        free(list);
     }
 }
 

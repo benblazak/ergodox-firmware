@@ -11,6 +11,7 @@
 #
 
 
+SRC += $(wildcard $(CURDIR)/*.c)
 SRC += $(wildcard $(CURDIR)/device/$(MCU).c)
 SRC += $(wildcard $(CURDIR)/event-list/$(MCU).c)
 

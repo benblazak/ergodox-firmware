@@ -23,13 +23,15 @@
 
 void kb__layout__exec_key(bool pressed, uint8_t row, uint8_t column) {
 
-    // keep track of the layer the key was pressed on, so we can release it on
-    // the same layer
+    // if we press a key, we need to keep track of the layer it was pressed on,
+    // so we can release it on the same layer
     // - if the release is transparent, search through the layer stack for a
     //   non-transparent release in the same position, as normal
     // - don't need to initialize, since we'll only read from positions that
     //   we've previously set
     static uint8_t pressed_layer[OPT__KB__ROWS][OPT__KB__COLUMNS];
+
+    // TODO: keep track of sticky keys
 
     void (*function)(void);
     uint8_t layer;
@@ -58,10 +60,11 @@ void kb__layout__exec_key(bool pressed, uint8_t row, uint8_t column) {
 
             (*function)();
 
-            if (pressed && _sticky_key) {
-                (*_sticky_key)();
-                _sticky_key = NULL;
-            }
+            // TODO: implement sticky keys
+//             if (pressed && _sticky_key) {
+//                 (*_sticky_key)();
+//                 _sticky_key = NULL;
+//             }
 
             return;
         }

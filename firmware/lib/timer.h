@@ -10,6 +10,9 @@
  * Prefixes: `timer__`, `timer___`
  */
 
+// TODO: make macros for defining timers; make groups for function
+// documentation; make notes for all extra information
+
 
 #ifndef ERGODOX_FIRMWARE__LIB__TIMER__H
 #define ERGODOX_FIRMWARE__LIB__TIMER__H

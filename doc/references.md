@@ -139,9 +139,22 @@
   Yes.  The memory manager keeps track of the size of allocations - and the
   pointer you pass to `free()` is cast to `void *` before deallocation anyway.
 
+* [Why exactly should I not call free() on variables not allocated by malloc()?]
+  (http://stackoverflow.com/questions/2688377/why-exactly-should-i-not-call-free-on-variables-not-allocated-by-malloc)  
+  But it's not safe to call `free()` on non-`malloc()`ed things.
+
 * [Why do we need C Unions?]
   (http://stackoverflow.com/questions/252552/why-do-we-need-c-unions)  
   Some good examples of what Unions are good for.
+
+* [C preprocessor, recursive macros]
+  (http://stackoverflow.com/questions/5641836/c-preprocessor-recursive-macros)  
+  I'm not entirely sure I understand what's going on... but be it known that
+  function like macros that expand into other function like macros are tricky
+  business.
+
+* [Declaring and Using Bit Fields in Structures]
+  (http://publib.boulder.ibm.com/infocenter/macxhelp/v6v81/index.jsp?topic=%2Fcom.ibm.vacpp6m.doc%2Flanguage%2Fref%2Fclrc03defbitf.htm)
 
 ### C++ Stuff
 

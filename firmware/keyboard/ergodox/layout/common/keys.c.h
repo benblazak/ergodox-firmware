@@ -11,6 +11,8 @@
  * Meant to be included *only* by the layout using it.
  */
 
+// TODO: make a KF for windows/mac style unicode input
+
 // TODO: write a chordmak (or asetniop) layout, on top of a standard colemak
 // layout, using chained sticky keys for the modifiers
 
@@ -22,6 +24,7 @@
 //   - sticky keys
 //   - macros
 //   - chorded keys
+//   - timed keys
 //   - layers
 //   - making layouts
 //   - changing the meaning of the LEDs
@@ -88,16 +91,10 @@
  *   (only) functions may be defined as follows (using the example `lpupo1l1`
  *   from above):
  *
- *       #define  keys__press__lpu1l1    keys__press__lpupo1l1
+ *       #define  keys__press__lpu1l1    P(lpupo1l1)
  *       #define  keys__release__lpu1l1  KF(nop)
  *       #define  keys__press__lpo1l1    R(lpupo1l1)
  *       #define  keys__release__lpo1l1  KF(nop)
- *
- * - Also note that writing `#define  keys__press__lpu1l1  P(lpupo1l1)` will
- *   not work.  My guess is that this has something to do with the fact that,
- *   if things are being expanded within the layout definition, the left hand
- *   side "press" function names will themselves have been expanded by the
- *   `P()` macro; but I'm not really sure why that makes a difference.
  */
 #define  KEYS__LAYER__PUSH_POP(ID, LAYER)                                   \
     void P(lpupo##ID##l##LAYER) (void) { layer_stack__push(0, ID, LAYER); } \
@@ -213,61 +210,61 @@ void R(btldr) (void) {}
 // them if they're inconvenient
 
 KEYS__LAYER__PUSH_POP(0, 0);
-#define  keys__press__lpu0l0    keys__press__lpupo0l0
+#define  keys__press__lpu0l0    P(lpupo0l0)
 #define  keys__release__lpu0l0  KF(nop)
 #define  keys__press__lpo0l0    R(lpupo0l0)
 #define  keys__release__lpo0l0  KF(nop)
 
 KEYS__LAYER__PUSH_POP(1, 1);
-#define  keys__press__lpu1l1    keys__press__lpupo1l1
+#define  keys__press__lpu1l1    P(lpupo1l1)
 #define  keys__release__lpu1l1  KF(nop)
 #define  keys__press__lpo1l1    R(lpupo1l1)
 #define  keys__release__lpo1l1  KF(nop)
 
 KEYS__LAYER__PUSH_POP(2, 2);
-#define  keys__press__lpu2l2    keys__press__lpupo2l2
+#define  keys__press__lpu2l2    P(lpupo2l2)
 #define  keys__release__lpu2l2  KF(nop)
 #define  keys__press__lpo2l2    R(lpupo2l2)
 #define  keys__release__lpo2l2  KF(nop)
 
 KEYS__LAYER__PUSH_POP(3, 3);
-#define  keys__press__lpu3l3    keys__press__lpupo3l3
+#define  keys__press__lpu3l3    P(lpupo3l3)
 #define  keys__release__lpu3l3  KF(nop)
 #define  keys__press__lpo3l3    R(lpupo3l3)
 #define  keys__release__lpo3l3  KF(nop)
 
 KEYS__LAYER__PUSH_POP(4, 4);
-#define  keys__press__lpu4l4    keys__press__lpupo4l4
+#define  keys__press__lpu4l4    P(lpupo4l4)
 #define  keys__release__lpu4l4  KF(nop)
 #define  keys__press__lpo4l4    R(lpupo4l4)
 #define  keys__release__lpo4l4  KF(nop)
 
 KEYS__LAYER__PUSH_POP(5, 5);
-#define  keys__press__lpu5l5    keys__press__lpupo5l5
+#define  keys__press__lpu5l5    P(lpupo5l5)
 #define  keys__release__lpu5l5  KF(nop)
 #define  keys__press__lpo5l5    R(lpupo5l5)
 #define  keys__release__lpo5l5  KF(nop)
 
 KEYS__LAYER__PUSH_POP(6, 6);
-#define  keys__press__lpu6l6    keys__press__lpupo6l6
+#define  keys__press__lpu6l6    P(lpupo6l6)
 #define  keys__release__lpu6l6  KF(nop)
 #define  keys__press__lpo6l6    R(lpupo6l6)
 #define  keys__release__lpo6l6  KF(nop)
 
 KEYS__LAYER__PUSH_POP(7, 7);
-#define  keys__press__lpu7l7    keys__press__lpupo7l7
+#define  keys__press__lpu7l7    P(lpupo7l7)
 #define  keys__release__lpu7l7  KF(nop)
 #define  keys__press__lpo7l7    R(lpupo7l7)
 #define  keys__release__lpo7l7  KF(nop)
 
 KEYS__LAYER__PUSH_POP(8, 8);
-#define  keys__press__lpu8l8    keys__press__lpupo8l8
+#define  keys__press__lpu8l8    P(lpupo8l8)
 #define  keys__release__lpu8l8  KF(nop)
 #define  keys__press__lpo8l8    R(lpupo8l8)
 #define  keys__release__lpo8l8  KF(nop)
 
 KEYS__LAYER__PUSH_POP(9, 9);
-#define  keys__press__lpu9l9    keys__press__lpupo9l9
+#define  keys__press__lpu9l9    P(lpupo9l9)
 #define  keys__release__lpu9l9  KF(nop)
 #define  keys__press__lpo9l9    R(lpupo9l9)
 #define  keys__release__lpo9l9  KF(nop)

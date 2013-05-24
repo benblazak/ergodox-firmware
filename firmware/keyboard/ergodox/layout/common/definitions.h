@@ -20,11 +20,12 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <avr/pgmspace.h>
-#include "../../../../../firmware/keyboard.h"
+#include "../../../../../firmware/lib/data-types/list.h"
 #include "../../../../../firmware/lib/usb.h"
 #include "../../../../../firmware/lib/usb/usage-page/keyboard.h"
 #include "../../../../../firmware/lib/layout/key-functions.h"
 #include "../../../../../firmware/lib/layout/layer-stack.h"
+#include "../../../../../firmware/keyboard.h"
 
 // ----------------------------------------------------------------------------
 
@@ -41,7 +42,7 @@
 /**                                                        macros/K/description
  * Expand into a "key" suitable for putting into the layout matrix
  */
-#define  K(name)  { &P(name), &R(name) }
+#define  K(name)  { &keys__press__##name, &keys__release__##name }
 
 /**                                                       macros/KF/description
  * Expand `name` into the corresponding "key_functions" function name
@@ -79,7 +80,7 @@ void KF(nop) (void) {}
 
 // ----------------------------------------------------------------------------
 
-/**                                                 typedefs/_key_t/description
+/**                                                    types/_key_t/description
  * The type we will use for our "key"s
  *
  * Notes:
@@ -92,7 +93,7 @@ void KF(nop) (void) {}
  */
 typedef  void (*_key_t[2])(void);
 
-/**                                              typedefs/_layout_t/description
+/**                                                 types/_layout_t/description
  * The type we will use for our layout matrix
  *
  * Notes:
@@ -101,26 +102,25 @@ typedef  void (*_key_t[2])(void);
  */
 typedef  const _key_t _layout_t[][OPT__KB__ROWS][OPT__KB__COLUMNS];
 
-/**                                                variables/layout/description
+// ----------------------------------------------------------------------------
+
+/**                                               variables/_layout/description
  * The variable containing our layout matrix
  */
 static _layout_t PROGMEM _layout;
 
-/**                                            variables/sticky_key/description
- * A pointer to the release function of the last sticky key pressed
+/**                                                variables/_flags/description
+ * A collection of flags pertaining to the operation of `...exec_key()`
  *
- * The function pointed to by this should be executed directly after executing
- * the "press" function of the next key pressed.
- *
- * Notes:
- * - In order for things to work right, sticky keys should either execute this
- *   stored function themselves before placing their own "release" function
- *   value here, or else save the value that's here and call it as part of
- *   their own "release" function.  If this isn't done, and the key pressed
- *   directly before this was a sticky key as well, then the previous sticky
- *   key will never be released.
+ * Struct members:
+ * - stick_current: TODO: probably just want 'tick_keypresses'?
  */
-static void (*_sticky_key)(void);
+static struct {
+    bool stick_current : 1;
+    bool stick_press   : 1;
+    bool stick_release : 1;
+    bool unstick_all   : 1;
+} _flags;
 
 
 // ----------------------------------------------------------------------------

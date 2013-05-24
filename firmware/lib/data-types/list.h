@@ -4,6 +4,9 @@
  * Project located at <https://github.com/benblazak/ergodox-firmware>
  * ------------------------------------------------------------------------- */
 
+// TODO: change from using pointers to everything, to just using the things
+// (since they're structs anyway)
+
 /**                                                                 description
  * An interface to a simple linked-list that can be used to implement lists,
  * queues, stacks, and things
@@ -77,7 +80,6 @@ typedef struct list__list_t {
 
 // ----------------------------------------------------------------------------
 
-list__list_t * list__new           (void);
 void *         list__insert        ( list__list_t * list,
                                      int8_t         index,
                                      void *         node );
@@ -100,16 +102,16 @@ void           list__free          (list__list_t * list);
 
 
 // ----------------------------------------------------------------------------
-// typedefs -------------------------------------------------------------------
+// types ----------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 
 // === list__node_t ===
-/**                                           typedefs/list__node_t/description
+/**                                              types/list__node_t/description
  * The type of a "node", for the purposes of this library
  */
 
 // === list__list_t ===
-/**                                           typedefs/list__list_t/description
+/**                                              types/list__list_t/description
  * Simple struct to define and keep track of our list
  */
 
@@ -117,15 +119,6 @@ void           list__free          (list__list_t * list);
 // ----------------------------------------------------------------------------
 // functions ------------------------------------------------------------------
 // ----------------------------------------------------------------------------
-
-// === list__new() ===
-/**                                             functions/list__new/description
- * Allocate a new (empty) list
- *
- * Returns:
- * - success: A pointer to the new list
- * - failure: `NULL`
- */
 
 // === list__insert() ===
 /**                                     functions/list__insert/description
@@ -211,7 +204,7 @@ void           list__free          (list__list_t * list);
 
 // === list__free() ===
 /**                                            functions/list__free/description
- * Free all node pointers in `list`, then free `list`
+ * Free all node pointers in `list`
  *
  * Arguments:
  * - `list`: A pointer to the list to be operated on

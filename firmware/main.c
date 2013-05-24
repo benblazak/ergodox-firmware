@@ -37,22 +37,21 @@
 #define  main__was_pressed  was_pressed
 #define  main__row          row
 #define  main__col          col
-#define  main__update_leds  update_leds
+#define  main__flags        flags
 
 // ----------------------------------------------------------------------------
 
 // --- for main() loop ---
 
-static bool _pressed_1[OPT__KB__ROWS][OPT__KB__COLUMNS];
-static bool _pressed_2[OPT__KB__ROWS][OPT__KB__COLUMNS];
-
-bool (* is_pressed) [OPT__KB__ROWS][OPT__KB__COLUMNS] = &_pressed_1;
-bool (* was_pressed) [OPT__KB__ROWS][OPT__KB__COLUMNS] = &_pressed_2;
+bool (* is_pressed) [OPT__KB__ROWS][OPT__KB__COLUMNS]
+          = &( bool [OPT__KB__ROWS][OPT__KB__COLUMNS] ){};
+bool (* was_pressed) [OPT__KB__ROWS][OPT__KB__COLUMNS]
+           = &( bool [OPT__KB__ROWS][OPT__KB__COLUMNS] ){};
 
 uint8_t row;
 uint8_t col;
 
-bool update_leds = true;
+struct main__flags_t flags = { .update_leds = true };
 
 
 // ----------------------------------------------------------------------------
@@ -115,7 +114,7 @@ int main(void) {
 
         // note: only use the `kb__led__logical...` functions here, since the
         // meaning of the physical LEDs should be controlled by the layout
-        if (update_leds) {
+        if (flags.update_leds) {
             #define  read  usb__kb__read_led
             #define  on    kb__led__logical_on
             #define  off   kb__led__logical_off

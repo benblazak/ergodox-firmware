@@ -25,13 +25,19 @@
 
 // ----------------------------------------------------------------------------
 
+struct main__flags_t {
+    bool update_leds : 1;
+};
+
+// ----------------------------------------------------------------------------
+
 extern bool (* main__is_pressed) [OPT__KB__ROWS][OPT__KB__COLUMNS];
 extern bool (* main__was_pressed) [OPT__KB__ROWS][OPT__KB__COLUMNS];
 
 extern uint8_t main__row;
 extern uint8_t main__col;
 
-extern bool main__update_leds;
+extern struct main__flags_t main__flags;
 
 
 // ----------------------------------------------------------------------------
@@ -43,6 +49,16 @@ extern bool main__update_leds;
 // ============================================================================
 // === documentation ==========================================================
 // ============================================================================
+
+
+// ----------------------------------------------------------------------------
+// types ----------------------------------------------------------------------
+// ----------------------------------------------------------------------------
+
+// === main__flags_t ===
+/**                                      types/struct main__flags_t/description
+ * See the documentation for `main__flags`
+ */
 
 
 // ----------------------------------------------------------------------------
@@ -71,15 +87,18 @@ extern bool main__update_leds;
  * Indicates which column is currently being tested for changes of key state
  */
 
-// === main__update_leds ===
-/**                                     variables/main__update_leds/description
- * A predicate indicating whether to update the keyboard LED state based on the
- * USB LED state
+// === main__flags ===
+/**                                           variables/main__flags/description
+ * A collection of flags pertaining to the operation of `main()`
  *
- * This is for taking over control the LEDs temporarily, as one may want to
- * do when in a special mode, etc.  If you want to change the meaning of the
- * LEDs under normal use, the correct place to do that is in the layout file,
- * where the `kb__led__logical_...()` functions are defined (see the
- * documentation in that and related files for more information).
+ * Struct members:
+ * - update_leds: A predicate indicating whether to update the keyboard LED
+ *   state based on the USB LED state.
+ *     - This is for taking over control the LEDs temporarily, as one may want
+ *       to do when in a special mode, etc.  If you want to change the meaning
+ *       of the LEDs under normal use, the correct place to do that is in the
+ *       layout file, where the `kb__led__logical_...()` functions are defined
+ *       (see the documentation in that and related files for more
+ *       information).
  */
 
