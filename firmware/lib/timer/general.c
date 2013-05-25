@@ -17,8 +17,8 @@
 // ----------------------------------------------------------------------------
 
 #define  DEFINE_TIMER(name)                                                 \
-    static uint16_t     _##name##__counter;                                 \
-    static list__list_t _##name##__scheduled_events;                        \
+    static uint16_t       _##name##__counter;                               \
+    static list__list_t * _##name##__scheduled_events = &(list__list_t){};  \
                                                                             \
     uint16_t timer__get_##name(void) {                                      \
         return _##name##__counter;                                          \

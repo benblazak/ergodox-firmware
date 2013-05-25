@@ -122,7 +122,7 @@ static _layout_t PROGMEM _layout;
  */
 static struct {
     bool tick_keypresses : 1;
-} _flags;
+} _flags = { .tick_keypresses = true };
 
 
 // ----------------------------------------------------------------------------

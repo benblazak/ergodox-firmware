@@ -23,36 +23,36 @@
 
 // ----------------------------------------------------------------------------
 
-void * list__insert(list_t list, int8_t index, void * node) {
+void * list__insert(list_t * list, int8_t index, void * node) {
     // if `node` does not exist
     if (!node)
         return NULL;
 
-    list.length++;
+    list->length++;
 
-    if (list.length == 1) {
+    if (list->length == 1) {
         // insert as only node (no others exist yet)
-        list.head = node;
-        list.tail = node;
+        list->head = node;
+        list->tail = node;
         N(node)->next = NULL;
 
     } else {
-        index %= list.length;
+        index %= list->length;
 
         if (index == 0) {
             // insert as first node
-            N(node)->next = list.head;
-            list.head = node;
+            N(node)->next = list->head;
+            list->head = node;
 
-        } else if (index == list.length-1) {
+        } else if (index == list->length-1) {
             // insert as last node
-            N(list.tail)->next = node;
-            list.tail = node;
+            N(list->tail)->next = node;
+            list->tail = node;
             N(node)->next = NULL;
 
         } else {
             // insert as other node
-            node_t * previous = list.head;
+            node_t * previous = list->head;
             for (uint8_t i=1; i<index; i++)
                 previous = previous->next;
             N(node)->next = previous->next;
@@ -63,68 +63,68 @@ void * list__insert(list_t list, int8_t index, void * node) {
     return node;
 }
 
-void * list__peek(list_t list, int8_t index) {
+void * list__peek(list_t * list, int8_t index) {
     // if no nodes exist
-    if (list.length == 0)
+    if (list->length == 0)
         return NULL;
 
-    index %= list.length;
+    index %= list->length;
 
     // if last node
-    if (index == list.length-1)
-        return list.tail;
+    if (index == list->length-1)
+        return list->tail;
 
     // else
-    node_t * node = list.head;
+    node_t * node = list->head;
     for (uint8_t i=0; i<index; i++)
         node = N(node)->next;
     return node;
 }
 
-void * list__pop_index(list_t list, int8_t index) {
+void * list__pop_index(list_t * list, int8_t index) {
     // if no nodes exist
-    if (list.length == 0)
+    if (list->length == 0)
         return NULL;
 
-    index %= list.length;
+    index %= list->length;
 
     node_t * node;
 
     if (index == 0) {
         // pop first node
-        node = list.head;
-        list.head = N(node)->next;
+        node = list->head;
+        list->head = N(node)->next;
 
     } else {
         // find the `index-1`th node
-        node_t * previous = list.head;
+        node_t * previous = list->head;
         for (uint8_t i=1; i<index; i++)
             previous = previous->next;
 
         // if last node
-        if (index == list.length-1)
-            list.tail = previous;
+        if (index == list->length-1)
+            list->tail = previous;
 
         // pop the node at `index`
         node = previous->next;
         previous->next = N(node)->next;
     }
 
-    list.length--;
+    list->length--;
 
     return node;
 }
 
-void * list__pop_node(list_t list, void * node) {
+void * list__pop_node(list_t * list, void * node) {
     // if `node` does not exist, or no nodes exist
-    if (!node || list.length == 0)
+    if (!node || list->length == 0)
         return NULL;
 
-    node_t * previous = list.head;
+    node_t * previous = list->head;
 
-    if (node == list.head) {
+    if (node == list->head) {
         // pop first node
-        list.head = N(node)->next;
+        list->head = N(node)->next;
 
     } else {
         // find the previous node (if `node` is in `list`)
@@ -135,19 +135,19 @@ void * list__pop_node(list_t list, void * node) {
         }
 
         // if last node
-        if (node == list.tail)
-            list.tail = previous;
+        if (node == list->tail)
+            list->tail = previous;
 
         // pop the node
         previous->next = N(node)->next;
     }
 
-    list.length--;
+    list->length--;
 
     return node;
 }
 
-void * list__pop_node_next(list_t list, void * node ) {
+void * list__pop_node_next(list_t * list, void * node ) {
     if (!list__pop_node(list, node))
         return NULL;  // `node` was not in `list`
 
@@ -157,11 +157,11 @@ void * list__pop_node_next(list_t list, void * node ) {
     return next;
 }
 
-void list__free_all(list_t list) {
+void list__free_all(list_t * list) {
     node_t * node;
-    while (list.head) {
-        node = list.head;
-        list.head = node->next;
+    while (list->head) {
+        node = list->head;
+        list->head = node->next;
         free(node);
     }
 }

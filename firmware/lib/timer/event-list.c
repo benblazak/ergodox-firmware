@@ -23,8 +23,8 @@ typedef struct {
 
 // ----------------------------------------------------------------------------
 
-uint8_t event_list__append( list__list_t list,
-                            uint16_t     ticks,
+uint8_t event_list__append( list__list_t * list,
+                            uint16_t       ticks,
                             void(*function)(void) ) {
     if (!function) return 0;  // success: nothing to do
 
@@ -39,8 +39,8 @@ uint8_t event_list__append( list__list_t list,
     return 0;  // success
 }
 
-void event_list__tick(list__list_t list) {
-    for (event_t * event = list.head; event;) {
+void event_list__tick(list__list_t * list) {
+    for (event_t * event = list->head; event;) {
         if (event->ticks == 0) {
             (*event->function)();
             event = list__pop_node_next(list, event);

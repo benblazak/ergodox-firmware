@@ -34,7 +34,7 @@
  *
  * - If you want to iterate through a list, use something like
  *
- *       for (node_t * node = list.head; node; node = node->_super.next) {
+ *       for (node_t * node = list->head; node; node = node->_super.next) {
  *           // do stuff
  *       }
  *
@@ -77,12 +77,12 @@ typedef struct list__list_t {
 
 // ----------------------------------------------------------------------------
 
-void * list__insert        (list__list_t list, int8_t index, void * node);
-void * list__peek          (list__list_t list, int8_t index);
-void * list__pop_index     (list__list_t list, int8_t index);
-void * list__pop_node      (list__list_t list, void * node);
-void * list__pop_node_next (list__list_t list, void * node);
-void   list__free_all      (list__list_t list);
+void * list__insert        (list__list_t * list, int8_t index, void * node);
+void * list__peek          (list__list_t * list, int8_t index);
+void * list__pop_index     (list__list_t * list, int8_t index);
+void * list__pop_node      (list__list_t * list, void * node);
+void * list__pop_node_next (list__list_t * list, void * node);
+void   list__free_all      (list__list_t * list);
 
 
 // ----------------------------------------------------------------------------
@@ -120,7 +120,7 @@ void   list__free_all      (list__list_t list);
  * Insert `node` at position `index % list->length`
  *
  * Arguments:
- * - `list`: The list to be operated on
+ * - `list`: A pointer to the list to be operated on
  * - `index`: An `int8_t` indicating the position the new node will occupy
  * - `node`: A `void *` pointer to the node to insert
  *
@@ -134,7 +134,7 @@ void   list__free_all      (list__list_t list);
  * Return a pointer to the node at position `index % list->length`
  *
  * Arguments:
- * - `list`: The list to be operated on
+ * - `list`: A pointer to the list to be operated on
  * - `index`: An `int8_t` indicating the position the new node will occupy
  *
  * Returns:
@@ -152,7 +152,7 @@ void   list__free_all      (list__list_t list);
  *   responsibility.
  *
  * Arguments:
- * - `list`: The list to be operated on
+ * - `list`: A pointer to the list to be operated on
  * - `index`: An `int8_t` indicating the position the new node will occupy
  *
  * Returns:
@@ -169,7 +169,7 @@ void   list__free_all      (list__list_t list);
  *   responsibility.
  *
  * Arguments:
- * - `list`: The list to be operated on
+ * - `list`: A pointer to the list to be operated on
  * - `node`: A `void *` pointer to the node to pop
  *
  * Returns:
@@ -183,7 +183,7 @@ void   list__free_all      (list__list_t list);
  * next element, if such an element exists
  *
  * Arguments:
- * - `list`: The list to be operated on
+ * - `list`: A pointer to the list to be operated on
  * - `node`: A `void *` pointer to the node to pop (and free)
  *
  * Returns:
@@ -202,6 +202,6 @@ void   list__free_all      (list__list_t list);
  * Free all node pointers in `list`
  *
  * Arguments:
- * - `list`: The list to be operated on
+ * - `list`: A pointer to the list to be operated on
  */
 

@@ -61,12 +61,12 @@ void kb__layout__exec_key(bool pressed, uint8_t row, uint8_t column) {
             if (pressed)
                 pressed_layer[row][column] = layer;
 
+            _flags.tick_keypresses = (pressed) ? true : false;  // set default
+
             (*function)();
 
             if (_flags.tick_keypresses)
                 timer___tick_keypresses();
-
-            _flags.tick_keypresses = true;  // restore default
 
             return;
         }
