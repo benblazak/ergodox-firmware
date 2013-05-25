@@ -54,7 +54,7 @@ void    event_list__tick   (list__list_t * list);
  * Append an event with the given attributes to `list`
  *
  * Arguments:
- * - `list`: The list to add the new event to
+ * - `list`: A pointer to the list to add the new event to
  * - `ticks`: The number of ticks to assign to the event
  * - `function`: A function pointer to assign to the event
  *
@@ -69,7 +69,7 @@ void    event_list__tick   (list__list_t * list);
  * scheduled
  *
  * Arguments:
- * - `list`: The list to "tick"
+ * - `list`: A pointer to the list to "tick"
  *
  * Implementation notes:
  * - In the case that more than one function is scheduled to run on a given
