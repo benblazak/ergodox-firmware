@@ -117,12 +117,14 @@ static _layout_t PROGMEM _layout;
  *   keypresses on this run of the function (see the documentation in
  *   ".../firmware/lib/timer.h" for more precisely what this means)
  *     - This is useful for defining things like sticky keys, if, e.g., you
-   *     want to make it so that you can press more than one and have none of
-   *     them release until the press of the next normal key.
+ *       want to make it so that you can press more than one and have none of
+ *       them release until the press of the next normal key.
  */
 static struct {
     bool tick_keypresses : 1;
-} _flags = { .tick_keypresses = true };
+} _flags = {
+    .tick_keypresses = true,
+};
 
 
 // ----------------------------------------------------------------------------

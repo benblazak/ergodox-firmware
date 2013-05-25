@@ -41,8 +41,6 @@
 
 // ----------------------------------------------------------------------------
 
-// --- for main() loop ---
-
 bool (* is_pressed) [OPT__KB__ROWS][OPT__KB__COLUMNS]
           = &( bool [OPT__KB__ROWS][OPT__KB__COLUMNS] ){};
 bool (* was_pressed) [OPT__KB__ROWS][OPT__KB__COLUMNS]
@@ -53,9 +51,6 @@ uint8_t col;
 
 struct main__flags_t flags = { .update_leds = true };
 
-
-// ----------------------------------------------------------------------------
-// --- main() loop ------------------------------------------------------------
 // ----------------------------------------------------------------------------
 
 /**                                                  functions/main/description

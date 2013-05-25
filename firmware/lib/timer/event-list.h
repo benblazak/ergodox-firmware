@@ -14,6 +14,8 @@
  * Warnings:
  * - These functions are not safe for use within interrupt vectors.  Just in
  *   case you were tempted to try :)
+ *     - It is safe to `...append()` while `...tick()`ing though (as when a
+ *       function reschedules itself)
  */
 
 

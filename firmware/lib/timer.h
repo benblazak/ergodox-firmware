@@ -21,10 +21,10 @@
  *   counter and running any scheduled events).
  *
  * - A "timer" is a collection of related `...get...()`, `...schedule...()`,
- *   and `...tick...()` functions, all dealing with the same (not externally
- *   visible) variables.
+ *   and `...tick...()` functions, all dealing with the same (private)
+ *   variables.
  *
- * - For milliseconds
+ * - Table, for milliseconds
  *
  *     ---------------------------------------------------------------------
  *      number     highest value        in          in        in        in
@@ -90,15 +90,15 @@ void timer___tick_milliseconds (void);
  * - Should be called exactly once by `main()` before entering the run loop.
  */
 
-// === (group) get() ===
+// === (group) get ===
 /**                                           functions/(group) get/description
  * Return the number of "ticks" since the given timer was initialized
  * (mod 2^16)
  *
  * Members:
- * - `timer__get_cycles`
- * - `timer__get_keypresses`
- * - `timer__get_milliseconds`
+ * - `timer__get_cycles`: Counts the number of scan cycles
+ * - `timer__get_keypresses`: Counts the number of applicable key presses
+ * - `timer__get_milliseconds`: Counts real time milliseconds
  *
  * Returns:
  * - success: The number of "ticks" since the timer was initialized (mod 2^16)
@@ -153,7 +153,7 @@ void timer___tick_milliseconds (void);
  *   except within the first 2^8 milliseconds of the timer being initialized.
  */
 
-// === (group) schedule() ===
+// === (group) schedule ===
 /**                                      functions/(group) schedule/description
  * Schedule `function` to run in the given number of "ticks"
  *

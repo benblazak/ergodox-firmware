@@ -11,8 +11,6 @@
  * Meant to be included *only* by the layout using it.
  */
 
-// TODO: make a KF for windows/mac style unicode input
-
 // TODO: write a chordmak (or asetniop) layout, on top of a standard colemak
 // layout, using chained sticky keys for the modifiers
 
