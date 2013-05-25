@@ -10,7 +10,7 @@
  * Prefix: `layer_stack__`
  *
  * This file is meant to be included and used by the keyboard layout
- * implemenmtation.
+ * implementation.
  */
 
 

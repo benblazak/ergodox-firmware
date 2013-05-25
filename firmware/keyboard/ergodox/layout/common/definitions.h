@@ -20,7 +20,7 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <avr/pgmspace.h>
-#include "../../../../../firmware/lib/data-types/list.h"
+#include "../../../../../firmware/lib/timer.h"
 #include "../../../../../firmware/lib/usb.h"
 #include "../../../../../firmware/lib/usb/usage-page/keyboard.h"
 #include "../../../../../firmware/lib/layout/key-functions.h"
@@ -113,13 +113,15 @@ static _layout_t PROGMEM _layout;
  * A collection of flags pertaining to the operation of `...exec_key()`
  *
  * Struct members:
- * - stick_current: TODO: probably just want 'tick_keypresses'?
+ * - `tick_keypresses`: A predicate indicating whether or not to "tick"
+ *   keypresses on this run of the function (see the documentation in
+ *   ".../firmware/lib/timer.h" for more precisely what this means)
+ *     - This is useful for defining things like sticky keys, if, e.g., you
+   *     want to make it so that you can press more than one and have none of
+   *     them release until the press of the next normal key.
  */
 static struct {
-    bool stick_current : 1;
-    bool stick_press   : 1;
-    bool stick_release : 1;
-    bool unstick_all   : 1;
+    bool tick_keypresses : 1;
 } _flags;
 
 

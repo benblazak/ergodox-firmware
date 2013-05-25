@@ -97,8 +97,10 @@
  *       #define  keys__release__lpo1l1  KF(nop)
  */
 #define  KEYS__LAYER__PUSH_POP(ID, LAYER)                                   \
-    void P(lpupo##ID##l##LAYER) (void) { layer_stack__push(0, ID, LAYER); } \
-    void R(lpupo##ID##l##LAYER) (void) { layer_stack__pop_id(ID); }
+    void P(lpupo##ID##l##LAYER) (void) { layer_stack__push(0, ID, LAYER);   \
+                                         _flags.tick_keypresses = false; }  \
+    void R(lpupo##ID##l##LAYER) (void) { layer_stack__pop_id(ID);           \
+                                         _flags.tick_keypresses = false; }
 
 /**                               macros/(group) layer : number pad/description
  * Define functions for pushing and popping the number pad (namely `numPush`,
@@ -117,22 +119,28 @@
                              KF(press)(KEYBOARD__LockingNumLock);       \
                              usb__kb__send_report();                    \
                              KF(release)(KEYBOARD__LockingNumLock);     \
-                             usb__kb__send_report(); }                  \
+                             usb__kb__send_report();                    \
+                             _flags.tick_keypresses = false; }          \
     void R(numPuPo) (void) { layer_stack__pop_id(ID);                   \
                              KF(press)(KEYBOARD__LockingNumLock);       \
                              usb__kb__send_report();                    \
                              KF(release)(KEYBOARD__LockingNumLock);     \
-                             usb__kb__send_report(); }
+                             usb__kb__send_report();                    \
+                             _flags.tick_keypresses = false; }
 
 #define  KEYS__LAYER__NUM_PUSH(ID, LAYER)                               \
     void P(numPush) (void) { layer_stack__push(0, ID, LAYER);           \
-                             KF(press)(KEYBOARD__LockingNumLock); }     \
-    void R(numPush) (void) { KF(release)(KEYBOARD__LockingNumLock); }
+                             KF(press)(KEYBOARD__LockingNumLock);       \
+                             _flags.tick_keypresses = false; }          \
+    void R(numPush) (void) { KF(release)(KEYBOARD__LockingNumLock);     \
+                             _flags.tick_keypresses = false; }
 
 #define  KEYS__LAYER__NUM_POP(ID)                                       \
     void P(numPop) (void) { layer_stack__pop_id(ID);                    \
-                            KF(press)(KEYBOARD__LockingNumLock); }      \
-    void R(numPop) (void) { KF(release)(KEYBOARD__LockingNumLock); }
+                            KF(press)(KEYBOARD__LockingNumLock);        \
+                            _flags.tick_keypresses = false; }           \
+    void R(numPop) (void) { KF(release)(KEYBOARD__LockingNumLock);      \
+                            _flags.tick_keypresses = false; }
 
 // ----------------------------------------------------------------------------
 

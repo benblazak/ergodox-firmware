@@ -28,13 +28,13 @@
  *   something like
  *
  *       typedef struct {
- *           list__node_t _private;  // must be the first element
+ *           list__node_t _super;  // must be the first element
  *           uint8_t      data;
  *       } node_t;
  *
  * - If you want to iterate through a list, use something like
  *
- *       for (node_t * node = list.head; node; node = node->_private.next) {
+ *       for (node_t * node = list.head; node; node = node->_super.next) {
  *           // do stuff
  *       }
  *

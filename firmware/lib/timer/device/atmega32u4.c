@@ -45,14 +45,22 @@ uint16_t timer__get_milliseconds(void) {
     return _milliseconds__counter;
 }
 
-uint8_t timer__schedule_milliseconds( uint16_t milliseconds,
-                                      void(*function)(void)) {
+uint8_t timer__schedule_milliseconds(uint16_t ticks, void(*function)(void)) {
     return event_list__append(
-            _milliseconds__scheduled_events, milliseconds, function );
+            _milliseconds__scheduled_events, ticks, function );
+}
+
+void timer___tick_milliseconds(void) {
+    static uint8_t _milliseconds__last_ticked;
+    uint8_t elapsed = timer__get_milliseconds() - _milliseconds__last_ticked;
+
+    for (uint8_t i=0; i<elapsed; i++)
+        event_list__tick(_milliseconds__scheduled_events);
+
+    _milliseconds__last_ticked += elapsed;
 }
 
 ISR(TIMER0_COMPA_vect) {
     _milliseconds__counter++;
-    event_list__tick(_milliseconds__scheduled_events);
 }
 

@@ -9,28 +9,11 @@
  *
  * Prefix: `event_list__`
  *
- * Meant to be used only within ".../firmware/lib/timer"
- *
- *
- * Usage notes:
- *
- * - A "tick" is an ill-defined unit of time.  It may represent any occurrence,
- *   even a randomly timed one; but it makes the most sense for it to count
- *   something that occurs predictably, like the passing of a millisecond, or
- *   the completion of a scan cycle.
- *
- * - To "tick" (as a verb) is to denote the passage of a "tick" of time by
- *   performing the actions corresponding thereto (i.e. incrementing the
- *   counter and running any scheduled events).
- *
- * - All functions declared here should be safe for use within interrupt
- *   routines, as long as you pay attention to the warnings below.
- *
+ * Meant to be used within ".../firmware/lib/timer"
  *
  * Warnings:
- *
- * - Any list passed as an argument to one of these functions must not be used
- *   *anywhere* except as an argument to one of these functions.
+ * - These functions are not safe for use within interrupt vectors.  Just in
+ *   case you were tempted to try :)
  */
 
 
@@ -87,5 +70,10 @@ void    event_list__tick   (list__list_t list);
  *
  * Arguments:
  * - `list`: The list to "tick"
+ *
+ * Implementation notes:
+ * - In the case that more than one function is scheduled to run on a given
+ *   "tick", the functions should be run in the order in which they were
+ *   scheduled.
  */
 

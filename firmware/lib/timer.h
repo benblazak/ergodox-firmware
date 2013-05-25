@@ -8,10 +8,35 @@
  * Timer interface
  *
  * Prefixes: `timer__`, `timer___`
+ *
+ *
+ * Usage notes:
+ * - A "tick" is an ill-defined unit of time.  It may represent any occurrence,
+ *   even a randomly timed one; but it makes the most sense for it to count
+ *   something that occurs predictably, like the passing of a millisecond, or
+ *   the completion of a scan cycle.
+ *
+ * - To "tick" (as a verb) is to denote the passage of a "tick" of time by
+ *   performing the actions corresponding thereto (i.e. incrementing the
+ *   counter and running any scheduled events).
+ *
+ * - A "timer" is a collection of related `...get...()`, `...schedule...()`,
+ *   and `...tick...()` functions, all dealing with the same (not externally
+ *   visible) variables.
+ *
+ * - For milliseconds
+ *
+ *     ---------------------------------------------------------------------
+ *      number     highest value        in          in        in        in
+ *      of bits    (milliseconds)     seconds     minutes    hours     days
+ *     ---------  ----------------  -----------  ---------  --------  ------
+ *           8                255          0.3        0.0       0.0     0.0
+ *          16              65535         65.5        1.1       0.0     0.0
+ *          32         4294967295    4294967.3    71582.8    1193.0    49.7
+ *     ---------------------------------------------------------------------
+ *
+ *     note: 32-bit values given for reference only
  */
-
-// TODO: make macros for defining timers; make groups for function
-// documentation; make notes for all extra information
 
 
 #ifndef ERGODOX_FIRMWARE__LIB__TIMER__H
@@ -23,17 +48,19 @@
 uint8_t  timer__init             (void);
 
 uint16_t timer__get_cycles       (void);
+uint16_t timer__get_keypresses   (void);
 uint16_t timer__get_milliseconds (void);
 
-uint8_t  timer__schedule_cycles       ( uint16_t cycles,
-                                        void(*function)(void) );
-uint8_t  timer__schedule_milliseconds ( uint16_t milliseconds,
-                                        void(*function)(void) );
+uint8_t  timer__schedule_cycles       (uint16_t ticks, void(*function)(void));
+uint8_t  timer__schedule_keypresses   (uint16_t ticks, void(*function)(void));
+uint8_t  timer__schedule_milliseconds (uint16_t ticks, void(*function)(void));
 
 // ----------------------------------------------------------------------------
 // private
 
-void timer___tick_cycles (void);
+void timer___tick_cycles       (void);
+void timer___tick_keypresses   (void);
+void timer___tick_milliseconds (void);
 
 
 // ----------------------------------------------------------------------------
@@ -63,63 +90,44 @@ void timer___tick_cycles (void);
  * - Should be called exactly once by `main()` before entering the run loop.
  */
 
-// === timer__get_cycles() ===
-/**                                     functions/timer__get_cycles/description
- * Return the number of scan cycles since the timer was initialized (mod 2^16)
+// === (group) get() ===
+/**                                           functions/(group) get/description
+ * Return the number of "ticks" since the given timer was initialized
+ * (mod 2^16)
+ *
+ * Members:
+ * - `timer__get_cycles`
+ * - `timer__get_keypresses`
+ * - `timer__get_milliseconds`
  *
  * Returns:
- * - success: The number of cycles since the timer was initialized (mod 2^16)
- *
- * Usage notes:
- * - See the documentation for `timer__get_milliseconds()`
- */
-
-// === timer__get_milliseconds() ===
-/**                               functions/timer__get_milliseconds/description
- * Return the number of milliseconds since the timer was initialized (mod 2^16)
- *
- *     ---------------------------------------------------------------------
- *      number     highest value        in          in        in        in
- *      of bits    (milliseconds)     seconds     minutes    hours     days
- *     ---------  ----------------  -----------  ---------  --------  ------
- *           8                255          0.3        0.0       0.0     0.0
- *          16              65535         65.5        1.1       0.0     0.0
- *          32         4294967295    4294967.3    71582.8    1193.0    49.7
- *     ---------------------------------------------------------------------
- *
- *     note: 32-bit values given for reference only
- *
- *
- * Returns:
- * - success: The number of milliseconds since the timer was initialized (mod
- *   2^16)
+ * - success: The number of "ticks" since the timer was initialized (mod 2^16)
  *
  *
  * Usage notes:
  *
  * - It's unnecessary to keep 16-bit resolution when storing the value returned
- *   by `timer__get_milliseconds()` if you don't need it.  Use variables of the
- *   smallest type that can (*always*) hold the amount of time you'll be
- *   dealing with.
+ *   by a get function if you don't need it.  Use variables of the smallest
+ *   type that can (*always*) hold the amount of time you'll be dealing with.
  *
  * - Use `end_time - start_time` for determining time difference.  Since the
  *   returned values are unsigned (and you should be storing them in unsigned
  *   variables as well) this will work across overflows, for up to the maximum
  *   amount of milliseconds representable by the type you're using.  (See [this
  *   answer] (http://stackoverflow.com/a/50632) on <http://stackoverflow.com/>
- *   if you're curious as to why this workes across overflows.)
+ *   if you're curious as to why this works across overflows.)
  *
  *
  * Warnings:
  *
- * - Do not cast the return value of `timer__get_milliseconds()` directly.
- *   Instead, store the return value in a smaller variable
+ * - Do not cast the return value of a get function directly.  Instead, store
+ *   the return value in a smaller variable
  *
- *       uint8_t start_time = timer__get_milliseconds()
+ *       uint8_t start_time = timer__get_cycles()
  *
  *   or cast the expression as a whole
  *
- *       (uint8_t)( timer__get_milliseconds() - start_time )
+ *       (uint8_t)( timer__get_cycles() - start_time )
  *
  *   Casting directly within the end condition check of a `while` or `for` loop
  *   does not produce the desired behavior.  I don't know assembly well enough
@@ -145,53 +153,38 @@ void timer___tick_cycles (void);
  *   except within the first 2^8 milliseconds of the timer being initialized.
  */
 
-// === timer__schedule_cycles() ===
-/**                                functions/timer__schedule_cycles/description
- * Schedule `function` to run in the given number of cycles
+// === (group) schedule() ===
+/**                                      functions/(group) schedule/description
+ * Schedule `function` to run in the given number of "ticks"
+ *
+ * Members:
+ * - `timer__schedule_cycles`
+ * - `timer__schedule_keypresses`
+ * - `timer__schedule_milliseconds`
  *
  * Arguments:
- * - `cycles`: The number of cycles to wait
+ * - `ticks`: The number of ticks to wait
  * - `function`: A pointer to the function to run
  *
  * Returns:
  * - success: `0`
  * - failure: [other]
  *
- * Usage notes:
- * - If possible, prefer this function to `timer__schedule_milliseconds()`: it
- *   has slightly lower overhead (since scan cycles are going to be longer than
- *   1 millisecond); and since functions scheduled here are not executed inside
- *   an interrupt vector, you need not worry about any of them messing with
- *   access to a shared resource.
- */
-
-// === timer__schedule_milliseconds() ===
-/**                          functions/timer__schedule_milliseconds/description
- * Schedule `function` to run in the given number of milliseconds
- *
- * Arguments:
- * - `milliseconds`: The number of milliseconds to wait
- * - `function`: A pointer to the function to run
- *
- * Returns:
- * - success: `0`
- * - failure: [other]
  *
  * Usage notes:
- * - Functions will be run with interrupts enabled, so you need not worry more
- *   than usual about how long your function takes.
+ *
  * - If a function needs a longer wait time than is possible with a 16-bit
- *   millisecond resolution counter, it can repeatedly schedule itself to run
- *   in, say, 1 minute (= 1000*60 milliseconds), increment a counter each time,
- *   and then only execute its body code after, say, 5 calls (for a 5 minute
- *   delay).
+ *   resolution counter, it can repeatedly schedule itself to run in, say, 1
+ *   minute (= 1000*60 milliseconds) (using the millisecond timer), increment a
+ *   counter each time, and then only execute its body code after, say, 5 calls
+ *   (for a 5 minute delay).
  *
- * Warnings:
- * - Be *very* careful when using this to schedule functions that share
- *   resources: functions scheduled here are still called from within an
- *   interrupt vector, and the interrupt vector may have interrupted something
- *   else in the middle of an access to that resource.  You must pay full
- *   attention to all the issues this could possibly cause.
+ * - The milliseconds timer is unique in that events may not be run as soon as
+ *   one would expect: all events scheduled to be run sometime during a scan
+ *   cycle should be run at the end of that scan cycle.  This is done to avoid
+ *   having scheduled functions executing within an interrupt vector, which is
+ *   (in a case like this where everything has to be so generalized) really not
+ *   worth the pain.
  */
 
 // ----------------------------------------------------------------------------
@@ -202,11 +195,28 @@ void timer___tick_cycles (void);
  * Increment the counter for the number of cycles, and perform scheduled tasks
  *
  * Meant to be used only by `main()`
+ */
+
+// === timer___tick_keypresses() ===
+/**                               functions/timer___tick_keypresses/description
+ * Increment the counter for the number of keypresses, and perform scheduled
+ * tasks
  *
- * Notes:
- * - See "./event-list.h" regarding the function name.
- * - The corresponding real-time function (dealing with milliseconds instead of
- *   cycles) will be in an interrupt vector, and not explicitly called anywhere
- *   in the code.
+ * Meant to be used only by `kb__layout__exec_key()`
+ */
+
+// === timer___tick_milliseconds() ===
+/**                             functions/timer___tick_milliseconds/description
+ * Perform scheduled tasks *only*
+ *
+ * Meant to be used only by `main()`
+ *
+ * The counter for this timer should be incremented within an interrupt vector
+ * (and so needs no `...tick...()` function), but in order to avoid the
+ * complications of having scheduled functions run within the interrupt vector
+ * as well, this function splits that portion of the timer's functionality out.
+ * It should be called by `main()` once per cycle, and should execute all tasks
+ * that were scheduled to be run between the last time it was called and the
+ * time of the current call.
  */
 

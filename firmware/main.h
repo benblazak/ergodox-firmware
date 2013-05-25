@@ -92,7 +92,7 @@ extern struct main__flags_t main__flags;
  * A collection of flags pertaining to the operation of `main()`
  *
  * Struct members:
- * - update_leds: A predicate indicating whether to update the keyboard LED
+ * - `update_leds`: A predicate indicating whether to update the keyboard LED
  *   state based on the USB LED state.
  *     - This is for taking over control the LEDs temporarily, as one may want
  *       to do when in a special mode, etc.  If you want to change the meaning

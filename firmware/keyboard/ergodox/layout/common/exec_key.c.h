@@ -31,11 +31,14 @@ void kb__layout__exec_key(bool pressed, uint8_t row, uint8_t column) {
     //   we've previously set
     static uint8_t pressed_layer[OPT__KB__ROWS][OPT__KB__COLUMNS];
 
-    // TODO: keep track of sticky keys
-
     void (*function)(void);
     uint8_t layer;
 
+    // - add 1 to the stack size because we spend the first iteration checking
+    //   to see if we need to release on a previously stored layer
+    // - add 1 to the stack size in order to peek out of bounds on the last
+    //   iteration (if we get that far), so that layer 0 is our default (see
+    //   the documentation for ".../firmware/lib/layout/layer-stack.h")
     for (uint8_t i=0; i < layer_stack__size()+1+1; i++) {  // i = offset+1
         if (i == 0)
             if (!pressed)
@@ -60,11 +63,10 @@ void kb__layout__exec_key(bool pressed, uint8_t row, uint8_t column) {
 
             (*function)();
 
-            // TODO: implement sticky keys
-//             if (pressed && _sticky_key) {
-//                 (*_sticky_key)();
-//                 _sticky_key = NULL;
-//             }
+            if (_flags.tick_keypresses)
+                timer___tick_keypresses();
+
+            _flags.tick_keypresses = true;  // restore default
 
             return;
         }

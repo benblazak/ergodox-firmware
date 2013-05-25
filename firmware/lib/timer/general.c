@@ -35,6 +35,5 @@
 // ----------------------------------------------------------------------------
 
 DEFINE_TIMER(cycles);
-
-// TODO: make a timer for keypresses?
+DEFINE_TIMER(keypresses);
 
