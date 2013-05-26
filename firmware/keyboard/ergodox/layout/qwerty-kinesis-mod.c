@@ -57,6 +57,17 @@ void kb__led__logical_off(char led) {
 KEYS__LAYER__NUM_PUSH(10, 3);
 KEYS__LAYER__NUM_POP(10);
 
+// notes:
+// - sizeof(wchar_t) == 2
+#include <stddef.h>
+#include <avr/pgmspace.h>
+void P(u_yinyng)(void) {
+    static const uint8_t wrapper[] PROGMEM = { KEYBOARD__LeftAlt };
+    static const wchar_t string[]  PROGMEM = L"☯ hello world :)";
+    key_functions__send_unicode_sequence(1, wrapper, string);
+}
+void R(u_yinyng)(void) {}
+
 
 // ----------------------------------------------------------------------------
 // layout
@@ -74,7 +85,7 @@ static _layout_t _layout = {
        K,    nop,
 // left hand ...... ......... ......... ......... ......... ......... .........
    equal,        1,        2,        3,        4,        5,      esc,
-     tab,        q,        w,        e,        r,        t,   lpu1l1,
+     tab,        q,        w,        e,        r,        t, u_yinyng,
  bkslash,        a,        s,        d,        f,        g,
 shL2kcap,        z,        x,        c,        v,        b, lpupo1l1,
     guiL,    grave,  bkslash,   arrowL,   arrowR,
