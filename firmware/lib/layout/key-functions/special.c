@@ -99,19 +99,13 @@ void key_functions__toggle_capslock (uint16_t ignore) {
  *                 16   1110xxxx  10xxxxxx  10xxxxxx
  *                 21   11110xxx  10xxxxxx  10xxxxxx  10xxxxxx
  *     --------------------------------------------------------
- *
- * - bit shifting (`>>` and `<<`) and then testing for equality (`==`) is
- *   weird.  need to write a note about it.
  */
-// TODO: switch to using a `const char *` and interpreting the utf-8
-// - this way we can use the `PSTR()` macro
-// TODO: stop using a manually defined wrapper... not worth it, i think
-void key_functions__send_unicode_sequence (const char * string) {
+void key_functions__send_unicode_sequence (const uint8_t * string) {
     struct _modifier_state_t state = _read_modifier_state();
     _set_modifier_state( (struct _modifier_state_t){} );
 
     // send string
-    for (uint8_t c = pgm_read_byte(string); c; c = pgm_read_byte(++string)) {
+    for (char c = pgm_read_byte(string); c; c = pgm_read_byte(++string)) {
 
         // send start sequence
 //         usb__kb__set_key(true,  KEYBOARD__LeftAlt   ); usb__kb__send_report();

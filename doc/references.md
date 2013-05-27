@@ -156,6 +156,20 @@
 * [Declaring and Using Bit Fields in Structures]
   (http://publib.boulder.ibm.com/infocenter/macxhelp/v6v81/index.jsp?topic=%2Fcom.ibm.vacpp6m.doc%2Flanguage%2Fref%2Fclrc03defbitf.htm)
 
+* [Bitwise shifting in C]
+  (http://stackoverflow.com/a/8422852/2360353)  
+  Shifting unsigned values is safe, left or right.  Shifting signed values is
+  not always safe.
+
+* [The signedness of `char`]
+  (http://stackoverflow.com/questions/2054939/char-is-signed-or-unsigned-by-default)  
+  Is undefined by the standard, and done differently in different compilers.
+  avr-gcc appears to treat it as signed, by default, unless `-funsigned-char`
+  is specified on the command line.  But then you have a non-default default
+  behavior... which doesn't strike me as particularly clean.  Better to use
+  `uint8_t`s when operating on things then, when possible, and to just not
+  bitshift `char`s.
+
 ### C++ Stuff
 
 * [Google C++ Style Guide]
@@ -230,6 +244,11 @@
 
 * [Wide characters and unicode on the AVR]
   (http://www.avrfreaks.net/index.php?name=PNphpBB2&file=printview&t=64431&start=0)
+
+* [`char` is signed, by default, in avr-gcc]
+  (http://www.avrfreaks.net/index.php?name=PNphpBB2&file=printview&t=119944&start=0)  
+  Apparently, treating `char` as signed is more common than treating it as
+  unsigned.  It can be changed to unsigned, by default, with a compiler option.
 
 
 ## Protocol Stuff

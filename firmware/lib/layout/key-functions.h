@@ -31,7 +31,17 @@ void key_functions__jump_to_bootloader (void);
 // special
 void key_functions__toggle_capslock       (void);
 // --- TODO ---
-void key_functions__send_unicode_sequence (const char * string);
+void key_functions__send_unicode_sequence (const uint8_t * string);
+// TODO
+/*
+ * Implementation notes:
+ * - We use `uint8_t *` instead of `char *` because the signedness of `char` is
+ *   implementation defined (and, actually, signed by default with avr-gcc,
+ *   which is not what we want if we're going to be doing bitwise operations
+ *   and comparisons).  It appears that one can give `char *` arguments to
+ *   functions requiring `uint8_t *` ones without the compiler even giving a
+ *   warning, so this works out.
+ */
 
 
 // ----------------------------------------------------------------------------
