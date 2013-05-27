@@ -111,7 +111,7 @@ void key_functions__send_unicode_sequence (const char * string) {
     _set_modifier_state( (struct _modifier_state_t){} );
 
     // send string
-    for (char c = pgm_read_byte(string); c; c = pgm_read_byte(++string)) {
+    for (uint8_t c = pgm_read_byte(string); c; c = pgm_read_byte(++string)) {
 
         // send start sequence
 //         usb__kb__set_key(true,  KEYBOARD__LeftAlt   ); usb__kb__send_report();
@@ -140,35 +140,46 @@ void key_functions__send_unicode_sequence (const char * string) {
         // i think i need to use '&' for testing anyway, now that i think about
         // it... it's a much more common way to go about things
         // --------------------------------------------------------------------
+        // 'char' is probably signed; in any case, it doesn't right shift the
+        // way we want it to
+        //
+        // 'uint8_t' on the other hand works :)
+        //
+        // but we should probably still use masking instead of shifting; it's
+        // not more operations, i think; even if we use 'uint8_t' for the type
+        // of 'c' (which i think we should do also.. it just feels cleaner)
+        // --------------------------------------------------------------------
+        // also, the logic of how the bits get put into 'c_full' is wrong.. lol
+        // --------------------------------------------------------------------
 
         // send character
-//         uint16_t c_full = 0;
-//         if ((c >> 7) == 0b0) {
-//             _send_hex_digit(0xA);
-//             c_full = c & 0x7F;
-//         } else if ((c >> 5) == 0b110) {
-//             _send_hex_digit(0xB);
-//             c_full  = (uint16_t)(c <<  6) & 0x1F; c = pgm_read_byte(++string);
-//             c_full |= (uint16_t)(c <<  0) & 0x3F;
-//         } else if ((c >> 4) == 0b1110) {
-//             _send_hex_digit(0xC);
-//             c_full  = (uint16_t)(c << 12) & 0x0F; c = pgm_read_byte(++string);
-//             c_full |= (uint16_t)(c <<  6) & 0x3F; c = pgm_read_byte(++string);
-//             c_full |= (uint16_t)(c <<  0) & 0x3F;
-//         } else if ((c >> 3) == 0b11110) {
-//             _send_hex_digit(0xD);
-//             // this character is too long, we can't send it
-//             // skip this byte, and the next 3
-//             string += 3;
-//             continue;
-//         } else {
-//             // invalid utf-8
-//             continue;
-//         }
-//         _send_hex_digit(  c_full >> 12        );
-//         _send_hex_digit( (c_full >>  8) & 0xF );
-//         _send_hex_digit( (c_full >>  4) & 0xF );
-//         _send_hex_digit( (c_full >>  0) & 0xF );
+        uint16_t c_full = 0;
+        if ((c >> 7) == 0b0) {
+            _send_hex_digit(0xA);
+            c_full = c & 0x7F;
+        } else if ((c >> 5) == 0b110) {
+            _send_hex_digit(0xB);
+            c_full  = (uint16_t)(c <<  6) & 0x1F; c = pgm_read_byte(++string);
+            c_full |= (uint16_t)(c <<  0) & 0x3F;
+        } else if ((c >> 4) == 0b1110) {
+            _send_hex_digit(0xC);
+            c_full  = (uint16_t)(c << 12) & 0x0F; c = pgm_read_byte(++string);
+            c_full |= (uint16_t)(c <<  6) & 0x3F; c = pgm_read_byte(++string);
+            c_full |= (uint16_t)(c <<  0) & 0x3F;
+        } else if ((c >> 3) == 0b11110) {
+            _send_hex_digit(0xD);
+            // this character is too long, we can't send it
+            // skip this byte, and the next 3
+            string += 3;
+            continue;
+        } else {
+            // invalid utf-8
+            continue;
+        }
+        _send_hex_digit(  c_full >> 12        );
+        _send_hex_digit( (c_full >>  8) & 0xF );
+        _send_hex_digit( (c_full >>  4) & 0xF );
+        _send_hex_digit( (c_full >>  0) & 0xF );
 
         // send end sequence
 //         usb__kb__set_key(false, KEYBOARD__LeftAlt); usb__kb__send_report();
