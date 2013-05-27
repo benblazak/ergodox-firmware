@@ -10,7 +10,6 @@
 
 
 #include <stdbool.h>
-#include <stddef.h>
 #include <stdint.h>
 #include <avr/pgmspace.h>
 #include "../../../../firmware/lib/usb.h"
@@ -89,43 +88,90 @@ void key_functions__toggle_capslock (uint16_t ignore) {
     _set_modifier_state(state);
 }
 
-void key_functions__send_unicode_sequence ( uint8_t         wrapper_length,
-                                            const uint8_t * wrapper,
-                                            const wchar_t * string ) {
+/** TODO
+ *     --------------------------------------------------------
+ *      UTF-8
+ *     --------------------------------------------------------
+ *      available bits  byte 1    byte 2    byte 3    byte 4
+ *      --------------  --------  --------  --------  --------
+ *                  7   0xxxxxxx
+ *                 11   110xxxxx  10xxxxxx
+ *                 16   1110xxxx  10xxxxxx  10xxxxxx
+ *                 21   11110xxx  10xxxxxx  10xxxxxx  10xxxxxx
+ *     --------------------------------------------------------
+ *
+ * - bit shifting (`>>` and `<<`) and then testing for equality (`==`) is
+ *   weird.  need to write a note about it.
+ */
+// TODO: switch to using a `const char *` and interpreting the utf-8
+// - this way we can use the `PSTR()` macro
+// TODO: stop using a manually defined wrapper... not worth it, i think
+void key_functions__send_unicode_sequence (const char * string) {
     struct _modifier_state_t state = _read_modifier_state();
     _set_modifier_state( (struct _modifier_state_t){} );
 
-    typedef union {
-        wchar_t all;
-        struct {
-            uint8_t p3 : 4;  //
-            uint8_t p2 : 4;  // upside-down
-            uint8_t p1 : 4;  // must be little endian, in this case
-            uint8_t p0 : 4;  //
-        };
-    } char_t;
-
     // send string
-    for ( char_t c = { .all = pgm_read_word(string) };
-          c.all; c.all = pgm_read_word(++string) ) {
+    for (char c = pgm_read_byte(string); c; c = pgm_read_byte(++string)) {
 
         // send start sequence
-        for (uint8_t i=0; i<wrapper_length; i++) {
-            usb__kb__set_key(true, pgm_read_byte(wrapper++));
-            usb__kb__send_report();
-        }
+//         usb__kb__set_key(true,  KEYBOARD__LeftAlt   ); usb__kb__send_report();
+//         usb__kb__set_key(true,  KEYBOARD__Equal_Plus); usb__kb__send_report();
+//         usb__kb__set_key(false, KEYBOARD__Equal_Plus); usb__kb__send_report();
+
+        // --------------------------------------------------------------------
+//         uint8_t d = (c >> 4);
+// 
+//         _send_hex_digit( c >> 4 );  // e
+//         _send_hex_digit( d >> 4 );  // f
+//         _send_hex_digit( d & 0xF ); // e
+// 
+//         _send_hex_digit( d == 0xFE );               // 1
+//         _send_hex_digit( (c >> 4) == 0xFE );        // 0
+//         _send_hex_digit( ((c >> 4) & 0xF) == 0xE ); // 1
+        // --------------------------------------------------------------------
+//         uint8_t d = (c << 4);
+//         _send_hex_digit( d >> 4 );  // 2
+//         _send_hex_digit( d & 0xF ); // 0
+        // --------------------------------------------------------------------
+        // so, '>>' fills with 'f's ? or with junk?
+        //     '<<' fills with '0's ?
+        // and '==' only works if you haven't bit shifted the variable?
+        //
+        // i think i need to use '&' for testing anyway, now that i think about
+        // it... it's a much more common way to go about things
+        // --------------------------------------------------------------------
 
         // send character
-        _send_hex_digit(c.p0);
-        _send_hex_digit(c.p1);
-        _send_hex_digit(c.p2);
-        _send_hex_digit(c.p3);
+//         uint16_t c_full = 0;
+//         if ((c >> 7) == 0b0) {
+//             _send_hex_digit(0xA);
+//             c_full = c & 0x7F;
+//         } else if ((c >> 5) == 0b110) {
+//             _send_hex_digit(0xB);
+//             c_full  = (uint16_t)(c <<  6) & 0x1F; c = pgm_read_byte(++string);
+//             c_full |= (uint16_t)(c <<  0) & 0x3F;
+//         } else if ((c >> 4) == 0b1110) {
+//             _send_hex_digit(0xC);
+//             c_full  = (uint16_t)(c << 12) & 0x0F; c = pgm_read_byte(++string);
+//             c_full |= (uint16_t)(c <<  6) & 0x3F; c = pgm_read_byte(++string);
+//             c_full |= (uint16_t)(c <<  0) & 0x3F;
+//         } else if ((c >> 3) == 0b11110) {
+//             _send_hex_digit(0xD);
+//             // this character is too long, we can't send it
+//             // skip this byte, and the next 3
+//             string += 3;
+//             continue;
+//         } else {
+//             // invalid utf-8
+//             continue;
+//         }
+//         _send_hex_digit(  c_full >> 12        );
+//         _send_hex_digit( (c_full >>  8) & 0xF );
+//         _send_hex_digit( (c_full >>  4) & 0xF );
+//         _send_hex_digit( (c_full >>  0) & 0xF );
 
-        // send end sequence (reverse of start sequence)
-        for (uint8_t i=0; i<wrapper_length; i++) {
-            usb__kb__set_key(false, pgm_read_byte(--wrapper));
-            usb__kb__send_report();
-        }
+        // send end sequence
+//         usb__kb__set_key(false, KEYBOARD__LeftAlt); usb__kb__send_report();
     }
 
     _set_modifier_state(state);

@@ -57,14 +57,10 @@ void kb__led__logical_off(char led) {
 KEYS__LAYER__NUM_PUSH(10, 3);
 KEYS__LAYER__NUM_POP(10);
 
-// notes:
-// - sizeof(wchar_t) == 2
-#include <stddef.h>
-#include <avr/pgmspace.h>
+// TODO
 void P(u_yinyng)(void) {
-    static const uint8_t wrapper[] PROGMEM = { KEYBOARD__LeftAlt };
-    static const wchar_t string[]  PROGMEM = L"☯ hello world :)";
-    key_functions__send_unicode_sequence(1, wrapper, string);
+//     key_functions__send_unicode_sequence( PSTR("☯ hello world :)") );
+    key_functions__send_unicode_sequence( PSTR("☯") );
 }
 void R(u_yinyng)(void) {}
 

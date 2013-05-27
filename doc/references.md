@@ -225,6 +225,12 @@
   (http://bleaklow.com/2010/07/20/a_very_simple_arduino_task_manager.html)  
   A nice little write up on cooperative multitasking with an AVR.
 
+* [A small discussion on AVR endianness]
+  (http://www.avrfreaks.net/index.php?name=PNphpBB2&file=viewtopic&p=337752#337752)
+
+* [Wide characters and unicode on the AVR]
+  (http://www.avrfreaks.net/index.php?name=PNphpBB2&file=printview&t=64431&start=0)
+
 
 ## Protocol Stuff
 

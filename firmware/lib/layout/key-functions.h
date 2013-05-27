@@ -16,7 +16,6 @@
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 
-#include <stddef.h>
 #include <stdint.h>
 
 // ----------------------------------------------------------------------------
@@ -32,9 +31,7 @@ void key_functions__jump_to_bootloader (void);
 // special
 void key_functions__toggle_capslock       (void);
 // --- TODO ---
-void key_functions__send_unicode_sequence ( uint8_t          wrapper_length,
-                                            const uint8_t *  wrapper,
-                                            const wchar_t * string );
+void key_functions__send_unicode_sequence (const char * string);
 
 
 // ----------------------------------------------------------------------------
