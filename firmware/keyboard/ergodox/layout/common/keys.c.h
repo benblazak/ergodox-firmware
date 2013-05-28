@@ -23,6 +23,7 @@
 //   - macros
 //   - chorded keys
 //   - timed keys
+//   - automatic repetition of utf-8 sequence keys
 //   - layers
 //   - making layouts
 //   - changing the meaning of the LEDs

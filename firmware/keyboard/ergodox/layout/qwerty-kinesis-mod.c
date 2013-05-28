@@ -57,13 +57,6 @@ void kb__led__logical_off(char led) {
 KEYS__LAYER__NUM_PUSH(10, 3);
 KEYS__LAYER__NUM_POP(10);
 
-// TODO
-void P(u_yinyng)(void) {
-//     key_functions__send_unicode_sequence( PSTR("☯ hello world :)") );
-    key_functions__send_unicode_sequence( PSTR("☯") );
-}
-void R(u_yinyng)(void) {}
-
 
 // ----------------------------------------------------------------------------
 // layout
@@ -81,7 +74,7 @@ static _layout_t _layout = {
        K,    nop,
 // left hand ...... ......... ......... ......... ......... ......... .........
    equal,        1,        2,        3,        4,        5,      esc,
-     tab,        q,        w,        e,        r,        t, u_yinyng,
+     tab,        q,        w,        e,        r,        t,   lpu1l1,
  bkslash,        a,        s,        d,        f,        g,
 shL2kcap,        z,        x,        c,        v,        b, lpupo1l1,
     guiL,    grave,  bkslash,   arrowL,   arrowR,

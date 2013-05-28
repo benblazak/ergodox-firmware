@@ -299,6 +299,17 @@
   (http://www.usb.org/developers/devclass_docs/Hut1_12v2.pdf)
   : pdf (from <http://www.usb.org/developers/hidpage>)
 
+### UTF-8
+
+* [Reading Unicode (UTF-8) in C]
+  (http://zaemis.blogspot.com/2011/06/reading-unicode-utf-8-by-hand-in-c.html)  
+  A short discussion on the subject.
+
+* [wikipedia: Hexadecimal Code Input (for the 3 major OSs)]
+  (http://en.wikipedia.org/wiki/Unicode_input#Hexadecimal_code_input)  
+  Note that both OS X and Windows require a little OS side setup for this to
+  work.
+  
 
 ## Other People's Code
 
