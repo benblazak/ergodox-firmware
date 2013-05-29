@@ -21,6 +21,7 @@
 #include <avr/pgmspace.h>
 #include "../../../../firmware/lib/usb.h"
 #include "../../../../firmware/lib/usb/usage-page/keyboard.h"
+#include "../key-functions.h"
 
 // ----------------------------------------------------------------------------
 
@@ -78,32 +79,9 @@ static void _set_modifier_state(struct _modifier_state_t state) {
     usb__kb__send_report();
 }
 
-/**                                       functions/_send_hex_digit/description
- * Press then release the keycode corresponding to the character (0-9 A-F)
- * representing the low 4 bits of `digit` in base 16
- *
- * Warnings:
- * - Drops the high bit, but *does not do bounds checking on the value*
- *
- * Arguments:
- * - `digit`: A `uint8_t` who's low 4 bits represents the character to send
- */
-static void _send_hex_digit(uint8_t digit) {
-    digit &= 0x0F;
-
-    if      (digit == 0) digit  = KEYBOARD__0_RightParenthesis;
-    else if (digit < 10) digit += KEYBOARD__1_Exclamation-1;
-    else                 digit += KEYBOARD__a_A-10;
-
-    usb__kb__set_key(true, digit);
-    usb__kb__send_report();
-    usb__kb__set_key(false, digit);
-    usb__kb__send_report();
-}
-
 // ----------------------------------------------------------------------------
 
-void key_functions__toggle_capslock (uint16_t ignore) {
+void key_functions__toggle_capslock(uint16_t ignore) {
     struct _modifier_state_t state = _read_modifier_state();
     // -------
     struct _modifier_state_t temp_state = state;
@@ -119,6 +97,22 @@ void key_functions__toggle_capslock (uint16_t ignore) {
     usb__kb__send_report();
 
     _set_modifier_state(state);
+}
+
+void key_functions__type_byte_hex(uint8_t byte) {
+    uint8_t c[2] = { byte >> 4, byte & 0xF };
+
+    for (uint8_t i=0; i<2; i++) {
+        if      (c[i] == 0) c[i]  = KEYBOARD__0_RightParenthesis;
+        else if (c[i] < 10) c[i] += KEYBOARD__1_Exclamation-1;
+        else                c[i] += KEYBOARD__a_A-10;
+
+        usb__kb__set_key(true, c[i]);
+        usb__kb__send_report();
+        usb__kb__set_key(false, c[i]);
+    }
+
+    usb__kb__send_report();
 }
 
 /**                  functions/key_functions__send_unicode_sequence/description
@@ -144,7 +138,7 @@ void key_functions__toggle_capslock (uint16_t ignore) {
  *      0x010000 - 0x10FFFF      21   11110xxx  10xxxxxx  10xxxxxx  10xxxxxx
  *     ----------------------------------------------------------------------
  */
-void key_functions__send_unicode_sequence (const char * string) {
+void key_functions__send_unicode_sequence(const char * string) {
     struct _modifier_state_t state = _read_modifier_state();
     _set_modifier_state( (struct _modifier_state_t){} );
 
@@ -191,10 +185,8 @@ void key_functions__send_unicode_sequence (const char * string) {
         usb__kb__set_key(false, KEYBOARD__Equal_Plus); usb__kb__send_report();
 
         // send character
-        _send_hex_digit( (c_full >> 12)       );
-        _send_hex_digit( (c_full >>  8) & 0xF );
-        _send_hex_digit( (c_full >>  4) & 0xF );
-        _send_hex_digit( (c_full      ) & 0xF );
+        key_functions__type_byte_hex( c_full >> 8 );
+        key_functions__type_byte_hex( c_full & 0xFF );
 
         // send end sequence
         usb__kb__set_key(false, KEYBOARD__LeftAlt); usb__kb__send_report();

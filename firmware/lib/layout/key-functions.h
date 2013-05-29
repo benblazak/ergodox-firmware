@@ -30,6 +30,7 @@ void key_functions__jump_to_bootloader (void);
 
 // special
 void key_functions__toggle_capslock       (void);
+void key_functions__type_byte_hex         (uint8_t byte);
 void key_functions__send_unicode_sequence (const char * string);
 
 
@@ -96,6 +97,14 @@ void key_functions__send_unicode_sequence (const char * string);
  *   the state of both shift keys.
  */
 
+// === key_functions__type_byte_hex() ===
+/**                          functions/key_functions__type_byte_hex/description
+ * Send the characters (2 of `[0-9A-F]`) corresponding to `byte` in base 16
+ *
+ * Arguments:
+ * - `byte`: The byte to send a representation of
+ */
+
 // === key_functions__send_unicode_sequence() ===
 /**                  functions/key_functions__send_unicode_sequence/description
  * Send the "unicode sequence" for each character in `string`
@@ -160,9 +169,9 @@ void key_functions__send_unicode_sequence (const char * string);
  *               "こんにちは世界 γειά σου κόσμε hello world ^_^" ) );
  *
  * - It's probably better to define a proper macro key than to use this
- *   function for sending sequences of characters, despite the relative
- *   inconvenience.  But... if you're not concerned about portability, or other
- *   factors that might arise because of what this function is *actually*
- *   typing... it's possible to do it this way to... :) lol
+ *   function for sending sequences of "normal" characters, despite the
+ *   relative inconvenience.  But... if you're not concerned about portability,
+ *   or other factors that might arise because of what this function is
+ *   *actually* typing... it's possible to do it this way to... :) lol
  */
 
