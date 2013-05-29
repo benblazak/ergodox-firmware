@@ -81,7 +81,7 @@ static void _set_modifier_state(struct _modifier_state_t state) {
 
 // ----------------------------------------------------------------------------
 
-void key_functions__toggle_capslock(uint16_t ignore) {
+void key_functions__toggle_capslock(void) {
     struct _modifier_state_t state = _read_modifier_state();
     // -------
     struct _modifier_state_t temp_state = state;
