@@ -47,16 +47,21 @@
 // - "block"s are 4 bytes, aligned on the 4 byte boundary
 // - all pointers are 1 byte (until converted for use), representing the offset
 //   of a block
+// - the value of padding bits is undefined, as is the value of all but the
+//   `next` and `run_length` fields of "deleted" macros; undefined values must
+//   be ignored
 
 /*
+ * example for a [3][3] matrix
+ *
+ *
  *   header                                 block 0x00
  *   .--------+--------+--------+--------.  addresses 0x0000..0x0003
  * 0 |version | free   |     padding     |          = 0x00<<2..(0x00<<2)+3
  *   '--------+--------+--------+--------'
  *
  *   table                                 blocks 0x01..0x03
- *   (example for a [3][3] matrix)         addresses 0x0004..0x000F
- *   .--------.   .--------.   .--------.          = 0x01<<2..(0x03<<2)+3
+ *   .--------.   .--------.   .--------.  addresses 0x0004..0x000F
  * 1 |pointer |   |pointer |   |pointer |
  *   '--------'   '--------'   '--------'
  *   .--------.   .--------.   .--------.
@@ -71,16 +76,15 @@
  *
  *
  *   macros                                        blocks 0x04..0xFF
- *   (example for a [3][3] matrix, above)          addresses 0x0016..0x03FF
- *
+ *                                                 addresses 0x0016..0x03FF
  *   .--------+--------.   .--------+--------.
  * 4 |  next  |run_len |   |      index      |
  *   '--------+--------'   '-----------------'
  *   .--------+--------.
- * 5 |      index      |
+ * 5 |     action      |
  *   '--------+--------'
  *   .--------+--------.
- *   |      index      |
+ *   |     action      |
  *   '--------+--------'
  *
  * 6 ...
@@ -94,7 +98,11 @@
 #define  START_MACROS  (((ROWS * COLS + 0x3) >> 2) + 1)  // > 1
 #define  END_EEPROM    0xFF
 
+// flags have meaning only when assigned to `next` pointers within macro
+// headers; they are invalid `next` addresses, but they are valild block
+// addresses
 #define  FLAG_DELETED  0x01
+#define  FLAG_2        0x02  // reserved
 
 struct header {
     uint8_t  version;     // of this layout; 0x00 or 0xFF => uninitialized
@@ -119,6 +127,8 @@ struct action {  // `run_length` of these will follow `macro`
 };
 
 // ----------------------------------------------------------------------------
+
+#define  EEPROM_MACRO__VERSION  1
 
 typedef struct {
     bool    pressed : 1;
