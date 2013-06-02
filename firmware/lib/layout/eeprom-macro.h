@@ -11,16 +11,16 @@
  *
  * This file is meant to be included and used by the keyboard layout
  * implementation.
- */
-
-/*
- * TODO: everything: still in the planning stages
- */
-
-/*
+ *
+ *
+ * TODO: might need a "get_size_total()" and "get_size_free()" later, for
+ * information display purposes
+ *
+ *
+ * TODO: rewrite the following
  * notes:
  *
- * - these functions will play back keypresses, not functions or (layer, row,
+ * - these functions will play back keystrokes, not functions or (layer, row,
  *   column) tuples, or anything like that.  this means that if you press a key
  *   that has a macro assigned to it while defining a new macro, the former
  *   macro will be activated each time the new macro is run (unless it is
@@ -44,91 +44,6 @@
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 
-// - "block"s are 4 bytes, aligned on the 4 byte boundary
-// - all pointers are 1 byte (until converted for use), representing the offset
-//   of a block
-// - the value of padding bits is undefined, as is the value of all but the
-//   `next` and `run_length` fields of "deleted" macros; undefined values must
-//   be ignored
-
-/*
- * example for a [3][3] matrix
- *
- *
- *   header                                 block 0x00
- *   .--------+--------+--------+--------.  addresses 0x0000..0x0003
- * 0 |version | free   |     padding     |          = 0x00<<2..(0x00<<2)+3
- *   '--------+--------+--------+--------'
- *
- *   table                                 blocks 0x01..0x03
- *   .--------.   .--------.   .--------.  addresses 0x0004..0x000F
- * 1 |pointer |   |pointer |   |pointer |
- *   '--------'   '--------'   '--------'
- *   .--------.   .--------.   .--------.
- *   |pointer | 2 |pointer |   |pointer |
- *   '--------'   '--------'   '--------'
- *   .--------.   .--------.   .--------.
- *   |pointer |   |pointer | 3 |pointer |
- *   '--------'   '--------'   '--------'
- *   .--------.   .--------.   .--------.
- *   |padding |   |padding |   |padding |
- *   '--------'   '--------'   '--------'
- *
- *
- *   macros                                        blocks 0x04..0xFF
- *                                                 addresses 0x0016..0x03FF
- *   .--------+--------.   .--------+--------.
- * 4 |  next  |run_len |   |      index      |
- *   '--------+--------'   '-----------------'
- *   .--------+--------.
- * 5 |     action      |
- *   '--------+--------'
- *   .--------+--------.
- *   |     action      |
- *   '--------+--------'
- *
- * 6 ...
- */
-
-#define  ROWS  OPT__KB__ROWS     // for '.c' file
-#define  COLS  OPT__KB__COLUMNS  // for '.c' file
-
-#define  START_HEADER  0x00
-#define  START_TABLE   0x01
-#define  START_MACROS  (((ROWS * COLS + 0x3) >> 2) + 1)  // > 1
-#define  END_EEPROM    0xFF
-
-// flags have meaning only when assigned to `next` pointers within macro
-// headers; they are invalid `next` addresses, but they are valild block
-// addresses
-#define  FLAG_DELETED  0x01
-#define  FLAG_2        0x02  // reserved
-
-struct header {
-    uint8_t  version;     // of this layout; 0x00 or 0xFF => uninitialized
-    uint8_t  start_free;  // pointer to the first unallocated block
-    uint16_t padding;
-};
-
-struct table {
-    uint8_t pointers[ ROWS * COLS ];  // to `macro`s
-    uint8_t padding[ 3 - ((ROWS * COLS) & 0x3) ];  // may be length = 0
-};
-
-struct macro {
-    uint8_t next;  // 0x00 => last for this [row][col]
-                   // 0x01 => "deleted" macro
-    uint8_t run_length;
-    eeprom_macro__index_t index;
-};
-
-struct action {  // `run_length` of these will follow `macro`
-    eeprom_macro__index_t index;  // `layer` will be unset and ignored
-};
-
-// ----------------------------------------------------------------------------
-
-#define  EEPROM_MACRO__VERSION  1
 
 typedef struct {
     bool    pressed : 1;
@@ -136,63 +51,145 @@ typedef struct {
     uint8_t row     : 5;
     uint8_t column  : 5;
 } eeprom_macro__index_t;
-/* - this format artificially limits the number of layers, rows, and columns to
- *   2^5 = 32 each, which seems like it'd be hard to practically exceed.  this
- *   is done because it's much easier to extract the values we're going to use
- *   if we separate them this way than if we reverse the array offset
- *   calculations for `[layer][row][column]`.
- *
- * - note that 15 bits in *some* format will always be enough to store our
- *   index, since 2^15 = 32768 positions are unlikely to be taken up by any
- *   layout matrix ever; on the ATMega32U4 it would be impossible, since
- *   there's only 32256 bytes of PROGMEM to begin with.
- */
 
-uint8_t eeprom_macro__init(void);
-/* - check version
- * - "zero" EEPROM if necessary (i.e. if uninitialized for the current version)
- */
+// ----------------------------------------------------------------------------
 
-uint8_t eeprom_macro__get_size_free(void);
-/* - return free space, in blocks
- */
-
-void eeprom_macro__play(eeprom_macro__index_t index);
-/* - play back keystrokes (loop: call `kb__layout__exec_key()`)
- */
-
-uint8_t eeprom_macro__record__start(uint8_t skip);
-/* - skip `skip` keypresses
- *   - (`...exec_key()` may need these to determine what key to assign the
- *     macro to
- *   - we don't need to worry about them, since the keyboard may want to assign
- *     the macro to a different key; and if the keyboard is using layers we
- *     can't tell what key to assign it to ourselves without a bunch of pain
- *     anyway
- * - start recording
- * - return 0 on success, other on failure
- */
-uint8_t eeprom_macro__record__stop(uint8_t skip, eeprom_macro__index_t index);
-/* - stop recording
- * - discard `skip` keypresses
- * - update all header and "filesystem" information
- * - return 0 on success, other on failure
- */
-
-void eeprom_macro__compress(void);
-/* - remove all "deleted" macros, shifting active ones toward address 0
- */
-
-void eeprom_macro__clear(eeprom_macro__index_t index);
-/* - set the `next` pointer for this index to `FLAG_DELETED`
- */
-
-void eeprom_macro__clear_all(void);
-/* - put EEPROM into a valid and intialized, but "zeroed" state
- */
+uint8_t eeprom_macro__init          (void);
+uint8_t eeprom_macro__record__start (uint8_t skip);
+uint8_t eeprom_macro__record__stop  (uint8_t skip, eeprom_macro__index_t index);
+uint8_t eeprom_macro__play          (eeprom_macro__index_t index);
+void    eeprom_macro__clear         (eeprom_macro__index_t index);
+void    eeprom_macro__clear_all     (void);
 
 
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 #endif  // ERGODOX_FIRMWARE__FIRMWARE__LIB__LAYOUT__EEPROM_MACRO__H
+
+
+
+// ============================================================================
+// === documentation ==========================================================
+// ============================================================================
+
+
+// ----------------------------------------------------------------------------
+// types ----------------------------------------------------------------------
+
+// === eeprom_macro__index_t ===
+/**                                     types/eeprom_macro__index_t/description
+ * A convenient way to specify a position in the layer matrix
+ *
+ * Used here to uniquely identify macros, and to group them for optimizations.
+ *
+ * Notes:
+ * - This format artificially limits the number of layers, rows, and columns
+ *   that can be specified to 2^5 = 32 each.  This seems like it'd be hard to
+ *   reach practically, but it's much less than the limit of 2^8 possible
+ *   values each imposed by most of the rest of the firmware, so it's worth
+ *   noting.
+ *     - An alternate method would be to use all 15 bits (since 1 of the 16
+ *       available bits is allocated to `pressed`) to represent a layer matrix
+ *       index calculated according to the normal rules of array indexing for
+ *       some `[layer][row][column]`.  The current method is preferred because
+ *       it makes it much easier to extract the component values (which is
+ *       helpful in grouping the macros, which is helpful in macro seek time
+ *       optimizations).
+ *     - 15 bits in *some* format should always be enough to uniquely identify
+ *       every possible macro.  On the ATMega32U4 it would be impossible to
+ *       exceed this, since it only has 32256 bytes of PROGMEM to begin with.
+ *       Even if there was more, however, it seems unlikely that more than
+ *       2^15 = 32768 positions would be specified by any layer matrix.
+ */
+
+
+// ----------------------------------------------------------------------------
+// functions ------------------------------------------------------------------
+
+// === eeprom_macro__init ===
+/**                                    functions/eeprom_macro__init/description
+ * Perform any necessary initializations
+ *
+ * Returns:
+ * - success: `0`
+ * - failure: [other]
+ *
+ * Meant to be called exactly once by `kb__init()`
+ *
+ * Notes:
+ * - This function should zero the EEPROM to the current format if the version
+ *   of the data stored is different than what we expect.
+ */
+
+// === eeprom_macro__record__start ===
+/**                           functions/eeprom_macro__record__start/description
+ * Start recording keystrokes to the EEPROM, for the creation of a macro
+ *
+ * Arguments:
+ * - `skip`: The number of keystrokes to skip before beginning to record
+ *
+ * Returns:
+ * - success: `0`
+ * - failure: [other] (not enough memory left to record)
+ *
+ * Notes:
+ * - Skipping keystrokes may be useful, for example, if the using function
+ *   wants to define the first key pressed after this function is called as the
+ *   key to assign the macro to, rather than as part of the macro.
+ */
+
+// === eeprom_macro__record__stop ===
+/**                            functions/eeprom_macro__record__stop/description
+ * Stop recording keystrokes, and finalize the macro
+ *
+ * Arguments:
+ * - `skip`: The number of keystrokes at the end of our recording to ignore
+ * - `index`: The unique ID of this macro
+ *
+ * Returns:
+ * - success: `0`
+ * - failure: [other] (macro was too long to fit in EEPROM)
+ *
+ * Notes:
+ * - Before this function is called, the macro should not be referenced
+ *   anywhere in the EEPROM.
+ */
+
+// === eeprom_macro__play ===
+/**                                    functions/eeprom_macro__play/description
+ * Play back recorded keystrokes for the macro with unique ID `index`
+ *
+ * Arguments:
+ * - `index`: The unique ID of the macro to play
+ *
+ * Returns:
+ * - `0`: Macro successfully played
+ * - [other]: Error (macro does not exist)
+ *
+ * Notes:
+ * - Keystrokes will be played back as if the same sequence of keys were being
+ *   pressed by the user (regardless of whether the current state of the
+ *   keyboard is the same), except as fast as possible (since timing is not
+ *   recorded).
+ */
+
+// === eeprom_macro__clear ===
+/**                                   functions/eeprom_macro__clear/description
+ * Clear the macro with unique ID `index`
+ *
+ * Arguments:
+ * - `index`: The unique ID of the macro to clear
+ */
+
+// === eeprom_macro__clear_all ===
+/**                               functions/eeprom_macro__clear_all/description
+ * Clear all macros in the EEPROM
+ *
+ * Notes:
+ * - For the purposes of this function, "clearing" the EEPROM means to put it
+ *   in such a state that none of the functions declared here will be able to
+ *   find a macro for any `index`.  This does not necessarily imply that the
+ *   EEPROM is in a fully known state.
+ */
+
 
