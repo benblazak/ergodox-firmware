@@ -107,7 +107,7 @@ typedef  const _key_t _layout_t[][OPT__KB__ROWS][OPT__KB__COLUMNS];
 /**                                               variables/_layout/description
  * The variable containing our layout matrix
  */
-static _layout_t PROGMEM _layout;
+static _layout_t _layout PROGMEM;
 
 /**                                                variables/_flags/description
  * A collection of flags pertaining to the operation of `...exec_key()`
