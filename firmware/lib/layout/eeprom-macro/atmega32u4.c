@@ -8,13 +8,18 @@
  * Implements the eeprom-macro functionality defined in "../eeprom-macro.h" for
  * the ATMega32U4
  *
+ *
  * Implementation notes:
+ *
  * - "block"s are 4 bytes long, aligned on the 4 byte boundary
- * - blocks are pointed to by `uint8_t`s
+ *
+ * - Blocks are pointed to by `uint8_t`s
  *     - the EEPROM contains 1024 bytes = 256 blocks
  *       (i.e. 2^10 bytes, 2^8 blocks)
  *     - the beginning of a block is pointed to by
- *       `eeprom_address = block_address<<2`
+ *       `eeprom_address = block_address << 2`
+ *
+ * - A "UID" (Unique ID) in this file is a `eeprom_macro__index_t`
  */
 
 
@@ -36,11 +41,14 @@
  * Size (in blocks): 1
  *
  * Format:
- * - byte 0: the version of this layout
- *     - `0x00`, `0xFF` => uninitialized
- * - byte 1: the number of rows in the table
- * - byte 2: the number of columns in the table
- * - byte 3: the first free block not yet used by `MACROS`
+ *
+ *     struct {
+ *         uint8_t version;  // the version of this layout
+ *                           //   `0x00`,`0xFF` => uninitialized
+ *         uint8_t rows;     // the number of rows in the table
+ *         uint8_t columns;  // the number of columns in the table
+ *         uint8_t free;     // the first free block not yet used for macros
+ *     };
  *
  * Notes:
  * - The number of rows and columns is significant to the offsets of some of
@@ -57,7 +65,7 @@
  *
  * Notes:
  * - Each entry is a block pointer to the first macro with the corresponding
- *   `row` and `column` in its unique ID
+ *   `row` and `column` in its UID
  *
  * Format:
  * - A `[ROWS][COLUMNS]` table, where the `[row][column]` entry can be accessed
@@ -72,17 +80,23 @@
  * Size (in blocks): `END - MACROS + 1` (since `END` is included)
  *
  * Format: macro header:
- * - byte 0: a block pointer to the next macro with the same `row` and `column`
- *           in its unique ID
- *     - `0x00` => this macro is the last in the linked list for this `row`,
- *                 `column` pair
- *     - `0xFF` => this macro has been deleted
- * - byte 1: the run length of the macro, in number of key actions
- * - byte 2..3: the unique ID of this macro (its `index`)
  *
- * Format: key action
- * - The same as the format of `eeprom_macro__index_t` (which is the format of
- *   the unique IDs), except that `layer` will be ignored
+ *     struct {
+ *         uint8_t next;    // a block pointer to the next macro with the same
+ *                          //   `row` and `column` in its UID
+ *                          //   `0x00` => this macro is the last in the linked
+ *                          //             list for this `row`, `column` pair
+ *                          //   `0xFF` => this macro has been deleted
+ *         uint8_t length;  // the run length of the macro, in number of
+ *                          //   key actions
+ *         eeprom_macro__index_t index;  // the UID of this macro
+ *     };
+ *
+ * Format: key action:
+ *
+ *     struct {
+ *         eeprom_macro__index_t index;  // `layer` will be ignored
+ *     };
  */
 #define  MACROS  (TABLE + ((ROWS * COLUMNS + 0b11) >> 2))
 
@@ -91,6 +105,47 @@
  * allowed to use)
  */
 #define  END  0xFF
+
+// ----------------------------------------------------------------------------
+
+// sanity check
+#if MACROS+10 >= END
+    #error "Insufficient EEPROM allocated to \".../firmware/lib/eeprom-macro\""
+#endif
+
+// ----------------------------------------------------------------------------
+
+// TODO: if we do it this way, this belongs in the options file
+#define  OPT__EEPROM_MACRO__SIZE  1024
+
+#define  VERSION      1
+
+struct {
+    uint8_t version;  // the version of this layout
+                      //   `0x00`,`0xFF` => uninitialized
+    uint8_t rows;     // the number of rows in the table
+    uint8_t columns;  // the number of columns in the table
+    uint8_t free;     // the first free block not yet used for macros
+} header EEMEM;
+
+uint8_t table[OPT__KB__ROWS][OPT__KB__COLUMNS] EEMEM;
+
+uint8_t macros[ OPT__EEPROM_MACRO__SIZE-sizeof(header)-sizeof(table) ] EEMEM;
+
+// ----------------------------------------------------------------------------
+
+void f(void) {
+    uint8_t version1 = eeprom_read_byte( (HEADER<<2) + 0 );
+    uint8_t version2 = eeprom_read_byte( &header.version );
+
+    uint8_t ptr1 = eeprom_read_byte( TABLE + 5*COLUMNS + 3 );
+    uint8_t ptr2 = eeprom_read_byte( &table[5][3] );
+
+
+    // to suppress warnings about unused variables...
+    uint8_t version3 = version1+version2;
+    version3++;
+}
 
 // ----------------------------------------------------------------------------
 

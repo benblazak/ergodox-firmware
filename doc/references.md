@@ -170,6 +170,10 @@
   `uint8_t`s when operating on things then, when possible, and to just not
   bitshift `char`s.
 
+* [GCC docs : Variable Attributes]
+  (http://gcc.gnu.org/onlinedocs/gcc/Variable-Attributes.html)  
+  How to byte align variables in GCC (among other things...)
+
 ### C++ Stuff
 
 * [Google C++ Style Guide]

@@ -13,29 +13,25 @@
  * implementation.
  *
  *
- * TODO: might need a "get_size_total()" and "get_size_free()" later, for
- * information display purposes
+ * Usage notes:
  *
+ * - These function will play back keystrokes, not actions.  This means that
+ *   new macro definitions may affect old ones.  It also means that different
+ *   keyboard states may lead to different actions being performed for the same
+ *   macro (if, say, the layer the macro is on is mostly transparent, and there
+ *   is a different layer underneath it on a subsequent press than there was
+ *   during definition).
  *
- * TODO: rewrite the following
- * notes:
+ * - Even though `eeprom_macro__index_t` has distinct fields, there is nothing
+ *   that says the calling function(s) must maintain those semantic meanings.
+ *   I imagine that under most circumstances one would want to, but as long as
+ *   the '.c' file implementing this interface agrees (or at least works) with
+ *   whatever the calling functions are doing, things should be fine.
  *
- * - these functions will play back keystrokes, not functions or (layer, row,
- *   column) tuples, or anything like that.  this means that if you press a key
- *   that has a macro assigned to it while defining a new macro, the former
- *   macro will be activated each time the new macro is run (unless it is
- *   deleted).  this means that if you intend to use these functions to move
- *   letter keys around, you should probably have a layer somewhere with all
- *   the letters on it, and define the macros on your home layer to press keys
- *   on that other layer.  otherwise, assigning a macro to a letter key will
- *   make that letter unreachable until the macro is removed.
- *
- * - or (instead of the above) `...exec_key()` could handle macro assignment
- *   differently, and trigger macro replay based on something besides what i'm
- *   currently thinking of for the ergodox.  that is, "layers" here need not
- *   correspond to "layers" elsewhere in the firmware, except for the purposes
- *   of convenience, and possibly sanity (both of which are typically overruled
- *   by memory constraints...).
+ *     - Particularly, if there were a layout implementation that ignored
+ *       layers, but wanted to manually map different key combinations to
+ *       different macros for a given key, this could be done by repurposing
+ *       the `layer` field to mean "key combination id" (or some such thing).
  */
 
 
@@ -80,7 +76,8 @@ void    eeprom_macro__clear_all     (void);
 /**                                     types/eeprom_macro__index_t/description
  * A convenient way to specify a position in the layer matrix
  *
- * Used here to uniquely identify macros, and to group them for optimizations.
+ * Used here as a UID (Unique IDentifier) for macros, and to group them for
+ * optimizations.
  *
  * Notes:
  * - This format artificially limits the number of layers, rows, and columns
@@ -144,7 +141,7 @@ void    eeprom_macro__clear_all     (void);
  *
  * Arguments:
  * - `skip`: The number of keystrokes at the end of our recording to ignore
- * - `index`: The unique ID of this macro
+ * - `index`: The UID of this macro
  *
  * Returns:
  * - success: `0`
@@ -157,10 +154,10 @@ void    eeprom_macro__clear_all     (void);
 
 // === eeprom_macro__play ===
 /**                                    functions/eeprom_macro__play/description
- * Play back recorded keystrokes for the macro with unique ID `index`
+ * Play back recorded keystrokes for the macro with UID `index`
  *
  * Arguments:
- * - `index`: The unique ID of the macro to play
+ * - `index`: The UID of the macro to play
  *
  * Returns:
  * - `0`: Macro successfully played
@@ -175,10 +172,10 @@ void    eeprom_macro__clear_all     (void);
 
 // === eeprom_macro__clear ===
 /**                                   functions/eeprom_macro__clear/description
- * Clear the macro with unique ID `index`
+ * Clear the macro with UID `index`
  *
  * Arguments:
- * - `index`: The unique ID of the macro to clear
+ * - `index`: The UID of the macro to clear
  */
 
 // === eeprom_macro__clear_all ===
