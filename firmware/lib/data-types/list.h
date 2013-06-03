@@ -52,6 +52,15 @@
  *
  * - Lists will never contain more than 128 elements (the number of elements
  *   that can be indexed by an `int8_t`).
+ *
+ *
+ * Cautions:
+ *
+ * - This library should be used sparingly if SRAM usage is of much concern.
+ *   `malloc()` for small amounts of data is horribly inefficient space wise.
+ *   See [this section]
+ *   (http://www.nongnu.org/avr-libc/user-manual/malloc.html)
+ *   of the avr-libc user manual for details.
  */
 
 
