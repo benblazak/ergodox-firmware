@@ -65,6 +65,10 @@ void kb__layout__exec_key(bool pressed, uint8_t row, uint8_t column) {
 
             (*function)();
 
+            // TODO: *always* tick keypresses
+            // TODO: instead of this, set a flag for the type of key pressed,
+            // and any functions that execute can check it, and conditionally
+            // reschedule themselves to run later, if they so desire
             if (_flags.tick_keypresses)
                 timer___tick_keypresses();
 

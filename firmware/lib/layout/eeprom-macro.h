@@ -15,7 +15,7 @@
  *
  * Usage notes:
  *
- * - These function will play back keystrokes, not actions.  This means that
+ * - These functions will play back keystrokes, not actions.  This means that
  *   new macro definitions may affect old ones.  It also means that different
  *   keyboard states may lead to different actions being performed for the same
  *   macro (if, say, the layer the macro is on is mostly transparent, and there
@@ -23,12 +23,13 @@
  *   during definition).
  *
  * - Even though `eeprom_macro__index_t` has distinct fields, there is nothing
- *   that says the calling function(s) must maintain those semantic meanings.
- *   I imagine that under most circumstances one would want to, but as long as
- *   the '.c' file implementing this interface agrees (or at least works) with
- *   whatever the calling functions are doing, things should be fine.
+ *   that says the calling function(s) must maintain the semantic meanings of
+ *   those fields.  I imagine that under most circumstances one would want to,
+ *   but as long as the '.c' file implementing this interface agree (or at
+ *   least work) with whatever the calling functions are doing, things should
+ *   be fine.
  *
- *     - Particularly, if there were a layout implementation that ignored
+ *     - For example, if there were a layout implementation that ignored
  *       layers, but wanted to manually map different key combinations to
  *       different macros for a given key, this could be done by repurposing
  *       the `layer` field to mean "key combination id" (or some such thing).
@@ -40,6 +41,11 @@
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 
+
+#include <stdbool.h>
+#include <stdint.h>
+
+// ----------------------------------------------------------------------------
 
 typedef struct {
     bool    pressed : 1;
