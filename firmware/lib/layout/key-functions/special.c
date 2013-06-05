@@ -25,10 +25,10 @@
 
 // ----------------------------------------------------------------------------
 
-/**                                         types/_modifier_state_t/description
+/**                                          types/modifier_state_t/description
  * A struct representing the state of the keyboard modifier keys
  */
-struct _modifier_state_t {
+struct modifier_state_t {
     bool left_control  : 1;
     bool left_shift    : 1;
     bool left_alt      : 1;
@@ -41,14 +41,14 @@ struct _modifier_state_t {
 
 // ----------------------------------------------------------------------------
 
-/**                                  functions/_read_modifier_state/description
+/**                                   functions/read_modifier_state/description
  * Return the state of the modifier keys
  *
  * Returns:
- * - success: A `_modifier_state_t`
+ * - success: A `modifier_state_t`
  */
-static struct _modifier_state_t _read_modifier_state(void) {
-    return (struct _modifier_state_t) {
+static struct modifier_state_t read_modifier_state(void) {
+    return (struct modifier_state_t) {
         .left_control  = usb__kb__read_key( KEYBOARD__LeftControl  ),
         .left_shift    = usb__kb__read_key( KEYBOARD__LeftShift    ),
         .left_alt      = usb__kb__read_key( KEYBOARD__LeftAlt      ),
@@ -60,13 +60,13 @@ static struct _modifier_state_t _read_modifier_state(void) {
     };
 }
 
-/**                                   functions/_set_modifier_state/description
+/**                                    functions/set_modifier_state/description
  * Set the state of the modifier keys to `state`
  *
  * Arguments:
- * - `state`: A `_modifier_state_t`
+ * - `state`: A `modifier_state_t`
  */
-static void _set_modifier_state(struct _modifier_state_t state) {
+static void set_modifier_state(struct modifier_state_t state) {
     usb__kb__set_key( state.left_control  , KEYBOARD__LeftControl  );
     usb__kb__set_key( state.left_shift    , KEYBOARD__LeftShift    );
     usb__kb__set_key( state.left_alt      , KEYBOARD__LeftAlt      );
@@ -82,13 +82,13 @@ static void _set_modifier_state(struct _modifier_state_t state) {
 // ----------------------------------------------------------------------------
 
 void key_functions__toggle_capslock(void) {
-    struct _modifier_state_t state = _read_modifier_state();
+    struct modifier_state_t state = read_modifier_state();
     // -------
-    struct _modifier_state_t temp_state = state;
+    struct modifier_state_t temp_state = state;
     temp_state.left_shift = false;
     temp_state.right_shift = false;
     // -------
-    _set_modifier_state(temp_state);
+    set_modifier_state(temp_state);
 
     // toggle capslock
     usb__kb__set_key(true,  KEYBOARD__CapsLock);
@@ -96,7 +96,7 @@ void key_functions__toggle_capslock(void) {
     usb__kb__set_key(false, KEYBOARD__CapsLock);
     usb__kb__send_report();
 
-    _set_modifier_state(state);
+    set_modifier_state(state);
 }
 
 void key_functions__type_byte_hex(uint8_t byte) {
@@ -137,10 +137,13 @@ void key_functions__type_byte_hex(uint8_t byte) {
  *      0x0800 - 0xFFFF          16   1110xxxx  10xxxxxx  10xxxxxx
  *      0x010000 - 0x10FFFF      21   11110xxx  10xxxxxx  10xxxxxx  10xxxxxx
  *     ----------------------------------------------------------------------
+ *
+ * TODO: change the name of this function, and extend it to type printable
+ * non-extended ASCII directly
  */
 void key_functions__send_unicode_sequence(const char * string) {
-    struct _modifier_state_t state = _read_modifier_state();
-    _set_modifier_state( (struct _modifier_state_t){} );
+    struct modifier_state_t state = read_modifier_state();
+    set_modifier_state( (struct modifier_state_t){} );
 
     uint8_t  c;       // for storing the current byte of the character
     uint16_t c_full;  // for storing the full character
@@ -192,6 +195,6 @@ void key_functions__send_unicode_sequence(const char * string) {
         usb__kb__set_key(false, KEYBOARD__LeftAlt); usb__kb__send_report();
     }
 
-    _set_modifier_state(state);
+    set_modifier_state(state);
 }
 
