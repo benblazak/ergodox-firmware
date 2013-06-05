@@ -11,17 +11,6 @@
  *
  * This file is meant to be included and used by the keyboard layout
  * implementation.
- *
- * Notes:
- * - This interface and implementation, perhaps contrary to good programming
- *   practice, define a single (private) data structure *and* the (public)
- *   operations on it, such that one cannot have multiple layer stacks operated
- *   on by these functions.  It would, of course, be possible to split the
- *   functions and their data structure apart, but 1) that would make the
- *   functions slightly more complicated, and 2) anything else that needs a
- *   stack should probably be using ".../firmware/lib/data-types/list.h".  So
- *   I'm leaving it as is for now.  I may reconsider at some point in the
- *   future.
  */
 
 

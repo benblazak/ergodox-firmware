@@ -15,6 +15,9 @@
  *   average.  I also think it's a nice example of how to resize arrays in C
  *   based on demand.  So, those things considered, it seems better not to
  *   rewrite it.
+ *
+ * TODO: factor out general layer-stack stuff into "lib/data-types" and name it
+ * "flex-array".  then fix the above comment :)
  */
 
 

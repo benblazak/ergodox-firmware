@@ -627,7 +627,7 @@
       by [kurplop] (http://geekhack.org/index.php?action=profile;u=17045)
       (on <http://geekhack.org/>)
 
-### Some Random Software Stuff
+### Some Random Stuff
 
 * [Tutorial: Metacompilers Part 1]
   (http://www.bayfronttechnologies.com/mc_tutorial.html)  
@@ -658,6 +658,10 @@
   or forums or anything, so I could be completely wrong), just not very active.
   And the documentation's fairly incomplete (which is sad, it looks like a
   really cool language...).
+
+* [Plover, the Open Source Steno Program]
+  (http://plover.stenoknight.com)  
+  One of the only good reasons I've seen to want NKRO ;)
 
 
 
