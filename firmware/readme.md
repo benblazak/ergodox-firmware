@@ -1,5 +1,17 @@
-## [TODO] Dependencies
+<!-- TODO: everything ... -->
 
+## TODO
+- include versions for all build environment programs
+
+- generate documentation
+    - include a collection of all "namespace" prefixes, and where they belong
+    - write a note in "main.c" about where that file is (and about other
+      documentation that would help in understanding the code)
+    - write a note about where options are described, how they're included, how
+      i have makefiles set up, etc.
+    - write a mediumly thorough note about my workflow (vim, ...)
+
+## Dependencies
 - the gnu avr toolchain
 - python 3
   - markdown `sudo pip install markdown`

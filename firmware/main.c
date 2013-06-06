@@ -6,6 +6,9 @@
 
 /**                                                                 description
  * `main()`: tying it all together
+ *
+ * If you're just trying to get a feel for the source, I'd glance over this
+ * file, then move on to ".../firmware/keyboard.h"
  */
 
 

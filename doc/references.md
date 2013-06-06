@@ -174,6 +174,29 @@
   (http://gcc.gnu.org/onlinedocs/gcc/Variable-Attributes.html)  
   How to byte align variables in GCC (among other things...)
 
+* Be careful with bitfields in C!
+
+  Apparently, they don't always do what you'd expect.  So if you're dealing
+  with interrupts, or care how bits are layed out in hardware - or really if
+  you care about anything besides telling the compiler that it's okay with you
+  if it spends a little more time bitshifting in order to save some space -
+  then you should be very careful about using them.
+
+    * [GCC docs : Implementation : Structures, unions, enumerations, and
+       bit-fields]
+      (http://gcc.gnu.org/onlinedocs/gcc/Structures-unions-enumerations-and-bit_002dfields-implementation.html#Structures-unions-enumerations-and-bit_002dfields-implementation)  
+      Lots of things are "Determined by ABI" (the Application Binary
+      Interface).
+
+    * [GCC wiki : ABI for the AVR]
+      (http://gcc.gnu.org/wiki/avr-gcc)  
+      Bitfields aren't mentioned :/ .
+
+    * [Betrayed by a bitfield]
+      (http://lwn.net/Articles/478657/)  
+      Bitfields don't always do what you'd expect... even if you're an awesome
+      kernel developer.
+
 ### C++ Stuff
 
 * [Google C++ Style Guide]
@@ -253,6 +276,11 @@
   (http://www.avrfreaks.net/index.php?name=PNphpBB2&file=printview&t=119944&start=0)  
   Apparently, treating `char` as signed is more common than treating it as
   unsigned.  It can be changed to unsigned, by default, with a compiler option.
+
+* [EmbeddedGurus: Experts on Embedded Software]
+  (http://embeddedgurus.com)  
+  Seems like a good resource, with lots of general tips on embedded
+  programming.
 
 
 ## Protocol Stuff
