@@ -52,19 +52,13 @@ typedef struct {
     uint8_t layer   : 5;
     uint8_t row     : 5;
     uint8_t column  : 5;
-} eeprom_macro__index_t  __attribute__((packed, aligned(1)));
+} eeprom_macro__index_t;
 
 // ----------------------------------------------------------------------------
 
 uint8_t eeprom_macro__init          (void);
 uint8_t eeprom_macro__record__start (uint8_t skip);
 uint8_t eeprom_macro__record__stop  (uint8_t skip, eeprom_macro__index_t index);
-// TODO: do it this way:
-// uint8_t eeprom_macro__record__stop  ( uint8_t skip,
-//                                       bool    pressed,
-//                                       uint8_t layer,
-//                                       uint8_t row,
-//                                       uint8_t column );
 uint8_t eeprom_macro__play          (eeprom_macro__index_t index);
 void    eeprom_macro__clear         (eeprom_macro__index_t index);
 void    eeprom_macro__clear_all     (void);
