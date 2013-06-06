@@ -331,7 +331,13 @@
   (http://en.wikipedia.org/wiki/Unicode_input#Hexadecimal_code_input)  
   Note that both OS X and Windows require a little OS side setup for this to
   work.
-  
+
+### Other
+ 
+* [Journaling and Logging File Systems]
+  (http://www.eecs.harvard.edu/~margo/cs161/notes/fs-logs-slides.pdf)  
+  PowerPoint-ish overview of a couple file system design strategies
+
 
 ## Other People's Code
 
