@@ -174,28 +174,18 @@
   (http://gcc.gnu.org/onlinedocs/gcc/Variable-Attributes.html)  
   How to byte align variables in GCC (among other things...)
 
-* Be careful with bitfields in C!
-
-  Apparently, they don't always do what you'd expect.  So if you're dealing
-  with interrupts, or care how bits are layed out in hardware - or really if
-  you care about anything besides telling the compiler that it's okay with you
-  if it spends a little more time bitshifting in order to save some space -
-  then you should be very careful about using them.
-
-    * [GCC docs : Implementation : Structures, unions, enumerations, and
-       bit-fields]
-      (http://gcc.gnu.org/onlinedocs/gcc/Structures-unions-enumerations-and-bit_002dfields-implementation.html#Structures-unions-enumerations-and-bit_002dfields-implementation)  
-      Lots of things are "Determined by ABI" (the Application Binary
-      Interface).
-
-    * [GCC wiki : ABI for the AVR]
-      (http://gcc.gnu.org/wiki/avr-gcc)  
-      Bitfields aren't mentioned :/ .
-
-    * [Betrayed by a bitfield]
-      (http://lwn.net/Articles/478657/)  
-      Bitfields don't always do what you'd expect... even if you're an awesome
-      kernel developer.
+* [Bit-fields in C99]
+  (http://blog.reverberate.org/2009/06/bit-fields-in-c99.html)  
+  Bit-fields [can be dangerous]
+  (http://avr.2057.n7.nabble.com/Bit-field-packing-order-changed-between-avrgcc-implementations-td19193.html).
+  Most things are implementation defined, and [can change]
+  (http://avr.2057.n7.nabble.com/Bit-field-packing-order-changed-between-avrgcc-implementations-td19193.html)
+  even between different versions of the same compiler.  It seems to me that if
+  you depend on binary layout, you should take care of that manually.  But the
+  syntax is very nice compared to bit-shifting and bit-masking if you're going
+  to do a lot of it, and there are many useful situations where they'll do
+  exactly what you expect, so... use caution, but don't neglect them all
+  together :) .  Kind of like `goto`.
 
 ### C++ Stuff
 
