@@ -11,15 +11,10 @@
  *
  * Implementation notes:
  *
- * - Do not trust the binary layout of bit-fields.  Bit-fields are great, but
- *   the order of the fields (among other things) is implementation defined,
- *   and [can change][1], even between different versions of the same compiler.
- *
- *     - We use bit-fields in this file quite happily, but when they're read
- *       from or written to the EEPROM, it should be handled explicitly, field
- *       by field, so as to not potentially bite users who upgrade their
- *       compiler, then compile and install a new firmware with the same EEPROM
- *       layout, expecting their macros to still work :) .
+ * - One cannot trust the binary layout of bit-fields.  Bit-fields are great,
+ *   but the order of the fields (among other things) is implementation
+ *   defined, and [can change][1], even between different versions of the same
+ *   compiler.
  *
  *
  * [1]: http://avr.2057.n7.nabble.com/Bit-field-packing-order-changed-between-avrgcc-implementations-td19193.html
@@ -60,30 +55,23 @@
  *
  *
  * Struct members:
- * - `meta`: For keeping track of layout metadata (`[3]` for redundancy and
- *   fault tolerance)
+ * - `meta`: For keeping track of layout metadata (`[3]` for fault tolerance)
  *     - `version`: The version of this layout
  *         - `0x00`, `0xFF` => EEPROM is uninitialized
- *     - `first_free`: The index of the first free element in `macros.data`
- *       (`[5]` for write balancing a little)
- *         - When `compress_offset` is `0x00`, this value will be the index of
- *           the beginning of the current `compress_offset` sized block that is
- *           being updated
- *         - When `compress_offset` is `0xFE`, this value will be the index of
- *           the current macro header who's `next` might need to be updated
- *     - `compress_offset`: The offset (in `macros.data` indices) between what
- *       we're currently copying, and where we're copying it.  This will be
- *       equal to the amount of `macros.data` elements worth of space that
- *       belonged to all deleted macros found so far.
- *         - `0x00` => `compress()` is running, but not copying data yet
- *         - `0xFE` => `compress()` is updating `next` pointers
- *         - `0xFF` => `compress()` is not running
+ *     - `status`:
+ *         - `0x00` => waiting
+ *         - `0x01` => writing macro header
+ *         - `0x02` => updating `table`
+ *         - `0x03` => running `compress()`
  *
- * - `table`: To help in quickly finding macros based on UID
+ * - `table`: To help in quickly failing if there is no macro for a given UID
  *     - `rows`: The number of rows this table has
  *     - `columns`: The number of columns this table has
- *     - `data`: Each entry contains the index of the beginning of the first
- *        macro with the corresponding row and column in its UID
+ *     - `data`: Each entry contains a `uint8_t`, with
+ *       `(bool)( (data[row][column] >> layer) & 0x1 )`
+ *       indicating whether there is a macro defined for that (layer, row,
+ *       column) tuple.  This limits the layers we can deal with to those
+ *       between 0 and 7, inclusive.
  *
  * - `macros`: A block of memory for storing macros
  *     - `length`: The number of elements in `macros.data`
@@ -108,8 +96,7 @@
 struct eeprom {
     struct meta {
         uint8_t version;
-        uint8_t first_free[5];
-        uint8_t compress_offset;
+        uint8_t status;
     } meta[3];
 
     struct table {
@@ -121,31 +108,34 @@ struct eeprom {
     struct macros {
         uint8_t  length;
         uint32_t data[ ( OPT__EEPROM_MACRO__EEPROM_SIZE
-                         - sizeof(uint8_t)  // for `macros.length`
+                         - sizeof(uint8_t)
                          - sizeof(struct meta) * 3
                          - sizeof(struct table)         ) >> 2 ];
     } macros;
+
 } __attribute__((packed, aligned(1)));
 
 /**                                              types/macro_header/description
  * The header for a macro living in `macros.data`
  *
  * Struct members:
- * - `next`: The index (in `macros.data`) of the next macro with the same row
- *   and column in its UID
- *     - `0x00` => This macro is (currently) the last in its linked list
- *     - `0xFF` => This macro has been deleted
- * - `length`: The number of `macro_action`s following this header
+ * - `status`:
+ *     - `0x00` => active
+ *     - `0xFF` => deleted
+ *     - `0xFE` => being moved
+ *     - [other]: to be moved `status` indices towards `macros.data[0]`
+ * - `run_length`: The number of `macro_action`s following this header
+ *     - `0x00` => this header marks the beginning of unused space
  * - `uid`: The Unique IDentifier (UID) of this macro
  */
 struct macro_header {
-    uint8_t next;
-    uint8_t length;
-    eeprom_macro__index_t uid;
+    uint8_t status;
+    uint8_t run_length;
+    eeprom_macro__uid_t uid;
 };
 
 /**                                              types/macro_action/description
- * A single action belonging to a macro living in `eeprom.macros.data`
+ * A single action belonging to a macro living in `macros.data`
  *
  * Struct members:
  * - The key state (`pressed` or unpressed), `row`, and `column` of the action
@@ -156,17 +146,14 @@ struct macro_header {
  *   arguments.
  */
 struct macro_action {
-    bool    pressed   : 1;
-    uint8_t row       : 7;
-    uint8_t column    : 7;
-    uint8_t padding_0 : 1;
+    uint8_t pressed : 1;
+    uint8_t row     : 7;
+    uint8_t column  : 7;
 };
 
 // ----------------------------------------------------------------------------
 
 struct eeprom eeprom EEMEM;
-
-uint8_t test[ sizeof(eeprom.macros.data) ];
 
 // ----------------------------------------------------------------------------
 
@@ -177,14 +164,11 @@ uint8_t test[ sizeof(eeprom.macros.data) ];
  * occupied by deleted macros.
  */
 static void compress(void) {
-    // - when we move macros, we need to update the `next` pointers
-    //   appropriately
 }
 
 // ----------------------------------------------------------------------------
 
 uint8_t eeprom_macro__init(void) {
-    // - check for invalid `next` pointers?
     return 0;
 }
 
@@ -192,21 +176,15 @@ uint8_t eeprom_macro__record__start(uint8_t skip) {
     return 0;
 }
 
-uint8_t eeprom_macro__record__stop(uint8_t skip, eeprom_macro__index_t index) {
-    // - write macro_header     : safe, before updating `first_free`
-    // - update previous `next` : safeish: will have been 0x00 before update
-    //                                     will be invalid (probably) after
-    //                                     update, until `first_free` is
-    //                                     updated
-    // - update `first_free`    : unsafe
+uint8_t eeprom_macro__record__stop(uint8_t skip, eeprom_macro__uid_t index) {
     return 0;
 }
 
-uint8_t eeprom_macro__play(eeprom_macro__index_t index) {
+uint8_t eeprom_macro__play(eeprom_macro__uid_t index) {
     return 0;
 }
 
-void eeprom_macro__clear(eeprom_macro__index_t index) {
+void eeprom_macro__clear(eeprom_macro__uid_t index) {
 }
 
 void eeprom_macro__clear_all(void) {

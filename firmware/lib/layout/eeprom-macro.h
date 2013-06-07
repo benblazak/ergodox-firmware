@@ -22,7 +22,7 @@
  *   is a different layer underneath it on a subsequent press than there was
  *   during definition).
  *
- * - Even though `eeprom_macro__index_t` has distinct fields, there is nothing
+ * - Even though `eeprom_macro__uid_t` has distinct fields, there is nothing
  *   that says the calling function(s) must maintain the semantic meanings of
  *   those fields.  I imagine that under most circumstances one would want to,
  *   but as long as the '.c' file implementing this interface agree (or at
@@ -52,15 +52,15 @@ typedef struct {
     uint8_t layer   : 5;
     uint8_t row     : 5;
     uint8_t column  : 5;
-} eeprom_macro__index_t;
+} eeprom_macro__uid_t;
 
 // ----------------------------------------------------------------------------
 
 uint8_t eeprom_macro__init          (void);
 uint8_t eeprom_macro__record__start (uint8_t skip);
-uint8_t eeprom_macro__record__stop  (uint8_t skip, eeprom_macro__index_t index);
-uint8_t eeprom_macro__play          (eeprom_macro__index_t index);
-void    eeprom_macro__clear         (eeprom_macro__index_t index);
+uint8_t eeprom_macro__record__stop  (uint8_t skip, eeprom_macro__uid_t index);
+uint8_t eeprom_macro__play          (eeprom_macro__uid_t index);
+void    eeprom_macro__clear         (eeprom_macro__uid_t index);
 void    eeprom_macro__clear_all     (void);
 
 
@@ -78,12 +78,10 @@ void    eeprom_macro__clear_all     (void);
 // ----------------------------------------------------------------------------
 // types ----------------------------------------------------------------------
 
-// === eeprom_macro__index_t ===
-/**                                     types/eeprom_macro__index_t/description
- * A convenient way to specify a position in the layer matrix
- *
- * Used here as a UID (Unique IDentifier) for macros, and to group them for
- * optimizations.
+// === eeprom_macro__uid_t ===
+/**                                       types/eeprom_macro__uid_t/description
+ * A Unique IDentifier for a macro; also a convenient way to specify a position
+ * in the layer matrix
  *
  * Notes:
  * - This format artificially limits the number of layers, rows, and columns
