@@ -58,11 +58,7 @@
  * - `meta`: For keeping track of layout metadata (`[3]` for fault tolerance)
  *     - `version`: The version of this layout
  *         - `0x00`, `0xFF` => EEPROM is uninitialized
- *     - `status`:
- *         - `0x00` => waiting
- *         - `0x01` => writing macro header
- *         - `0x02` => updating `table`
- *         - `0x03` => running `compress()`
+ *     - `status`: (see `enum eeprom_status`)
  *
  * - `table`: To help in quickly failing if there is no macro for a given UID
  *     - `rows`: The number of rows this table has
@@ -115,29 +111,48 @@ struct eeprom {
 
 } __attribute__((packed, aligned(1)));
 
+enum eeprom_status {
+    E_S_WAITING,
+    E_S_WRITING_MACRO_HEADER,
+    E_S_UPDATING_TABLE,
+    E_S_RUNNING_COMPRESS
+};
+
 /**                                              types/macro_header/description
  * The header for a macro living in `macros.data`
  *
  * Struct members:
- * - `status`:
- *     - `0x00` => active
- *     - `0xFF` => deleted
- *     - `0xFE` => being moved
- *     - [other]: to be moved `status` indices towards `macros.data[0]`
+ * - `flag`:
+ *     - `true` => `macro_header`
+ *     - `false` => `macro_action`
+ * - `status`: (see `enum macro_header_status` for explicitly defined values)
+ *     - [other]: to be moved `status - MH_S_TO_MOVE_1 + 1` indices towards
+ *       `macros.data[0]`
  * - `run_length`: The number of `macro_action`s following this header
  *     - `0x00` => this header marks the beginning of unused space
  * - `uid`: The Unique IDentifier (UID) of this macro
  */
 struct macro_header {
-    uint8_t status;
+    uint8_t flag   : 1;
+    uint8_t status : 7;
     uint8_t run_length;
     eeprom_macro__uid_t uid;
+};
+
+enum macro_header_status {
+    MH_S_ACTIVE,
+    MH_S_DELETED,
+    MH_S_BEING_MOVED,
+    MH_S_TO_MOVE_1
 };
 
 /**                                              types/macro_action/description
  * A single action belonging to a macro living in `macros.data`
  *
  * Struct members:
+ * - `flag`:
+ *     - `true` => `macro_header`
+ *     - `false` => `macro_action`
  * - The key state (`pressed` or unpressed), `row`, and `column` of the action
  *   recorded
  *
@@ -146,6 +161,7 @@ struct macro_header {
  *   arguments.
  */
 struct macro_action {
+    uint8_t flag    : 1;
     uint8_t pressed : 1;
     uint8_t row     : 7;
     uint8_t column  : 7;
@@ -164,6 +180,18 @@ struct eeprom eeprom EEMEM;
  * occupied by deleted macros.
  */
 static void compress(void) {
+    // - set eeprom.meta.status to compressing
+    // - update status for all macro headers (unless status is deleted)
+    // - move macros
+    //   - copy header
+    //     - change run length to total, till end of current macro from new
+    //       position
+    //     - change status to being moved
+    //   - copy the rest of the macro, overwriting the old positions if
+    //     necessary
+    //   - change status
+    //   - change run length
+    // - set eeprom.meta.status to waiting
 }
 
 // ----------------------------------------------------------------------------
