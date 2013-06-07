@@ -88,6 +88,10 @@
  *   than `OPT__EEPROM_MACRO__EEPROM_SIZE` bytes.  This should be the default
  *   when compiling with `avr-gcc`, but it's important to emphasize that we
  *   depend on it.
+ *
+ * TODO: implement putting a log at the end :)
+ * - how to describe shifting data down?
+ * - max space to leave for compression?
  */
 struct eeprom {
     struct meta {
