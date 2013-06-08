@@ -54,6 +54,7 @@
  * The layout of this library's data in the EEPROM
  *
  *
+ * TODO: update
  * Struct members:
  * - `meta`: For keeping track of layout metadata (`[3]` for fault tolerance)
  *     - `version`: The version of this layout
@@ -93,34 +94,6 @@
  * - how to describe shifting data down?
  * - max space to leave for compression?
  */
-struct eeprom {
-    struct meta {
-        uint8_t version;
-        uint8_t status;
-    } meta[3];
-
-    struct table {
-        uint8_t rows;
-        uint8_t columns;
-        uint8_t data[OPT__KB__ROWS][OPT__KB__COLUMNS];
-    } table;
-
-    struct macros {
-        uint8_t  length;
-        uint32_t data[ ( OPT__EEPROM_MACRO__EEPROM_SIZE
-                         - sizeof(uint8_t)
-                         - sizeof(struct meta) * 3
-                         - sizeof(struct table)         ) >> 2 ];
-    } macros;
-
-} __attribute__((packed, aligned(1)));
-
-enum eeprom_status {
-    E_S_WAITING,
-    E_S_WRITING_MACRO_HEADER,
-    E_S_UPDATING_TABLE,
-    E_S_RUNNING_COMPRESS
-};
 
 /**                                              types/macro_header/description
  * The header for a macro living in `macros.data`
@@ -136,19 +109,6 @@ enum eeprom_status {
  *     - `0x00` => this header marks the beginning of unused space
  * - `uid`: The Unique IDentifier (UID) of this macro
  */
-struct macro_header {
-    uint8_t flag   : 1;
-    uint8_t status : 7;
-    uint8_t run_length;
-    eeprom_macro__uid_t uid;
-};
-
-enum macro_header_status {
-    MH_S_ACTIVE,
-    MH_S_DELETED,
-    MH_S_BEING_MOVED,
-    MH_S_TO_MOVE_1
-};
 
 /**                                              types/macro_action/description
  * A single action belonging to a macro living in `macros.data`
@@ -164,12 +124,6 @@ enum macro_header_status {
  * - To be "executed" by calling `kb__layout__exec_key()` with the appropriate
  *   arguments.
  */
-struct macro_action {
-    uint8_t flag    : 1;
-    uint8_t pressed : 1;
-    uint8_t row     : 7;
-    uint8_t column  : 7;
-};
 
 // ----------------------------------------------------------------------------
 
@@ -221,4 +175,62 @@ void eeprom_macro__clear(eeprom_macro__uid_t index) {
 
 void eeprom_macro__clear_all(void) {
 }
+
+// ----------------------------------------------------------------------------
+// redesign
+
+struct eeprom {
+    struct meta {
+        uint8_t version[3];
+    } meta;
+
+    struct table {
+        uint8_t rows;
+        uint8_t columns;
+        uint8_t data[OPT__KB__ROWS][OPT__KB__COLUMNS];
+    } table;
+
+    struct macros {
+        uint8_t length;
+        uint32_t  data[ ( OPT__EEPROM_MACRO__EEPROM_SIZE
+                          - 1  // for `length`
+                          - sizeof(struct meta)
+                          - sizeof(struct table)         ) >> 2 ];
+    } macros;
+
+} __attribute__((packed, aligned(1)));
+
+struct macro_header {
+    uint8_t type;  // first bit set to 1
+    uint8_t run_length;
+    uint16_t uid;
+};
+
+struct macro_action {
+    uint8_t type    : 1;  // MSB  // bit set to 0
+    uint8_t pressed : 1;
+    uint8_t row     : 7;
+    uint8_t column  : 7;  // LSB
+};
+
+enum {
+    HEADER_DELETED = 0x80,
+    HEADER_MACRO,
+    HEADER_LOG,
+    HEADER_NULL = 0xFF,
+};
+
+// i don't think these log definitions are very nice yet...
+struct log_header {
+    uint8_t type;  // first bit set to 1
+    uint8_t run_length[2];
+    uint8_t padding;
+};
+struct log_action {
+    uint8_t type      : 1;
+    uint8_t padding_1 : 7;
+    uint8_t to;
+    uint8_t from;
+    uint8_t padding_0;
+};
 
