@@ -138,18 +138,6 @@ struct eeprom eeprom EEMEM;
  * occupied by deleted macros.
  */
 static void compress(void) {
-    // - set eeprom.meta.status to compressing
-    // - update status for all macro headers (unless status is deleted)
-    // - move macros
-    //   - copy header
-    //     - change run length to total, till end of current macro from new
-    //       position
-    //     - change status to being moved
-    //   - copy the rest of the macro, overwriting the old positions if
-    //     necessary
-    //   - change status
-    //   - change run length
-    // - set eeprom.meta.status to waiting
 }
 
 // ----------------------------------------------------------------------------
@@ -191,46 +179,48 @@ struct eeprom {
     } table;
 
     struct macros {
-        uint8_t length;
-        uint32_t  data[ ( OPT__EEPROM_MACRO__EEPROM_SIZE
-                          - 1  // for `length`
-                          - sizeof(struct meta)
-                          - sizeof(struct table)         ) >> 2 ];
+        uint16_t length;
+        uint8_t  data[ OPT__EEPROM_MACRO__EEPROM_SIZE
+                       - 2  // for `length`
+                       - sizeof(struct meta)
+                       - sizeof(struct table) ];
     } macros;
 
 } __attribute__((packed, aligned(1)));
 
 struct macro_header {
-    uint8_t type;  // first bit set to 1
+    uint8_t type;
     uint8_t run_length;
     uint16_t uid;
 };
 
-struct macro_action {
-    uint8_t type    : 1;  // MSB  // bit set to 0
-    uint8_t pressed : 1;
-    uint8_t row     : 7;
-    uint8_t column  : 7;  // LSB
+struct log_header {
+    uint8_t type;
+    uint8_t run_length[2];
 };
 
 enum {
-    HEADER_DELETED = 0x80,
+    HEADER_DELETED,
     HEADER_MACRO,
-    HEADER_LOG,
+    HEADER_LOG_COPY,
+    HEADER_LOG_WRITE,
     HEADER_NULL = 0xFF,
 };
 
-// i don't think these log definitions are very nice yet...
-struct log_header {
-    uint8_t type;  // first bit set to 1
-    uint8_t run_length[2];
-    uint8_t padding;
+struct macro_action {
+    uint8_t pressed : 1;
+    uint8_t row     : 7;
+    uint8_t column  : 7;
 };
-struct log_action {
-    uint8_t type      : 1;
-    uint8_t padding_1 : 7;
-    uint8_t to;
-    uint8_t from;
-    uint8_t padding_0;
+
+struct log_action_copy {
+    uint16_t to;
+    uint16_t from;
+    uint8_t length;
+};
+
+struct log_action_write {
+    uint16_t to;
+    uint8_t data;
 };
 
