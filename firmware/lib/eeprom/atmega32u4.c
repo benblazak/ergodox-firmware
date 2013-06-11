@@ -40,10 +40,10 @@
  *   careful about when this function is called.
  */
 uint8_t eeprom__read(uint8_t * address) {
-  while (EECR & (1<<EEPE));  // wait for previous write to complete
-  EEAR = address;            // set up address register
-  EECR |= (1<<EERE);         // start EEPROM read (then halt, 4 clock cycles)
-  return EEDR;               // return the value in the data register
+  while (EECR & (1<<EEPE));   // wait for previous write to complete
+  EEAR = (uint16_t) address;  // set up address register
+  EECR |= (1<<EERE);          // start EEPROM read (then halt, 4 clock cycles)
+  return EEDR;                // return the value in the data register
 }
 
 /**                                         functions/eeprom__write/description
@@ -79,8 +79,8 @@ void eeprom__write(uint8_t * address, uint8_t data) {
         EECR &= ~(1<<EEPM0);  // clear
     }
 
-    EEAR = address;  // set up address register
-    EEDR = data;     // set up data register
+    EEAR = (uint16_t) address;  // set up address register
+    EEDR = data;                // set up data register
 
     // - interrupts must be disabled between these two operations, or else
     //   "EEPROM Master Programming Enable" may time out (since it's cleared by
