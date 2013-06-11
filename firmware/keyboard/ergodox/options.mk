@@ -34,6 +34,9 @@ KEYBOARD_LAYOUTS := \
 
 CURDIRS := $(CURDIR) $(CURDIRS)
 # -------
+CURDIR := $(ROOTDIR)/lib/eeprom
+include $(CURDIR)/options.mk
+# -------
 CURDIR := $(ROOTDIR)/lib/twi
 include $(CURDIR)/options.mk
 # -------

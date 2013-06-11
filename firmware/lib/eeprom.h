@@ -9,7 +9,11 @@
  *
  * Prefix: `eeprom__`
  *
- * Notes: TODO
+ * Notes:
+ * - This is meant to be a replacement for the read, write, and update
+ *   functions provided by `<avr/eeprom.h>`, and should be preferred for those
+ *   operations.  There are other things provided by that header that may be
+ *   useful however, and it's likely that both will be needed.
  */
 
 

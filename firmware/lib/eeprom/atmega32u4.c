@@ -7,11 +7,6 @@
 /**                                                                 description
  * Implements the EEPROM interface defined in "../eeprom.h" for the ATMega32U4
  *
- * This is meant to be a replacement for the read, write, and update functions
- * provided by `<avr/eeprom.h>`, and should be preferred for those operations.
- * There are other things provided by that header that may be useful however,
- * and it's likely that both will be needed.
- *
  * These functions (and most of the comments) are taken more or less straight
  * from the data sheet, section 5.3
  *
@@ -21,6 +16,11 @@
  * - The address passed as `address` to any of the functions is valid.
  * - A write to flash memory (PROGMEM) will never be in progress when any of
  *   these functions are called.
+ *
+ * Warnings:
+ * - These functions are *not* reentrant (i.e. they must never be called within
+ *   an interrupt unless all calls to these functions are protected by having
+ *   interrupts disabled for the duration of the call).
  */
 
 
@@ -35,7 +35,9 @@
  * Implementation notes:
  *
  * - If a write is in progress when this function is called, this function will
- *   busy wait until the write has been completed.
+ *   busy wait until the write has been completed.  This may take quite some
+ *   time (up to 3.4 ms if a write has just been started), so you should be
+ *   careful about when this function is called.
  */
 uint8_t eeprom__read(uint8_t * address) {
   while (EECR & (1<<EEPE));  // wait for previous write to complete
@@ -48,7 +50,9 @@ uint8_t eeprom__read(uint8_t * address) {
  * Implementation notes:
  *
  * - If another write is in progress when this function is called, this
- *   function will busy wait until the first write has been completed.
+ *   function will busy wait until the first write has been completed.  This
+ *   may take quite some time (up to 3.4 ms if a write has just been started),
+ *   so you should be careful about when this function is called.
  *
  * - This function starts the write to the EEPROM, but returns long before it
  *   has been completed.
