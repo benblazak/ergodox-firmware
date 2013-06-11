@@ -24,6 +24,7 @@
 #include <stdint.h>
 #include <avr/eeprom.h>
 #include "../../../../firmware/keyboard.h"
+#include "../../../../firmware/lib/eeprom.h"
 #include "../eeprom-macro.h"
 
 // ----------------------------------------------------------------------------
@@ -126,46 +127,7 @@
  */
 
 // ----------------------------------------------------------------------------
-
-struct eeprom eeprom EEMEM;
-
-// ----------------------------------------------------------------------------
-
-/**                                              functions/compress/description
- * Compress `macros.data`
- *
- * Shift all macros towards index `0`, overwriting the areas previously
- * occupied by deleted macros.
- */
-static void compress(void) {
-}
-
-// ----------------------------------------------------------------------------
-
-uint8_t eeprom_macro__init(void) {
-    return 0;
-}
-
-uint8_t eeprom_macro__record__start(uint8_t skip) {
-    return 0;
-}
-
-uint8_t eeprom_macro__record__stop(uint8_t skip, eeprom_macro__uid_t index) {
-    return 0;
-}
-
-uint8_t eeprom_macro__play(eeprom_macro__uid_t index) {
-    return 0;
-}
-
-void eeprom_macro__clear(eeprom_macro__uid_t index) {
-}
-
-void eeprom_macro__clear_all(void) {
-}
-
-// ----------------------------------------------------------------------------
-// redesign
+// TODO: redesign
 
 struct eeprom {
     struct meta {
@@ -202,15 +164,16 @@ struct log_header {
 enum {
     HEADER_DELETED,
     HEADER_MACRO,
-    HEADER_LOG_COPY,
-    HEADER_LOG_WRITE,
+    LOG_ATOMIC_WRITE,
+    LOG_ATOMIC_COPY,
     HEADER_NULL = 0xFF,
 };
 
 struct macro_action {
-    uint8_t pressed : 1;
-    uint8_t row     : 7;
-    uint8_t column  : 7;
+    uint8_t pressed  : 1;
+    uint8_t row      : 7;
+    uint8_t reserved : 1;
+    uint8_t column   : 7;
 };
 
 struct log_action_copy {
@@ -223,4 +186,55 @@ struct log_action_write {
     uint16_t to;
     uint8_t data;
 };
+
+// ----------------------------------------------------------------------------
+
+struct eeprom eeprom EEMEM;
+
+// ----------------------------------------------------------------------------
+
+/**                                          functions/atomic_write/description
+ * TODO
+ */
+static void atomic_write(uint8_t length, uint8_t * address[], uint8_t data[]) {
+}
+
+/**                                           functions/atomic_copy/description
+ * TODO
+ */
+static void atomic_copy(uint8_t * to, uint8_t * from, uint8_t length) {
+}
+
+/**                                              functions/compress/description
+ * Compress `macros.data`
+ *
+ * Shift all macros towards index `0`, overwriting the areas previously
+ * occupied by deleted macros.
+ */
+static void compress(void) {
+}
+
+// ----------------------------------------------------------------------------
+
+uint8_t eeprom_macro__init(void) {
+    return 0;
+}
+
+uint8_t eeprom_macro__record__start(uint8_t skip) {
+    return 0;
+}
+
+uint8_t eeprom_macro__record__stop(uint8_t skip, eeprom_macro__uid_t index) {
+    return 0;
+}
+
+uint8_t eeprom_macro__play(eeprom_macro__uid_t index) {
+    return 0;
+}
+
+void eeprom_macro__clear(eeprom_macro__uid_t index) {
+}
+
+void eeprom_macro__clear_all(void) {
+}
 
