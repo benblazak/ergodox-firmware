@@ -52,7 +52,7 @@ void    eeprom__write (uint8_t * address, uint8_t data);
 
 // === eeprom__write() ===
 /**                                         functions/eeprom__write/description
- * Write `data` to `address` in the EEPROM memory space
+ * Schedule a write to `address` in the EEPROM memory space
  *
  * Arguments:
  * - `address: The address of (i.e. a pointer to) the location to operate on
@@ -78,5 +78,10 @@ void    eeprom__write (uint8_t * address, uint8_t data);
  * - If possible, writing `0xFF` should clear the memory (without writing
  *   anything), and writing to a location currently set to `0xFF` should write
  *   without clearing first.
+ *
+ * - If possible, this function should "schedule" writes to the EEPROM; that
+ *   is, it should keep track of what needs to be written and write it more or
+ *   less as soon as possible, but return quickly after it's called without
+ *   waiting for the write (or even previous writes) to finish.
  */
 

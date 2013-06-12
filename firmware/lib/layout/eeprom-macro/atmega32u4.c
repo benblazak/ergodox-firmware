@@ -158,15 +158,14 @@ struct macro_header {
 
 struct log_header {
     uint8_t type;
-    uint8_t run_length[2];
+    uint8_t run_length;
 };
 
 enum {
-    HEADER_DELETED,
-    HEADER_MACRO,
+    MACRO,
     LOG_ATOMIC_WRITE,
     LOG_ATOMIC_COPY,
-    HEADER_NULL = 0xFF,
+    HEADER_NULL = 0xFF
 };
 
 struct macro_action {

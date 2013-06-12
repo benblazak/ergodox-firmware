@@ -28,13 +28,31 @@ TARGET := firmware
 
 # -----------------------------------------------------------------------------
 
+include_options = \
+	$(eval INCLUDED := $(1) $(INCLUDED)) \
+	$(eval CURDIRS := $(CURDIR) $(CURDIRS)) \
+	$(eval CURDIR := $(ROOTDIR)/$(1)) \
+	$(eval include $(CURDIR)/options.mk) \
+	$(eval CURDIR := $(firstword $(CURDIRS))) \
+	$(eval CURDIRS := $(wordlist 2,$(words $(CURDIRS)),$(CURDIRS)))
+
+include_options_once = \
+	$(if $(findstring $(1),$(INCLUDED)), \
+		, \
+		$(call include_options,$(1)))
+
+# -----------------------------------------------------------------------------
+
+.PHONY: default-target
 default-target: all
 # (to retain default behavior when included makefiles specify dependencies)
 
-CURDIR  := .
-ROOTDIR := .
-# note: by default, `CURDIR` is initialized to (an absolute path to) the
-# current working directory
+CURDIR   := .
+ROOTDIR  := .
+INCLUDED :=
+# for including sub-makefiles
+# - by default, `CURDIR` is initialized to (an absolute path to) the
+#   current working directory
 
 SRC         :=
 CFLAGS      :=
@@ -42,23 +60,11 @@ LDFLAGS     :=
 GENDEPFLAGS :=
 # (initialize variables, so we can use `+=` below and in the included files)
 
-CURDIRS := $(CURDIR) $(CURDIRS)
-# -------
-CURDIR := $(ROOTDIR)/keyboard/$(KEYBOARD_NAME)
-include $(CURDIR)/options.mk
-# (the place for everything a keyboard implementation might want to change)
-# -------
-CURDIR := $(ROOTDIR)/lib/usb
-include $(CURDIR)/options.mk
-# -------
-CURDIR := $(ROOTDIR)/lib/timer
-include $(CURDIR)/options.mk
-# -------
-CURDIR := $(ROOTDIR)/lib/data-types/list
-include $(CURDIR)/options.mk
-# -------
-CURDIR := $(firstword $(CURDIRS))
-CURDIRS := $(wordlist 2,$(words $(CURDIRS)),$(CURDIRS))
+
+$(call include_options_once,keyboard/$(KEYBOARD_NAME))
+$(call include_options_once,lib/usb)
+$(call include_options_once,lib/timer)
+$(call include_options_once,lib/data-types/list)
 
 # -----------------------------------------------------------------------------
 

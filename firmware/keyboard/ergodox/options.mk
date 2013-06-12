@@ -32,25 +32,11 @@ KEYBOARD_LAYOUTS := \
 
 # -----------------------------------------------------------------------------
 
-CURDIRS := $(CURDIR) $(CURDIRS)
-# -------
-CURDIR := $(ROOTDIR)/lib/eeprom
-include $(CURDIR)/options.mk
-# -------
-CURDIR := $(ROOTDIR)/lib/twi
-include $(CURDIR)/options.mk
-# -------
-CURDIR := $(ROOTDIR)/lib/layout/eeprom-macro
-include $(CURDIR)/options.mk
-# -------
-CURDIR := $(ROOTDIR)/lib/layout/key-functions
-include $(CURDIR)/options.mk
-# -------
-CURDIR := $(ROOTDIR)/lib/layout/layer-stack
-include $(CURDIR)/options.mk
-# -------
-CURDIR := $(firstword $(CURDIRS))
-CURDIRS := $(wordlist 2,$(words $(CURDIRS)),$(CURDIRS))
+$(call include_options_once,lib/eeprom)
+$(call include_options_once,lib/twi)
+$(call include_options_once,lib/layout/eeprom-macro)
+$(call include_options_once,lib/layout/key-functions)
+$(call include_options_once,lib/layout/layer-stack)
 
 # -----------------------------------------------------------------------------
 

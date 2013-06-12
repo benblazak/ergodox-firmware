@@ -56,6 +56,8 @@ uint8_t eeprom__read(uint8_t * address) {
  *
  * - This function starts the write to the EEPROM, but returns long before it
  *   has been completed.
+ *
+ * TODO: this should *schedule* writes
  */
 void eeprom__write(uint8_t * address, uint8_t data) {
 
