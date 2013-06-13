@@ -127,7 +127,6 @@ int main(void) {
         }
 
         timer___tick_cycles();
-        timer___tick_milliseconds();
     }
 
     return 0;
