@@ -11,5 +11,8 @@
 #
 
 
+# TODO: add `call`s like this to other files that depend on things implicitly
+$(call include_options_once,lib/timer)
+
 SRC += $(wildcard $(CURDIR)/$(MCU).c)
 

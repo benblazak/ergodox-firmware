@@ -11,6 +11,9 @@
       i have makefiles set up, etc.
     - write a mediumly thorough note about my workflow (vim, ...)
 
+- add a note in the docs somewhere that SDA and SCL need to have a pull-up
+  resistor on them, or `mcp23018__init()` will hang (or something like that)
+
 ## Dependencies
 - the gnu avr toolchain
 - python 3

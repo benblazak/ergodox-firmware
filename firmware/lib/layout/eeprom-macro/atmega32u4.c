@@ -25,7 +25,7 @@
 #include <avr/eeprom.h>
 #include "../../../../firmware/keyboard.h"
 #include "../../../../firmware/lib/eeprom.h"
-#include "../eeprom-macro.h"
+#include "../eeprom-macro.h"  // TODO: add includes like this to all implementation files
 
 // ----------------------------------------------------------------------------
 
@@ -161,11 +161,11 @@ struct log_header {
     uint8_t run_length;
 };
 
-enum {
-    MACRO,
-    LOG_ATOMIC_WRITE,
-    LOG_ATOMIC_COPY,
-    HEADER_NULL = 0xFF
+enum type {
+    TYPE_MACRO,
+    TYPE_LOG_ATOMIC_WRITE,
+    TYPE_LOG_ATOMIC_COPY,
+    TYPE_HEADER_NULL = 0xFF
 };
 
 struct macro_action {

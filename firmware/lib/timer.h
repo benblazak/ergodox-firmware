@@ -4,6 +4,7 @@
  * Project located at <https://github.com/benblazak/ergodox-firmware>
  * ------------------------------------------------------------------------- */
 
+// TODO: remove `timer__schedule_milliseconds()`
 /**                                                                 description
  * Timer interface
  *
