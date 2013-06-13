@@ -84,10 +84,15 @@ struct {
     bool writing : 1;
 } status;
 
-// TODO: i should probably pick one or the other as a standard way of declaring
-// lists; either as pointers, and then pass that, or as variables, and pass a
-// reference to them
+/**                                              variables/to_write/description
+ * A list of writes (and copies) to perform
+ */
 static list__list_t to_write;
+
+/**                                               variables/to_copy/description
+ * A list of extra information for each `action == ACTION_COPY` element in
+ * `to_write`
+ */
 static list__list_t to_copy;
 
 // ----------------------------------------------------------------------------

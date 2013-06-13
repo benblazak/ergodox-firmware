@@ -27,7 +27,7 @@
 // ----------------------------------------------------------------------------
 
 static volatile uint16_t _milliseconds__counter;
-static list__list_t *    _milliseconds__scheduled_events = &(list__list_t){};
+static list__list_t      _milliseconds__scheduled_events;
 
 // since we won't be running scheduled events every "tick"
 static uint8_t _milliseconds__last_ticked;
@@ -54,7 +54,7 @@ uint8_t timer__schedule_milliseconds(uint16_t ticks, void(*function)(void)) {
     // - use `ticks+elapsed` to compensate for ticks that haven't been counted
     //   yet, but should have (if we were ticking in real time)
     return event_list__append(
-            _milliseconds__scheduled_events, ticks+elapsed, function );
+            &_milliseconds__scheduled_events, ticks+elapsed, function );
 }
 
 void timer___tick_milliseconds(void) {
@@ -65,7 +65,7 @@ void timer___tick_milliseconds(void) {
     _milliseconds__last_ticked += elapsed;
 
     for (uint8_t i=0; i<elapsed; i++)
-        event_list__tick(_milliseconds__scheduled_events);
+        event_list__tick(&_milliseconds__scheduled_events);
 }
 
 ISR(TIMER0_COMPA_vect) {
