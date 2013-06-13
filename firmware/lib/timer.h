@@ -4,7 +4,6 @@
  * Project located at <https://github.com/benblazak/ergodox-firmware>
  * ------------------------------------------------------------------------- */
 
-// TODO: remove `timer__schedule_milliseconds()`
 /**                                                                 description
  * Timer interface
  *
@@ -54,14 +53,12 @@ uint16_t timer__get_milliseconds (void);
 
 uint8_t  timer__schedule_cycles       (uint16_t ticks, void(*function)(void));
 uint8_t  timer__schedule_keypresses   (uint16_t ticks, void(*function)(void));
-uint8_t  timer__schedule_milliseconds (uint16_t ticks, void(*function)(void));
 
 // ----------------------------------------------------------------------------
 // private
 
 void timer___tick_cycles       (void);
 void timer___tick_keypresses   (void);
-void timer___tick_milliseconds (void);
 
 
 // ----------------------------------------------------------------------------
@@ -114,7 +111,7 @@ void timer___tick_milliseconds (void);
  * - Use `end_time - start_time` for determining time difference.  Since the
  *   returned values are unsigned (and you should be storing them in unsigned
  *   variables as well) this will work across overflows, for up to the maximum
- *   amount of milliseconds representable by the type you're using.  (See [this
+ *   amount of ticks representable by the type you're using.  (See [this
  *   answer] (http://stackoverflow.com/a/50632) on <http://stackoverflow.com/>
  *   if you're curious as to why this works across overflows.)
  *
@@ -161,7 +158,6 @@ void timer___tick_milliseconds (void);
  * Members:
  * - `timer__schedule_cycles`
  * - `timer__schedule_keypresses`
- * - `timer__schedule_milliseconds`
  *
  * Arguments:
  * - `ticks`: The number of ticks to wait
@@ -176,16 +172,10 @@ void timer___tick_milliseconds (void);
  *
  * - If a function needs a longer wait time than is possible with a 16-bit
  *   resolution counter, it can repeatedly schedule itself to run in, say, 1
- *   minute (= 1000*60 milliseconds) (using the millisecond timer), increment a
- *   counter each time, and then only execute its body code after, say, 5 calls
- *   (for a 5 minute delay).
- *
- * - The milliseconds timer is unique in that events may not be run as soon as
- *   one would expect: all events scheduled to be run sometime during a scan
- *   cycle should be run at the end of that scan cycle.  This is done to avoid
- *   having scheduled functions executing within an interrupt vector, which is
- *   (in a case like this where everything has to be so generalized) really not
- *   worth the pain.
+ *   minute (= 1000*60/5 cycles, assuming cycles take on average 5
+ *   milliseconds) (using the cycles timer), increment a counter each time, and
+ *   then only execute its body code after, say, 5 calls (for a 5 minute
+ *   delay).
  */
 
 // ----------------------------------------------------------------------------
@@ -204,20 +194,5 @@ void timer___tick_milliseconds (void);
  * tasks
  *
  * Meant to be used only by `kb__layout__exec_key()`
- */
-
-// === timer___tick_milliseconds() ===
-/**                             functions/timer___tick_milliseconds/description
- * Perform scheduled tasks *only*
- *
- * Meant to be used only by `main()`
- *
- * The counter for this timer should be incremented within an interrupt vector
- * (and so needs no `...tick...()` function), but in order to avoid the
- * complications of having scheduled functions run within the interrupt vector
- * as well, this function splits that portion of the timer's functionality out.
- * It should be called by `main()` once per cycle, and should execute all tasks
- * that were scheduled to be run between the last time it was called and the
- * time of the current call.
  */
 
