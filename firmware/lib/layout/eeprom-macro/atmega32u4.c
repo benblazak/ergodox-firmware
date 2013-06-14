@@ -25,7 +25,7 @@
 #include <avr/eeprom.h>
 #include "../../../../firmware/keyboard.h"
 #include "../../../../firmware/lib/eeprom.h"
-#include "../eeprom-macro.h"  // TODO: add includes like this to all implementation files
+#include "../eeprom-macro.h"
 
 // ----------------------------------------------------------------------------
 

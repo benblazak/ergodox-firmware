@@ -13,12 +13,13 @@
 #include <stdint.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
+#include "../../key-functions.h"
 
 // ----------------------------------------------------------------------------
 
 // from PJRC (slightly modified)
 // <http://www.pjrc.com/teensy/jump_to_bootloader.html>
-void key_functions__jump_to_bootloader (uint16_t ignore) {
+void key_functions__jump_to_bootloader(void) {
     // --- for all Teensy boards ---
 
     cli();

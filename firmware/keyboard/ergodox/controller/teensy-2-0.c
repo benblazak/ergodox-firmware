@@ -16,6 +16,7 @@
 #include <util/delay.h>
 #include "../../../../firmware/keyboard.h"
 #include "../../../../firmware/lib/twi.h"
+#include "./teensy-2-0.h"
 
 // ----------------------------------------------------------------------------
 

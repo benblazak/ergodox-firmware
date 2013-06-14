@@ -13,6 +13,7 @@
 #include <stdint.h>
 #include "../../../../firmware/lib/usb.h"
 #include "../../../../firmware/lib/usb/usage-page/keyboard.h"
+#include "../key-functions.h"
 
 // ----------------------------------------------------------------------------
 

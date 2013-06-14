@@ -10,9 +10,9 @@
 
 #include <stdbool.h>
 #include <stdint.h>
-#include "../../../firmware/keyboard.h"
 #include "./controller/mcp23018.h"
 #include "./controller/teensy-2-0.h"
+#include "../../keyboard.h"
 
 // ----------------------------------------------------------------------------
 

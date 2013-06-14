@@ -15,6 +15,7 @@
 #include <util/twi.h>
 #include "../../../../firmware/keyboard.h"
 #include "../../../../firmware/lib/twi.h"
+#include "./mcp23018.h"
 
 // ----------------------------------------------------------------------------
 

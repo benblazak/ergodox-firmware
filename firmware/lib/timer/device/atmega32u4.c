@@ -17,6 +17,7 @@
 #include <avr/io.h>
 #include "../../../../firmware/lib/data-types/list.h"
 #include "../event-list.h"
+#include "../../timer.h"
 
 // ----------------------------------------------------------------------------
 

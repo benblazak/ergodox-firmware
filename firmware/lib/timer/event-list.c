@@ -12,6 +12,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include "../../../firmware/lib/data-types/list.h"
+#include "./event-list.h"
 
 // ----------------------------------------------------------------------------
 

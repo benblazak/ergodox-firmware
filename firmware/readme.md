@@ -14,6 +14,9 @@
 - add a note in the docs somewhere that SDA and SCL need to have a pull-up
   resistor on them, or `mcp23018__init()` will hang (or something like that)
 
+- add notes to directories, explaining why things are organized the way they
+  are; specifically, why the directory structure is so deep
+
 ## Dependencies
 - the gnu avr toolchain
 - python 3

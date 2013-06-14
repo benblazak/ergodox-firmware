@@ -12,6 +12,7 @@
 #include <stdint.h>
 #include "../usage-page/keyboard.h"
 #include "./keyboard/from-pjrc/usb_keyboard.h"
+#include "../../usb.h"
 
 // ----------------------------------------------------------------------------
 
