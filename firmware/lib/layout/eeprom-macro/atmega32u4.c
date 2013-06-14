@@ -29,18 +29,13 @@
 
 // ----------------------------------------------------------------------------
 
-// TODO: consider moving this, and all similar things in other files, into the
-// '.h' files instead (and *always* including the '.h' files in implementing
-// '.c' files)
-#ifndef OPT__EEPROM_MACRO__EEPROM_SIZE
-    #error "OPT__EEPROM_MACRO__EEPROM_SIZE not defined"
-#endif
 /**                           macros/OPT__EEPROM_MACRO__EEPROM_SIZE/description
- * The total size (in bytes) of the EEPROM memory to be allocated by this file
- *
- * Notes:
+ * Implementation notes:
  * - The ATMega32U4 has 1024 bytes of internal EEPROM total
  */
+#if OPT__EEPROM_MACRO__EEPROM_SIZE > 1024
+    #error "OPT__EEPROM_MACRO__EEPROM_SIZE must be <= 1024"
+#endif
 
 // ----------------------------------------------------------------------------
 

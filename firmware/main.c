@@ -23,9 +23,6 @@
 
 // ----------------------------------------------------------------------------
 
-#ifndef OPT__DEBOUNCE_TIME
-    #error "OPT__DEBOUNCE_TIME not defined"
-#endif
 /**                                       macros/OPT__DEBOUNCE_TIME/description
  * The minimum amount of time to wait between two scans of a key, in
  * milliseconds
@@ -33,6 +30,9 @@
  * Notes:
  * - Cherry MX bounce time <= 5ms (at 16 in/sec actuation speed) (spec)
  */
+#ifndef OPT__DEBOUNCE_TIME
+    #error "OPT__DEBOUNCE_TIME not defined"
+#endif
 
 // ----------------------------------------------------------------------------
 
