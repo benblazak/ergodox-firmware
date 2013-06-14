@@ -6,13 +6,6 @@
 
 /**                                                                 description
  * Implements the "special" section of "../key-functions.h"
- *
- * Notes:
- * - If the USB keyboard modifier state functions turn out to be something that
- *   would be generally useful, the functionality should be reimplemented in
- *   ".../firmware/lib/usb" (and removed from here).  For now I'm leaving them
- *   here because it seems better not to encourage messing with modifiers as a
- *   special group of keys, except for special purposes.
  */
 
 
@@ -25,70 +18,18 @@
 
 // ----------------------------------------------------------------------------
 
-/**                                          types/modifier_state_t/description
- * A struct representing the state of the keyboard modifier keys
- */
-struct modifier_state_t {
-    bool left_control  : 1;
-    bool left_shift    : 1;
-    bool left_alt      : 1;
-    bool left_gui      : 1;
-    bool right_control : 1;
-    bool right_shift   : 1;
-    bool right_alt     : 1;
-    bool right_gui     : 1;
-};
-
-// ----------------------------------------------------------------------------
-
-/**                                   functions/read_modifier_state/description
- * Return the state of the modifier keys
- *
- * Returns:
- * - success: A `modifier_state_t`
- */
-static struct modifier_state_t read_modifier_state(void) {
-    return (struct modifier_state_t) {
-        .left_control  = usb__kb__read_key( KEYBOARD__LeftControl  ),
-        .left_shift    = usb__kb__read_key( KEYBOARD__LeftShift    ),
-        .left_alt      = usb__kb__read_key( KEYBOARD__LeftAlt      ),
-        .left_gui      = usb__kb__read_key( KEYBOARD__LeftGUI      ),
-        .right_control = usb__kb__read_key( KEYBOARD__RightControl ),
-        .right_shift   = usb__kb__read_key( KEYBOARD__RightShift   ),
-        .right_alt     = usb__kb__read_key( KEYBOARD__RightAlt     ),
-        .right_gui     = usb__kb__read_key( KEYBOARD__RightGUI     ),
-    };
-}
-
-/**                                    functions/set_modifier_state/description
- * Set the state of the modifier keys to `state`
- *
- * Arguments:
- * - `state`: A `modifier_state_t`
- */
-static void set_modifier_state(struct modifier_state_t state) {
-    usb__kb__set_key( state.left_control  , KEYBOARD__LeftControl  );
-    usb__kb__set_key( state.left_shift    , KEYBOARD__LeftShift    );
-    usb__kb__set_key( state.left_alt      , KEYBOARD__LeftAlt      );
-    usb__kb__set_key( state.left_gui      , KEYBOARD__LeftGUI      );
-    usb__kb__set_key( state.right_control , KEYBOARD__RightControl );
-    usb__kb__set_key( state.right_shift   , KEYBOARD__RightShift   );
-    usb__kb__set_key( state.right_alt     , KEYBOARD__RightAlt     );
-    usb__kb__set_key( state.right_gui     , KEYBOARD__RightGUI     );
-
-    usb__kb__send_report();
-}
-
-// ----------------------------------------------------------------------------
-
 void key_functions__toggle_capslock(void) {
-    struct modifier_state_t state = read_modifier_state();
-    // -------
-    struct modifier_state_t temp_state = state;
-    temp_state.left_shift = false;
-    temp_state.right_shift = false;
-    // -------
-    set_modifier_state(temp_state);
+    // save the state of both shifts, and disable them
+    struct {
+        bool left_shift  : 1;
+        bool right_shift : 1;
+    } state = {
+        .left_shift  = usb__kb__read_key( KEYBOARD__LeftShift  ),
+        .right_shift = usb__kb__read_key( KEYBOARD__RightShift ),
+    };
+    usb__kb__set_key( false, KEYBOARD__LeftShift  );
+    usb__kb__set_key( false, KEYBOARD__RightShift );
+    usb__kb__send_report();
 
     // toggle capslock
     usb__kb__set_key(true,  KEYBOARD__CapsLock);
@@ -96,7 +37,10 @@ void key_functions__toggle_capslock(void) {
     usb__kb__set_key(false, KEYBOARD__CapsLock);
     usb__kb__send_report();
 
-    set_modifier_state(state);
+    // restore the state of both shifts
+    usb__kb__set_key( state.left_shift,  KEYBOARD__LeftShift  );
+    usb__kb__set_key( state.right_shift, KEYBOARD__RightShift );
+    usb__kb__send_report();
 }
 
 void key_functions__type_byte_hex(uint8_t byte) {
@@ -115,7 +59,7 @@ void key_functions__type_byte_hex(uint8_t byte) {
     usb__kb__send_report();
 }
 
-/**                  functions/key_functions__send_unicode_sequence/description
+/**                            functions/key_functions__type_string/description
  * Implementation notes:
  *
  * - We use `uint8_t` instead of `char` when iterating over `string` because
@@ -137,14 +81,8 @@ void key_functions__type_byte_hex(uint8_t byte) {
  *      0x0800 - 0xFFFF          16   1110xxxx  10xxxxxx  10xxxxxx
  *      0x010000 - 0x10FFFF      21   11110xxx  10xxxxxx  10xxxxxx  10xxxxxx
  *     ----------------------------------------------------------------------
- *
- * TODO: change the name of this function, and extend it to type printable
- * non-extended ASCII directly
  */
-void key_functions__send_unicode_sequence(const char * string) {
-    struct modifier_state_t state = read_modifier_state();
-    set_modifier_state( (struct modifier_state_t){} );
-
+void key_functions__type_string(const char * string) {
     uint8_t  c;       // for storing the current byte of the character
     uint16_t c_full;  // for storing the full character
 
@@ -154,7 +92,7 @@ void key_functions__send_unicode_sequence(const char * string) {
         // get character
         if (c >> 7 == 0b0) {
             // a 1-byte utf-8 character
-            c_full = c & 0x7F;
+            c_full = c;
 
         } else if (c >> 5 == 0b110) {
             // beginning of a 2-byte utf-8 character
@@ -182,6 +120,119 @@ void key_functions__send_unicode_sequence(const char * string) {
             continue;
         }
 
+        // --- (if possible) send regular keycode ---
+
+        if (c == c_full) {
+            bool    shifted = false;
+            uint8_t keycode = 0;
+
+            if (c == 0x30) {
+                keycode = KEYBOARD__0_RightParenthesis;        // 0
+            } else if (0x31 <= c && c <= 0x39) {
+                keycode = KEYBOARD__1_Exclamation + c - 0x31;  // 1..9
+            } else if (0x41 <= c && c <= 0x5A) {
+                shifted = true;
+                keycode = KEYBOARD__a_A + c - 0x41;            // A..Z
+            } else if (0x61 <= c && c <= 0x7A) {
+                keycode = KEYBOARD__a_A + c - 0x61;            // a..z
+
+            } else switch (c) {
+                // control characters
+                case 0x08: keycode = KEYBOARD__DeleteBackspace; break;  // BS
+                case 0x09: keycode = KEYBOARD__Tab;             break;  // VT
+                case 0x0A: keycode = KEYBOARD__ReturnEnter;     break;  // LF
+                case 0x0D: keycode = KEYBOARD__ReturnEnter;     break;  // CR
+                case 0x1B: keycode = KEYBOARD__Escape;          break;  // ESC
+                // printable characters
+                case 0x20: keycode = KEYBOARD__Spacebar;        break;  // ' '
+                case 0x21: shifted = true;
+                           keycode = KEYBOARD__1_Exclamation;   break;  // !
+                case 0x22: shifted = true;
+                           keycode = KEYBOARD__SingleQuote_DoubleQuote;
+                                                                break;  // "
+                case 0x23: shifted = true;
+                           keycode = KEYBOARD__3_Pound;         break;  // #
+                case 0x24: shifted = true;
+                           keycode = KEYBOARD__4_Dollar;        break;  // $
+                case 0x25: shifted = true;
+                           keycode = KEYBOARD__5_Percent;       break;  // %
+                case 0x26: shifted = true;
+                           keycode = KEYBOARD__7_Ampersand;     break;  // &
+                case 0x27: keycode = KEYBOARD__SingleQuote_DoubleQuote;
+                                                                break;  // '
+                case 0x28: shifted = true;
+                           keycode = KEYBOARD__9_LeftParenthesis;
+                                                                break;  // (
+                case 0x29: shifted = true;
+                           keycode = KEYBOARD__0_RightParenthesis;
+                                                                break;  // )
+                case 0x2A: shifted = true;
+                           keycode = KEYBOARD__8_Asterisk;      break;  // *
+                case 0x2B: shifted = true;
+                           keycode = KEYBOARD__Equal_Plus;      break;  // +
+                case 0x2C: keycode = KEYBOARD__Comma_LessThan;  break;  // ,
+                case 0x2D: keycode = KEYBOARD__Dash_Underscore; break;  // -
+                case 0x2E: keycode = KEYBOARD__Period_GreaterThan;
+                                                                break;  // .
+                case 0x2F: keycode = KEYBOARD__Slash_Question;  break;  // /
+                // ... numbers
+                case 0x3A: shifted = true;
+                           keycode = KEYBOARD__Semicolon_Colon; break;  // :
+                case 0x3B: keycode = KEYBOARD__Semicolon_Colon; break;  // ;
+                case 0x3C: shifted = true;
+                           keycode = KEYBOARD__Comma_LessThan;  break;  // <
+                case 0x3D: keycode = KEYBOARD__Equal_Plus;      break;  // =
+                case 0x3E: shifted = true;
+                           keycode = KEYBOARD__Period_GreaterThan;
+                                                                break;  // >
+                case 0x3F: shifted = true;
+                           keycode = KEYBOARD__Slash_Question;  break;  // ?
+                case 0x4D: shifted = true;
+                           keycode = KEYBOARD__2_At;            break;  // @
+                // ... uppercase letters
+                case 0x5B: keycode = KEYBOARD__LeftBracket_LeftBrace;
+                                                                break;  // [
+                case 0x5C: keycode = KEYBOARD__Backslash_Pipe;  break;  // '\'
+                case 0x5D: keycode = KEYBOARD__RightBracket_RightBrace;
+                                                                break;  // ]
+                case 0x5E: shifted = true;
+                           keycode = KEYBOARD__6_Caret;         break;  // ^
+                case 0x5F: shifted = true;
+                           keycode = KEYBOARD__Dash_Underscore; break;  // _
+                case 0x60: keycode = KEYBOARD__GraveAccent_Tilde;
+                                                                break;  // `
+                // ... lowercase letters
+                case 0x7B: shifted = true;
+                           keycode = KEYBOARD__LeftBracket_LeftBrace;
+                                                                break;  // {
+                case 0x7C: shifted = true;
+                           keycode = KEYBOARD__Backslash_Pipe;  break;  // |
+                case 0x7D: shifted = true;
+                           keycode = KEYBOARD__RightBracket_RightBrace;
+                                                                break;  // }
+                case 0x7E: shifted = true;
+                           keycode = KEYBOARD__GraveAccent_Tilde;
+                                                                break;  // ~
+                case 0x7F: keycode = KEYBOARD__DeleteForward;   break;  // DEL
+            }
+
+            if (keycode) {
+                // press keycode
+                if (shifted) usb__kb__set_key(true, KEYBOARD__LeftShift);
+                usb__kb__set_key(true, keycode);
+                usb__kb__send_report();
+
+                // release keycode
+                if (shifted) usb__kb__set_key(false, KEYBOARD__LeftShift);
+                usb__kb__set_key(false, keycode);
+                usb__kb__send_report();
+
+                continue;
+            }
+        }
+
+        // --- (otherwise) send unicode sequence ---
+
         // send start sequence
         usb__kb__set_key(true,  KEYBOARD__LeftAlt   ); usb__kb__send_report();
         usb__kb__set_key(true,  KEYBOARD__Equal_Plus); usb__kb__send_report();
@@ -194,7 +245,5 @@ void key_functions__send_unicode_sequence(const char * string) {
         // send end sequence
         usb__kb__set_key(false, KEYBOARD__LeftAlt); usb__kb__send_report();
     }
-
-    set_modifier_state(state);
 }
 

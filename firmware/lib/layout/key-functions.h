@@ -29,9 +29,9 @@ void key_functions__toggle  (uint8_t keycode);
 void key_functions__jump_to_bootloader (void);
 
 // special
-void key_functions__toggle_capslock       (void);
-void key_functions__type_byte_hex         (uint8_t byte);
-void key_functions__send_unicode_sequence (const char * string);
+void key_functions__toggle_capslock (void);
+void key_functions__type_byte_hex   (uint8_t byte);
+void key_functions__type_string     (const char * string);
 
 
 // ----------------------------------------------------------------------------
@@ -105,25 +105,38 @@ void key_functions__send_unicode_sequence (const char * string);
  * - `byte`: The byte to send a representation of
  */
 
-// === key_functions__send_unicode_sequence() ===
-/**                  functions/key_functions__send_unicode_sequence/description
- * Send the "unicode sequence" for each character in `string`
- *
- * This function is, relative to the rest of life, extremely unportable. Sorry
- * about that: I looked, but I couldn't find a better way to do it.  I'm
- * including it in the hope that it will be useful anyway.
+// === key_functions__type_string() ===
+/**                            functions/key_functions__type_string/description
+ * Type the keycode (or "unicode sequence") for each character in `string`
  *
  * Arguments:
  * - `string`: A pointer to a valid UTF-8 string in PROGMEM
  *
  *
- * Operating system considerations:
+ * Notes:
  *
- * - This function should work on OS X and Windows (after enabling "hexidecimal
- *   code input" in the OS), but probably will not work on Linux (2 out of 3 of
- *   the major OSs is better than nothing...).  If you're using Linux and you
- *   want to flip that around :) please modify the function to send Linux
- *   friendly start and end sequences.  See [this Wikipedia article]
+ * - A "unicode sequence" is holding down "alt", typing "+", typing the 4
+ *   character hexadecimal unicode code for the specified character, then
+ *   releasing "alt".  This is done for every character in `string` for which a
+ *   dedicated USB keycode has not been specified.
+ *
+ * - This function is, relative to the rest of life, extremely unportable.
+ *   Sorry about that: I looked for a better way to do things, but I couldn't
+ *   find one.  It may be very convenient under certain circumstances though,
+ *   if one is willing to take a little time to understand what it's actually
+ *   doing, so I'm including it in the hope that it will be.  Please see the
+ *   implementation (in the '.c' file) for which keycodes are being sent for a
+ *   given character.
+ *
+ *
+ * Operating system considerations (for typing "unicode sequences"):
+ *
+ * - "Unicode sequences", as implemented, should work on OS X and Windows
+ *   (after enabling "hexidecimal code input" in the OS), but probably will not
+ *   work on Linux (2 out of 3 of the major OSs is better than nothing...).  If
+ *   you're using Linux and you want to flip that around :) please modify the
+ *   function to send Linux friendly start and end sequences.  See [this
+ *   Wikipedia article]
  *   (http://en.wikipedia.org/wiki/Unicode_input#Hexadecimal_code_input) for
  *   more information.
  *
@@ -144,34 +157,29 @@ void key_functions__send_unicode_sequence (const char * string);
  *
  * Usage notes:
  *
- * - This function disables all modifier keys on entry, and restores their
- *   state on exit.
- *
- * - A "unicode sequence" is holding down "alt", typing "+", typing the 4
- *   character unicode code for the specified character, then releasing "alt".
- *   This is done for every character in `string`, even the ones with a
- *   dedicated USB keycode.
- *
  * - Characters (and strings) sent with this function do not automatically
  *   repeat (as normal keys do).
  *
- * - If you're holding down any of `[0-9A-F]` when this function is called, it
- *   may not do what you want.
+ * - Please pay very special attention to what this function is actually typing
+ *   if you are using any language besides English as the default in your OS,
+ *   or if you have characters that aren't 7-bit ASCII in your string and have
+ *   not enabled "hexidecimal code input" in your OS.
+ *
+ * - This function does not disable modifier keys, or any other keys, on entry:
+ *   keys are pressed and released as they would be if one was typing them
+ *   starting with no keys pressed.  If you are holding down any keys when this
+ *   function is called, it *may* not do what you expect, depending on which
+ *   keys are being held down and which keys this function is trying to press
+ *   and release.
  *
  * - An easy way to pass a PROGMEM string to this function is to use the
  *   `PSTR()` macro in `<avr/pgmspace.h>`, as in
  *
- *       key_functions__send_unicode_sequence( PSTR ( "❄" ) );
+ *       key_functions__type_string( PSTR( "❄" ) );
  *
  *   or
  *
- *       key_functions__send_unicode_sequence( PSTR (
+ *       key_functions__type_string( PSTR(
  *               "こんにちは世界 γειά σου κόσμε hello world ^_^" ) );
- *
- * - It's probably better to define a proper macro key than to use this
- *   function for sending sequences of "normal" characters, despite the
- *   relative inconvenience.  But... if you're not concerned about portability,
- *   or other factors that might arise because of what this function is
- *   *actually* typing... it's possible to do it this way to... :) lol
  */
 
