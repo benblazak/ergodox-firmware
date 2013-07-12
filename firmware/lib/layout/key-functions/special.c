@@ -43,6 +43,38 @@ void key_functions__toggle_capslock(void) {
     usb__kb__send_report();
 }
 
+/*
+ * TODO: try using number pad numbers; see how it works
+ */
+// void key_functions__type_byte_hex(uint8_t byte) {
+//     uint8_t c[2] = { byte >> 4, byte & 0xF };
+// 
+//     bool numlock_on = usb__kb__read_led('N');
+// 
+//     if (! numlock_on ) {
+//         usb__kb__set_key(true, KEYPAD__NumLock_Clear);
+//         usb__kb__send_report();
+//         usb__kb__set_key(false, KEYPAD__NumLock_Clear);
+//     }
+// 
+//     for (uint8_t i=0; i<2; i++) {
+//         if      (c[i] == 0) c[i]  = KEYPAD__0_Insert;
+//         else if (c[i] < 10) c[i] += KEYPAD__1_End-1;
+//         else                c[i] += KEYBOARD__a_A-10;
+// 
+//         usb__kb__set_key(true, c[i]);
+//         usb__kb__send_report();
+//         usb__kb__set_key(false, c[i]);
+//     }
+// 
+//     if (! numlock_on ) {
+//         usb__kb__set_key(true, KEYPAD__NumLock_Clear);
+//         usb__kb__send_report();
+//         usb__kb__set_key(false, KEYPAD__NumLock_Clear);
+//     }
+// 
+//     usb__kb__send_report();
+// }
 void key_functions__type_byte_hex(uint8_t byte) {
     uint8_t c[2] = { byte >> 4, byte & 0xF };
 
