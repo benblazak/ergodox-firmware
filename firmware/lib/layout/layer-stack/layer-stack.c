@@ -11,13 +11,18 @@
  * - This would be relatively trivial to implement using
  *   ".../lib/data-types/list.h"; but it was written before bringing linked
  *   lists back into the code base, and while I'm sure it takes more PROGMEM to
- *   keep doing it this way, it uses less SRAM, and is also probably faster on
- *   average.  I also think it's a nice example of how to resize arrays in C
- *   based on demand.  So, those things considered, it seems better not to
- *   rewrite it.
- *
- * TODO: factor out general layer-stack stuff into "lib/data-types" and name it
- * "flex-array".  then fix the above comment :)
+ *   do it this way, it uses less SRAM, and is also probably faster on average.
+ *   I also think it's a nice example of how to resize arrays in C based on
+ *   demand.  I tried to generalize the functionality a little into a
+ *   "flex-array" for "lib/data-types", in order to make the same technique
+ *   easier to use elsewhere.  It turns out though that doing this in a
+ *   type-agnostic way leads to passing an inordinate amount of information on
+ *   the stack for each function call (array size, element size, ..., ...),
+ *   which for small stacks defeats the purpose, and is kind of inefficient and
+ *   ugly anyway.  But sacrificing a bit of PROGMEM (and programmer time) to
+ *   reimplement this everywhere it's used seems worth it, since the amount of
+ *   core code that would be able to be generalized out anyway is relatively
+ *   small and straightforward.
  */
 
 
@@ -28,194 +33,166 @@
 
 // ----------------------------------------------------------------------------
 
-/**                                               macros/BLOCK_SIZE/description
- * The number of positions to allocate or deallocate at once
+/**                                               macros/MIN_UNUSED/description
+ * The minimum number of elements to have unused after a resize
  */
-#define  BLOCK_SIZE  5
+#define  MIN_UNUSED  0
 
-/**                                                   macros/MARGIN/description
- * The number of positions to keep unused when deallocating
+/**                                               macros/MAX_UNUSED/description
+ * The maximum number of elements to have unused after a resize
  */
-#define  MARGIN  3
+#define  MAX_UNUSED  4
 
 // ----------------------------------------------------------------------------
 
+/**                                                 types/element_t/description
+ * The type of one layer-element in our layer-stack
+ *
+ * Struct members:
+ * - `id`: The layer-id of this element
+ * - `number`: The layer-number of this element
+ */
 typedef struct {
-    uint8_t id;      // layer-id
-    uint8_t number;  // layer-number
+    uint8_t id;
+    uint8_t number;
 }  element_t;
 
-static uint8_t     _allocated = 0;     // the number of positions allocated
-static uint8_t     _filled    = 0;     // the number of positions filled
-static element_t * _stack     = NULL;  // (to be used as an array)
+// ----------------------------------------------------------------------------
+
+/**                                                 variables/stack/description
+ * To hold the layer-stack and directly related metadata
+ *
+ * Struct members:
+ * - `allocated`:  The number of positions allocated
+ * - `filled`: The number of positions filled
+ * - `data`: A pointer to the array of layer-elements
+ *
+ * Notes:
+ * - The maximum value of `uint8_t filled` is `255 == -1` indicating a stack
+ *   with 255 elements.  This means that any valid offset or index will be
+ *   between `0` and `254 == -2` inclusive, and that `-1 == 255` will
+ *   therefore always be an invalid value for an offset or index.
+ */
+static struct {
+    uint8_t allocated;
+    uint8_t filled;
+    element_t * data;
+} stack;
 
 // ----------------------------------------------------------------------------
 
-/**                                      functions/_is_valid_offset/description
- * Predicate indicating whether the given offset is valid
- *
- * Arguments:
- * - `offset`: the offset to test
- *
- * Returns:
- * - `true`: if the offset is valid
- * - `false`: if the offset is not valid
- */
-static bool _is_valid_offset(uint8_t offset) {
-    // both values are `uint8_t`, so no need to check `offset >= 0`
-    return ( offset < _filled );
-}
-
-/**                                         functions/_resize_stack/description
- * Resize the stack (in increments of `BLOCK_SIZE` positions) so that at least
- * 1 and no more than `MARGIN + BLOCK_SIZE - 1` positions are unused.
- *
- * Returns:
- * - success: `0`
- * - failure: [other]
- */
-static uint8_t _resize_stack(void) {
-    uint8_t margin = _allocated - _filled;
-    if (margin == 0 || margin >= MARGIN + BLOCK_SIZE) {
-        uint8_t change = (margin == 0) ? BLOCK_SIZE : -BLOCK_SIZE;
-        uint8_t new_size = sizeof(element_t) * (_allocated + change);
-        element_t * temp = realloc(_stack, new_size);
-        if (temp) {
-            _stack = temp;
-            _allocated += change;
-        } else {
-            return 1;  // error
-        }
-    }
-    return 0;  // success
-}
-
-/**                                       functions/_shift_elements/description
- * Shift the elements above the given location either up or down by one.
- *
- * Arguments:
- * - `offset`: the offset of the element above which to operate (with the top
- *   element being `offset = 0`)
- * - `up` : whether to shift the elements "up" or "down" the stack
+/**                                          functions/resize_stack/description
+ * Resize the stack, so that the number of unused elements is between
+ * `MIN_UNUSED` and `MAX_UNUSED`, inclusive
  *
  * Returns:
  * - success: `0`
  * - failure: [other]
  *
- * Notes:
- * - This function *only* copies elements.  It does not zero or otherwise
- *   modify locations that logically should no longer have any element in them.
- *   It also does not modify the stack's counter for how many elements are
- *   filled.
- *
- * - We must have at least one element free (at the top of the stack) in order
- *   to copy up.
- *
- * - Copying down will do nothing if `offset` is `0`.
- *
- *
- * Illustration:
- *
- * ```
- *                    ,- top = 4 = filled-1
- *                   |
- * +---+---+---+---+---+---+---+
- * | 0 | 1 | 2 | 3 | 4 | 5 | 6 |       allocated = 7   filled = 5
- * +---+---+---+---+---+---+---+
- *       ^
- *       `- offset = 3
- *
- *
- * copy up: start = 4 = top = filled-1
- *          increment: i-- (start at the top and work down)
- *          end = 1 = top-offset = filled-1-offset
- *
- * copy down: start = 2 = top-offset+1 = filled-1-offset+1 = filled-offset
- *            increment: i++ (start just above the given element and work up)
- *            end = 4 = top = filled-1
- * ```
+ * Implementation notes:
+ * - We use a signed type for `unused` in case `filled` is greater than
+ *   `allocated`, as may happen when pushing a new element onto the stack.
+ *   This number should normally be much smaller than either `filled` or
+ *   `allocated`, so we don't need to worry about the maximum value being 2^7-1
+ *   instead of 2^8-1.
  */
-static uint8_t _shift_elements(uint8_t offset, bool up) {
-    uint8_t margin = _allocated - _filled;
-    if ( (!_is_valid_offset(offset)) || (up && (margin==0)) )
-        return 1;  // failure
+static uint8_t resize_stack(void) {
+    int8_t unused = stack.allocated - stack.filled;
 
-    uint8_t start     = (up) ? _filled-1        : _filled-offset ;
-    uint8_t increment = (up) ? -1               : 1              ;
-    uint8_t end       = (up) ? _filled-1-offset : _filled-1      ;
+    if (MIN_UNUSED <= unused && unused <= MAX_UNUSED)
+        return 0;  // nothing to do
 
-    for (uint8_t i=start; i!=(end+increment); i+=increment) {
-        _stack[i-increment].id     = _stack[i].id;
-        _stack[i-increment].number = _stack[i].number;
+    uint8_t new_allocated = stack.filled + (MIN_UNUSED + MAX_UNUSED) / 2;
+    void * new_data = realloc( stack.data, sizeof(element_t) * new_allocated );
+    if (new_data) {
+        stack.allocated = new_allocated;
+        stack.data = new_data;
+        return 0;  // success
     }
 
-    return 0;  // success
+    return 1;  // error: `realloc()` failed (unable to grow stack)
 }
 
 // ----------------------------------------------------------------------------
 
 uint8_t layer_stack__peek(uint8_t offset) {
-    if (! _is_valid_offset(offset) )
+    if (offset > stack.filled-1)
         return 0;  // default
 
-    return _stack[_filled-1-offset].number;
+    return stack.data[stack.filled-1-offset].number;
 }
 
-// note: must resize before shifting up, otherwise there may not be enough room
-// for the new element; should resize before incrementing `_filled`, so as not
-// to grow the stack unless we actually need to
 uint8_t layer_stack__push( uint8_t offset,
                            uint8_t layer_id,
                            uint8_t layer_number ) {
 
-    uint8_t ret = 0;
-    uint8_t existing_element_offset = layer_stack__find_id(layer_id);
-
-    if ( _is_valid_offset(existing_element_offset) ) {
-        offset = existing_element_offset;
-
-    } else {
-        _resize_stack();  // at least 1 element will be open after this
-
-        if (offset != 0)
-            // this will catch invalid offsets
-            ret = _shift_elements(offset-1, true);
-
-        if (!ret)
-            _filled++;  // (effects the meaning of `offset` below)
+    // if an element with the given layer-id already exists
+    {
+        uint8_t old_offset = layer_stack__find_id(layer_id);
+        if (old_offset != -1) {
+            stack.data[stack.filled-1-old_offset].number = layer_number;
+            return old_offset;
+        }
     }
 
-    if (ret) {
-        return -1;  // failure: return an invalid offset
-    } else {
-        _stack[_filled-1-offset].id     = layer_id;
-        _stack[_filled-1-offset].number = layer_number;
-        return offset;  // success
+    uint8_t index = stack.filled-1-offset;
+
+    // add an element
+    if (stack.filled == -1)
+        return -1;  // error: stack already full
+    stack.filled++;
+    if (index > stack.filled-1 || resize_stack()) {
+        stack.filled--;
+        return -1;  // error: index out of bounds or no room for new element
     }
+
+    // shift up
+    // - start with the top element (which is currently uninitialized), and
+    //   copy the element below it up
+    // - continue until we copy the element currently at `index` (which will
+    //   then be duplicated at `index` and `index-1`)
+    // - if the top element is currently at `index`, this will do nothing
+    for (uint8_t i = stack.filled-1; i > index; i--)
+        stack.data[i] = stack.data[i-1];
+
+    // set values
+    stack.data[index].id = layer_id;
+    stack.data[index].number = layer_number;
+
+    return offset;  // success
 }
 
-// note: should resize after shifting down and decrementing `_filled`, so as to
-// only leave `MARGIN` elements free in the stack
 uint8_t layer_stack__pop_id(uint8_t layer_id) {
     uint8_t offset = layer_stack__find_id(layer_id);
-    uint8_t ret = _shift_elements(offset, false); // will catch invalid offsets
-    if (ret) {
-        return -1;  // failure: return an invalid offset
-    } else {
-        _filled--;
-        _resize_stack();
-        return offset;  // success
-    }
+
+    if (offset == -1)
+        return -1;  // error: no element with given layer-id
+
+    uint8_t index = stack.filled-1-offset;
+
+    // shift down
+    // - start with the element at `index`, and copy the element above it down
+    // - continue until we copy the top element (which will then be duplicated
+    //   at indices `stack.filled-2` and `stack.filled-1`)
+    // - if the top element is at `index`, this will do nothing
+    for (uint8_t i = index; i < stack.filled-1; i++)
+        stack.data[i] = stack.data[i+1];
+
+    // remove an element
+    stack.filled--;
+    resize_stack();
+
+    return offset;  // success
 }
 
 uint8_t layer_stack__find_id(uint8_t layer_id) {
-    for (uint8_t i=0; i<_filled; i++)
-        if (_stack[i].id == layer_id)
-            return _filled-1-i;  // offset
-    return -1;  // failure: return an invalid offset
+    for (uint8_t i = 0; i < stack.filled; i++)
+        if (stack.data[i].id == layer_id)
+            return stack.filled-1-i;  // offset
+    return -1;  // error: no element with given layer-id
 }
 
 uint8_t layer_stack__size(void) {
-    return _filled;
+    return stack.filled;
 }
 
