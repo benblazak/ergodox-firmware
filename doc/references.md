@@ -38,7 +38,7 @@
 * [Notes on LEDs]
   (http://www.gizmology.net/LEDs.htm)  
   Talks about different types of LEDs, mentioning typical brightnesses,
-  voltages, and other intersting stuff.
+  voltages, and other interesting stuff.
 
 * [All About Circuits : Reference]
   (http://www.allaboutcircuits.com/vol_5/index.html)  
