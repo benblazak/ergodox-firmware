@@ -21,13 +21,14 @@ F_CPU := 16000000
 # processor speed, in Hz; max value is 16000000 (16MHz); must match
 # initialization in source
 
-KEYBOARD_LAYOUT := qwerty-kinesis-mod
+KEYBOARD_LAYOUT := repa
 # default layout for this keyboard
 
 KEYBOARD_LAYOUTS := \
 	colemak-symbol-mod \
 	dvorak-kinesis-mod \
-	qwerty-kinesis-mod
+	qwerty-kinesis-mod \
+	repa
 # a list of all available layouts for this keyboard
 
 # -----------------------------------------------------------------------------
