@@ -82,7 +82,7 @@ shL2kcap,  semicol,        q,        j,        k,        x, lpupo1l1,
                                                        nop,      nop,     home,
                                                         bs,      del,      end,
 // right hand ..... ......... ......... ......... ......... ......... .........
-           numPush,        6,        7,        8,        9,        0,     dash,
+             btldr,        6,        7,        8,        9,        0,     dash,
              brktL,        f,        g,        c,        r,        l,    brktR,
                            d,        h,        t,        n,        s,    slash,
           lpupo1l1,        b,        m,        w,        v,        z, shR2kcap,
