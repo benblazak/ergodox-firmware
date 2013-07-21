@@ -245,6 +245,7 @@ static const uint8_t PROGMEM mouse_hid_report_desc[] = {
 #endif
 
 #ifdef NKRO_ENABLE
+// http://geekhack.org/index.php?topic=13162.msg259955#msg259955
 static const uint8_t PROGMEM keyboard2_hid_report_desc[] = {
         0x05, 0x01,                     // Usage Page (Generic Desktop),
         0x09, 0x06,                     // Usage (Keyboard),
@@ -350,7 +351,7 @@ static const uint8_t PROGMEM config1_descriptor[CONFIG1_DESC_SIZE] = {
 	0x03,					// bInterfaceClass (0x03 = HID)
         // ThinkPad T23 BIOS doesn't work with boot mouse.
 	0x00,					// bInterfaceSubClass (0x01 = Boot)
-	0x00,					// bInterfaceProtocol (0x02 = Mouse)
+	0x02,					// bInterfaceProtocol (0x02 = Mouse)
 /*
 	0x01,					// bInterfaceSubClass (0x01 = Boot)
 	0x02,					// bInterfaceProtocol (0x02 = Mouse)

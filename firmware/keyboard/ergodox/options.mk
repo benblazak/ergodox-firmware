@@ -32,6 +32,7 @@ KEYBOARD_LAYOUTS := \
 # a list of all available layouts for this keyboard
 
 MOUSE_ENABLE := true
+NKRO_ENABLE := true
 
 # -----------------------------------------------------------------------------
 
