@@ -24,6 +24,7 @@
 #include "../../../../../firmware/lib/usb.h"
 #include "../../../../../firmware/lib/usb/usage-page/keyboard.h"
 #include "../../../../../firmware/lib/layout/key-functions.h"
+#include "../../../../../firmware/lib/layout/mouse.h"
 #include "../../../../../firmware/lib/layout/layer-stack.h"
 #include "../../../../../firmware/keyboard.h"
 

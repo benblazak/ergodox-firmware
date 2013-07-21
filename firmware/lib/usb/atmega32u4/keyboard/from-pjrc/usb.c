@@ -68,7 +68,7 @@
 // ----------------------------------------------------------------------------
 
 #define USB_SERIAL_PRIVATE_INCLUDE
-#include "usb_keyboard.h"
+#include "usb.h"
 
 /**************************************************************************
  *
@@ -491,6 +491,9 @@ static uint8_t keyboard_idle_count=0;
 // 1=num lock, 2=caps lock, 4=scroll lock, 8=compose, 16=kana
 volatile uint8_t keyboard_leds=0;
 
+// mouse
+uint8_t usb_mouse_protocol=1;
+uint8_t mouse_buttons = 0;
 
 /**************************************************************************
  *
@@ -553,6 +556,53 @@ int8_t usb_keyboard_send(void)
 	keyboard_idle_count = 0;
 	SREG = intr_state;
 	return 0;
+}
+
+// send mouse movement, buttons
+int8_t usb_mouse_send(int8_t x, int8_t y, int8_t wheel_v, int8_t wheel_h, uint8_t buttons)
+{
+	uint8_t intr_state, timeout;
+
+  mouse_buttons = buttons;
+
+	if (!usb_configured()) return -1;
+	if (x == -128) x = -127;
+	if (y == -128) y = -127;
+	if (wheel_v == -128) wheel_v = -127;
+	if (wheel_h == -128) wheel_h = -127;
+	intr_state = SREG;
+	cli();
+	UENUM = MOUSE_ENDPOINT;
+	timeout = UDFNUML + 50;
+	while (1) {
+		// are we ready to transmit?
+		if (UEINTX & (1<<RWAL)) break;
+		SREG = intr_state;
+		// has the USB gone offline?
+		if (!usb_configured()) return -1;
+		// have we waited too long?
+		if (UDFNUML == timeout) return -1;
+		// get ready to try checking again
+		intr_state = SREG;
+		cli();
+		UENUM = MOUSE_ENDPOINT;
+	}
+	UEDATX = buttons;
+	UEDATX = x;
+	UEDATX = y;
+        if (usb_mouse_protocol) {
+            UEDATX = wheel_v;
+            UEDATX = wheel_h;
+        }
+        
+	UEINTX = 0x3A;
+	SREG = intr_state;
+	return 0;
+}
+
+void usb_mouse_buttons(uint8_t buttons)
+{
+  usb_mouse_send(0, 0, 0, 0, buttons);
 }
 
 /**************************************************************************
@@ -810,7 +860,7 @@ ISR(USB_COM_vect)
 				if (bRequest == HID_GET_REPORT) {
           if (wValue == HID_REPORT_INPUT) {
 	  			  usb_wait_in_ready();
-		  	  	UEDATX = 0;
+		  	  	UEDATX = mouse_buttons;
 			    	UEDATX = 0;
 	   			 	UEDATX = 0;
 	     			UEDATX = 0;

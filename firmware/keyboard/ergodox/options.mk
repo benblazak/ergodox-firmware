@@ -31,12 +31,15 @@ KEYBOARD_LAYOUTS := \
 	repa
 # a list of all available layouts for this keyboard
 
+MOUSE_ENABLE := true
+
 # -----------------------------------------------------------------------------
 
 $(call include_options_once,lib/eeprom)
 $(call include_options_once,lib/twi)
 $(call include_options_once,lib/layout/eeprom-macro)
 $(call include_options_once,lib/layout/key-functions)
+$(call include_options_once,lib/layout/mouse)
 $(call include_options_once,lib/layout/layer-stack)
 
 # -----------------------------------------------------------------------------

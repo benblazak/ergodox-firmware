@@ -34,6 +34,15 @@ bool    usb__kb__read_key    (uint8_t keycode);
 bool    usb__kb__read_led    (char led);
 uint8_t usb__kb__send_report (void);
 
+// --- mouse ---
+#define MOUSE_BTN1 (1<<0)
+#define MOUSE_BTN2 (1<<1)
+#define MOUSE_BTN3 (1<<2)
+#define MOUSE_BTN4 (1<<3)
+#define MOUSE_BTN5 (1<<4)
+
+void usb__m__send(int8_t x, int8_t y, int8_t wheel_v, int8_t wheel_h, uint8_t buttons);
+void usb__m__buttons(uint8_t buttons);
 
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
