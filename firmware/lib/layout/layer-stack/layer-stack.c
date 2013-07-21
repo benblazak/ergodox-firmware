@@ -102,30 +102,18 @@ static struct {
  */
 static uint8_t resize_stack(void) {
     int8_t unused = stack.allocated - stack.filled;
+    uint8_t unused_max = UINT8_MAX - stack.filled;
 
     if (MIN_UNUSED <= unused && unused <= MAX_UNUSED)
         return 0;  // nothing to do
 
-    // calculate the amount of memory we'd like to have allocated
-    uint8_t new_allocated = stack.filled + (MIN_UNUSED + MAX_UNUSED) / 2;
-
-    // test whether `new_allocated` overflowed on assignment
-    if (new_allocated < stack.filled) {
-
-        // try using the maximum value
+    uint8_t new_allocated;
+    if (unused_max >= (MIN_UNUSED + MAX_UNUSED) / 2)
+        new_allocated = stack.filled + (MIN_UNUSED + MAX_UNUSED) / 2;
+    else if (unused_max >= MIN_UNUSED)
         new_allocated = UINT8_MAX;
-
-        // test whether the maximum value is large enough
-        // - we know it's not too large, because the original value (which
-        //   overflowed) would not have been too large, and this value is
-        //   smaller
-        // - we know that `new_allocated - stack.filled >= 0`, because
-        //   `new_allocated` is as large as the type can hold, at this point,
-        //   and both variables are of the same type, so `stack.filled` cannot
-        //   be larger than it
-        if (new_allocated - stack.filled < MIN_UNUSED)
-            return 1;  // unable to count the required number of elements
-    }
+    else
+        return 1;  // unable to count the required number of elements
 
     void * new_data = realloc( stack.data, sizeof(element_t) * new_allocated );
     if (!new_data)
