@@ -17,12 +17,12 @@
  *   "flex-array" for "lib/data-types", in order to make the same technique
  *   easier to use elsewhere.  It turns out though that doing this in a
  *   type-agnostic way leads to passing an inordinate amount of information on
- *   the stack for each function call (array size, element size, ..., ...),
- *   which for small stacks defeats the purpose, and is kind of inefficient and
- *   ugly anyway.  But sacrificing a bit of PROGMEM (and programmer time) to
- *   reimplement this everywhere it's used seems worth it, since the amount of
- *   core code that would be able to be generalized out anyway is relatively
- *   small and straightforward.
+ *   the call stack for each function call (array size, element size, ...,
+ *   ...), which for small stacks defeats the purpose, and is kind of
+ *   inefficient and ugly anyway.  But sacrificing a bit of PROGMEM (and
+ *   programmer time) to reimplement this everywhere it's used seems worth it,
+ *   since the amount of core code that would be able to be generalized out
+ *   anyway is relatively small and straightforward.
  */
 
 
@@ -68,9 +68,9 @@ typedef struct {
  * - `data`: A pointer to the array of layer-elements
  *
  * Notes:
- * - The maximum value of `uint8_t filled` is `255 == -1` indicating a stack
- *   with 255 elements.  This means that any valid offset or index will be
- *   between `0` and `254 == -2` inclusive, and that `-1 == 255` will
+ * - The maximum value of `uint8_t filled` is `UINT8_MAX` indicating a stack
+ *   with `UINT8_MAX` elements.  This means that any valid offset or index will
+ *   be between `0` and `UINT8_MAX-1` inclusive, and that `UINT8_MAX` will
  *   therefore always be an invalid value for an offset or index.
  */
 static struct {
@@ -95,6 +95,10 @@ static struct {
  *   This number should normally be much smaller than either `filled` or
  *   `allocated`, so we don't need to worry about the maximum value being 2^7-1
  *   instead of 2^8-1.
+ * - The only time `realloc()` should fail is if we are trying to grow the
+ *   stack.  See [the documentation]
+ *   (http://www.nongnu.org/avr-libc/user-manual/malloc.html)
+ *   for `malloc()` in avr-libc.
  */
 static uint8_t resize_stack(void) {
     int8_t unused = stack.allocated - stack.filled;
@@ -102,15 +106,34 @@ static uint8_t resize_stack(void) {
     if (MIN_UNUSED <= unused && unused <= MAX_UNUSED)
         return 0;  // nothing to do
 
+    // calculate the amount of memory we'd like to have allocated
     uint8_t new_allocated = stack.filled + (MIN_UNUSED + MAX_UNUSED) / 2;
-    void * new_data = realloc( stack.data, sizeof(element_t) * new_allocated );
-    if (new_data) {
-        stack.allocated = new_allocated;
-        stack.data = new_data;
-        return 0;  // success
+
+    // test whether `new_allocated` overflowed on assignment
+    if (new_allocated < stack.filled) {
+
+        // try using the maximum value
+        new_allocated = UINT8_MAX;
+
+        // test whether the maximum value is large enough
+        // - we know it's not too large, because the original value (which
+        //   overflowed) would not have been too large, and this value is
+        //   smaller
+        // - we know that `new_allocated - stack.filled >= 0`, because
+        //   `new_allocated` is as large as the type can hold, at this point,
+        //   and both variables are of the same type, so `stack.filled` cannot
+        //   be larger than it
+        if (new_allocated - stack.filled < MIN_UNUSED)
+            return 1;  // unable to count the required number of elements
     }
 
-    return 1;  // error: `realloc()` failed (unable to grow stack)
+    void * new_data = realloc( stack.data, sizeof(element_t) * new_allocated );
+    if (!new_data)
+        return 1;  // error: `realloc()` failed (unable to grow stack)
+
+    stack.allocated = new_allocated;
+    stack.data = new_data;
+    return 0;  // success
 }
 
 // ----------------------------------------------------------------------------
@@ -129,7 +152,7 @@ uint8_t layer_stack__push( uint8_t offset,
     // if an element with the given layer-id already exists
     {
         uint8_t old_offset = layer_stack__find_id(layer_id);
-        if (old_offset != -1) {
+        if (old_offset != UINT8_MAX) {
             stack.data[stack.filled-1-old_offset].number = layer_number;
             return old_offset;
         }
@@ -138,12 +161,12 @@ uint8_t layer_stack__push( uint8_t offset,
     uint8_t index = stack.filled-1-offset;
 
     // add an element
-    if (stack.filled == -1)
-        return -1;  // error: stack already full
+    if (stack.filled == UINT8_MAX)
+        return UINT8_MAX;  // error: stack already full
     stack.filled++;
     if (index > stack.filled-1 || resize_stack()) {
         stack.filled--;
-        return -1;  // error: index out of bounds or no room for new element
+        return UINT8_MAX;  // error: index out of bounds, or resize failed
     }
 
     // shift up
@@ -165,8 +188,8 @@ uint8_t layer_stack__push( uint8_t offset,
 uint8_t layer_stack__pop_id(uint8_t layer_id) {
     uint8_t offset = layer_stack__find_id(layer_id);
 
-    if (offset == -1)
-        return -1;  // error: no element with given layer-id
+    if (offset == UINT8_MAX)
+        return UINT8_MAX;  // error: no element with given layer-id
 
     uint8_t index = stack.filled-1-offset;
 
@@ -189,7 +212,7 @@ uint8_t layer_stack__find_id(uint8_t layer_id) {
     for (uint8_t i = 0; i < stack.filled; i++)
         if (stack.data[i].id == layer_id)
             return stack.filled-1-i;  // offset
-    return -1;  // error: no element with given layer-id
+    return UINT8_MAX;  // error: no element with given layer-id
 }
 
 uint8_t layer_stack__size(void) {
