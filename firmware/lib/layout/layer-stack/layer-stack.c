@@ -102,15 +102,14 @@ static struct {
  */
 static uint8_t resize_stack(void) {
     int8_t unused = stack.allocated - stack.filled;
-    uint8_t unused_max = UINT8_MAX - stack.filled;
 
     if (MIN_UNUSED <= unused && unused <= MAX_UNUSED)
         return 0;  // nothing to do
 
     uint8_t new_allocated;
-    if ( unused_max >= (MIN_UNUSED+MAX_UNUSED)/2 )
+    if (UINT8_MAX >= stack.filled + (MIN_UNUSED+MAX_UNUSED)/2)
         new_allocated = stack.filled + (MIN_UNUSED+MAX_UNUSED)/2;
-    else if (unused_max >= MIN_UNUSED)
+    else if (UINT8_MAX >= stack.filled + MIN_UNUSED)
         new_allocated = UINT8_MAX;
     else
         return 1;  // unable to count the required number of elements
