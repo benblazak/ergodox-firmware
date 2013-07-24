@@ -201,6 +201,7 @@ static uint8_t resize_to_write(void) {
     queue.unused_back += new_allocated - queue.allocated;
     queue.allocated = new_allocated;
     queue.data = new_data;
+
     return 0;  // success: queue reallocated
 
     #undef  queue
@@ -247,6 +248,7 @@ static uint8_t resize_to_copy(void) {
     queue.unused_back += new_allocated - queue.allocated;
     queue.allocated = new_allocated;
     queue.data = new_data;
+
     return 0;  // success: queue reallocated
 
     #undef  queue
