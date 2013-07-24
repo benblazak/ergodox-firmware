@@ -120,6 +120,7 @@ static uint8_t resize_stack(void) {
 
     stack.allocated = new_allocated;
     stack.data = new_data;
+
     return 0;  // success
 }
 
@@ -145,12 +146,11 @@ uint8_t layer_stack__push( uint8_t offset,
         }
     }
 
-    uint8_t index = stack.filled-1-offset;
-
     // add an element
     if (stack.filled == UINT8_MAX)
         return UINT8_MAX;  // error: stack already full
     stack.filled++;
+    uint8_t index = stack.filled-1-offset;
     if (index > stack.filled-1 || resize_stack()) {
         stack.filled--;
         return UINT8_MAX;  // error: index out of bounds, or resize failed
@@ -190,7 +190,7 @@ uint8_t layer_stack__pop_id(uint8_t layer_id) {
 
     // remove an element
     stack.filled--;
-    resize_stack();
+    resize_stack();  // we're shrinking the stack, so this should never fail
 
     return offset;  // success
 }
