@@ -18,7 +18,6 @@
 #include "../firmware/keyboard.h"
 #include "../firmware/lib/timer.h"
 #include "../firmware/lib/usb.h"
-#include "../firmware/lib/data-types/list.h"
 #include "./main.h"
 
 // ----------------------------------------------------------------------------

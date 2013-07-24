@@ -20,6 +20,10 @@
 // ----------------------------------------------------------------------------
 
 
+#include <stdint.h>
+
+// ----------------------------------------------------------------------------
+
 uint8_t layer_stack__peek    (uint8_t offset);
 uint8_t layer_stack__push    ( uint8_t offset,
                                uint8_t layer_id,
@@ -62,11 +66,12 @@ uint8_t layer_stack__size    (void);
  * - `offset`: the `offset` of the element on top of which to push the given
  *   element (with the top element being `offset = 0`)
  * - `layer_id`: the layer-id of the layer to push
- * - `layer_number`: the layer-number of the layer to push
+ * - `layer_number`: the layer-number of the layer to push (ignored if not
+ *   pushing a new element)
  *
  * Returns:
  * - success: the `offset` of the element that was pushed (or updated)
- * - failure: an invalid `offset`
+ * - failure: `UINT8_MAX`
  *
  * Notes:
  * - If the given layer-id is not present in the stack, and a new element is
@@ -87,7 +92,7 @@ uint8_t layer_stack__size    (void);
  *
  * Returns:
  * - success: the `offset` of the element that was popped (removed)
- * - failure: an invalid `offset`
+ * - failure: `UINT8_MAX`
  */
 
 // === layer_stack__find_id() ===
@@ -99,7 +104,7 @@ uint8_t layer_stack__size    (void);
  *
  * Returns:
  * - success: the `offset` of the element that was found
- * - failure: an invalid `offset`
+ * - failure: `UINT8_MAX`
  */
 
 // === layer_stack__size ===

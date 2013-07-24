@@ -15,8 +15,6 @@
 #include <stdint.h>
 #include <avr/interrupt.h>
 #include <avr/io.h>
-#include "../../../../firmware/lib/data-types/list.h"
-#include "../event-list.h"
 #include "../../timer.h"
 
 // ----------------------------------------------------------------------------
@@ -27,7 +25,9 @@
 
 // ----------------------------------------------------------------------------
 
-static volatile uint16_t _milliseconds__counter;
+static struct {
+    volatile uint16_t counter;
+} milliseconds;
 
 // ----------------------------------------------------------------------------
 
@@ -42,10 +42,10 @@ uint8_t timer__init(void) {
 }
 
 uint16_t timer__get_milliseconds(void) {
-    return _milliseconds__counter;
+    return milliseconds.counter;
 }
 
 ISR(TIMER0_COMPA_vect) {
-    _milliseconds__counter++;
+    milliseconds.counter++;
 }
 

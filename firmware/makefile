@@ -64,7 +64,6 @@ GENDEPFLAGS :=
 $(call include_options_once,keyboard/$(KEYBOARD_NAME))
 $(call include_options_once,lib/usb)
 $(call include_options_once,lib/timer)
-$(call include_options_once,lib/data-types/list)
 
 # -----------------------------------------------------------------------------
 
