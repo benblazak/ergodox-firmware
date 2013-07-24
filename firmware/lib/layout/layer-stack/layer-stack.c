@@ -8,21 +8,20 @@
  * Implements the layer-stack defined in "../layer-stack.h"
  *
  * Notes:
- * - This would be relatively trivial to implement using
- *   ".../lib/data-types/list.h"; but it was written before bringing linked
- *   lists back into the code base, and while I'm sure it takes more PROGMEM to
- *   do it this way, it uses less SRAM, and is also probably faster on average.
- *   I also think it's a nice example of how to resize arrays in C based on
- *   demand.  I tried to generalize the functionality a little into a
- *   "flex-array" for "lib/data-types", in order to make the same technique
- *   easier to use elsewhere.  It turns out though that doing this in a
- *   type-agnostic way leads to passing an inordinate amount of information on
- *   the call stack for each function call (array size, element size, ...,
- *   ...), which for small stacks defeats the purpose, and is kind of
- *   inefficient and ugly anyway.  But sacrificing a bit of PROGMEM (and
- *   programmer time) to reimplement this everywhere it's used seems worth it,
- *   since the amount of core code that would be able to be generalized out
- *   anyway is relatively small and straightforward.
+ * - This would be relatively trivial to implement using linked lists; but
+ *   while I'm sure it takes more PROGMEM to do it this way, it uses less SRAM,
+ *   and is also probably faster on average.  I also think it's a nice example
+ *   of how to resize arrays in C based on demand.  I tried to generalize the
+ *   functionality a little into a "flex-array" for "lib/data-types", in order
+ *   to make the same technique easier to use elsewhere.  It turns out though
+ *   that doing this in a type-agnostic way leads to passing an inordinate
+ *   amount of information on the call stack for each function call (array
+ *   size, element size, ..., ...), which for small stacks defeats the purpose
+ *   (of saving SRAM), and is kind of inefficient and ugly anyway.  But
+ *   sacrificing a bit of PROGMEM (and programmer time) to reimplement this
+ *   everywhere it's used seems worth it, since the amount of core code that
+ *   would be able to be generalized out anyway is relatively small and
+ *   straightforward.
  */
 
 
