@@ -28,7 +28,7 @@
 
 void kb__led__logical_on(char led) {
     switch(led) {
-        // case 'N': kb__led__on(1); break;  // numlock
+        case 'N': kb__led__on(1); break;  // numlock
         case 'C': kb__led__on(2); break;  // capslock
         case 'S': kb__led__on(3); break;  // scroll lock
         case 'O':                 break;  // compose
@@ -38,7 +38,7 @@ void kb__led__logical_on(char led) {
 
 void kb__led__logical_off(char led) {
     switch(led) {
-        // case 'N': kb__led__off(1); break;  // numlock
+        case 'N': kb__led__off(1); break;  // numlock
         case 'C': kb__led__off(2); break;  // capslock
         case 'S': kb__led__off(3); break;  // scroll lock
         case 'O':                  break;  // compose

@@ -475,7 +475,7 @@ static volatile uint8_t usb_configuration=0;
 uint8_t keyboard_modifier_keys=0;
 
 // which keys are currently pressed, up to 6 keys may be down at once
-uint8_t keyboard_keys[6]={0,0,0,0,0,0};
+uint8_t keyboard_keys[REPORT_KEYS]; // ={0,0,0,0,0,0};
 
 // protocol setting from the host.  We use exactly the same report
 // either way, so this variable only stores the setting since we
@@ -492,6 +492,9 @@ static uint8_t keyboard_idle_count=0;
 // 1=num lock, 2=caps lock, 4=scroll lock, 8=compose, 16=kana
 volatile uint8_t keyboard_leds=0;
 
+// nkro, disabled by default
+uint8_t keyboard_nkro_enabled=0;
+
 // mouse
 uint8_t usb_mouse_protocol=1;
 uint8_t mouse_buttons = 0;
@@ -506,15 +509,22 @@ uint8_t mouse_buttons = 0;
 // initialize USB
 void usb_init(void)
 {
+  uint8_t i;
+
 	HW_CONFIG();
 	USB_FREEZE();	// enable USB
 	PLL_CONFIG();				// config PLL
-        while (!(PLLCSR & (1<<PLOCK))) ;	// wait for PLL lock
-        USB_CONFIG();				// start USB clock
-        UDCON = 0;				// enable attach resistor
+  while (!(PLLCSR & (1<<PLOCK))) ;	// wait for PLL lock
+  USB_CONFIG();				// start USB clock
+  UDCON = 0;				// enable attach resistor
 	usb_configuration = 0;
-        UDIEN = (1<<EORSTE)|(1<<SOFE);
+  UDIEN = (1<<EORSTE)|(1<<SOFE);
 	sei();
+
+  // clear key buffer
+	for (i=0; i<REPORT_KEYS; i++) {
+		keyboard_keys[i] = 0;
+	}
 }
 
 // return 0 if the USB is not configured, or the configuration
@@ -522,6 +532,13 @@ void usb_init(void)
 uint8_t usb_configured(void)
 {
 	return usb_configuration;
+}
+
+// toggle nkro
+// 1 - nkro enabled, disabled otherwise
+void usb_keyboard_nkro_enable(uint8_t status)
+{
+  keyboard_nkro_enabled = status;
 }
 
 // TODO nkro !

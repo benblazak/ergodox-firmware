@@ -18,9 +18,9 @@ void key_functions__mouse_buttons(uint8_t left, uint8_t middle, uint8_t right)
 	if (right) mask |= 2;
 
   if (mask > 0) {
-    kb__led__on(1);
+    kb__led__on(6);
   } else {
-    kb__led__off(1);
+    kb__led__off(6);
   }
 
 	usb__m__buttons(mask);
