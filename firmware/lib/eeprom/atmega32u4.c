@@ -380,7 +380,7 @@ static void write_queued(void) {
         // copy 1 byte
         write( next_write.to, eeprom__read( (uint8_t *) next_copy.from ) );
         // prepare for the next
-        if (next_write.to < next_write.from) {
+        if (next_write.to < next_copy.from) {
             ++(next_write.to);
             ++(next_copy.from);
         } else {
