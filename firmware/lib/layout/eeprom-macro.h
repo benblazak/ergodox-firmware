@@ -25,8 +25,8 @@
  * - Even though `eeprom_macro__uid_t` has distinct fields, there is nothing
  *   that says the calling function(s) must maintain the semantic meanings of
  *   those fields.  I imagine that under most circumstances one would want to,
- *   but as long as the '.c' file implementing this interface agree (or at
- *   least work) with whatever the calling functions are doing, things should
+ *   but as long as the '.c' file implementing this interface agrees (or at
+ *   least works) with whatever the calling functions are doing, things should
  *   be fine.
  *
  *     - For example, if there were a layout implementation that ignored
@@ -56,12 +56,15 @@ typedef struct {
 
 // ----------------------------------------------------------------------------
 
-uint8_t eeprom_macro__init          (void);
-uint8_t eeprom_macro__record__start (uint8_t skip);
-uint8_t eeprom_macro__record__stop  (uint8_t skip, eeprom_macro__uid_t index);
-uint8_t eeprom_macro__play          (eeprom_macro__uid_t index);
-void    eeprom_macro__clear         (eeprom_macro__uid_t index);
-void    eeprom_macro__clear_all     (void);
+uint8_t eeprom_macro__init             (void);
+uint8_t eeprom_macro__record_init      (void);
+uint8_t eeprom_macro__record_keystroke ( bool    pressed,
+                                         uint8_t row,
+                                         uint8_t column );
+uint8_t eeprom_macro__record_finalize  (eeprom_macro__uid_t index);
+uint8_t eeprom_macro__play             (eeprom_macro__uid_t index);
+void    eeprom_macro__clear            (eeprom_macro__uid_t index);
+void    eeprom_macro__clear_all        (void);
 
 
 // ----------------------------------------------------------------------------
@@ -109,7 +112,7 @@ void    eeprom_macro__clear_all     (void);
 // functions ------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 
-// === eeprom_macro__init ===
+// === eeprom_macro__init() ===
 /**                                    functions/eeprom_macro__init/description
  * Perform any necessary initializations
  *
@@ -124,41 +127,54 @@ void    eeprom_macro__clear_all     (void);
  *   of the data stored is different than what we expect.
  */
 
-// === eeprom_macro__record__start ===
-/**                           functions/eeprom_macro__record__start/description
- * Start recording keystrokes to the EEPROM, for the creation of a macro
- *
- * Arguments:
- * - `skip`: The number of keystrokes to skip before beginning to record
+// === eeprom_macro__record_init() ===
+/**                             functions/eeprom_macro__record_init/description
+ * Prepare to record a new macro
  *
  * Returns:
  * - success: `0`
- * - failure: [other] (not enough memory left to record)
+ * - failure: [other]
  *
  * Notes:
- * - Skipping keystrokes may be useful, for example, if the using function
- *   wants to define the first key pressed after this function is called as the
- *   key to assign the macro to, rather than as part of the macro.
+ * - Only one macro may be recorded at a time.  If another macro is being
+ *   recorded when this function is called (i.e.  this function has been called
+ *   once already, and `...finalize()` has not been called yet), the old macro
+ *   should be thrown away, and this new one prepared for.
  */
 
-// === eeprom_macro__record__stop ===
-/**                            functions/eeprom_macro__record__stop/description
- * Stop recording keystrokes, and finalize the macro
+// === eeprom_macro__record_keystroke() ===
+/**                        functions/eeprom_macro__record_keystroke/description
+ * Record the next keystroke of the current macro
  *
  * Arguments:
- * - `skip`: The number of keystrokes at the end of our recording to ignore
- * - `index`: The UID of this macro
+ * - `pressed`: Whether or not the keystroke being recorded is a "press" or a
+ *   "release"
+ * - `row`: The row of the keystroke being recorded
+ * - `column`: The column of the keystroke being recorded
  *
  * Returns:
+ * - success: `0`
+ * - failure: [other] (recording not initialized, or not enough memory left to
+ *   record)
+ */
+
+// === eeprom_macro__record_finalize() ===
+/**                         functions/eeprom_macro__record_finalize/description
+ * Finalize the recording of the current macro
+ *
+ * Arguments:
+ * - `index`: The UID of this macro
+ *
+ * Returns
  * - success: `0`
  * - failure: [other] (macro was too long to fit in EEPROM)
  *
  * Notes:
- * - Before this function is called, the macro should not be referenced
- *   anywhere in the EEPROM.
+ * - Before this function is called, the macro (even though parts of it may be
+ *   written) should not be readable, or referenced anywhere in the EEPROM
  */
 
-// === eeprom_macro__play ===
+// === eeprom_macro__play() ===
 /**                                    functions/eeprom_macro__play/description
  * Play back recorded keystrokes for the macro with UID `index`
  *
@@ -166,8 +182,8 @@ void    eeprom_macro__clear_all     (void);
  * - `index`: The UID of the macro to play
  *
  * Returns:
- * - `0`: Macro successfully played
- * - [other]: Error (macro does not exist)
+ * - success: `0` (macro successfully played)
+ * - failure: [other] (macro does not exist)
  *
  * Notes:
  * - Keystrokes will be played back as if the same sequence of keys were being
@@ -176,7 +192,7 @@ void    eeprom_macro__clear_all     (void);
  *   recorded).
  */
 
-// === eeprom_macro__clear ===
+// === eeprom_macro__clear() ===
 /**                                   functions/eeprom_macro__clear/description
  * Clear the macro with UID `index`
  *
@@ -184,7 +200,7 @@ void    eeprom_macro__clear_all     (void);
  * - `index`: The UID of the macro to clear
  */
 
-// === eeprom_macro__clear_all ===
+// === eeprom_macro__clear_all() ===
 /**                               functions/eeprom_macro__clear_all/description
  * Clear all macros in the EEPROM
  *
