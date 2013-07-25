@@ -33,6 +33,9 @@ void key_functions__toggle_capslock (void);
 void key_functions__type_byte_hex   (uint8_t byte);
 void key_functions__type_string     (const char * string);
 
+// nkro
+void key_functions__toggle_nkro (void);
+
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 #endif  // ERGODOX_FIRMWARE__FIRMWARE__LIB__LAYOUT__KEY_FUNCTIONS__H

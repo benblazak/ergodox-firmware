@@ -11,6 +11,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include "../usage-page/keyboard.h"
+#include "../../../../firmware/keyboard.h"
 #include "./keyboard/from-pjrc/usb.h"
 #include "../../usb.h"
 
@@ -115,3 +116,12 @@ uint8_t usb__kb__send_report(void) {
     return usb_keyboard_send();
 }
 
+void usb__kb__toggle_nkro(void) {
+    if (keyboard_nkro_enabled == 0) {
+        keyboard_nkro_enabled = 1;
+        kb__led__on(6);
+    } else {
+        keyboard_nkro_enabled = 0;
+        kb__led__off(6);
+    }
+}

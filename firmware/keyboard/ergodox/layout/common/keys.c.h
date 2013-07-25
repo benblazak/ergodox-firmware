@@ -216,6 +216,13 @@ void R(btldr) (void) {}
 void P(MclkL) (void) { KF(mouse_buttons)(1, 0, 0); }
 void R(MclkL) (void) { KF(mouse_buttons)(0, 0, 0); }
 
+/**
+ * nkro toggle
+ */
+ 
+void P(tnkro) (void) { KF(toggle_nkro)(); }
+void R(tnkro) (void) {}
+
 // ----------------------------------------------------------------------------
 // --- layer ------------------------------------------------------------------
 

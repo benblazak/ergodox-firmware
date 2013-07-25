@@ -34,6 +34,8 @@ bool    usb__kb__read_key    (uint8_t keycode);
 bool    usb__kb__read_led    (char led);
 uint8_t usb__kb__send_report (void);
 
+void    usb__kb__toggle_nkro (void);
+
 // --- mouse ---
 #define MOUSE_BTN1 (1<<0)
 #define MOUSE_BTN2 (1<<1)
