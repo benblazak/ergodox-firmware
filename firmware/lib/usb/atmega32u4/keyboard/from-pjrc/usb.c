@@ -538,7 +538,14 @@ uint8_t usb_configured(void)
 // 1 - nkro enabled, disabled otherwise
 void usb_keyboard_nkro_enable(uint8_t status)
 {
+  uint8_t i;
+  
   keyboard_nkro_enabled = status;
+
+  // clear key buffer
+	for (i=0; i<REPORT_KEYS; i++) {
+		keyboard_keys[i] = 0;
+	}
 }
 
 // TODO nkro !

@@ -118,10 +118,10 @@ uint8_t usb__kb__send_report(void) {
 
 void usb__kb__toggle_nkro(void) {
     if (keyboard_nkro_enabled == 0) {
-        keyboard_nkro_enabled = 1;
+        usb_keyboard_nkro_enable(1);
         kb__led__on(6);
     } else {
-        keyboard_nkro_enabled = 0;
+        usb_keyboard_nkro_enable(0);
         kb__led__off(6);
     }
 }
