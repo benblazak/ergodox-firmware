@@ -12,6 +12,7 @@
 #include <stdint.h>
 #include "./controller/mcp23018.h"
 #include "./controller/teensy-2-0.h"
+#include "../../../firmware/lib/layout/eeprom-macro.h"
 #include "../../../firmware/keyboard.h"
 
 // ----------------------------------------------------------------------------
@@ -21,6 +22,8 @@ uint8_t kb__init(void) {
         return 1;
     if (mcp23018__init())  // must be second
         return 2;
+
+    eeprom_macro__init();
 
     return 0;  // success
 }

@@ -9,15 +9,40 @@
  * the ATMega32U4
  *
  *
+ * Warnings:
+ *
+ * - This library's functionality is meant to be used for recording and playing
+ *   back *temporary* macros.  Permanent macros should be assigned to a key in
+ *   the layout directly.  Macros created using this library may be difficult
+ *   (or practically impossible) to retrieve and back up, and may be
+ *   invalidated by changes to this library in future versions of the firmware.
+ *   They may also become corrupted if the keyboard looses power at an
+ *   inopportune time.  If invalidated or corrupted, macros will (probably) be
+ *   erased without warning.
+ *
+ *
  * Implementation notes:
  *
  * - One cannot trust the binary layout of bit-fields.  Bit-fields are great,
  *   but the order of the fields (among other things) is implementation
- *   defined, and [can change][1], even between different versions of the same
- *   compiler.
+ *   defined, and [can change]
+ *   (http://avr.2057.n7.nabble.com/Bit-field-packing-order-changed-between-avrgcc-implementations-td19193.html),
+ *   even between different versions of the same compiler.
  *
+ * - The default state (the "erased" state) of this EEPROM is all `1`s, which
+ *   makes setting a byte to `0xFF` easier and faster in hardware than zeroing
+ *   it.  This is reflected in some of our choices for default values, and
+ *   such.
  *
- * [1]: http://avr.2057.n7.nabble.com/Bit-field-packing-order-changed-between-avrgcc-implementations-td19193.html
+ * - For a long time, I was going to try to make this library robust in the
+ *   event of power loss, but in the end I decided not to.  This feature is
+ *   meant to be used for *temporary* macros - permanent macros really should
+ *   be assigned to a key in the layout directly, instead of using this
+ *   library's functionality after the firmware has already been loaded - so,
+ *   with the risk of power loss being fairly low, and the consequence of
+ *   (detected) eeprom-macro corruption hopefully more of an annoyance than
+ *   anything else, I decided the effort (and extra EEMEM usage) wasn't worth
+ *   it.
  */
 
 
@@ -41,92 +66,121 @@
 
 /**                                                  macros/VERSION/description
  * The version number of `struct eeprom`
+ *
+ * History:
+ * - 0x00: Reserved: EEPROM in inconsistent state
+ * - 0x01: First version
+ * - ... : (not yet assigned)
+ * - 0xFF: Reserved: EEPROM not yet initialized
  */
-#define  VERSION  1
+#define  VERSION  0x01
 
 // ----------------------------------------------------------------------------
 
-/**                                                    types/eeprom/description
+/**                                                variables/eeprom/description
  * The layout of this library's data in the EEPROM
  *
- *
- * TODO: update
  * Struct members:
- * - `meta`: For keeping track of layout metadata (`[3]` for fault tolerance)
- *     - `version`: The version of this layout
- *         - `0x00`, `0xFF` => EEPROM is uninitialized
- *     - `status`: (see `enum eeprom_status`)
- *
- * - `table`: To help in quickly failing if there is no macro for a given UID
+ * - `meta`: For keeping track of layout metadata
+ *     - `version`: The version of this layout (`[10]` for fault tolerance and
+ *       write balancing)
+ * - `table`: To help in quickly returning if the UID we're searching for does
+ *   not exist
  *     - `rows`: The number of rows this table has
  *     - `columns`: The number of columns this table has
- *     - `data`: Each entry contains a `uint8_t`, with
- *       `(bool)( (data[row][column] >> layer) & 0x1 )`
- *       indicating whether there is a macro defined for that (layer, row,
- *       column) tuple.  This limits the layers we can deal with to those
- *       between 0 and 7, inclusive.
+ *     - `data`:
+ *         - For any `eeprom_macro__uid_t uid`
+ *             - If `uid.layer > 7`, this table doesn't tell whether a macro
+ *               exists for the UID or not
+ *             - Otherwise, `! (bool)( (eeprom.table.data[uid.row][uid.column]
+ *               >> uid.layer) & 0x1 )` indicates whether a macro exists with
+ *               the given UID (`true`) or not (`false`)
+ *             - Note that the expression above will return `true` if
+ *               `uid.layer > 7`
+ * - `macros`: To hold a block of memory for storing macros
+ *     - `length`: The number of elements in `macros.data` (which is *not* the
+ *       same as the number of macros it can contain)
+ *     - `data`: A collection of "macro"s, where
+ *         - a "macro" is a "header" followed by zero or more "action"s
+ *         - a "header" is
+ *             - 4 bytes, aligned on an index boundary
  *
- * - `macros`: A block of memory for storing macros
- *     - `length`: The number of elements in `macros.data`
- *     - `data`: A collection of `macro_header`s followed by the defined number
- *       of `macro_action`s.  Essentially, a collection of (not necessarily
- *       contiguous) linked lists of macros, with one list for every row,
- *       column pair that has a remapping.
+ *               LSB - lowest address
+ *               .---------------------------------------.
+ *               |     0 | 1 | 2 | 3 | 4 | 5 | 6 | 7     |
+ *               |---------------------------------------|
+ *               |                 type                  |
+ *               '---------------------------------------'
+ *               .---------------------------------------.
+ *               |     0 | 1 | 2 | 3 | 4 | 5 | 6 | 7     |
+ *               |---------------------------------------|
+ *               |              run length               |
+ *               '---------------------------------------'
+ *               .---------------------------------------.
+ *               |    0    | 1 | 2 | 3 | 4 | 5 |  6 | 7  |
+ *               |---------------------------------------|   UID ...
+ *               | pressed |       layer       | row ... |
+ *               '---------------------------------------'
+ *               .---------------------------------------.
+ *               |   0 | 1 | 2   |   3 | 4 | 5 | 6 | 7   |
+ *               |---------------------------------------|   ... UID
+ *               |    ... row    |        column         |
+ *               '---------------------------------------'
+ *               MSB - highest address
  *
+ *             - type:
+ *                 - `0x00`: deleted macro (run length is valid)
+ *                 - `0x01`: valid macro
+ *                 - ...   : (not yet assigned)
+ *                 - `0xFF`: macro does not exist
+ *             - run length: the number of "actions" that follow
+ *             - UID: an `eeprom_macro__uid_t`, laid out in EEPROM memory as
+ *               shown
+ *
+ *         - an "action" is
+ *             - 2 bytes
+ *
+ *               LSB - lowest address
+ *               .---------------------------------------.
+ *               |    0    | 1 | 2 | 3 | 4 | 5 |  6 | 7  |
+ *               |---------------------------------------|   UID ...
+ *               | pressed |       layer       | row ... |
+ *               '---------------------------------------'
+ *               .---------------------------------------.
+ *               |   0 | 1 | 2   |   3 | 4 | 5 | 6 | 7   |
+ *               |---------------------------------------|   ... UID
+ *               |    ... row    |        column         |
+ *               '---------------------------------------'
+ *               MSB - highest address
+ *
+ *             - UID: an `eeprom_macro__uid_t`, laid out in EEMEM as shown
+ *                 - Only "pressed", "row", and "column" are relevant, since
+ *                   these are what will be passed to `kb__layout__exec_key()`
+ *                   when playing back the macro.  "layer" will be ignored.
  *
  * Notes:
  *
- * - We keep track of `table.rows`, `table.columns`, and `macros.length`, in
- *   addition to `header.version`, because they all effect the precise layout
- *   of the persistent data; if any of them is different, special handling is
- *   required at the least, and usually the stored data will be unusable.
+ * - We depict bytes as little endian (which is the opposite of the way they're
+ *   normally portrayed) to be consistent with the byte-order, which we define
+ *   to be little endian to be consistent with the way that avr-gcc allocates
+ *   datatypes larger than 1 byte (see [this discussion]
+ *   (http://www.avrfreaks.net/index.php?name=PNphpBB2&file=viewtopic&p=337747)
+ *   on <http://www.avrfreaks.net/>).  Keep in mind that shifting "right" (with
+ *   `>>`) still shifts towards the 0th bit.
  *
  * - The struct must be `packed` and `aligned(1)`, or we risk allocating more
  *   than `OPT__EEPROM_MACRO__EEPROM_SIZE` bytes.  This should be the default
  *   when compiling with `avr-gcc`, but it's important to emphasize that we
  *   depend on it.
  *
- * TODO: implement putting a log at the end :)
- * - how to describe shifting data down?
- * - max space to leave for compression?
+ * - We keep track of `table.rows`, `table.columns`, and `macros.length`, in
+ *   addition to `header.version`, because they all effect the precise layout
+ *   of the persistent data; if any of them is different, special handling is
+ *   required at the least, and usually the stored data will be unusable.
  */
-
-/**                                              types/macro_header/description
- * The header for a macro living in `macros.data`
- *
- * Struct members:
- * - `flag`:
- *     - `true` => `macro_header`
- *     - `false` => `macro_action`
- * - `status`: (see `enum macro_header_status` for explicitly defined values)
- *     - [other]: to be moved `status - MH_S_TO_MOVE_1 + 1` indices towards
- *       `macros.data[0]`
- * - `run_length`: The number of `macro_action`s following this header
- *     - `0x00` => this header marks the beginning of unused space
- * - `uid`: The Unique IDentifier (UID) of this macro
- */
-
-/**                                              types/macro_action/description
- * A single action belonging to a macro living in `macros.data`
- *
- * Struct members:
- * - `flag`:
- *     - `true` => `macro_header`
- *     - `false` => `macro_action`
- * - The key state (`pressed` or unpressed), `row`, and `column` of the action
- *   recorded
- *
- * Notes:
- * - To be "executed" by calling `kb__layout__exec_key()` with the appropriate
- *   arguments.
- */
-
-// ----------------------------------------------------------------------------
-// TODO: redesign
-
 struct eeprom {
     struct meta {
-        uint8_t version[3];
+        uint8_t version[10];
     } meta;
 
     struct table {
@@ -136,68 +190,56 @@ struct eeprom {
     } table;
 
     struct macros {
-        uint16_t length;
-        uint8_t  data[ OPT__EEPROM_MACRO__EEPROM_SIZE
-                       - 2  // for `length`
-                       - sizeof(struct meta)
-                       - sizeof(struct table) ];
+        uint8_t length;
+        uint32_t data[ ( OPT__EEPROM_MACRO__EEPROM_SIZE
+                          - 1  // for `length`
+                          - sizeof(struct meta)
+                          - sizeof(struct table) ) / 4 ];
     } macros;
 
-} __attribute__((packed, aligned(1)));
-
-struct macro_header {
-    uint8_t type;
-    uint8_t run_length;
-    uint16_t uid;
-};
-
-struct log_header {
-    uint8_t type;
-    uint8_t run_length;
-};
-
-enum type {
-    TYPE_MACRO,
-    TYPE_LOG_ATOMIC_WRITE,
-    TYPE_LOG_ATOMIC_COPY,
-    TYPE_HEADER_NULL = 0xFF
-};
-
-struct macro_action {
-    uint8_t pressed  : 1;
-    uint8_t row      : 7;
-    uint8_t reserved : 1;
-    uint8_t column   : 7;
-};
-
-struct log_action_copy {
-    uint16_t to;
-    uint16_t from;
-    uint8_t length;
-};
-
-struct log_action_write {
-    uint16_t to;
-    uint8_t data;
-};
+} __attribute__((packed, aligned(1))) eeprom EEMEM;
 
 // ----------------------------------------------------------------------------
 
-struct eeprom eeprom EEMEM;
-
-// ----------------------------------------------------------------------------
-
-/**                                          functions/atomic_write/description
- * TODO
- */
-static void atomic_write(uint8_t length, uint8_t * address[], uint8_t data[]) {
-}
-
-/**                                           functions/atomic_copy/description
- * TODO
- */
-static void atomic_copy(uint8_t * to, uint8_t * from, uint8_t length) {
-}
+// /**                                              functions/read_uid/description
+//  * Read a UID from EEMEM
+//  *
+//  * Arguments:
+//  * - `address`: The EEMEM address of the first byte of the UID
+//  *
+//  * Returns:
+//  * - success: The UID (an `eeprom_macro__uid_t`)
+//  *
+//  * Notes:
+//  * - Format of the UID in EEMEM
+//  *
+//  *       LSB - lowest address
+//  *       .---------------------------------------.
+//  *       |    0    | 1 | 2 | 3 | 4 | 5 |  6 | 7  |
+//  *       |---------------------------------------|   UID ...
+//  *       | pressed |       layer       | row ... |
+//  *       '---------------------------------------'
+//  *       .---------------------------------------.
+//  *       |   0 | 1 | 2   |   3 | 4 | 5 | 6 | 7   |
+//  *       |---------------------------------------|   ... UID
+//  *       |    ... row    |        column         |
+//  *       '---------------------------------------'
+//  *       MSB - highest address
+//  */
+// static eeprom_macro__uid_t read_uid(uint8_t * address) {
+//     uint8_t byte;
+//     eeprom_macro__uid_t uid;
+// 
+//     byte = eeprom__read(address);
+//     uid.pressed = byte & 0x1;
+//     uid.layer = (byte >> 1) & 0x1F;
+//     uid.row = ((byte >> 6) & 0x3) << 3;
+//     byte = eeprom__read(address+1);
+//     uid.row |= byte & 0x7;
+//     uid.column = byte >> 3;
+// 
+//     return uid;
+// }
 
 /**                                              functions/compress/description
  * Compress `macros.data`
@@ -214,11 +256,21 @@ uint8_t eeprom_macro__init(void) {
     return 0;
 }
 
-uint8_t eeprom_macro__record__start(uint8_t skip) {
+uint8_t eeprom_macro__record_init(void) {
     return 0;
 }
 
-uint8_t eeprom_macro__record__stop(uint8_t skip, eeprom_macro__uid_t index) {
+uint8_t eeprom_macro__record_keystroke( bool    pressed,
+                                        uint8_t row,
+                                        uint8_t column ) {
+    return 0;
+}
+
+uint8_t eeprom_macro__record_finalize(eeprom_macro__uid_t index) {
+    return 0;
+}
+
+uint8_t eeprom_macro__exists(eeprom_macro__uid_t index) {
     return 0;
 }
 
@@ -231,4 +283,5 @@ void eeprom_macro__clear(eeprom_macro__uid_t index) {
 
 void eeprom_macro__clear_all(void) {
 }
+
 

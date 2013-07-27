@@ -62,6 +62,7 @@ uint8_t eeprom_macro__record_keystroke ( bool    pressed,
                                          uint8_t row,
                                          uint8_t column );
 uint8_t eeprom_macro__record_finalize  (eeprom_macro__uid_t index);
+uint8_t eeprom_macro__exists           (eeprom_macro__uid_t index);
 uint8_t eeprom_macro__play             (eeprom_macro__uid_t index);
 void    eeprom_macro__clear            (eeprom_macro__uid_t index);
 void    eeprom_macro__clear_all        (void);
@@ -123,8 +124,8 @@ void    eeprom_macro__clear_all        (void);
  * Meant to be called exactly once by `kb__init()`
  *
  * Notes:
- * - This function should zero the EEPROM to the current format if the version
- *   of the data stored is different than what we expect.
+ * - This function should initialize the EEPROM to the current format if the
+ *   version of the data stored is different than what we expect.
  */
 
 // === eeprom_macro__record_init() ===
@@ -133,7 +134,7 @@ void    eeprom_macro__clear_all        (void);
  *
  * Returns:
  * - success: `0`
- * - failure: [other]
+ * - failure: [other] (not enough memory left to record)
  *
  * Notes:
  * - Only one macro may be recorded at a time.  If another macro is being
@@ -154,8 +155,7 @@ void    eeprom_macro__clear_all        (void);
  *
  * Returns:
  * - success: `0`
- * - failure: [other] (recording not initialized, or not enough memory left to
- *   record)
+ * - failure: [other] (not enough memory left to record)
  */
 
 // === eeprom_macro__record_finalize() ===
@@ -167,11 +167,23 @@ void    eeprom_macro__clear_all        (void);
  *
  * Returns
  * - success: `0`
- * - failure: [other] (macro was too long to fit in EEPROM)
+ * - failure: [other]
  *
  * Notes:
  * - Before this function is called, the macro (even though parts of it may be
  *   written) should not be readable, or referenced anywhere in the EEPROM
+ */
+
+// === eeprom_macro__exists() ===
+/**                                  functions/eeprom_macro__exists/description
+ * Predicate indicating whether a macro exists for the given UID
+ *
+ * Arguments:
+ * - `index`: The UID of the macro to look for
+ *
+ * Returns:
+ * - `1`: if a macro with the given UID exists
+ * - `0`: if a macro with the given UID does not exist
  */
 
 // === eeprom_macro__play() ===

@@ -259,6 +259,16 @@
 * [A small discussion on AVR endianness]
   (http://www.avrfreaks.net/index.php?name=PNphpBB2&file=viewtopic&p=337752#337752)
 
+* [Another discussion on AVR endianness]
+  (http://www.avrfreaks.net/index.php?name=PNphpBB2&file=viewtopic&p=337747)  
+  Wherin it is well argued that AVRs are neither big endian nor little endian,
+  since all atomic arithmetic operators work on 8-bit data types only.
+  Apparently, where there are (other) native multi-byte things going on,
+  endinness is inconsistent.  It seems like most things though (or at least the
+  most common things?) are little endian.  The LSB of a `uint16_t`, for
+  instance, is stored in the lower memory address (which is apparently
+  consistent with the way GCC typically does things).
+
 * [Wide characters and unicode on the AVR]
   (http://www.avrfreaks.net/index.php?name=PNphpBB2&file=printview&t=64431&start=0)
 
