@@ -125,26 +125,17 @@ uint8_t eeprom__copy  (uint8_t * to, uint8_t * from, uint8_t length);
  * - success: `0`
  * - failure: [other]
  *
+ *
  * Implementation notes:
- * - Undefined behavior will result if
- *     - `to` is not a valid address.
- *     - `from` is not a valid address.
- *     - Any address in either the block you're copying from
- *       (`from`..`from+length-1`) or the block you're copying to
- *       (`to`..`to+length-1`) is invalid.
- *     - The block you're copying from overlaps with the block you're copying
- *       to.
- * - The direction in which the block is copied (beginning with `to` and
- *   incrementing, or beginning with `to + length - 1` and decrementing) is
- *   undefined.
- *     - Ideally, one would probably want to start with `to` and increment if
- *       one was copying from a higher address to a lower one, and with `to +
- *       length - 1` and decrement if one was copying from a lower address to a
- *       higher one.  This way, copying overlapping blocks would work as one
- *       would expect (i.e. data would be moved up or down by `length` bytes).
- *       But it seems like this might become more complicated than I'd like it
- *       to be, and it also (if it turns out to matter) would be inordinately
- *       difficult to make safe against data corruption in the event of power
- *       loss.
+ *
+ * - If `to == from`, nothing should be done
+ * - If `to < from`, copying should start with the given addresses, and
+ *   increment for `length - 1` bytes
+ * - If `to > from`, copying should start with the given addresses, and
+ *   decrement for `length - 1` bytes
+ *
+ * - Undefined behavior will result if any address in either the block you're
+ *   copying from (`from`..`from+length-1`) or the block you're copying to
+ *   (`to`..`to+length-1`) is invalid.
  */
 

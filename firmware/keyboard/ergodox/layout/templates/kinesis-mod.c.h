@@ -5,22 +5,31 @@
  * ------------------------------------------------------------------------- */
 
 /**                                                                 description
- * A QWERTY layout adapted from the default Kinesis layout.  The position of
- * the symbol keys on the function layer was (roughly) taken from the Arensito
- * layout.
+ * A layout with the home layer adapted from the default Kinesis layout.  The
+ * position of the symbol keys on the function layer was (roughly) taken from
+ * the Arensito layout.
  *
  * Implements the "layout" section of '.../firmware/keyboard.h'
+ *
+ * The template key prefix is `T_`, with the rest of the name indicating the
+ * key's position in the QWERTY layout.
  */
 
 
-#include "./common/definitions.h"
+#ifndef ERGODOX_FIRMWARE__KEYBOARD__ERGODOX__LAYOUT__TEMPLATES__KINESIS_MOD__C__H
+#define ERGODOX_FIRMWARE__KEYBOARD__ERGODOX__LAYOUT__TEMPLATES__KINESIS_MOD__C__H
+// ----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
+
+
+#include "../common/definitions.h"
 
 
 // ----------------------------------------------------------------------------
 // matrix control
 // ----------------------------------------------------------------------------
 
-#include "./common/exec_key.c.h"
+#include "../common/exec_key.c.h"
 
 
 // ----------------------------------------------------------------------------
@@ -52,7 +61,7 @@ void kb__led__logical_off(char led) {
 // keys
 // ----------------------------------------------------------------------------
 
-#include "./common/keys.c.h"
+#include "../common/keys.c.h"
 
 KEYS__LAYER__NUM_PUSH(10, 3);
 KEYS__LAYER__NUM_POP(10);
@@ -62,7 +71,7 @@ KEYS__LAYER__NUM_POP(10);
 // layout
 // ----------------------------------------------------------------------------
 
-#include "./common/matrix.h"
+#include "../common/matrix.h"
 
 
 static _layout_t _layout = {
@@ -74,18 +83,18 @@ static _layout_t _layout = {
        K,    nop,
 // left hand ...... ......... ......... ......... ......... ......... .........
    equal,        1,        2,        3,        4,        5,      esc,
-     tab,        q,        w,        e,        r,        t,   lpu1l1,
- bkslash,        a,        s,        d,        f,        g,
-shL2kcap,        z,        x,        c,        v,        b, lpupo1l1,
+     tab,      T_q,      T_w,      T_e,      T_r,      T_t,   lpu1l1,
+ bkslash,      T_a,      T_s,      T_d,      T_f,      T_g,
+shL2kcap,      T_z,      T_x,      T_c,      T_v,      T_b, lpupo1l1,
     guiL,    grave,  bkslash,   arrowL,   arrowR,
                                                                ctrlL,     altL,
                                                        nop,      nop,     home,
                                                         bs,      del,      end,
 // right hand ..... ......... ......... ......... ......... ......... .........
            numPush,        6,        7,        8,        9,        0,     dash,
-             brktL,        y,        u,        i,        o,        p,    brktR,
-                           h,        j,        k,        l,  semicol,    quote,
-          lpupo1l1,        n,        m,    comma,   period,    slash, shR2kcap,
+             brktL,      T_y,      T_u,      T_i,      T_o,      T_p,    brktR,
+                         T_h,      T_j,      T_k,      T_l,T_semicol,  T_quote,
+          lpupo1l1,      T_n,      T_m,  T_comma, T_period,  T_slash, shR2kcap,
                                 arrowL,   arrowD,   arrowU,   arrowR,     guiR,
     altR,    ctrlR,
    pageU,      nop,      nop,
@@ -165,4 +174,9 @@ shL2kcap,        z,        x,        c,        v,        b, lpupo1l1,
 
 // ............................................................................
 };
+
+
+// ----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
+#endif  // ERGODOX_FIRMWARE__KEYBOARD__ERGODOX__LAYOUT__TEMPLATES__KINESIS_MOD__C__H
 

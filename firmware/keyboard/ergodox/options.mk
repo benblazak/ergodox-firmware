@@ -25,9 +25,9 @@ KEYBOARD_LAYOUT := repa
 # default layout for this keyboard
 
 KEYBOARD_LAYOUTS := \
-	colemak-symbol-mod \
-	dvorak-kinesis-mod \
-	qwerty-kinesis-mod \
+	colemak--kinesis-mod \
+	dvorak--kinesis-mod \
+	qwerty--kinesis-mod \
 	repa
 # a list of all available layouts for this keyboard
 

@@ -380,8 +380,13 @@ static void write_queued(void) {
         // copy 1 byte
         write( next_write.to, eeprom__read( (uint8_t *) next_copy.from ) );
         // prepare for the next
-        ++(next_write.to);
-        ++(next_copy.from);
+        if (next_write.to < next_copy.from) {
+            ++(next_write.to);
+            ++(next_copy.from);
+        } else {
+            --(next_write.to);
+            --(next_copy.from);
+        }
         --(next_write.value);
 
     } else {
@@ -449,6 +454,9 @@ uint8_t eeprom__write(uint8_t * address, uint8_t data) {
 
 // note: this should be the only function adding elements to `to_copy`
 uint8_t eeprom__copy(uint8_t * to, uint8_t * from, uint8_t length) {
+    if (to == from)
+        return 0;  // nothing to do
+
     to_write.unused_back--;
     to_copy.unused_back--;
     if (resize_to_write() || resize_to_copy()) {
