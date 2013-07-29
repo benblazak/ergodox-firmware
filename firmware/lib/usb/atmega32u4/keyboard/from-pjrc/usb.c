@@ -493,7 +493,7 @@ static uint8_t keyboard_idle_count=0;
 volatile uint8_t keyboard_leds=0;
 
 // nkro, disabled by default
-uint8_t keyboard_nkro_enabled=0;
+bool keyboard_nkro_enabled=false;
 
 // mouse
 uint8_t usb_mouse_protocol=1;
@@ -536,8 +536,9 @@ uint8_t usb_configured(void)
 
 // toggle nkro
 // 1 - nkro enabled, disabled otherwise
-void usb_keyboard_nkro_enable(uint8_t status)
+void usb_keyboard_nkro_enable(bool status)
 {
+#ifdef NKRO_ENABLE
   uint8_t i;
   
   keyboard_nkro_enabled = status;
@@ -546,13 +547,13 @@ void usb_keyboard_nkro_enable(uint8_t status)
 	for (i=0; i<REPORT_KEYS; i++) {
 		keyboard_keys[i] = 0;
 	}
+#endif
 }
 
-// TODO nkro !
 // send the contents of keyboard_keys and keyboard_modifier_keys
 int8_t usb_keyboard_send(void)
 {
-	uint8_t i, intr_state, timeout;
+	uint8_t i, intr_state, timeout, keys_end = KBD_REPORT_KEYS;
 
 	if (!usb_configuration) return -1;
 	intr_state = SREG;
@@ -573,8 +574,16 @@ int8_t usb_keyboard_send(void)
 		UENUM = KBD_ENDPOINT;
 	}
 	UEDATX = keyboard_modifier_keys;
-	UEDATX = 0;
-	for (i=0; i<6; i++) {
+#ifdef NKRO_ENABLE
+  if (!keyboard_nkro_enabled) {
+	  UEDATX = 0;
+  } else {
+    keys_end = KBD2_REPORT_KEYS;
+  }
+#else
+  UEDATX = 0;
+#endif
+	for (i=0; i<keys_end; i++) {
 		UEDATX = keyboard_keys[i];
 	}
 	UEINTX = 0x3A;
@@ -657,7 +666,11 @@ ISR(USB_GEN_vect)
 		usb_configuration = 0;
         }
 	if ((intbits & (1<<SOFI)) && usb_configuration) {
+#ifdef NKRO_ENABLE
+		if (!keyboard_nkro_enabled && keyboard_idle_config && (++div4 & 3) == 0) {
+#else
 		if (keyboard_idle_config && (++div4 & 3) == 0) {
+#endif
 			UENUM = KBD_ENDPOINT;
 			if (UEINTX & (1<<RWAL)) {
 				keyboard_idle_count++;

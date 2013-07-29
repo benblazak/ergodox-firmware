@@ -22,6 +22,7 @@
 #define usb_serial_h__
 
 #include <stdint.h>
+#include <stdbool.h>
 
 /*------------------------------------------------------------------*
  * Keyboard descriptor setting
@@ -65,8 +66,8 @@ extern uint8_t keyboard_modifier_keys;
 extern uint8_t keyboard_keys[REPORT_KEYS];
 extern volatile uint8_t keyboard_leds;
 
-extern uint8_t keyboard_nkro_enabled;
-void usb_keyboard_nkro_enable(uint8_t);
+extern bool keyboard_nkro_enabled;
+void usb_keyboard_nkro_enable(bool);
 
 // mouse
 extern uint8_t usb_mouse_protocol;
