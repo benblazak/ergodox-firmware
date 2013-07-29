@@ -553,12 +553,26 @@ void usb_keyboard_nkro_enable(bool status)
 // send the contents of keyboard_keys and keyboard_modifier_keys
 int8_t usb_keyboard_send(void)
 {
-	uint8_t i, intr_state, timeout, keys_end = KBD_REPORT_KEYS;
+	uint8_t i, intr_state, timeout, keys_end, endpoint;
 
 	if (!usb_configuration) return -1;
+
+#ifdef NKRO_ENABLE
+  if (!keyboard_nkro_enabled) {
+    endpoint = KBD_ENDPOINT;
+    keys_end = KBD_REPORT_KEYS;
+  } else {
+    endpoint = KBD2_ENDPOINT;
+    keys_end = KBD2_REPORT_KEYS;
+  }
+#else
+	endpoint = KBD_ENDPOINT;
+  keys_end = KBD_REPORT_KEYS;
+#endif
+
 	intr_state = SREG;
 	cli();
-	UENUM = KBD_ENDPOINT;
+	UENUM = endpoint;
 	timeout = UDFNUML + 50;
 	while (1) {
 		// are we ready to transmit?
@@ -571,14 +585,12 @@ int8_t usb_keyboard_send(void)
 		// get ready to try checking again
 		intr_state = SREG;
 		cli();
-		UENUM = KBD_ENDPOINT;
+		UENUM = endpoint;
 	}
 	UEDATX = keyboard_modifier_keys;
 #ifdef NKRO_ENABLE
   if (!keyboard_nkro_enabled) {
 	  UEDATX = 0;
-  } else {
-    keys_end = KBD2_REPORT_KEYS;
   }
 #else
   UEDATX = 0;

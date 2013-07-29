@@ -77,10 +77,12 @@ uint8_t usb__kb__set_key(bool pressed, uint8_t keycode) {
         if (pressed) {
             if ((keycode>>3) < REPORT_KEYS) {
                 keyboard_keys[keycode>>3] |= 1<<(keycode&7);
+                return 0;
             }
         } else {
             if ((keycode>>3) < REPORT_KEYS) {
                 keyboard_keys[keycode>>3] &= ~(1<<(keycode&7));
+                return 0;
             }
         }
     }
@@ -113,7 +115,7 @@ bool usb__kb__read_key(uint8_t keycode) {
         }
     } else {
         if ((keycode>>3) < REPORT_KEYS) {
-            return keyboard_keys[keycode>>3] & (1<<(keycode&7)) > 0;
+            return (keyboard_keys[keycode>>3] & (1<<(keycode&7)));
         }
     }
 
