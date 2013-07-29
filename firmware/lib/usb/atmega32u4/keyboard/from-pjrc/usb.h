@@ -37,7 +37,7 @@
 #ifdef NKRO_ENABLE
 #define KBD2_INTERFACE		2
 #define KBD2_ENDPOINT		3
-#define KBD2_SIZE		16
+#define KBD2_SIZE		24
 #define KBD2_BUFFER		EP_DOUBLE_BUFFER
 #define KBD2_REPORT_KEYS	(KBD2_SIZE - 1)
 #endif
