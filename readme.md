@@ -27,6 +27,11 @@ changed since this document was last properly updated:
   a bit of code from [hasu's tmk firmware]
   (https://github.com/tmk/tmk_keyboard).  Revision 2 probably won't have this
   functionality for a while.
+* Gyuri Horak implemented NKRO and mouse keys in [his branch]
+  (https://github.com/dyuri/ergodox-firmware) of rev-2.  Not merged, but I plan
+  to implement the features later, if I can.  See [Pull Request #28]
+  (https://github.com/benblazak/ergodox-firmware/pull/28).
+
 
 
 ### Table of Contents
