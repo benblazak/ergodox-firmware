@@ -1,11 +1,15 @@
-# [ergodox-firmware][]: Firmware for the [ErgoDox keyboard][]
+# [Firmware][ergodox-firmware] for the [ErgoDox keyboard][]
 
 The official website is [ergodox.org] (http://www.ergodox.org).  
 Also see the [geekhack]
 (http://geekhack.org/showthread.php?22780-Interest-Check-Custom-split-ergo-keyboard)
 and [deskthority]
 (http://deskthority.net/workshop-f7/split-ergonomic-keyboard-project-t1753.html)
-discussion threads.
+discussion threads.  
+Kits are periodically for sale [on Massdrop] (https://www.massdrop.com/buy/ergodox),
+who also hosts [build instructions] (https://www.massdrop.com/ext/ergodox/assembly.php)
+and a [web UI] (https://www.massdrop.com/ext/ergodox)
+for configuring layouts.
 
 
 ### Notes
