@@ -138,7 +138,7 @@
  *               shown
  *
  *         - an "action" is
- *             - 2 bytes
+ *             - 2 bytes, aligned on an index or half index boundary
  *
  *               LSB - lowest address
  *               .---------------------------------------.
@@ -165,8 +165,9 @@
  *   to be little endian to be consistent with the way that avr-gcc allocates
  *   datatypes larger than 1 byte (see [this discussion]
  *   (http://www.avrfreaks.net/index.php?name=PNphpBB2&file=viewtopic&p=337747)
- *   on <http://www.avrfreaks.net/>).  Keep in mind that shifting "right" (with
- *   `>>`) still shifts towards the 0th bit.
+ *   on <http://www.avrfreaks.net/>).
+ *   Keep in mind that shifting "right" (with `>>`) still shifts towards the
+ *   0th bit.
  *
  * - The struct must be `packed` and `aligned(1)`, or we risk allocating more
  *   than `OPT__EEPROM_MACRO__EEPROM_SIZE` bytes.  This should be the default
@@ -177,6 +178,13 @@
  *   addition to `header.version`, because they all effect the precise layout
  *   of the persistent data; if any of them is different, special handling is
  *   required at the least, and usually the stored data will be unusable.
+ *
+ *
+ * Implementation notes:
+ *
+ * - `macros.length` only needs to be 8 bits wide since we're using 4 bytes per
+ *   index, and the EEPROM has a maximum of 1024 = 2^10 bytes addressable.
+ *   2^10/4 = 2^8.
  */
 struct eeprom {
     struct meta {
@@ -200,46 +208,6 @@ struct eeprom {
 } __attribute__((packed, aligned(1))) eeprom EEMEM;
 
 // ----------------------------------------------------------------------------
-
-// /**                                              functions/read_uid/description
-//  * Read a UID from EEMEM
-//  *
-//  * Arguments:
-//  * - `address`: The EEMEM address of the first byte of the UID
-//  *
-//  * Returns:
-//  * - success: The UID (an `eeprom_macro__uid_t`)
-//  *
-//  * Notes:
-//  * - Format of the UID in EEMEM
-//  *
-//  *       LSB - lowest address
-//  *       .---------------------------------------.
-//  *       |    0    | 1 | 2 | 3 | 4 | 5 |  6 | 7  |
-//  *       |---------------------------------------|   UID ...
-//  *       | pressed |       layer       | row ... |
-//  *       '---------------------------------------'
-//  *       .---------------------------------------.
-//  *       |   0 | 1 | 2   |   3 | 4 | 5 | 6 | 7   |
-//  *       |---------------------------------------|   ... UID
-//  *       |    ... row    |        column         |
-//  *       '---------------------------------------'
-//  *       MSB - highest address
-//  */
-// static eeprom_macro__uid_t read_uid(uint8_t * address) {
-//     uint8_t byte;
-//     eeprom_macro__uid_t uid;
-// 
-//     byte = eeprom__read(address);
-//     uid.pressed = byte & 0x1;
-//     uid.layer = (byte >> 1) & 0x1F;
-//     uid.row = ((byte >> 6) & 0x3) << 3;
-//     byte = eeprom__read(address+1);
-//     uid.row |= byte & 0x7;
-//     uid.column = byte >> 3;
-// 
-//     return uid;
-// }
 
 /**                                              functions/compress/description
  * Compress `macros.data`
@@ -271,6 +239,7 @@ uint8_t eeprom_macro__record_finalize(eeprom_macro__uid_t index) {
 }
 
 uint8_t eeprom_macro__exists(eeprom_macro__uid_t index) {
+    // TODO
     return 0;
 }
 
@@ -283,5 +252,4 @@ void eeprom_macro__clear(eeprom_macro__uid_t index) {
 
 void eeprom_macro__clear_all(void) {
 }
-
 
