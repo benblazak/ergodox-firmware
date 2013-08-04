@@ -209,6 +209,19 @@ void R(shR2kcap) (void) { KF(2_keys_capslock)(false, KEYBOARD__RightShift); }
 void P(btldr) (void) { KF(jump_to_bootloader)(); }
 void R(btldr) (void) {}
 
+/**
+ * mouse left click
+ */
+
+void P(MclkL) (void) { KF(mouse_buttons)(1, 0, 0); }
+void R(MclkL) (void) { KF(mouse_buttons)(0, 0, 0); }
+
+/**
+ * nkro toggle
+ */
+ 
+void P(tnkro) (void) { KF(toggle_nkro)(); }
+void R(tnkro) (void) {}
 
 // ----------------------------------------------------------------------------
 // --- layer ------------------------------------------------------------------

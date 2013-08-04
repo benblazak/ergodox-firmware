@@ -22,14 +22,59 @@
 #define usb_serial_h__
 
 #include <stdint.h>
+#include <stdbool.h>
 
+/*------------------------------------------------------------------*
+ * Keyboard descriptor setting
+ *------------------------------------------------------------------*/
+#define KBD_INTERFACE		0
+#define KBD_ENDPOINT		1
+#define KBD_SIZE		8
+#define KBD_BUFFER		EP_DOUBLE_BUFFER
+#define KBD_REPORT_KEYS		(KBD_SIZE - 2)
+
+// secondary keyboard
+#ifdef NKRO_ENABLE
+#define KBD2_INTERFACE		2
+#define KBD2_ENDPOINT		3
+#define KBD2_SIZE		24
+#define KBD2_BUFFER		EP_DOUBLE_BUFFER
+#define KBD2_REPORT_KEYS	(KBD2_SIZE - 1)
+#endif
+
+#if defined(NKRO_ENABLE)
+#  define REPORT_KEYS KBD2_REPORT_KEYS
+#else
+#  define REPORT_KEYS KBD_REPORT_KEYS
+#endif
+
+// mouse
+#define MOUSE_INTERFACE		1
+#define MOUSE_ENDPOINT		2
+#define MOUSE_SIZE		8
+#define MOUSE_BUFFER		EP_DOUBLE_BUFFER
+
+// ----------------------------------------------------------------------------
+
+// general
 void usb_init(void);			// initialize everything
 uint8_t usb_configured(void);		// is the USB port configured
 
+// keyboard
 int8_t usb_keyboard_send(void);
 extern uint8_t keyboard_modifier_keys;
-extern uint8_t keyboard_keys[6];
+extern uint8_t keyboard_keys[REPORT_KEYS];
 extern volatile uint8_t keyboard_leds;
+
+extern bool keyboard_nkro_enabled;
+void usb_keyboard_nkro_enable(bool);
+
+// mouse
+extern uint8_t usb_mouse_protocol;
+extern uint8_t mouse_buttons;
+
+int8_t usb_mouse_send(int8_t x, int8_t y, int8_t wheel_v, int8_t wheel_h, uint8_t buttons);
+void usb_mouse_buttons(uint8_t buttons);
 
 // ----------------------------------------------------------------------------
 
@@ -55,7 +100,8 @@ extern volatile uint8_t keyboard_leds;
 			((s) == 16 ? 0x10 :	\
 			             0x00)))
 
-#define MAX_ENDPOINT		4
+#define MAX_ENDPOINT     4
+#define UERST_MASK       0x1E
 
 #define LSB(n) (n & 255)
 #define MSB(n) ((n >> 8) & 255)
@@ -99,9 +145,18 @@ extern volatile uint8_t keyboard_leds;
 #define HID_SET_REPORT			9
 #define HID_SET_IDLE			10
 #define HID_SET_PROTOCOL		11
+#define HID_REPORT_INPUT		1
+#define HID_REPORT_OUTPUT		2
+#define HID_REPORT_FEATURE		3
 // CDC (communication class device)
 #define CDC_SET_LINE_CODING		0x20
 #define CDC_GET_LINE_CODING		0x21
 #define CDC_SET_CONTROL_LINE_STATE	0x22
+// HID feature selectors
+#define DEVICE_REMOTE_WAKEUP		1
+#define ENDPOINT_HALT			0
+#define TEST_MODE			2
+
+
 #endif
 #endif

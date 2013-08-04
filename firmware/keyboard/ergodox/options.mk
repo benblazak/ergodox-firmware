@@ -21,14 +21,18 @@ F_CPU := 16000000
 # processor speed, in Hz; max value is 16000000 (16MHz); must match
 # initialization in source
 
-KEYBOARD_LAYOUT := qwerty--kinesis-mod
+KEYBOARD_LAYOUT := repa
 # default layout for this keyboard
 
 KEYBOARD_LAYOUTS := \
 	colemak--kinesis-mod \
 	dvorak--kinesis-mod \
-	qwerty--kinesis-mod
+	qwerty--kinesis-mod \
+	repa
 # a list of all available layouts for this keyboard
+
+MOUSE_ENABLE := true
+NKRO_ENABLE := true
 
 # -----------------------------------------------------------------------------
 
@@ -36,6 +40,7 @@ $(call include_options_once,lib/eeprom)
 $(call include_options_once,lib/twi)
 $(call include_options_once,lib/layout/eeprom-macro)
 $(call include_options_once,lib/layout/key-functions)
+$(call include_options_once,lib/layout/mouse)
 $(call include_options_once,lib/layout/layer-stack)
 
 # -----------------------------------------------------------------------------

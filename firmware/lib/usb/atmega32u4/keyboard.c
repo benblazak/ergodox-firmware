@@ -11,7 +11,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include "../usage-page/keyboard.h"
-#include "./keyboard/from-pjrc/usb_keyboard.h"
+#include "../../../../firmware/keyboard.h"
+#include "./keyboard/from-pjrc/usb.h"
 #include "../../usb.h"
 
 // ----------------------------------------------------------------------------
@@ -58,15 +59,29 @@ uint8_t usb__kb__set_key(bool pressed, uint8_t keycode) {
     }
 
     // all others
-    for (uint8_t i=0; i<6; i++) {
+    if (!keyboard_nkro_enabled) {
+        for (uint8_t i=0; i<KBD_REPORT_KEYS; i++) {
+            if (pressed) {
+                if (keyboard_keys[i] == 0) {
+                    keyboard_keys[i] = keycode;
+                    return 0;
+                }
+            } else {
+                if (keyboard_keys[i] == keycode) {
+                    keyboard_keys[i] = 0;
+                    return 0;
+                }
+            }
+        }
+    } else {
         if (pressed) {
-            if (keyboard_keys[i] == 0) {
-                keyboard_keys[i] = keycode;
+            if ((keycode>>3) < REPORT_KEYS) {
+                keyboard_keys[keycode>>3] |= 1<<(keycode&7);
                 return 0;
             }
         } else {
-            if (keyboard_keys[i] == keycode) {
-                keyboard_keys[i] = 0;
+            if ((keycode>>3) < REPORT_KEYS) {
+                keyboard_keys[keycode>>3] &= ~(1<<(keycode&7));
                 return 0;
             }
         }
@@ -93,9 +108,16 @@ bool usb__kb__read_key(uint8_t keycode) {
     }
 
     // all others
-    for (uint8_t i=0; i<6; i++)
-        if (keyboard_keys[i] == keycode)
-            return true;
+    if (!keyboard_nkro_enabled) {
+        for (uint8_t i=0; i<KBD_REPORT_KEYS; i++) {
+            if (keyboard_keys[i] == keycode)
+                return true;
+        }
+    } else {
+        if ((keycode>>3) < REPORT_KEYS) {
+            return (keyboard_keys[keycode>>3] & (1<<(keycode&7)));
+        }
+    }
 
     return false;
 }
@@ -115,3 +137,12 @@ uint8_t usb__kb__send_report(void) {
     return usb_keyboard_send();
 }
 
+void usb__kb__toggle_nkro(void) {
+    if (!keyboard_nkro_enabled) {
+        usb_keyboard_nkro_enable(true);
+        kb__led__on(6);
+    } else {
+        usb_keyboard_nkro_enable(false);
+        kb__led__off(6);
+    }
+}

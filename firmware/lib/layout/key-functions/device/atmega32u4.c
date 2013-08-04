@@ -39,4 +39,3 @@ void key_functions__jump_to_bootloader(void) {
     PORTB = 0; PORTC = 0; PORTD = 0; PORTE = 0; PORTF = 0;
     asm volatile("jmp 0x7E00");
 }
-

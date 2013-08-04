@@ -43,6 +43,12 @@ void key_functions__toggle_capslock(void) {
     usb__kb__send_report();
 }
 
+// nkro toggle
+
+void key_functions__toggle_nkro(void) {
+  usb__kb__toggle_nkro();
+}
+
 /*
  * TODO: try using number pad numbers; see how it works
  */
