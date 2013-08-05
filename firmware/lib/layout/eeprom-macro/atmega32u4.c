@@ -21,18 +21,26 @@
  *   erased without warning.
  *
  *
- * Implementation notes:
+ * Implementation warnings:
  *
  * - One cannot trust the binary layout of bit-fields.  Bit-fields are great,
  *   but the order of the fields (among other things) is implementation
  *   defined, and [can change]
  *   (http://avr.2057.n7.nabble.com/Bit-field-packing-order-changed-between-avrgcc-implementations-td19193.html),
- *   even between different versions of the same compiler.
+ *   even between different versions of the same compiler.  The risk is
+ *   probably low, so I use them here anyway, but it's something to be aware
+ *   of.
+ *
+ *
+ * Implementation notes:
  *
  * - The default state (the "erased" state) of this EEPROM is all `1`s, which
  *   makes setting a byte to `0xFF` easier and faster in hardware than zeroing
  *   it.  This is reflected in some of our choices for default values, and
  *   such.
+ *
+ * - In avr-gcc, multi-byte data types are allocated with the least significant
+ *   bit occupying the lowest address.
  *
  * - For a long time, I was going to try to make this library robust in the
  *   event of power loss, but in the end I decided not to.  This feature is
@@ -77,12 +85,45 @@
 
 // ----------------------------------------------------------------------------
 
+/**                                                    types/header/description
+ * To describe the data that follows (most likely a sequence of `action`s,
+ * making this the beginning of a macro)
+ *
+ * Struct members:
+ * - type:
+ *     - `0x00`: deleted macro (only `length` is valid)
+ *     - `0x01`: valid macro
+ *     - ...   : (not yet assigned)
+ *     - `0xFF`: macro does not exist
+ * - `length`: the number of `action`s that follow
+ * - `uid`: a Unique IDentifier for the macro
+ */
+typedef struct {
+    uint8_t             type;
+    uint8_t             length;
+    eeprom_macro__uid_t uid;
+} header;
+
+/**                                                    types/action/description
+ * To describe the "press" or "release" of a key when recording or playing back
+ * a macro
+ *
+ * Notes:
+ * - Only the `pressed`, `row`, and `column` fields are relevant, since these
+ *   are what will be passed to `kb__layout__exec_key()` when playing back the
+ *   macro.  `layer` will be ignored.  We reuse the `...uid_t` type for
+ *   convenience and consistency.
+ */
+typedef eeprom_macro__uid_t action;
+
+// ----------------------------------------------------------------------------
+
 /**                                                variables/eeprom/description
  * The layout of this library's data in the EEPROM
  *
  * Struct members:
  * - `meta`: For keeping track of layout metadata
- *     - `version`: The version of this layout (`[10]` for fault tolerance and
+ *     - `version`: The version of this layout (`[8]` for fault tolerance and
  *       write balancing)
  * - `table`: To help in quickly returning if the UID we're searching for does
  *   not exist
@@ -100,74 +141,11 @@
  * - `macros`: To hold a block of memory for storing macros
  *     - `length`: The number of elements in `macros.data` (which is *not* the
  *       same as the number of macros it can contain)
- *     - `data`: A collection of "macro"s, where
- *         - a "macro" is a "header" followed by zero or more "action"s
- *         - a "header" is
- *             - 4 bytes, aligned on an index boundary
+ *     - `data`: A collection of "macro"s, where a "macro" is a `header`
+ *       followed by zero or more `action`s
  *
- *               LSB - lowest address
- *               .---------------------------------------.
- *               |     0 | 1 | 2 | 3 | 4 | 5 | 6 | 7     |
- *               |---------------------------------------|
- *               |                 type                  |
- *               '---------------------------------------'
- *               .---------------------------------------.
- *               |     0 | 1 | 2 | 3 | 4 | 5 | 6 | 7     |
- *               |---------------------------------------|
- *               |              run length               |
- *               '---------------------------------------'
- *               .---------------------------------------.
- *               |    0    | 1 | 2 | 3 | 4 | 5 |  6 | 7  |
- *               |---------------------------------------|   UID ...
- *               | pressed |       layer       | row ... |
- *               '---------------------------------------'
- *               .---------------------------------------.
- *               |   0 | 1 | 2   |   3 | 4 | 5 | 6 | 7   |
- *               |---------------------------------------|   ... UID
- *               |    ... row    |        column         |
- *               '---------------------------------------'
- *               MSB - highest address
- *
- *             - type:
- *                 - `0x00`: deleted macro (run length is valid)
- *                 - `0x01`: valid macro
- *                 - ...   : (not yet assigned)
- *                 - `0xFF`: macro does not exist
- *             - run length: the number of "actions" that follow
- *             - UID: an `eeprom_macro__uid_t`, laid out in EEPROM memory as
- *               shown
- *
- *         - an "action" is
- *             - 2 bytes, aligned on an index or half index boundary
- *
- *               LSB - lowest address
- *               .---------------------------------------.
- *               |    0    | 1 | 2 | 3 | 4 | 5 |  6 | 7  |
- *               |---------------------------------------|   UID ...
- *               | pressed |       layer       | row ... |
- *               '---------------------------------------'
- *               .---------------------------------------.
- *               |   0 | 1 | 2   |   3 | 4 | 5 | 6 | 7   |
- *               |---------------------------------------|   ... UID
- *               |    ... row    |        column         |
- *               '---------------------------------------'
- *               MSB - highest address
- *
- *             - UID: an `eeprom_macro__uid_t`, laid out in EEMEM as shown
- *                 - Only "pressed", "row", and "column" are relevant, since
- *                   these are what will be passed to `kb__layout__exec_key()`
- *                   when playing back the macro.  "layer" will be ignored.
  *
  * Notes:
- *
- * - We depict bytes as little endian (which is the opposite of the way they're
- *   normally portrayed) to be consistent with the byte-order, which we define
- *   to be little endian to be consistent with the way that avr-gcc allocates
- *   datatypes larger than 1 byte (see [this discussion]
- *   (http://www.avrfreaks.net/index.php?name=PNphpBB2&file=viewtopic&p=337747)
- *   on <http://www.avrfreaks.net/>).
- *   Keep in mind that shifting "right" (with `>>`) still shifts towards the
- *   0th bit.
  *
  * - The struct must be `packed` and `aligned(1)`, or we risk allocating more
  *   than `OPT__EEPROM_MACRO__EEPROM_SIZE` bytes.  This should be the default
@@ -188,7 +166,7 @@
  */
 struct eeprom {
     struct meta {
-        uint8_t version[10];
+        uint8_t version[8];
     } meta;
 
     struct table {
@@ -200,9 +178,10 @@ struct eeprom {
     struct macros {
         uint8_t length;
         uint32_t data[ ( OPT__EEPROM_MACRO__EEPROM_SIZE
-                          - 1  // for `length`
-                          - sizeof(struct meta)
-                          - sizeof(struct table) ) / 4 ];
+                         - 1  // for `length`
+                         - sizeof(struct meta)
+                         - sizeof(struct table) )
+                       / sizeof(uint32_t) ];
     } macros;
 
 } __attribute__((packed, aligned(1))) eeprom EEMEM;
@@ -241,6 +220,8 @@ uint8_t eeprom_macro__record_finalize(eeprom_macro__uid_t index) {
 uint8_t eeprom_macro__exists(eeprom_macro__uid_t index) {
     // TODO
     return 0;
+
+
 }
 
 uint8_t eeprom_macro__play(eeprom_macro__uid_t index) {
