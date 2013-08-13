@@ -558,6 +558,11 @@
   (which is the spec'ed high value for Cherry MX switches) would give us a max
   scan rate of 200Hz.
 
+* [Cherry MX debounce times]
+  (http://geekhack.org/index.php?topic=42385.msg861321#msg861321)  
+  Interesting discussion.  Oscilloscope diagrams of bounce for a few different
+  switches near the beginning :) .
+
 ### Hardware Mods to the ErgoDox (horribly incomplete list)
 
 * [LEDs on the left (MCP23018) side]

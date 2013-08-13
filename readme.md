@@ -5,8 +5,7 @@ change.  I'll do my very best to keep the latest commit working properly
 though.
 
 Source level documentation is being written with the code.  Other documentation
-(including a better readme), even though it's just as necessary, will be
-written afterwards.
+(including a better readme) will be written afterwards.
 
 **Pull requests for this branch will almost certainly not be accepted at this
 time.**  
@@ -24,4 +23,11 @@ Notes:
   (https://github.com/dyuri/ergodox-firmware) of rev-2.  Not merged, but I plan
   to implement the features later, if I can.  See [Pull Request #28]
   (https://github.com/benblazak/ergodox-firmware/pull/28).
+
+Status:
+* School is starting again late August 2013.  It looks to be a busy semester,
+  so I may not have that much time to work on it.  I wasn't able to get nearly
+  the amount done this summer that I had hoped, other things taking precedence,
+  but I still plan to finish everything I've already talked about: macro
+  recording, (attempt) USB features, layout examples, and other documentation.
 
