@@ -41,6 +41,7 @@
 enum action {
     ACTION_WRITE,
     ACTION_COPY,
+    ACTION_FILL,
 };
 
 // ----------------------------------------------------------------------------
@@ -53,29 +54,42 @@ enum action {
  * - `action`: A field indicating what type of action to perform.  Valid values
  *   defined by `enum action`
  * - `to`: The address in EEPROM memory space to write to
- * - `value`:
- *     - `action == ACTION_WRITE`: The data to write
- *     - `action == ACTION_COPY`: The number of bytes left to copy
+ * - union:
+ *     - `data`: The data to write
+ *         - `ACTION_WRITE`
+ *         - `ACTION_FILL`
+ *     - `length`: The number of bytes left to copy
+ *         - `ACTION_COPY`
  *
  * Implementation notes:
- * - Since the ATMega32U4 only has 1024 bytes of EEPROM, it's safe to restrict
- *   `to` to 10 bits.
+ * - Since the ATMega32U4 only has 1024 bytes of EEPROM
+ *   (addressed from `0` to `1024-1`), it's safe to restrict `to` to 9 bits.
  */
 typedef struct {
-    uint8_t  action :  6;
-    uint16_t to     : 10;
-    uint8_t  value;
+    uint8_t  action : 7;
+    uint16_t to     : 9;
+    union {
+        uint8_t data;
+        uint8_t length;
+    };
 } write_t;
 
-/**                                                    types/copy_t/description
- * To hold the extra values needed for a "copy" to/from the EEPROM
+/**                                                   types/extra_t/description
+ * To hold the extra values needed for some of the actions
  *
  * Struct members:
- * - `from`: The address in the EEPROM memory space to copy from
+ * - union:
+ *     - `from`: The address in the EEPROM memory space to copy from
+ *         - `ACTION_COPY`
+ *     - `length`: The number of bytes left to fill
+ *         - `ACTION_FILL`
  */
 typedef struct {
-    uint16_t from;
-} copy_t;
+    union {
+        uint16_t from;
+        uint8_t  length;
+    };
+} extra_t;
 
 // ----------------------------------------------------------------------------
 // variables ------------------------------------------------------------------
@@ -99,8 +113,11 @@ struct {
 /**                                        variables/(group) queues/description
  * Members:
  * - `to_write`: To hold the write queue, and related metadata
- * - `to_copy`: To hold the extra data needed for copies, along with related
- *   metadata
+ * - `to_extra`: To hold the extra data needed for copies and fills,
+ *   along with related metadata
+ *     - `to_extra` is an awkward name, but it does have the advantage that it
+ *       is the same length as `to_write`.  And `to_write_extra` felt a bit too
+ *       long in some places...
  *
  * Struct members:
  * - `allocated`: The number of positions allocated
@@ -108,8 +125,8 @@ struct {
  *   queue
  * - `unused_back`: The number of unused positions at the end of the queue
  * - `to_write.data`: A queue of writes (and copies) to perform
- * - `to_copy.data`: A queue of extra information for each `action ==
- *   ACTION_COPY` element in `to_write`
+ * - `to_extra.data`: A queue of extra information for each
+ *   `action == ACTION_COPY` or `action == ACTION_FILL` element in `to_write`
  *
  * Implementation notes:
  * - `unused_front` and `unused_back` each have a range of between -8 and 7,
@@ -124,11 +141,11 @@ static struct {
     write_t * data;
 } to_write;
 static struct {
-    uint8_t  allocated;
-    int8_t   unused_front : 4;
-    int8_t   unused_back  : 4;
-    copy_t * data;
-} to_copy;
+    uint8_t   allocated;
+    int8_t    unused_front : 4;
+    int8_t    unused_back  : 4;
+    extra_t * data;
+} to_extra;
 
 // ----------------------------------------------------------------------------
 // variable manipulator functions ---------------------------------------------
@@ -207,9 +224,9 @@ static uint8_t resize_to_write(void) {
     #undef  queue
     #undef  queue_type_size
 }
-static uint8_t resize_to_copy(void) {
-    #define  queue            to_copy
-    #define  queue_type_size  (sizeof(copy_t))
+static uint8_t resize_to_extra(void) {
+    #define  queue            to_extra
+    #define  queue_type_size  (sizeof(extra_t))
 
     int8_t unused = queue.unused_front + queue.unused_back;
 
@@ -260,15 +277,15 @@ static uint8_t resize_to_copy(void) {
  *
  * Members:
  * - `pop_to_write`: operates on the `to_write` queue
- * - `pop_to_copy`: operates on the `to_copy` queue
+ * - `pop_to_extra`: operates on the `to_extra` queue
  */
 static void pop_to_write(void) {
     to_write.unused_front++;
     resize_to_write();
 }
-static void pop_to_copy(void) {
-    to_copy.unused_front++;
-    resize_to_copy();
+static void pop_to_extra(void) {
+    to_extra.unused_front++;
+    resize_to_extra();
 }
 
 // ----------------------------------------------------------------------------
@@ -338,12 +355,17 @@ static void write(uint16_t to, uint8_t data) {
 }
 
 /**                                          functions/write_queued/description
- * Write (or copy) the next byte of data as dictated by our queue(s), and
- * schedule the write of the next byte if necessary
+ * Write (or copy, or fill) the next byte of data as dictated by our queue(s),
+ * and schedule the write of the next byte if necessary
+ *
+ * Assumptions:
+ * - The length of `to_extra` is always correct: i.e. there is exactly 1 entry
+ *   in `to_extra` for every `action == ACTION_...` element in `to_write` that
+ *   is supposed to have one.
  */
 static void write_queued(void) {
     #define  next_write     ( to_write.data[to_write.unused_front] )
-    #define  next_copy      ( to_copy.data[to_copy.unused_front] )
+    #define  next_extra     ( to_extra.data[to_extra.unused_front] )
     #define  length(queue)  ( queue.allocated       \
                               - queue.unused_front  \
                               - queue.unused_back )
@@ -361,33 +383,50 @@ static void write_queued(void) {
     if (next_write.action == ACTION_WRITE) {
 
         // write 1 byte
-        write( next_write.to, next_write.value );
+        write( next_write.to, next_write.data );
         // prepare for the next
         pop_to_write();
 
-    } else if ( next_write.action == ACTION_COPY && length(to_copy) ) {
+    } else if ( next_write.action == ACTION_COPY ) {
 
         // if we're done with the current copy
         // - checking for this here requires an extra iteration between a copy
         //   being finished and the next operation being started; but it also
-        //   allows us not to make assumptions about the state of `to_copy`
+        //   allows us not to make assumptions about the state of `to_extra`
         //   when this function is called
-        if (next_write.value == 0) {
+        if (next_write.length == 0) {
             pop_to_write();
-            pop_to_copy();
+            pop_to_extra();
         }
 
         // copy 1 byte
-        write( next_write.to, eeprom__read( (uint8_t *) next_copy.from ) );
+        write( next_write.to, eeprom__read( (uint8_t *) next_extra.from ) );
         // prepare for the next
-        if (next_write.to < next_copy.from) {
+        if (next_write.to < next_extra.from) {
             ++(next_write.to);
-            ++(next_copy.from);
+            ++(next_extra.from);
         } else {
             --(next_write.to);
-            --(next_copy.from);
+            --(next_extra.from);
         }
-        --(next_write.value);
+        --(next_write.length);
+
+    } else if ( next_write.action == ACTION_FILL ) {
+
+        // if we're done with the current fill
+        // - checking for this here requires an extra iteration between a fill
+        //   being finished and the next operation being started; but it also
+        //   allows us not to make assumptions about the state of `to_extra`
+        //   when this function is called
+        if (next_extra.length == 0) {
+            pop_to_write();
+            pop_to_extra();
+        }
+
+        // fill 1 byte
+        write( next_write.to, next_write.data );
+        // prepare for the next
+        --(next_extra.length);
 
     } else {
         // if we get here, there was an invalid node: remove it
@@ -398,14 +437,13 @@ static void write_queued(void) {
     //   wait until the next write, where `3.5` is the maximum number of
     //   milliseconds an EEPROM write can take, and `OPT__DEBOUNCE_TIME` is the
     //   minimum number of milliseconds a scan can take.  Note that if the
-    //   division produces an integer (other than by truncation), the `+1` is
-    //   strictly unnecessary, since no truncation will be performed; but if
-    //   we're that close to needing to wait an extra cycle we may as well wait
-    //   anyway, just to be safe.
+    //   division produces a nonzero integer (other than by truncation), the
+    //   `+1` is not strictly necessary; but in that case, being so close to
+    //   needing another cycle, we may as well wait anyway.
     timer__schedule_cycles( (3.5/OPT__DEBOUNCE_TIME)+1, &write_queued );
 
     #undef  next_write
-    #undef  next_copy
+    #undef  next_extra
     #undef  length
 }
 
@@ -431,7 +469,6 @@ uint8_t eeprom__read(uint8_t * from) {
   return EEDR;               // return the value in the data register
 }
 
-// note: this should be the only function adding elements to `to_write`
 uint8_t eeprom__write(uint8_t * address, uint8_t data) {
     to_write.unused_back--;
     if (resize_to_write()) {
@@ -442,7 +479,7 @@ uint8_t eeprom__write(uint8_t * address, uint8_t data) {
     uint8_t index = to_write.allocated - to_write.unused_back - 1;
     to_write.data[index].action = ACTION_WRITE;
     to_write.data[index].to     = (uint16_t) address;
-    to_write.data[index].value  = data;
+    to_write.data[index].data   = data;
 
     if (!status.writing) {
         timer__schedule_cycles( 0, &write_queued );
@@ -452,16 +489,42 @@ uint8_t eeprom__write(uint8_t * address, uint8_t data) {
     return 0;  // success
 }
 
-// note: this should be the only function adding elements to `to_copy`
+uint8_t eeprom__fill(uint8_t * to, uint8_t data, uint8_t length) {
+    to_write.unused_back--;
+    to_extra.unused_back--;
+    if (resize_to_write() || resize_to_extra()) {
+        to_write.unused_back++; resize_to_write();
+        to_extra.unused_back++; resize_to_extra();
+        return 1;  // resize failed
+    }
+
+    uint8_t index;
+
+    index = to_write.allocated - to_write.unused_back - 1;
+    to_write.data[index].action = ACTION_FILL;
+    to_write.data[index].to     = (uint16_t) to;
+    to_write.data[index].data   = data;
+
+    index = to_extra.allocated - to_extra.unused_back - 1;
+    to_extra.data[index].length = length;
+
+    if (!status.writing) {
+        timer__schedule_cycles( 0, &write_queued );
+        status.writing = true;
+    }
+
+    return 0;  // success
+}
+
 uint8_t eeprom__copy(uint8_t * to, uint8_t * from, uint8_t length) {
     if (to == from)
         return 0;  // nothing to do
 
     to_write.unused_back--;
-    to_copy.unused_back--;
-    if (resize_to_write() || resize_to_copy()) {
+    to_extra.unused_back--;
+    if (resize_to_write() || resize_to_extra()) {
         to_write.unused_back++; resize_to_write();
-        to_copy.unused_back++;  resize_to_copy();
+        to_extra.unused_back++; resize_to_extra();
         return 1;  // resize failed
     }
 
@@ -470,10 +533,10 @@ uint8_t eeprom__copy(uint8_t * to, uint8_t * from, uint8_t length) {
     index = to_write.allocated - to_write.unused_back - 1;
     to_write.data[index].action = ACTION_COPY;
     to_write.data[index].to     = (uint16_t) to;
-    to_write.data[index].value  = length;
+    to_write.data[index].length = length;
 
-    index = to_copy.allocated - to_copy.unused_back - 1;
-    to_copy.data[index].from = (uint16_t) from;
+    index = to_extra.allocated - to_extra.unused_back - 1;
+    to_extra.data[index].from = (uint16_t) from;
 
     if (!status.writing) {
         timer__schedule_cycles( 0, &write_queued );

@@ -41,6 +41,7 @@
 
 uint8_t eeprom__read  (uint8_t * from);
 uint8_t eeprom__write (uint8_t * to, uint8_t data);
+uint8_t eeprom__fill  (uint8_t * to, uint8_t data, uint8_t length);
 uint8_t eeprom__copy  (uint8_t * to, uint8_t * from, uint8_t length);
 
 
@@ -109,6 +110,21 @@ uint8_t eeprom__copy  (uint8_t * to, uint8_t * from, uint8_t length);
  * - Writing `0xFF` should clear the memory (without writing anything), and
  *   writing to a location currently set to `0xFF` should write without
  *   clearing first.
+ */
+
+// === eeprom__fill() ===
+/**                                          functions/eeprom__fill/description
+ * Fill a portion of the EEPROM with the given value
+ *
+ * Arguments:
+ * - `to`: The address of (i.e. a pointer to) the location to start writing to
+ * - `data`: The data to write
+ * - `length`: The number of times to sequentially write `data`, incrementing
+ *   `to` each time
+ *
+ * Returns:
+ * - success: `0`
+ * - failure: [other]
  */
 
 // === eeprom__copy() ===
