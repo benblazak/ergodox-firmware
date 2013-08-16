@@ -63,12 +63,12 @@ enum action {
  *         - `ACTION_COPY`
  *
  * Implementation notes:
- * - Since the ATMega32U4 only has 1024 bytes of EEPROM
- *   (addressed from `0` to `1024-1`), it's safe to restrict `to` to 9 bits.
+ * - Since the ATMega32U4 only has 1024 bytes of EEPROM (addressed from
+ *   `0` to `1024-1` = 2^10-1), it's safe to restrict `to` to 10 bits.
  */
 typedef struct {
-    uint8_t  action : 7;
-    uint16_t to     : 9;
+    uint8_t  action :  6;
+    uint16_t to     : 10;
     union {
         uint8_t data;
         uint8_t length;
