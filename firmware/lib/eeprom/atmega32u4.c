@@ -37,6 +37,7 @@
  * Members:
  * - `ACTION_WRITE`
  * - `ACTION_COPY`
+ * - `ACTION_FILL`
  */
 enum action {
     ACTION_WRITE,
@@ -323,7 +324,7 @@ static void pop_to_extra(void) {
 static void write(uint16_t to, uint8_t data) {
 
     // - if a write is in progress, this will also wait until it's finished
-    uint8_t old_data = eeprom__read( (uint8_t *) to );
+    uint8_t old_data = eeprom__read( (void *) to );
 
     if (data == old_data) {
         // do nothing
@@ -400,7 +401,7 @@ static void write_queued(void) {
         }
 
         // copy 1 byte
-        write( next_write.to, eeprom__read( (uint8_t *) next_extra.from ) );
+        write( next_write.to, eeprom__read( (void *) next_extra.from ) );
         // prepare for the next
         if (next_write.to < next_extra.from) {
             ++(next_write.to);
@@ -462,14 +463,14 @@ static void write_queued(void) {
  * Assumptions:
  * - The address passed as `address` is valid.
  */
-uint8_t eeprom__read(uint8_t * from) {
+uint8_t eeprom__read(void * from) {
   while (EECR & (1<<EEPE));  // wait for previous write to complete
   EEAR = (uint16_t) from;    // set up address register
   EECR |= (1<<EERE);         // start EEPROM read (then halt, 4 clock cycles)
   return EEDR;               // return the value in the data register
 }
 
-uint8_t eeprom__write(uint8_t * address, uint8_t data) {
+uint8_t eeprom__write(void * address, uint8_t data) {
     to_write.unused_back--;
     if (resize_to_write()) {
         to_write.unused_back++;
@@ -489,7 +490,7 @@ uint8_t eeprom__write(uint8_t * address, uint8_t data) {
     return 0;  // success
 }
 
-uint8_t eeprom__fill(uint8_t * to, uint8_t data, uint8_t length) {
+uint8_t eeprom__fill(void * to, uint8_t data, uint8_t length) {
     to_write.unused_back--;
     to_extra.unused_back--;
     if (resize_to_write() || resize_to_extra()) {
@@ -516,7 +517,7 @@ uint8_t eeprom__fill(uint8_t * to, uint8_t data, uint8_t length) {
     return 0;  // success
 }
 
-uint8_t eeprom__copy(uint8_t * to, uint8_t * from, uint8_t length) {
+uint8_t eeprom__copy(void * to, void * from, uint8_t length) {
     if (to == from)
         return 0;  // nothing to do
 
@@ -542,6 +543,13 @@ uint8_t eeprom__copy(uint8_t * to, uint8_t * from, uint8_t length) {
         timer__schedule_cycles( 0, &write_queued );
         status.writing = true;
     }
+
+    return 0;  // success
+}
+
+uint8_t eeprom__block_read(void * to, void * from, uint8_t length) {
+    for (; length; length--)
+        *(uint8_t *)(to+length-1) = eeprom__read( from+length-1 );
 
     return 0;  // success
 }

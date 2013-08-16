@@ -39,10 +39,12 @@
 
 // ----------------------------------------------------------------------------
 
-uint8_t eeprom__read  (uint8_t * from);
-uint8_t eeprom__write (uint8_t * to, uint8_t data);
-uint8_t eeprom__fill  (uint8_t * to, uint8_t data, uint8_t length);
-uint8_t eeprom__copy  (uint8_t * to, uint8_t * from, uint8_t length);
+uint8_t eeprom__read  (void * from);
+uint8_t eeprom__write (void * to, uint8_t data);
+uint8_t eeprom__fill  (void * to, uint8_t data, uint8_t length);
+uint8_t eeprom__copy  (void * to, void *  from, uint8_t length);
+
+uint8_t eeprom__block_read (void * to, void * from, uint8_t length);
 
 
 // ----------------------------------------------------------------------------
@@ -153,5 +155,33 @@ uint8_t eeprom__copy  (uint8_t * to, uint8_t * from, uint8_t length);
  * - Undefined behavior will result if any address in either the block you're
  *   copying from (`from`..`from+length-1`) or the block you're copying to
  *   (`to`..`to+length-1`) is invalid.
+ */
+
+// === eeprom__block_read() ===
+/**                                    functions/eeprom__block_read/description
+ * Read a block of data from the EEPROM into SRAM
+ *
+ * Arguments:
+ * - `to`: The location (in SRAM) to start writing the data to
+ * - `from`: The location (in EEMEM) to start reading the data from
+ * - `length`: The number number of bytes to read, incrementing `to` and `from`
+ *   for each byte
+ *
+ * Returns:
+ * - success: `0`
+ * - failure: [other]
+ *
+ * Notes:
+ * - As one would expect, this read is performed sequentially, and all data is
+ *   read in before returning.  Delays due to the speed of the EEPROM are
+ *   introduced *for every byte* whether one uses this function or
+ * - Because doing a "block_write" would be either unbearably slow or require
+ *   us to work around the fact that the function would return before the data
+ *   was actually written (so where would the data to be written stored? we'd
+ *   either have to copy it, or make an agreement with the calling functions to
+ *   `malloc()` the data and let us `free()` it, or some such), we do not have
+ *   any "block" functions that write to the EEPROM (except perhaps
+ *   `eeprom__fill()`, which is a special case).  Better to be careful with
+ *   writes, and schedule them one at a time, using `eeprom__write()`.
  */
 
