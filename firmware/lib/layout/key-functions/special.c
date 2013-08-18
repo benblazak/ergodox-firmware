@@ -113,6 +113,10 @@ void key_functions__type_byte_hex(uint8_t byte) {
  *      0x0800 - 0xFFFF          16   1110xxxx  10xxxxxx  10xxxxxx
  *      0x010000 - 0x10FFFF      21   11110xxx  10xxxxxx  10xxxxxx  10xxxxxx
  *     ----------------------------------------------------------------------
+ *
+ * TODO:
+ * - try to add start and end sequence for linux.  maybe as a compilation
+ *   option?
  */
 void key_functions__type_string(const char * string) {
     uint8_t  c;       // for storing the current byte of the character
