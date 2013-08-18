@@ -182,7 +182,7 @@ void    eeprom_macro__clear_all        (void);
  * - `index`: The UID of the macro to look for
  *
  * Returns:
- * - `1`: if a macro with the given UID exists
+ * - [nonzero]: if a macro with the given UID exists
  * - `0`: if a macro with the given UID does not exist
  */
 

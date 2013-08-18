@@ -563,13 +563,6 @@
   Interesting discussion.  Oscilloscope diagrams of bounce for a few different
   switches near the beginning :) .
 
-### Hardware Mods to the ErgoDox (horribly incomplete list)
-
-* [LEDs on the left (MCP23018) side]
-  (http://geekhack.org/index.php?topic=22780.msg873819#msg873819)  
-  : post by [Unix Guru] (http://geekhack.org/index.php?action=profile;u=24565)
-  on <http://geekhack.org/>  
-
 ### Other Awesome Keyboard Projects
 
 * [My DIY keyboard collection (or how I became a KB-geek...)]
@@ -651,6 +644,13 @@
   about how I would write a keymap making thing in javascript.  Not sure how
   good it'd be for that specifically, but the concept is just so **awesome**!
 
+### Hardware Mods to the ErgoDox (horribly incomplete list)
+
+* [LEDs on the left (MCP23018) side]
+  (http://geekhack.org/index.php?topic=22780.msg873819#msg873819)  
+  : post by [Unix Guru] (http://geekhack.org/index.php?action=profile;u=24565)
+  on <http://geekhack.org/>  
+
 ### Hardware Stuff (for the keyboard case)
 
 * [Working with Acrylic]
@@ -665,6 +665,9 @@
       (http://geekhack.org/index.php?topic=22780.msg782080#msg782080)
       by [kurplop] (http://geekhack.org/index.php?action=profile;u=17045)
       (on <http://geekhack.org/>)
+
+* [Kurplop's finishing of the aluminum case (from Massdrop round 1)]
+  (http://geekhack.org/index.php?topic=22780.msg854128#msg854128)
 
 ### Some Random Stuff
 

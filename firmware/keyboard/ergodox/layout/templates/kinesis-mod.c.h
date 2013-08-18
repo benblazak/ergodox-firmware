@@ -13,6 +13,10 @@
  *
  * The template key prefix is `T_`, with the rest of the name indicating the
  * key's position in the QWERTY layout.
+ *
+ * TODO:
+ * - do i have the arrow keys in the wrong place? grr.  need to check.  the
+ *   goal here is to emulate the kinesis, lol.
  */
 
 
