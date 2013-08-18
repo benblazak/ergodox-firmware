@@ -257,7 +257,10 @@ static void * macros_free_begin;  // TODO: needs a better name?
 //   layer shift keys when recording (or... the exec_key function could, since
 //   i think that's where functions from this library will be called).
 //   otherwise, if we just record (pressed, row, column) tuples, the logic will
-//   have to be more complicated...
+//   have to be more complicated...  how will we know which key to assign the
+//   macro to? will we not allow macros to be assigned to layer keys?
+//   (actually... that last question might be a problem anyway... but that's
+//   for the logic later on)
 //
 // - still need to consider though: do we really want to give up the `type`
 //   byte?  it would much more easily allow for extensions in the future if we
@@ -273,6 +276,58 @@ static void * macros_free_begin;  // TODO: needs a better name?
 // - also, under this scheme, `length` will have to be the number of bytes,
 //   since there will be no quick way to know how many bytes there are (to skip
 //   over to get to the next macro) if we specify the number of actions.
+//
+// - this also means we'll need to encode the uid (and may as well write it)
+//   before beginning to record
+//
+// - maybe the variables we want to keep track of in memory are
+//     - pointer to beginning of macro currently being recorded
+//     - length, in bytes, of the entire thing (minus the 2 bytes for `type`
+//       and `length`)
+//
+// - will we want macros more than 255 bytes long? if so, should we use 2 bytes
+//   for `length`s, or should we align macros on the 2 or 4 byte boundary? (and
+//   if we align on a boundary, how should we pad the ends of the macros?)
+//
+// ----------------------------------------------------------------------------
+//
+// - 255 bytes (so, on average, say 100 keystrokes) should be enough for a
+//   macro, i think.  no need to make `length` 2 bytes, or multi-byte encode it.
+//
+// - should `eeprom_macro__uid_t` still stick around? we won't need to use its
+//   binary layout, if we handle things this way, and it's restrictions aren't
+//   prohibitave, i think... and it does keep uid's in SRAM down to a constant
+//   2 bytes.  and make the function signatures smaller, lol.
+//
+// - i just looked back at some other code, and utf-8 is big-endian.  should
+//   this multi-byte format be big endian too?  or small, as described above?
+//
+// - even if storing `layer` in the `action`s, there's no real need for the
+//   calling function to ignore layer key presses and releases.  maybe the user
+//   want's to use a macro to change the state of their keyboard.  i am
+//   thinking we should keep `layer` though, instead of just having (pressed,
+//   row, column) tuples... it feels like it might be easier that way to do
+//   what the user expects (i.e. repeat the *actions* that they performed, not
+//   just the keystrokes, which given layers and such could, theoretically,
+//   have some interesting consequences... lol)
+//
+// - should we allow chaining of macros?  i kind of think so.  actually,
+//   nevermind... i kind of think not.  the benefits would be that it would do
+//   what the user expects if they have a longstanding macro that they're used
+//   to, and they try to include it in another without thinking.  or if they
+//   want to chain macros to get one longer than 255 bytes.  either of those
+//   cases would probably be better served by having them do it in code.
+//   having macros unchainable, however, would allow people to, e.g., remap the
+//   letter keys one to another on their home layer, for experimentation
+//   purposes.  which seems like it'd be a useful thing to allow, and a
+//   capability that users would expect (especially coming from the kinesis).
+//   it would also make macros safe from being inadvertently redefined by new
+//   macro definitions.  it would also save time a little in key lookup when
+//   playing macros back... lol (insignificant though).  it would take an extra
+//   flag or something somewhere though, i think, so that the exec_key function
+//   would know to not look in the EEPROM for aliases of keys when macros were
+//   being played back.  hmm... it would also prevent circular (= never ending)
+//   macros.  ya, we should probably disallow chaining.
 //
 // ----------------------------------------------------------------------------
 
