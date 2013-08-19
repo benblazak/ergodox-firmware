@@ -9,18 +9,6 @@
  * the ATMega32U4
  *
  *
- * Warnings:
- *
- * - This library's functionality is meant to be used for recording and playing
- *   back *temporary* macros.  Permanent macros should be assigned to a key in
- *   the layout directly.  Macros created using this library may be difficult
- *   (or practically impossible) to retrieve and back up, and may be
- *   invalidated by changes to this library in future versions of the firmware.
- *   They may also become corrupted if the keyboard looses power at an
- *   inopportune time.  If invalidated or corrupted, macros will (probably) be
- *   erased without warning.
- *
- *
  * Implementation warnings:
  *
  * - One cannot trust the binary layout of bit-fields: the order of the fields
@@ -106,10 +94,10 @@
  * - `HEADER_TYPE_END = 0xFF`: This header marks the end of the list (nothing
  *   follows)
  */
-enum header_type {
-    HEADER_TYPE_DELETED = 0x00,
-    HEADER_TYPE_VALID,
-    HEADER_TYPE_END = 0xFF,
+enum type {
+    TYPE_DELETED = 0x00,
+    TYPE_VALID_MACRO,
+    TYPE_END = 0xFF,
 };
 
 // ----------------------------------------------------------------------------
@@ -304,12 +292,12 @@ static void * macros_free_begin;  // TODO: needs a better name?
 //
 // - even if storing `layer` in the `action`s, there's no real need for the
 //   calling function to ignore layer key presses and releases.  maybe the user
-//   want's to use a macro to change the state of their keyboard.  i am
-//   thinking we should keep `layer` though, instead of just having (pressed,
-//   row, column) tuples... it feels like it might be easier that way to do
-//   what the user expects (i.e. repeat the *actions* that they performed, not
-//   just the keystrokes, which given layers and such could, theoretically,
-//   have some interesting consequences... lol)
+//   wants to use a macro to change the state of their keyboard.  i am thinking
+//   we should keep `layer` though, instead of just having (pressed, row,
+//   column) tuples... it feels like it might be easier that way to do what the
+//   user expects (i.e. repeat the *actions* that they performed, not just the
+//   keystrokes, which given layers and such could, theoretically, have some
+//   interesting consequences... lol)
 //
 // - should we allow chaining of macros?  i kind of think so.  actually,
 //   nevermind... i kind of think not.  the benefits would be that it would do

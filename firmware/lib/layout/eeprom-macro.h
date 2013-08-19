@@ -12,27 +12,55 @@
  * This file is meant to be included and used by the keyboard layout
  * implementation.
  *
+ * Warnings:
+ * - This library is meant to be used for recording and playing back
+ *   *temporary* macros.  Permanent macros should be assigned to a key in the
+ *   source of the layout directly.  Macros created using this library may be
+ *   very difficult to retrieve and back up.  They may also be erased without
+ *   warning in the event that they become corrupted by power loss or
+ *   invalidated by future changes in the format of the persistent data used to
+ *   store them.
+ *
+ * Terms:
+ * - A "key" is a pair of actions, one for when the key is pressed and another
+ *   for when it is released.  We specify keys by their `layer`, `row`, and
+ *   `column`.
+ * - A "key action" is a single action.  We specify key actions by their
+ *   `pressed` value (whether the action corresponds to a press (`true`) or
+ *   release (`false`)) and the key they belong to.
+ * - A "macro" is a collection of data that lives in persistent memory, and
+ *   specifies possibly many actions to perform in the place of a single,
+ *   usually different, action.  For the purposes of this library, macros live
+ *   in the EEPROM, and contain a key action who's original behavior we wish
+ *   to mask, and a list of key actions that should be sequentially performed
+ *   instead.
  *
  * Usage notes:
+ * - When macros are recorded, the key they are assigned to does not loose its
+ *   functionality, but rather has that functionality masked by this new
+ *   definition.
  *
- * - These functions will play back keystrokes, not actions.  This means that
- *   new macro definitions may affect old ones.  It also means that different
- *   keyboard states may lead to different actions being performed for the same
- *   macro (if, say, the layer the macro is on is mostly transparent, and there
- *   is a different layer underneath it on a subsequent press than there was
- *   during definition).
- *
- * - Even though `eeprom_macro__uid_t` has distinct fields, there is nothing
- *   that says the calling function(s) must maintain the semantic meanings of
- *   those fields.  I imagine that under most circumstances one would want to,
- *   but as long as the '.c' file implementing this interface agrees (or at
- *   least works) with whatever the calling functions are doing, things should
- *   be fine.
- *
- *     - For example, if there were a layout implementation that ignored
- *       layers, but wanted to manually map different key combinations to
- *       different macros for a given key, this could be done by repurposing
- *       the `layer` field to mean "key combination id" (or some such thing).
+ * Implementation notes:
+ * - When macros are being recorded or played back, keys should operate with
+ *   their original meanings (i.e. macro lookup should be disabled).  This may
+ *   be inconvenient at times, e.g. if the user wishes to have a single macro
+ *   execute several others which are already recorded, or if they wish to have
+ *   an especially long macro which cannot (because of implementation
+ *   limitations) be recorded in one piece.  It has many benefits, however.  It
+ *   makes it impossible to define recursive macros (which would never
+ *   terminate).  It makes it impossible for new macros to accidentally
+ *   redefine old ones.  Perhaps most importantly, it makes it possible to
+ *   create macros with actions that may have been masked by another macro, as
+ *   one might wish to do when, for example, quickly swapping the positions of
+ *   two letter keys.
+ * - With sufficient trickiness, we could probably do away with having `layer`
+ *   in the key actions that make up the body of macros (most of this
+ *   trickiness being in the logic for how users record macros and assign them
+ *   to key actions).  I could imagine there being situations where this turned
+ *   out to be useful... but I feel like much more often it would just be a bit
+ *   confusing.  It would also be inconsistent a little, having two different
+ *   representations of a key action.  And it wouldn't actually save us that
+ *   much EEPROM.
  */
 
 
@@ -47,25 +75,16 @@
 
 // ----------------------------------------------------------------------------
 
-typedef struct {
-    bool    pressed : 1;
-    uint8_t layer   : 5;
-    uint8_t row     : 5;
-    uint8_t column  : 5;
-} eeprom_macro__uid_t;
-
-// ----------------------------------------------------------------------------
-
-uint8_t eeprom_macro__init             (void);
-uint8_t eeprom_macro__record_init      (void);
-uint8_t eeprom_macro__record_keystroke ( bool    pressed,
-                                         uint8_t row,
-                                         uint8_t column );
-uint8_t eeprom_macro__record_finalize  (eeprom_macro__uid_t index);
-uint8_t eeprom_macro__exists           (eeprom_macro__uid_t index);
-uint8_t eeprom_macro__play             (eeprom_macro__uid_t index);
-void    eeprom_macro__clear            (eeprom_macro__uid_t index);
-void    eeprom_macro__clear_all        (void);
+#define  ARGS  bool pressed, uint8_t layer, uint8_t row, uint8_t column
+uint8_t eeprom_macro__init            (void);
+uint8_t eeprom_macro__record_init     ( ARGS );
+uint8_t eeprom_macro__record_action   ( ARGS );
+uint8_t eeprom_macro__record_finalize (void);
+uint8_t eeprom_macro__exists          ( ARGS );
+uint8_t eeprom_macro__play            ( ARGS );
+void    eeprom_macro__clear           ( ARGS );
+void    eeprom_macro__clear_all       (void);
+#undef  arguments
 
 
 // ----------------------------------------------------------------------------
@@ -77,36 +96,6 @@ void    eeprom_macro__clear_all        (void);
 // ============================================================================
 // === documentation ==========================================================
 // ============================================================================
-
-
-// ----------------------------------------------------------------------------
-// types ----------------------------------------------------------------------
-// ----------------------------------------------------------------------------
-
-// === eeprom_macro__uid_t ===
-/**                                       types/eeprom_macro__uid_t/description
- * A Unique IDentifier for a macro; also a convenient way to specify a position
- * in the layer matrix
- *
- * Notes:
- * - This format artificially limits the number of layers, rows, and columns
- *   that can be specified to 2^5 = 32 each.  This seems like it'd be hard to
- *   reach practically, but it's much less than the limit of 2^8 possible
- *   values each imposed by most of the rest of the firmware, so it's worth
- *   noting.
- *     - An alternate method would be to use all 15 bits (since 1 of the 16
- *       available bits is allocated to `pressed`) to represent a layer matrix
- *       index calculated according to the normal rules of array indexing for
- *       some `[layer][row][column]`.  The current method is preferred because
- *       it makes it much easier to extract the component values (which is
- *       helpful in grouping the macros, which is helpful in macro seek time
- *       optimizations).
- *     - 15 bits in *some* format should always be enough to uniquely identify
- *       every possible macro.  On the ATMega32U4 it would be impossible to
- *       exceed this, since it only has 32256 bytes of PROGMEM to begin with.
- *       Even if there was more, however, it seems unlikely that more than
- *       2^15 = 32768 positions would be specified by any layer matrix.
- */
 
 
 // ----------------------------------------------------------------------------
@@ -132,6 +121,14 @@ void    eeprom_macro__clear_all        (void);
 /**                             functions/eeprom_macro__record_init/description
  * Prepare to record a new macro
  *
+ * Arguments:
+ * - (group) They key to remap
+ *     - `pressed`: Whether the key action to remap is a press (`true`) or a
+ *       release (`false`)
+ *     - `layer`: The layer of the key action to remap
+ *     - `row`: The row of the key action to remap
+ *     - `column`: The column of the key action to remap
+ *
  * Returns:
  * - success: `0`
  * - failure: [other] (not enough memory left to record)
@@ -143,15 +140,16 @@ void    eeprom_macro__clear_all        (void);
  *   should be thrown away, and this new one prepared for.
  */
 
-// === eeprom_macro__record_keystroke() ===
-/**                        functions/eeprom_macro__record_keystroke/description
- * Record the next keystroke of the current macro
+// === eeprom_macro__record_action() ===
+/**                           functions/eeprom_macro__record_action/description
+ * Record the next key action of the current macro
  *
  * Arguments:
- * - `pressed`: Whether or not the keystroke being recorded is a "press" or a
- *   "release"
- * - `row`: The row of the keystroke being recorded
- * - `column`: The column of the keystroke being recorded
+ * - `pressed`: Whether the key action being recorded is a press (`true`) or a
+ *   release (`false`)
+ * - `layer`: The layer of the key action being recorded
+ * - `row`: The row of the key action being recorded
+ * - `column`: The column of the key action being recorded
  *
  * Returns:
  * - success: `0`
@@ -161,9 +159,6 @@ void    eeprom_macro__clear_all        (void);
 // === eeprom_macro__record_finalize() ===
 /**                         functions/eeprom_macro__record_finalize/description
  * Finalize the recording of the current macro
- *
- * Arguments:
- * - `index`: The UID of this macro
  *
  * Returns
  * - success: `0`
@@ -176,10 +171,14 @@ void    eeprom_macro__clear_all        (void);
 
 // === eeprom_macro__exists() ===
 /**                                  functions/eeprom_macro__exists/description
- * Predicate indicating whether a macro exists for the given UID
+ * Predicate indicating whether the specified key action was remapped
  *
  * Arguments:
- * - `index`: The UID of the macro to look for
+ * - `pressed`: Whether the key action that was remapped was a press (`true`)
+ *   or a release (`false`)
+ * - `layer`: The layer of the key action that was remapped
+ * - `row`: The row of the key action that was remapped
+ * - `column`: The column of the key action that was remapped
  *
  * Returns:
  * - [nonzero]: if a macro with the given UID exists
@@ -188,10 +187,14 @@ void    eeprom_macro__clear_all        (void);
 
 // === eeprom_macro__play() ===
 /**                                    functions/eeprom_macro__play/description
- * Play back recorded keystrokes for the macro with UID `index`
+ * Play back recorded key actions for the macro with UID `index`
  *
  * Arguments:
- * - `index`: The UID of the macro to play
+ * - `pressed`: Whether the key action that was remapped was a press (`true`)
+ *   or a release (`false`)
+ * - `layer`: The layer of the key action that was remapped
+ * - `row`: The row of the key action that was remapped
+ * - `column`: The column of the key action that was remapped
  *
  * Returns:
  * - success: `0` (macro successfully played)
