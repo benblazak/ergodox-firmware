@@ -9,17 +9,6 @@
  * the ATMega32U4
  *
  *
- * Implementation warnings:
- *
- * - One cannot trust the binary layout of bit-fields: the order of the fields
- *   (among other things) is implementation defined, and [can change]
- *   (http://avr.2057.n7.nabble.com/Bit-field-packing-order-changed-between-avrgcc-implementations-td19193.html),
- *   even between different versions of the same compiler.  The risk is
- *   probably low when the compiler and architecture are both so specific, so I
- *   depend on their binary layout anyway, but it's definitely something to be
- *   aware of.
- *
- *
  * Implementation notes:
  *
  * - The default state (the "erased" state) of this EEPROM is all `1`s, which
@@ -27,44 +16,45 @@
  *   it.  This is reflected in some of our choices for default values, and
  *   such.
  *
- * - In avr-gcc, multi-byte data types are allocated with the least significant
- *   bit occupying the lowest address.
+ * - GCC and AVR processors (and Intel processors, for that matter) are
+ *   primarily little endian: in avr-gcc, multi-byte data types are allocated
+ *   with the least significant byte occupying the lowest address.  Protocols,
+ *   data formats (including UTF-8), and such are primarily big endian.
+ *   Because it feels more consistent, and makes a little more sense to me,
+ *   this code organizes bytes in a little endian manner whenever it has a
+ *   choice between the two.
  *
  * - For a long time, I was going to try to make this library robust in the
  *   event of power loss, but in the end I decided not to.  This feature is
- *   meant to be used for *temporary* macros - permanent macros really should
- *   be assigned to a key in the layout code directly, instead of using this
- *   library's functionality after the firmware has already been loaded - so,
- *   with the risk of power loss being fairly low, and the consequence of
- *   (detected) eeprom-macro corruption hopefully more of an annoyance than
- *   anything else, I decided the effort (and extra EEMEM usage) wasn't worth
- *   it.
+ *   meant to be used for *temporary* macros - so, with the risk of power loss
+ *   during a critical time being fairly low, and the consequence of (detected)
+ *   data corruption hopefully more of an annoyance than anything else, I
+ *   decided the effort (and extra EEMEM usage) wasn't worth it.
  */
 
 
 #include <stddef.h>
 #include <stdint.h>
-#include <string.h>
-#include <avr/eeprom.h>
 #include "../../../../firmware/keyboard.h"
 #include "../../../../firmware/lib/eeprom.h"
 #include "../eeprom-macro.h"
 
 // ----------------------------------------------------------------------------
+// checks ---------------------------------------------------------------------
 
-/**                           macros/OPT__EEPROM_MACRO__EEPROM_SIZE/description
+/**                           macros/OPT__EEPROM__EEPROM_MACRO__END/description
  * Implementation notes:
- * - The ATMega32U4 has 1024 bytes of internal EEPROM total
+ * - The ATMega32U4 only has 1024 bytes of EEPROM (beginning with byte 0)
  */
-#if OPT__EEPROM_MACRO__EEPROM_SIZE > 1024
-    #error "OPT__EEPROM_MACRO__EEPROM_SIZE must be <= 1024"
+#if OPT__EEPROM__EEPROM_MACRO__END > 1023
+    #error "OPT__EEPROM__EEPROM_MACRO__END must not be greater than 1023"
 #endif
 
 // ----------------------------------------------------------------------------
 // macros ---------------------------------------------------------------------
 
 /**                                                  macros/VERSION/description
- * The version number of `struct eeprom`
+ * The version number of the EEMEM layout
  *
  * Assignments:
  * - 0x00: Reserved: EEPROM not yet initialized, or in inconsistent state
@@ -74,61 +64,93 @@
  */
 #define  VERSION  0x01
 
-/**                                                        macros/MACROS_LENGTH
- * The number of items in `eeprom.macros.data`, stored persistently in
- * `eeprom.macros.length`
- */
-#define  MACROS_LENGTH  ( OPT__EEPROM_MACRO__EEPROM_SIZE            \
-                          - sizeof(uint16_t)  /* for `length` */    \
-                          - sizeof(struct meta)                     \
-                          - sizeof(struct table) )                  \
-                        / sizeof(uint8_t) 
-
-/**                                       macros/(enum) header_type/description
- * Valid values for `header_t.type`, describing what kind of data follows
+/**                                     macros/(group) EEMEM layout/description
+ * To define the layout of our section of the EEPROM
  *
  * Members:
- * - `HEADER_TYPE_DELETED = 0x00`: This macro has been deleted (only `length`
- *   is valid)
- * - `HEADER_TYPE_VALID`: This macro is valid
- * - `HEADER_TYPE_END = 0xFF`: This header marks the end of the list (nothing
- *   follows)
+ * - `EEMEM_START`: The address of the first byte of our block of EEMEM
+ * - `EEMEM_START_ADDRESS_START`
+ * - `EEMEM_START_ADDRESS_END`
+ * - `EEMEM_VERSION_START`
+ * - `EEMEM_VERSION_END`
+ * - `EEMEM_ROWS_START`
+ * - `EEMEM_ROWS_END`
+ * - `EEMEM_COLUMNS_START`
+ * - `EEMEM_COLUMNS_END`
+ * - `EEMEM_TABLE_START`
+ * - `EEMEM_TABLE_END`
+ * - `EEMEM_MACROS_START`
+ * - `EEMEM_MACROS_END`
+ * - `EEMEM_END_ADDRESS_START`
+ * - `EEMEM_END_ADDRESS_END`
+ * - `EEMEM_END`: The address of the last byte of our block of EEMEM
+ *
+ * EEMEM sections:
+ * - START_ADDRESS:
+ *     - byte 0: LSB of `EEMEM_START`
+ *     - byte 1: MSB of `EEMEM_START`
+ * - VERSION:
+ *     - byte 0..15: Each byte is a copy of the value of `VERSION`.  We keep
+ *       more than 1 copy for write balancing.
+ *         - These bytes will all be set to `VERSION` as the last step of
+ *           initializing our portion of the EEPROM.
+ *         - Before sensitive writes (sequences of writes which will corrupt
+ *           our data if they are interrupted), a random one of these values
+ *           will be erased (set to `0xFF`).  After the write is completed, the
+ *           changed value will be restored to `VERSION`.
+ *         - Upon initialization, if any of these values is not equal to the
+ *           current `VERSION`, our portion of the EEPROM should be
+ *           reinitialized.
+ * - ROWS:
+ *     - byte 0: The number of rows in TABLE (`OPT__KB__ROWS`)
+ * - COLUMNS:
+ *     - byte 0: The number of columns in TABLE (`OPT__KB__COLUMNS`)
+ * - TABLE:
+ *     - byte 0..`(OPT__KB__ROWS * OPT__KB__COLUMNS)`: TODO
+ * - MACROS:
+ *     - byte 0..`(EEMEM_END_ADDRESS - EEMEM_MACROS)`: TODO
+ * - END_ADDRESS:
+ *     - byte 0: LSB of `EEMEM_END`
+ *     - byte 1: MSB of `EEMEM_END`
+ *
+ * Notes:
+ * - `START_ADDRESS`, `ROWS`, `COLUMNS`, and `END_ADDRESS` are all written as
+ *   part of our effort to make sure that the assumptions in place when writing
+ *   the data don't shift (undetected) by the time it gets read.  Any of these
+ *   values could change, legitimately, without `VERSION` being incremented,
+ *   but it's important that any two builds of the firmware that deal with this
+ *   section of the EEPROM have the same values for each.
  */
-enum type {
-    TYPE_DELETED = 0x00,
-    TYPE_VALID_MACRO,
-    TYPE_END = 0xFF,
-};
+#define  EEMEM_START  OPT__EEPROM__EEPROM_MACRO__START
+#define  EEMEM_END    OPT__EEPROM__EEPROM_MACRO__END
+// TODO: the rest of the definitions
+
+/**                                             macros/(group) type/description
+ * Aliases for valid values of the "type" field in `MACROS`
+ *
+ * Members:
+ * - `TYPE_DELETED`
+ * - `TYPE_VALID_MACRO`
+ * - `TYPE_END`
+ */
+#define  TYPE_DELETED      0x00
+#define  TYPE_VALID_MACRO  0x01
+#define  TYPE_END          0xFF
 
 // ----------------------------------------------------------------------------
 // types ----------------------------------------------------------------------
 
-/**                                                  types/header_t/description
- * To describe the data that follows (most likely a sequence of `action_t`s,
- * making this the beginning of a macro)
- *
- * Struct members:
- * - type: (see description for `header_type` enum)
- * - `length`: the number of `action_t`s that follow
- * - `uid`: a Unique IDentifier for the macro
+/**                                              types/key_action_t/description
+ * TODO
  */
 typedef struct {
-    uint8_t             type;
-    uint8_t             length;
-    eeprom_macro__uid_t uid;
-} header_t;
+    bool    pressed;
+    uint8_t layer;
+    uint8_t row;
+    uint8_t column;
+} key_action_t;
 
-/**                                                  types/action_t/description
- * To describe the "press" or "release" of a key when recording or playing back
- * a macro
- *
- * Notes:
- * - We reuse the `...uid_t` type for convenience and consistency.  Only the
- *   `pressed`, `row`, and `column` fields are relevant, since these are what
- *   will be passed to `kb__layout__exec_key()` when playing back the macro.
- *   `layer` will be ignored.
- */
-typedef  eeprom_macro__uid_t  action_t;
+// TODO: rewriting (yet again) - stopped here
 
 // ----------------------------------------------------------------------------
 // variables in EEMEM ---------------------------------------------------------
@@ -157,9 +179,22 @@ typedef  eeprom_macro__uid_t  action_t;
  *               bits for `false`
  * - `macros`: To hold a block of memory for storing macros
  *     - `length`: The number of bytes allocated to `macros.data`
- *     - `data`: A list of "macro"s, where a "macro" is a `header_t`
- *       followed by zero or more `action_t`s.  The list contains no padding.
- *       It is terminated by a macro with `header_t.type == HEADER_TYPE_END`.
+ *     - `data`: A (non-padded) list of macros, where a macro (in EEMEM) is
+ *         - 1 byte: `type`
+ *             - as defined in `enum type`
+ *         - 1 byte: `length`
+ *             - the number of bytes in the entire macro (i.e.  the number of
+ *               bytes to skip over, if one had a pointer to the `type` byte of
+ *               this macro, in order to reach the `type` byte of the next
+ *               macro)
+ *         - (variable length): `key_action`
+ *             - as defined in `read_key_action()`
+ *             - this is the key action that is being remapped
+ *         - (list of 0 or more)
+ *             - (variable length): `key_action`
+ *                 - as defined in `read_key_action()`
+ *                 - these are the key actions to be performed instead of the
+ *                   one being remapped
  *
  *
  * Notes:
@@ -195,127 +230,35 @@ struct eeprom {
 // ----------------------------------------------------------------------------
 // variables in SRAM ----------------------------------------------------------
 
-// TODO: names for the pointers to where to write the next new macro header,
-// and next recorded action
-// - macros_next_free_header, macros_next_free_action
-static void * macros_free_begin;  // TODO: needs a better name?
+static void * current_macro;
+uint8_t       current_macro_length;
 
 // ----------------------------------------------------------------------------
 // TODO:
 //
-// - should we define macros as
-//     - length
-//         - 0x00 => end
-//     - uid
-//         - 0xFF => deleted
-//     - actions(s)
-//         - 1 bit : indicate extended action (read next action, and combine,
-//           to reach higher layers, rows, and columns)
-//         - 1 bit : pressed
-//         - 3 bits : row
-//         - 3 bits : column
-// - maybe we could define UIDs similar to the actions described above?
-//   multi-byte encodings ftw! lol.  like utf-8...
+// - the calling function need not ignore layer shift keys, or any other keys.
 //
-// ----------------------------------------------------------------------------
+// - use little endian order for the multi-byte encoding. explain why (since
+//   utf-8 is big endian)
 //
-// - actually, yes, we could store UIDs as
-//     - 1 bit : indicate whether the next byte extends this one (i.e. for
-//       every field in the next byte, take it, shift it up, and concatenate it
-//       with the corresponding field in this byte to obtain the final value.
-//       if the next byte has its extended bit set too, then the byte after
-//       that extends each field further, etc.)
-//     - 1 bit : pressed (this field is ignored in extended bytes)
-//     - 2 bits : layer
-//     - 2 bits : row
-//     - 2 bits : column
+// - 255 bytes (so, on average, about 100 keystrokes = 200 key actions) should
+//   be enough for a macro, i think.  `length` can be 1 byte, and count the
+//   total number of bytes (including `type` and `length`, and anything else)
 //
-// - then we could use the same format for actions (and use the same read
-//   function for both)
+// - need to write a function to read, and another to write, multi-byte key
+//   actions
 //
-// - then we would probably want to make a function
-//   `kb__layout__exec_key_layer()` or some such, to execute a key on a
-//   specific layer.  `kb__layout__exec_key()` could look up the top layer in
-//   the stack, and call the more specific function.
+// - so for now, we have
+//     - macro = `type` `length` uid key_action*
+//     - uid = key_action
+//     - key_action =
+//         - 1 bit  : are the fields in this byte extended by the next?
+//         - 1 bit  : `pressed`
+//         - 2 bits : `layer`
+//         - 2 bits : `row`
+//         - 2 bits : `column`
 //
-// - recording the layer, and specifying it explicitly when playing back macros
-//   might eliminate some problems with defining a macro for a key on a
-//   different layer than the ones it presses, or on a different layer than the
-//   key indicating to start recording.  this way, we could just ignore all
-//   layer shift keys when recording (or... the exec_key function could, since
-//   i think that's where functions from this library will be called).
-//   otherwise, if we just record (pressed, row, column) tuples, the logic will
-//   have to be more complicated...  how will we know which key to assign the
-//   macro to? will we not allow macros to be assigned to layer keys?
-//   (actually... that last question might be a problem anyway... but that's
-//   for the logic later on)
-//
-// - still need to consider though: do we really want to give up the `type`
-//   byte?  it would much more easily allow for extensions in the future if we
-//   kept it, and it would eliminate the need to steal values from `length`.
-//
-// - actually, if we multi-byte encode the uid, we do need to keep `type`,
-//   because otherwise, how will we indicate a deleted macro (where the length
-//   still needs to be valid)?
-//
-// - we'll need to write a read and a write function for (pressed, layer, row,
-//   column) tuples
-//
-// - also, under this scheme, `length` will have to be the number of bytes,
-//   since there will be no quick way to know how many bytes there are (to skip
-//   over to get to the next macro) if we specify the number of actions.
-//
-// - this also means we'll need to encode the uid (and may as well write it)
-//   before beginning to record
-//
-// - maybe the variables we want to keep track of in memory are
-//     - pointer to beginning of macro currently being recorded
-//     - length, in bytes, of the entire thing (minus the 2 bytes for `type`
-//       and `length`)
-//
-// - will we want macros more than 255 bytes long? if so, should we use 2 bytes
-//   for `length`s, or should we align macros on the 2 or 4 byte boundary? (and
-//   if we align on a boundary, how should we pad the ends of the macros?)
-//
-// ----------------------------------------------------------------------------
-//
-// - 255 bytes (so, on average, say 100 keystrokes) should be enough for a
-//   macro, i think.  no need to make `length` 2 bytes, or multi-byte encode it.
-//
-// - should `eeprom_macro__uid_t` still stick around? we won't need to use its
-//   binary layout, if we handle things this way, and it's restrictions aren't
-//   prohibitave, i think... and it does keep uid's in SRAM down to a constant
-//   2 bytes.  and make the function signatures smaller, lol.
-//
-// - i just looked back at some other code, and utf-8 is big-endian.  should
-//   this multi-byte format be big endian too?  or small, as described above?
-//
-// - even if storing `layer` in the `action`s, there's no real need for the
-//   calling function to ignore layer key presses and releases.  maybe the user
-//   wants to use a macro to change the state of their keyboard.  i am thinking
-//   we should keep `layer` though, instead of just having (pressed, row,
-//   column) tuples... it feels like it might be easier that way to do what the
-//   user expects (i.e. repeat the *actions* that they performed, not just the
-//   keystrokes, which given layers and such could, theoretically, have some
-//   interesting consequences... lol)
-//
-// - should we allow chaining of macros?  i kind of think so.  actually,
-//   nevermind... i kind of think not.  the benefits would be that it would do
-//   what the user expects if they have a longstanding macro that they're used
-//   to, and they try to include it in another without thinking.  or if they
-//   want to chain macros to get one longer than 255 bytes.  either of those
-//   cases would probably be better served by having them do it in code.
-//   having macros unchainable, however, would allow people to, e.g., remap the
-//   letter keys one to another on their home layer, for experimentation
-//   purposes.  which seems like it'd be a useful thing to allow, and a
-//   capability that users would expect (especially coming from the kinesis).
-//   it would also make macros safe from being inadvertently redefined by new
-//   macro definitions.  it would also save time a little in key lookup when
-//   playing macros back... lol (insignificant though).  it would take an extra
-//   flag or something somewhere though, i think, so that the exec_key function
-//   would know to not look in the EEPROM for aliases of keys when macros were
-//   being played back.  hmm... it would also prevent circular (= never ending)
-//   macros.  ya, we should probably disallow chaining.
+// - need to write `kb__layout__exec_key_layer()` (or something)
 //
 // ----------------------------------------------------------------------------
 

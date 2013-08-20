@@ -9,6 +9,15 @@
  *
  * Prefix: `eeprom__`
  *
+ * Conventions:
+ * - Because the EEPROM must be shared between different parts of the entire
+ *   program, there needs to be a way to define which blocks are to be used for
+ *   which purposes.  To that end, all blocks of the EEPROM that are being used
+ *   must have their start and end addresses `#define`ed to two globally
+ *   visible macros, of the form `OPT__EEPROM__[prefix]__START` and
+ *   `OPT__EEPROM__[prefix]__END`, where "[prefix]" is the prefix usually given
+ *   to public functions, etc., in that section of the code.
+ *
  * Notes:
  * - This is meant to be a replacement for the read, write, and update
  *   functions provided by `<avr/eeprom.h>`, and should be preferred for those

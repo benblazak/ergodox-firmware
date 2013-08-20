@@ -34,6 +34,15 @@
  *   in the EEPROM, and contain a key action who's original behavior we wish
  *   to mask, and a list of key actions that should be sequentially performed
  *   instead.
+ * - A "keystroke" is a full press then release of a key.  Keystrokes may
+ *   overlap each other.
+ * - To "remap" a key action is to assign a macro to it (masking, not
+ *   replacing, what the key action originally did).
+ * - The "EEPROM" is an "Electronically Erasable Programmable Read Only
+ *   Memory".  It is where this library stores persistent data.
+ * - "EEMEM" is "EEprom MEMory" (i.e. another way of referring to the memory of
+ *   the EEPROM, instead of the EEPROM itself) following the convention of
+ *   avr-gcc.
  *
  * Usage notes:
  * - When macros are recorded, the key they are assigned to does not loose its
@@ -75,16 +84,28 @@
 
 // ----------------------------------------------------------------------------
 
+/**                         macros/OPT__EEPROM__EEPROM_MACRO__START/description
+ * The first EEMEM address in the block assigned to this section of the code 
+ */
+/**                           macros/OPT__EEPROM__EEPROM_MACRO__END/description
+ * The last EEMEM address in the block assigned to this section of the code 
+ */
+#if OPT__EEPROM__EEPROM_MACRO__START > OPT__EEPROM__EEPROM_MACRO__END
+    #error "OPT__EEPROM__EEPROM_MACRO__START must be smaller than ...END"
+#endif
+
+// ----------------------------------------------------------------------------
+
 #define  ARGS  bool pressed, uint8_t layer, uint8_t row, uint8_t column
 uint8_t eeprom_macro__init            (void);
 uint8_t eeprom_macro__record_init     ( ARGS );
 uint8_t eeprom_macro__record_action   ( ARGS );
 uint8_t eeprom_macro__record_finalize (void);
-uint8_t eeprom_macro__exists          ( ARGS );
 uint8_t eeprom_macro__play            ( ARGS );
+bool    eeprom_macro__exists          ( ARGS );
 void    eeprom_macro__clear           ( ARGS );
 void    eeprom_macro__clear_all       (void);
-#undef  arguments
+#undef  ARGS
 
 
 // ----------------------------------------------------------------------------
@@ -113,8 +134,10 @@ void    eeprom_macro__clear_all       (void);
  * Meant to be called exactly once by `kb__init()`
  *
  * Notes:
- * - This function should initialize the EEPROM to the current format if the
- *   version of the data stored is different than what we expect.
+ * - This function should initialize our portion of the EEPROM to the current
+ *   format if we don't know how to read it; i.e. if the version of the data
+ *   stored is different than what we expect, or if the data has been
+ *   corrupted.
  */
 
 // === eeprom_macro__record_init() ===
@@ -122,12 +145,12 @@ void    eeprom_macro__clear_all       (void);
  * Prepare to record a new macro
  *
  * Arguments:
- * - (group) They key to remap
- *     - `pressed`: Whether the key action to remap is a press (`true`) or a
- *       release (`false`)
- *     - `layer`: The layer of the key action to remap
- *     - `row`: The row of the key action to remap
- *     - `column`: The column of the key action to remap
+ * - (group) The key action to remap
+ *     - `pressed`: Whether the key action is a press (`true`) or a release
+ *     (`false`)
+ *     - `layer`: The layer of the key action
+ *     - `row`: The row of the key action
+ *     - `column`: The column of the key action
  *
  * Returns:
  * - success: `0`
@@ -145,11 +168,12 @@ void    eeprom_macro__clear_all       (void);
  * Record the next key action of the current macro
  *
  * Arguments:
- * - `pressed`: Whether the key action being recorded is a press (`true`) or a
- *   release (`false`)
- * - `layer`: The layer of the key action being recorded
- * - `row`: The row of the key action being recorded
- * - `column`: The column of the key action being recorded
+ * - (group) The key action to record
+ *     - `pressed`: Whether the key action is a press (`true`) or a release
+ *     (`false`)
+ *     - `layer`: The layer of the key action
+ *     - `row`: The row of the key action
+ *     - `column`: The column of the key action
  *
  * Returns:
  * - success: `0`
@@ -166,64 +190,65 @@ void    eeprom_macro__clear_all       (void);
  *
  * Notes:
  * - Before this function is called, the macro (even though parts of it may be
- *   written) should not be readable, or referenced anywhere in the EEPROM
- */
-
-// === eeprom_macro__exists() ===
-/**                                  functions/eeprom_macro__exists/description
- * Predicate indicating whether the specified key action was remapped
- *
- * Arguments:
- * - `pressed`: Whether the key action that was remapped was a press (`true`)
- *   or a release (`false`)
- * - `layer`: The layer of the key action that was remapped
- * - `row`: The row of the key action that was remapped
- * - `column`: The column of the key action that was remapped
- *
- * Returns:
- * - [nonzero]: if a macro with the given UID exists
- * - `0`: if a macro with the given UID does not exist
+ *   written) should not be readable, or referenced anywhere in the EEPROM.
  */
 
 // === eeprom_macro__play() ===
 /**                                    functions/eeprom_macro__play/description
- * Play back recorded key actions for the macro with UID `index`
+ * Play back recorded key actions for the macro assigned to the specified key
+ * action
  *
  * Arguments:
- * - `pressed`: Whether the key action that was remapped was a press (`true`)
- *   or a release (`false`)
- * - `layer`: The layer of the key action that was remapped
- * - `row`: The row of the key action that was remapped
- * - `column`: The column of the key action that was remapped
+ * - (group) The key action to search for
+ *     - `pressed`: Whether the key action is a press (`true`) or a release
+ *     (`false`)
+ *     - `layer`: The layer of the key action
+ *     - `row`: The row of the key action
+ *     - `column`: The column of the key action
  *
  * Returns:
  * - success: `0` (macro successfully played)
  * - failure: [other] (macro does not exist)
+ */
+
+// === eeprom_macro__exists() ===
+/**                                  functions/eeprom_macro__exists/description
+ * Predicate indicating whether the specified key action has been remapped
  *
- * Notes:
- * - Keystrokes will be played back as if the same sequence of keys were being
- *   pressed by the user (regardless of whether the current state of the
- *   keyboard is the same), except as fast as possible (since timing is not
- *   recorded).
+ * Arguments:
+ * - (group) The key action to search for
+ *     - `pressed`: Whether the key action is a press (`true`) or a release
+ *     (`false`)
+ *     - `layer`: The layer of the key action
+ *     - `row`: The row of the key action
+ *     - `column`: The column of the key action
+ *
+ * Returns:
+ * - `true`: if a macro with the given UID exists
+ * - `false`: if a macro with the given UID does not exist
  */
 
 // === eeprom_macro__clear() ===
 /**                                   functions/eeprom_macro__clear/description
- * Clear the macro with UID `index`
+ * Clear (delete) the macro assigned to the given key action
  *
  * Arguments:
- * - `index`: The UID of the macro to clear
+ * - (group) The key action to un-remap
+ *     - `pressed`: Whether the key action is a press (`true`) or a release
+ *     (`false`)
+ *     - `layer`: The layer of the key action
+ *     - `row`: The row of the key action
+ *     - `column`: The column of the key action
  */
 
 // === eeprom_macro__clear_all() ===
 /**                               functions/eeprom_macro__clear_all/description
- * Clear all macros in the EEPROM
+ * Clear (delete) all macros in the EEPROM
  *
  * Notes:
  * - For the purposes of this function, "clearing" the EEPROM means to put it
  *   in such a state that none of the functions declared here will be able to
- *   find a macro for any `index`.  This does not necessarily imply that the
+ *   find a macro for any key action.  This does not necessarily imply that the
  *   EEPROM is in a fully known state.
  */
-
 
