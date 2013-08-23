@@ -28,6 +28,10 @@
  *
  * Notes:
  * - Cherry MX bounce time <= 5ms (at 16 in/sec actuation speed) (spec)
+ *
+ * TODO: does this documentation (and preprocessor check) belong in "main.h"?
+ * also, does the note belong in the keyboard "options.h", as an
+ * "implementation note"?
  */
 #ifndef OPT__DEBOUNCE_TIME
     #error "OPT__DEBOUNCE_TIME not defined"

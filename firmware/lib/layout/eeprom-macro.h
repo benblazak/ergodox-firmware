@@ -84,12 +84,6 @@
 
 // ----------------------------------------------------------------------------
 
-/**                         macros/OPT__EEPROM__EEPROM_MACRO__START/description
- * The first EEMEM address in the block assigned to this section of the code 
- */
-/**                           macros/OPT__EEPROM__EEPROM_MACRO__END/description
- * The last EEMEM address in the block assigned to this section of the code 
- */
 #if OPT__EEPROM__EEPROM_MACRO__START > OPT__EEPROM__EEPROM_MACRO__END
     #error "OPT__EEPROM__EEPROM_MACRO__START must be smaller than ...END"
 #endif
@@ -117,6 +111,21 @@ void    eeprom_macro__clear_all       (void);
 // ============================================================================
 // === documentation ==========================================================
 // ============================================================================
+
+
+// ----------------------------------------------------------------------------
+// macros ---------------------------------------------------------------------
+// ----------------------------------------------------------------------------
+
+// === OPT__EEPROM__EEPROM_MACRO__START ===
+/**                         macros/OPT__EEPROM__EEPROM_MACRO__START/description
+ * The first EEMEM address in the block assigned to this section of the code 
+ */
+
+// === OPT__EEPROM__EEPROM_MACRO__END ===
+/**                           macros/OPT__EEPROM__EEPROM_MACRO__END/description
+ * The last EEMEM address in the block assigned to this section of the code 
+ */
 
 
 // ----------------------------------------------------------------------------

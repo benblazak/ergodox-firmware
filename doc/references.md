@@ -651,7 +651,7 @@
   : post by [Unix Guru] (http://geekhack.org/index.php?action=profile;u=24565)
   on <http://geekhack.org/>  
 
-### Hardware Stuff (for the keyboard case)
+### Hardware and DIY Stuff (for the keyboard case, and such)
 
 * [Working with Acrylic]
   (http://www.bcae1.com/plexi.htm)
@@ -668,6 +668,11 @@
 
 * [Kurplop's finishing of the aluminum case (from Massdrop round 1)]
   (http://geekhack.org/index.php?topic=22780.msg854128#msg854128)
+
+* [Geekhack: DIY resources]
+  (http://geekhack.org/index.php?topic=33298.0)  
+  A nice short list of things one might want to know for keyboard hardware
+  projects.
 
 ### Some Random Stuff
 
