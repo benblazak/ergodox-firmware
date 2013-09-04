@@ -19,10 +19,13 @@ send it out into the real world by moving it to the master branch, I'm likely
 to feel very protective of it.
 
 Notes:
-* Gyuri Horak implemented NKRO and mouse keys in [his branch]
+* Gyuri Horak (dyuri) implemented NKRO and mouse keys in [his branch]
   (https://github.com/dyuri/ergodox-firmware) of rev-2.  Not merged, but I plan
   to implement the features later, if I can.  See [Pull Request #28]
   (https://github.com/benblazak/ergodox-firmware/pull/28).
+* Oleg Kostyuk (cub-uanic) [ported the TMK firmware]
+  (https://github.com/cub-uanic/tmk_keyboard)
+  (written by "hasu") to the ErgoDox!
 
 Status:
 * School is starting again late August 2013.  It looks to be a busy semester,

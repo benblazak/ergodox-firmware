@@ -353,6 +353,11 @@
 
 ### Keyboard Firmware
 
+* github: [cub-uanic / tmk_keyboard]
+  (https://github.com/cub-uanic/tmk_keyboard)  
+  A port of Hasu's keyboard firmware to the ErgoDox, by Oleg Kostyuk
+  ("cub-uanic").
+
 * zip: [Phantom Firmware from PrinsValium]
   (http://geekhack.org/attachment.php?attachmentid=38982&d=1327895092)  
   Pretty basic (unless I'm missing nuances, which is entirely possible).
