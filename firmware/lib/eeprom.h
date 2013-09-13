@@ -42,12 +42,6 @@
 
 // ----------------------------------------------------------------------------
 
-#ifndef OPT__EEPROM_MACRO__EEPROM_SIZE
-    #error "OPT__EEPROM_MACRO__EEPROM_SIZE not defined"
-#endif
-
-// ----------------------------------------------------------------------------
-
 uint8_t eeprom__read  (void * from);
 uint8_t eeprom__write (void * to, uint8_t data);
 uint8_t eeprom__fill  (void * to, uint8_t data, uint8_t length);
@@ -65,17 +59,6 @@ uint8_t eeprom__block_read (void * to, void * from, uint8_t length);
 // ============================================================================
 // === documentation ==========================================================
 // ============================================================================
-
-
-// ----------------------------------------------------------------------------
-// macros ---------------------------------------------------------------------
-// ----------------------------------------------------------------------------
-
-// === OPT__EEPROM_MACRO__EEPROM_SIZE ===
-/**                           macros/OPT__EEPROM_MACRO__EEPROM_SIZE/description
- * The total size (in bytes) of the EEPROM memory to be allocated by the
- * implementing file
- */
 
 
 // ----------------------------------------------------------------------------

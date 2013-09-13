@@ -151,6 +151,7 @@ typedef struct {
 } key_action_t;
 
 // TODO: rewriting (yet again) - stopped here
+#if 0
 
 // ----------------------------------------------------------------------------
 // variables in EEMEM ---------------------------------------------------------
@@ -383,8 +384,10 @@ static void compress(void) { return;
 // ----------------------------------------------------------------------------
 // public functions -----------------------------------------------------------
 
+#endif  // 0
 uint8_t eeprom_macro__init(void) { return 0;
 }
+#if 0
 
 uint8_t eeprom_macro__record_init(void) { return 0;
 }
@@ -409,4 +412,5 @@ void eeprom_macro__clear(eeprom_macro__uid_t index) { return;
 
 void eeprom_macro__clear_all(void) { return;
 }
+#endif  // 0
 
