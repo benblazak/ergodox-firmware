@@ -114,36 +114,44 @@
  * they need to know the layer on which the number pad has been placed.
  *
  * Notes:
- * - `KEYBOARD__LockingNumLock` is the correct keycode for OS X, and probably
- *   Windows.  For Linux, if this does not work, you might try changing it to
- *   `KEYPAD__NumLock_Clear`.
+ * - `KEYBOARD__LockingNumLock` appears to be the correct keycode for OS X.
+ *   For Linux, the correct keycode is reportedly `KEYPAD__NumLock_Clear`.  For
+ *   Windows, I haven't heard, but one of them has to work :) .
  */
 #define  KEYS__LAYER__NUM_PU_PO(ID, LAYER)                              \
     void P(numPuPo) (void) { layer_stack__push(0, ID, LAYER);           \
                              KF(press)(KEYBOARD__LockingNumLock);       \
+                             KF(press)(KEYPAD__NumLock_Clear);          \
                              usb__kb__send_report();                    \
                              KF(release)(KEYBOARD__LockingNumLock);     \
+                             KF(release)(KEYPAD__NumLock_Clear);        \
                              usb__kb__send_report();                    \
                              _flags.tick_keypresses = false; }          \
     void R(numPuPo) (void) { layer_stack__pop_id(ID);                   \
                              KF(press)(KEYBOARD__LockingNumLock);       \
+                             KF(press)(KEYPAD__NumLock_Clear);          \
                              usb__kb__send_report();                    \
                              KF(release)(KEYBOARD__LockingNumLock);     \
+                             KF(release)(KEYPAD__NumLock_Clear);        \
                              usb__kb__send_report();                    \
                              _flags.tick_keypresses = false; }
 
 #define  KEYS__LAYER__NUM_PUSH(ID, LAYER)                               \
     void P(numPush) (void) { layer_stack__push(0, ID, LAYER);           \
                              KF(press)(KEYBOARD__LockingNumLock);       \
+                             KF(press)(KEYPAD__NumLock_Clear);          \
                              _flags.tick_keypresses = false; }          \
     void R(numPush) (void) { KF(release)(KEYBOARD__LockingNumLock);     \
+                             KF(release)(KEYPAD__NumLock_Clear);        \
                              _flags.tick_keypresses = false; }
 
 #define  KEYS__LAYER__NUM_POP(ID)                                       \
     void P(numPop) (void) { layer_stack__pop_id(ID);                    \
                             KF(press)(KEYBOARD__LockingNumLock);        \
+                            KF(press)(KEYPAD__NumLock_Clear);           \
                             _flags.tick_keypresses = false; }           \
     void R(numPop) (void) { KF(release)(KEYBOARD__LockingNumLock);      \
+                            KF(release)(KEYPAD__NumLock_Clear);         \
                             _flags.tick_keypresses = false; }
 
 // ----------------------------------------------------------------------------
