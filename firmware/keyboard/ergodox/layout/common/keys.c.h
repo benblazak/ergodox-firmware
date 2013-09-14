@@ -112,6 +112,11 @@
  *
  * These macros are meant to be used (if necessary) in the layout file, since
  * they need to know the layer on which the number pad has been placed.
+ *
+ * Notes:
+ * - `KEYBOARD__LockingNumLock` is the correct keycode for OS X, and probably
+ *   Windows.  For Linux, if this does not work, you might try changing it to
+ *   `KEYPAD__NumLock_Clear`.
  */
 #define  KEYS__LAYER__NUM_PU_PO(ID, LAYER)                              \
     void P(numPuPo) (void) { layer_stack__push(0, ID, LAYER);           \
