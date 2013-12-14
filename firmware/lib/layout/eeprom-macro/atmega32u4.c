@@ -71,6 +71,8 @@
  * - `EEMEM_START`: The address of the first byte of our block of EEMEM
  * - `EEMEM_START_ADDRESS_START`
  * - `EEMEM_START_ADDRESS_END`
+ * - `EEMEM_END_ADDRESS_START`
+ * - `EEMEM_END_ADDRESS_END`
  * - `EEMEM_VERSION_START`
  * - `EEMEM_VERSION_END`
  * - `EEMEM_ROWS_START`
@@ -81,14 +83,15 @@
  * - `EEMEM_TABLE_END`
  * - `EEMEM_MACROS_START`
  * - `EEMEM_MACROS_END`
- * - `EEMEM_END_ADDRESS_START`
- * - `EEMEM_END_ADDRESS_END`
  * - `EEMEM_END`: The address of the last byte of our block of EEMEM
  *
  * EEMEM sections:
  * - START_ADDRESS:
  *     - byte 0: LSB of `EEMEM_START`
  *     - byte 1: MSB of `EEMEM_START`
+ * - END_ADDRESS:
+ *     - byte 0: LSB of `EEMEM_END`
+ *     - byte 1: MSB of `EEMEM_END`
  * - VERSION:
  *     - byte 0..15: Each byte is a copy of the value of `VERSION`.  We keep
  *       more than 1 copy for write balancing.
@@ -106,12 +109,9 @@
  * - COLUMNS:
  *     - byte 0: The number of columns in TABLE (`OPT__KB__COLUMNS`)
  * - TABLE:
- *     - byte 0..`(OPT__KB__ROWS * OPT__KB__COLUMNS)`: TODO
+ *     - byte 0..`(OPT__KB__ROWS * OPT__KB__COLUMNS - 1)`: TODO
  * - MACROS:
- *     - byte 0..`(EEMEM_END_ADDRESS - EEMEM_MACROS)`: TODO
- * - END_ADDRESS:
- *     - byte 0: LSB of `EEMEM_END`
- *     - byte 1: MSB of `EEMEM_END`
+ *     - byte 0..`(EEMEM_END - EEMEM_TABLE_END - 1)`: TODO
  *
  * Notes:
  * - `START_ADDRESS`, `ROWS`, `COLUMNS`, and `END_ADDRESS` are all written as
@@ -121,9 +121,24 @@
  *   but it's important that any two builds of the firmware that deal with this
  *   section of the EEPROM have the same values for each.
  */
-#define  EEMEM_START  OPT__EEPROM__EEPROM_MACRO__START
-#define  EEMEM_END    OPT__EEPROM__EEPROM_MACRO__END
-// TODO: the rest of the definitions
+#define  EEMEM_START                OPT__EEPROM__EEPROM_MACRO__START
+#define  EEMEM_START_ADDRESS_START  EEMEM_START
+#define  EEMEM_START_ADDRESS_END    EEMEM_START_ADDRESS_START + 1
+#define  EEMEM_END_ADDRESS_START    EEMEM_START_ADDRESS_END + 1
+#define  EEMEM_END_ADDRESS_END      EEMEM_END_ADDRESS_START + 1
+#define  EEMEM_VERSION_START        EEMEM_END_ADDRESS_END + 1
+#define  EEMEM_VERSION_END          EEMEM_VERSION_START   + 15
+#define  EEMEM_ROWS_START           EEMEM_VERSION_END + 1
+#define  EEMEM_ROWS_END             EEMEM_ROWS_START  + 0
+#define  EEMEM_COLUMNS_START        EEMEM_ROWS_END      + 1
+#define  EEMEM_COLUMNS_END          EEMEM_COLUMNS_START + 0
+#define  EEMEM_TABLE_START          EEMEM_COLUMNS_END + 1
+#define  EEMEM_TABLE_END            EEMEM_TABLE_START + ( OPT__KB__ROWS       \
+                                                          * OPT__KB__COLUMNS  \
+                                                          - 1 )
+#define  EEMEM_MACROS_START         EEMEM_TABLE_END + 1
+#define  EEMEM_MACROS_END           EEMEM_END
+#define  EEMEM_END                  OPT__EEPROM__EEPROM_MACRO__END
 
 /**                                             macros/(group) type/description
  * Aliases for valid values of the "type" field in `MACROS`
