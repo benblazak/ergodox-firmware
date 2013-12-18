@@ -277,6 +277,14 @@ uint8_t       current_macro_length;
 // - need to write `kb__layout__exec_key_layer()` (or something)
 //
 // ----------------------------------------------------------------------------
+// TODO:
+//
+// - we probably don't need a TABLE section... it might save a lot of effort
+//   and space to just do without one.  if speed becomes an issue, we could
+//   probably initialize a table in ram, and use that - it shouldn't actually
+//   be that big, and ram is much faster.
+//
+// ----------------------------------------------------------------------------
 
 // ----------------------------------------------------------------------------
 // local functions ------------------------------------------------------------
