@@ -75,12 +75,6 @@
  * - `EEMEM_END_ADDRESS_END`
  * - `EEMEM_VERSION_START`
  * - `EEMEM_VERSION_END`
- * - `EEMEM_ROWS_START`
- * - `EEMEM_ROWS_END`
- * - `EEMEM_COLUMNS_START`
- * - `EEMEM_COLUMNS_END`
- * - `EEMEM_TABLE_START`
- * - `EEMEM_TABLE_END`
  * - `EEMEM_MACROS_START`
  * - `EEMEM_MACROS_END`
  * - `EEMEM_END`: The address of the last byte of our block of EEMEM
@@ -93,33 +87,20 @@
  *     - byte 0: LSB of `EEMEM_END`
  *     - byte 1: MSB of `EEMEM_END`
  * - VERSION:
- *     - byte 0..15: Each byte is a copy of the value of `VERSION`.  We keep
- *       more than 1 copy for write balancing.
- *         - These bytes will all be set to `VERSION` as the last step of
- *           initializing our portion of the EEPROM.
- *         - Before sensitive writes (sequences of writes which will corrupt
- *           our data if they are interrupted), a random one of these values
- *           will be erased (set to `0xFF`).  After the write is completed, the
- *           changed value will be restored to `VERSION`.
- *         - Upon initialization, if any of these values is not equal to the
- *           current `VERSION`, our portion of the EEPROM should be
- *           reinitialized.
- * - ROWS:
- *     - byte 0: The number of rows in TABLE (`OPT__KB__ROWS`)
- * - COLUMNS:
- *     - byte 0: The number of columns in TABLE (`OPT__KB__COLUMNS`)
- * - TABLE:
- *     - byte 0..`(OPT__KB__ROWS * OPT__KB__COLUMNS - 1)`: TODO
+ *     - This byte will all be set to `VERSION` as the last step of
+ *       initializing our portion of the EEPROM.
+ *     - Upon initialization, if this value is not equal to the current
+ *       `VERSION`, our portion of the EEPROM should be reinitialized.
  * - MACROS:
- *     - byte 0..`(EEMEM_END - EEMEM_TABLE_END - 1)`: TODO
+ *     - byte 0..`(EEMEM_END - EEMEM_VERSION_END - 1)`: TODO
  *
  * Notes:
- * - `START_ADDRESS`, `ROWS`, `COLUMNS`, and `END_ADDRESS` are all written as
- *   part of our effort to make sure that the assumptions in place when writing
- *   the data don't shift (undetected) by the time it gets read.  Any of these
- *   values could change, legitimately, without `VERSION` being incremented,
- *   but it's important that any two builds of the firmware that deal with this
- *   section of the EEPROM have the same values for each.
+ * - `START_ADDRESS` and `END_ADDRESS` are written as part of our effort to
+ *   make sure that the assumptions in place when writing the data don't shift
+ *   (undetected) by the time it gets read.  Either of these values could
+ *   change, legitimately, without `VERSION` being incremented, but it's
+ *   important that any two builds of the firmware that deal with this section
+ *   of the EEPROM have the same values for each.
  */
 #define  EEMEM_START                OPT__EEPROM__EEPROM_MACRO__START
 #define  EEMEM_START_ADDRESS_START  EEMEM_START
@@ -127,16 +108,8 @@
 #define  EEMEM_END_ADDRESS_START    EEMEM_START_ADDRESS_END + 1
 #define  EEMEM_END_ADDRESS_END      EEMEM_END_ADDRESS_START + 1
 #define  EEMEM_VERSION_START        EEMEM_END_ADDRESS_END + 1
-#define  EEMEM_VERSION_END          EEMEM_VERSION_START   + 15
-#define  EEMEM_ROWS_START           EEMEM_VERSION_END + 1
-#define  EEMEM_ROWS_END             EEMEM_ROWS_START  + 0
-#define  EEMEM_COLUMNS_START        EEMEM_ROWS_END      + 1
-#define  EEMEM_COLUMNS_END          EEMEM_COLUMNS_START + 0
-#define  EEMEM_TABLE_START          EEMEM_COLUMNS_END + 1
-#define  EEMEM_TABLE_END            EEMEM_TABLE_START + ( OPT__KB__ROWS       \
-                                                          * OPT__KB__COLUMNS  \
-                                                          - 1 )
-#define  EEMEM_MACROS_START         EEMEM_TABLE_END + 1
+#define  EEMEM_VERSION_END          EEMEM_VERSION_START   + 0
+#define  EEMEM_MACROS_START         EEMEM_VERSION_END + 1
 #define  EEMEM_MACROS_END           EEMEM_END
 #define  EEMEM_END                  OPT__EEPROM__EEPROM_MACRO__END
 
@@ -275,14 +248,6 @@ uint8_t       current_macro_length;
 //         - 2 bits : `column`
 //
 // - need to write `kb__layout__exec_key_layer()` (or something)
-//
-// ----------------------------------------------------------------------------
-// TODO:
-//
-// - we probably don't need a TABLE section... it might save a lot of effort
-//   and space to just do without one.  if speed becomes an issue, we could
-//   probably initialize a table in ram, and use that - it shouldn't actually
-//   be that big, and ram is much faster.
 //
 // ----------------------------------------------------------------------------
 
