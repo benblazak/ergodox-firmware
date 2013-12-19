@@ -71,10 +71,18 @@ void key_functions__toggle_capslock(void) {
 //         usb__kb__set_key(true, KEYPAD__NumLock_Clear);
 //         usb__kb__send_report();
 //         usb__kb__set_key(false, KEYPAD__NumLock_Clear);
+//         usb__kb__send_report();
 //     }
 // 
 //     usb__kb__send_report();
 // }
+/**                          functions/key_functions__type_byte_hex/description
+ * Implementation notes:
+ *
+ * - We have to call `usb__kb__send_report()` after each call to
+ *   `usb__kb__set_key()`; otherwise, if the high 4 bits is the same as the low
+ *   4 bits, only one character will be typed.
+ */
 void key_functions__type_byte_hex(uint8_t byte) {
     uint8_t c[2] = { byte >> 4, byte & 0xF };
 
@@ -86,6 +94,7 @@ void key_functions__type_byte_hex(uint8_t byte) {
         usb__kb__set_key(true, c[i]);
         usb__kb__send_report();
         usb__kb__set_key(false, c[i]);
+        usb__kb__send_report();
     }
 
     usb__kb__send_report();

@@ -67,10 +67,14 @@ uint8_t eeprom__block_read (void * to, void * from, uint8_t length);
 
 // === eeprom__read() ===
 /**                                          functions/eeprom__read/description
- * Read and return the data at `address` in the EEPROM memory space
+ * Read and return the data at `from` in the EEPROM memory space
  *
  * Arguments:
- * - `from: The address of (i.e. a pointer to) the location to read from
+ * - `from`: The address of (i.e. a pointer to) the location from which to read
+ *
+ * Returns:
+ * - success: The data stored at `from` in the EEPROM memory space
+ * - failure: `0`
  */
 
 // === eeprom__write() ===
