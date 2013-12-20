@@ -72,7 +72,7 @@ KEYS__LAYER__NUM_POP(10);
 
 // TODO dbg
 void P(test)(void){
-    KF(dump_progmem_ihex)();
+    KF(dump_progmem_ihex)(0, (void *)-1);
 }
 void R(test)(void){}
 // TODO /dbg

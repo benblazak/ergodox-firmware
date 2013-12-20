@@ -187,6 +187,10 @@
   exactly what you expect, so... use caution, but don't neglect them all
   together :) .  Kind of like `goto`.
 
+* [Pointer comparisons in C. Are they signed or unsigned?]
+  (http://stackoverflow.com/questions/6702161/pointer-comparisons-in-c-are-they-signed-or-unsigned)  
+  Pointer comparisons in C are interesting...  Have to be careful with them.
+
 ### C++ Stuff
 
 * [Google C++ Style Guide]

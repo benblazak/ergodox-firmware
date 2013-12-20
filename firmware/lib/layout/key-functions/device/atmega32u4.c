@@ -48,33 +48,45 @@ static uint8_t progmem_read(void * from) {
 }
 
 /**                                             functions/dump_ihex/description
- * TODO: documentation
+ * TODO: description
  *
  * Arguments:
- *
- * Returns:
+ * - `read`: TODO
+ * - `from`: TODO
+ * - `last`: TODO
  *
  * Notes:
  * - See [the Wikipedia article] (http://en.wikipedia.org/wiki/Intel_HEX) on
  *   the Intel hex (ihex) format.
+ *
+ * Implementation notes:
+ * - When the loop starts, `from` might be `0`, and `last` might be
+ *   `UINT16_MAX`, in which case `from == last+1`.  We need to ignore this on
+ *   the first iteration, hence the do-while loop and the `from != last+1` part
+ *   of the first conditional.  When this condition occurs again, it will be
+ *   because `from` was incremented one past `last`, and the loop should be
+ *   terminated.
+ * - Pointer comparisons in C are interesting...  Specifically, `last-from+1 <
+ *   line_width` seems to cast `last-from+1` to the same type as `line_width`
+ *   (`uint8_t`) which causes problems since pointers on this platform are 16
+ *   bits.  Casting either side of the expression to `uint16_t` seems to solve
+ *   the problem.  It feels cleaner to me to cast the pointer side because
+ *   comparisons between pointers and integers is only implementation defined.
  */
 static void dump_ihex( uint8_t (*read)(void *),
                        void * from,
                        void * last ) {
 
-    const uint8_t record_type = 0x00;  // data
+    if (from > last)
+        return;  // error
+
+    const uint8_t record_type = 0x00;  // ihex record type = data
           uint8_t line_width  = 0x10;  // 16 bytes of data per line, by default
 
-    // TODO: from might equal `0`, and last might equal `UINT16_MAX`; need to
-    // work thing out so that that won't make problems; maybe just use bigger
-    // counters, and then not have to worry about it
-    //
-    // i could use `length` instead of `last`, like i originally wanted to, if
-    // i used a `uint32_t`.  part of me wants to make it work without the
-    // bigger variable, lol.  part of me wants to just get it finished.  the
-    // extra 2 bytes of stack ram probably won't hurt anything anyway.
     do {
-        if (from != last+1 && last-from+1 < line_width)
+        // - As long as `from != last+1`, `last-from+1` is the number of bytes
+        //   left to print
+        if (from != last+1 && (uint16_t)(last-from+1) < line_width)
             line_width = last-from+1;
 
         uint8_t checksum = line_width + record_type
@@ -88,7 +100,7 @@ static void dump_ihex( uint8_t (*read)(void *),
         key_functions__type_byte_hex( record_type );
 
         for (uint8_t l=0; l<line_width; l++) {
-            uint8_t byte = (*read)(++from);
+            uint8_t byte = (*read)(from++);
             checksum += byte;
             key_functions__type_byte_hex(byte);
         }
@@ -96,7 +108,7 @@ static void dump_ihex( uint8_t (*read)(void *),
         key_functions__type_byte_hex( 0x100 - checksum );  // 2's compliment
         key_functions__type_string( PSTR("\n") );
 
-    } while (from != last);
+    } while (from != last+1);
 
     key_functions__type_string( PSTR(":00000001FF\n") );  // ihex EOF record
 }
@@ -105,7 +117,7 @@ static void dump_ihex( uint8_t (*read)(void *),
 
 /**                     functions/key_functions__jump_to_bootloader/description
  * Implementation notes:
- * - This code is from PJRC (slightly modified)
+ * - This code is from PJRC (slightly modified):
  *   <http://www.pjrc.com/teensy/jump_to_bootloader.html>.
  *
  */
@@ -130,15 +142,21 @@ void key_functions__jump_to_bootloader(void) {
     asm volatile("jmp 0x7E00");
 }
 
-void key_functions__dump_sram_ihex(void) {
-    dump_ihex(&sram_read, 0, (void *)RAMEND);
+void key_functions__dump_sram_ihex(void * from, void * last) {
+    if (last > (void *)RAMEND)
+        last = (void *)RAMEND;
+    dump_ihex(&sram_read, from, last);
 }
 
-void key_functions__dump_progmem_ihex(void) {
-    dump_ihex(&progmem_read, 0, (void *)FLASHEND);
+void key_functions__dump_progmem_ihex(void * from, void * last) {
+    if (last > (void *)FLASHEND)
+        last = (void *)FLASHEND;
+    dump_ihex(&progmem_read, from, last);
 }
 
-void key_functions__dump_eeprom_ihex(void) {
-    dump_ihex(&eeprom__read, 0, (void *)E2END);
+void key_functions__dump_eeprom_ihex(void * from, void * last) {
+    if (last > (void *)E2END)
+        last = (void *)E2END;
+    dump_ihex(&eeprom__read, from, last);
 }
 

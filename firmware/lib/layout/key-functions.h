@@ -27,9 +27,9 @@ void key_functions__toggle  (uint8_t keycode);
 
 // device
 void key_functions__jump_to_bootloader (void);
-void key_functions__dump_sram_ihex     (void);  // TODO: documentation
-void key_functions__dump_progmem_ihex  (void);  // TODO: documentation
-void key_functions__dump_eeprom_ihex   (void);  // TODO: documentation
+void key_functions__dump_sram_ihex     (void * from, void * last);  // TODO: documentation
+void key_functions__dump_progmem_ihex  (void * from, void * last);  // TODO: documentation
+void key_functions__dump_eeprom_ihex   (void * from, void * last);  // TODO: documentation
 
 // special
 void key_functions__toggle_capslock (void);
