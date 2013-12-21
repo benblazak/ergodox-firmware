@@ -70,13 +70,6 @@ void kb__led__logical_off(char led) {
 KEYS__LAYER__NUM_PUSH(10, 3);
 KEYS__LAYER__NUM_POP(10);
 
-// TODO dbg
-void P(test)(void){
-    KF(dump_progmem_ihex)(0, (void *)-1);
-}
-void R(test)(void){}
-// TODO /dbg
-
 
 // ----------------------------------------------------------------------------
 // layout
@@ -150,11 +143,9 @@ shL2kcap,      T_z,      T_x,      T_c,      T_v,      T_b, lpupo1l1,
                                                        nop,      nop,      nop,
                                                        nop,      nop,      nop,
 // right hand ..... ......... ......... ......... ......... ......... .........
-               nop,      nop,      nop,      nop,      nop,      nop,     test,
-// TODO dbg
-//                nop,      nop,      nop,      nop,      nop,      nop,      nop,
-               nop,      nop,      nop,      nop,      nop,      nop,      nop,
-                         nop,      nop,      nop,      nop,      nop,      nop,
+               nop,      nop,      nop,      nop,      nop,      nop, dmp_sram,
+               nop,      nop,      nop,      nop,      nop,      nop, dmp_prog,
+                         nop,      nop,      nop,      nop,      nop, dmp_eepr,
                nop,      nop,      nop,      nop,      nop,      nop,      nop,
                                    nop,      nop,      nop,      nop,      nop,
      nop,      nop,

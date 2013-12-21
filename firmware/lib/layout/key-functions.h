@@ -27,9 +27,9 @@ void key_functions__toggle  (uint8_t keycode);
 
 // device
 void key_functions__jump_to_bootloader (void);
-void key_functions__dump_sram_ihex     (void * from, void * last);  // TODO: documentation
-void key_functions__dump_progmem_ihex  (void * from, void * last);  // TODO: documentation
-void key_functions__dump_eeprom_ihex   (void * from, void * last);  // TODO: documentation
+void key_functions__dump_sram_ihex     (void * from, void * last);
+void key_functions__dump_progmem_ihex  (void * from, void * last);
+void key_functions__dump_eeprom_ihex   (void * from, void * last);
 
 // special
 void key_functions__toggle_capslock (void);
@@ -84,6 +84,43 @@ void key_functions__type_string     (const char * string);
 // === key_functions__jump_to_bootloader() ===
 /**                     functions/key_functions__jump_to_bootloader/description
  * For reflashing the controller.
+ */
+
+// === (group) dump...ihex() ===
+/**                                   functions/(group) dump...ihex/description
+ * Type, in ihex format, the specified data from the appropriate memory space.
+ *
+ * Members:
+ * - `key_functions__dump_sram_ihex`: Types data from the SRAM
+ * - `key_functions__dump_progmem_ihex`: Types data from the PROGMEM
+ * - `key_functions__dump_eeprom_ihex`: Types data from the EEPROM
+ *
+ * Arguments:
+ * - `from`: A pointer to the location from which to start reading
+ * - `last`: A pointer to the last location from which to read
+ *
+ * Usage notes:
+ * - To print the entire contents of, e.g., SRAM, write
+ *
+ *       key_functions__dump_sram_ihex( (void *)0, (void *)-1 );
+ *
+ *   See "Implementation notes" below.
+ *
+ * Warnings:
+ * - These functions may take a long time to complete, and there is no way to
+ *   stop them aside from resetting the controller.
+ * - It may occur to you that one could read out the contents of PROGMEM using
+ *   the appropriate function, and then use the resulting ihex file to reflash
+ *   a Teensy.  I would *not* recommend doing this however, unless you really
+ *   know what you're doing, or you're prepared for the chance that you might
+ *   mess something up.
+ *
+ * Implementation notes:
+ * - If `last` is greater than the maximum addressable location of the
+ *   appropriate memory space, `last` should be set to the maximum addressable
+ *   location.  This will allow users to use `(void *)-1` (or `(void
+ *   *)UINT16_MAX`) as the `last` location when they wish to read until the end
+ *   of addressable memory.
  */
 
 // ----------------------------------------------------------------------------

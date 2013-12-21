@@ -88,8 +88,8 @@ void timer___tick_keypresses   (void);
  * - Should be called exactly once by `main()` before entering the run loop.
  */
 
-// === (group) get ===
-/**                                           functions/(group) get/description
+// === (group) get...() ===
+/**                                        functions/(group) get.../description
  * Return the number of "ticks" since the given timer was initialized
  * (mod 2^16)
  *

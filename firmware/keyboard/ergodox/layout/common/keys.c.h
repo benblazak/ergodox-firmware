@@ -217,10 +217,37 @@ void R(shR2kcap) (void) { KF(2_keys_capslock)(false, KEYBOARD__RightShift); }
  *
  * This prepares the Teensy to load a new firmware.  If you press this without
  * meaning to, you must turn your keyboard off then on again (usually by
- * unplugging it, then plugging it back in)
+ * unplugging it, then plugging it back in).
  */
 void P(btldr) (void) { KF(jump_to_bootloader)(); }
 void R(btldr) (void) {}
+
+/**                                                   keys/dmp_sram/description
+ * type the contents of SRAM, in ihex format
+ *
+ * This may take a while.  To cancel, you must turn your keyboard off then on
+ * again (usually by unplugging it, then plugging it back in).
+ */
+void P(dmp_sram) (void) { KF(dump_sram_ihex)( (void *)0, (void *)-1 ); }
+void R(dmp_sram) (void) {}
+
+/**                                                   keys/dmp_prog/description
+ * type the contents of PROGMEM, in ihex format
+ *
+ * This may take a while.  To cancel, you must turn your keyboard off then on
+ * again (usually by unplugging it, then plugging it back in).
+ */
+void P(dmp_prog) (void) { KF(dump_progmem_ihex)( (void *)0, (void *)-1 ); }
+void R(dmp_prog) (void) {}
+
+/**                                                   keys/dmp_eepr/description
+ * type the contents of the EEPROM, in ihex format
+ *
+ * This may take a while.  To cancel, you must turn your keyboard off then on
+ * again (usually by unplugging it, then plugging it back in).
+ */
+void P(dmp_eepr) (void) { KF(dump_eeprom_ihex)( (void *)0, (void *)-1 ); }
+void R(dmp_eepr) (void) {}
 
 
 // ----------------------------------------------------------------------------

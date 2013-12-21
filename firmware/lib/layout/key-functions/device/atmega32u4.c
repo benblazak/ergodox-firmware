@@ -48,30 +48,34 @@ static uint8_t progmem_read(void * from) {
 }
 
 /**                                             functions/dump_ihex/description
- * TODO: description
+ * Type, in ihex format, all data between `from` and `last`, inclusive.
  *
  * Arguments:
- * - `read`: TODO
- * - `from`: TODO
- * - `last`: TODO
+ * - `read`: A pointer to a function that takes a memory address and returns 1
+ *   byte of data (presumably from that memory address, in whatever address
+ *   space we're dealing with)
+ * - `from`: A pointer to the location from which to start reading
+ * - `last`: A pointer to the last location from which to read
  *
  * Notes:
  * - See [the Wikipedia article] (http://en.wikipedia.org/wiki/Intel_HEX) on
- *   the Intel hex (ihex) format.
+ *   the Intel HEX (ihex) format.
  *
  * Implementation notes:
  * - When the loop starts, `from` might be `0`, and `last` might be
  *   `UINT16_MAX`, in which case `from == last+1`.  We need to ignore this on
  *   the first iteration, hence the do-while loop and the `from != last+1` part
- *   of the first conditional.  When this condition occurs again, it will be
- *   because `from` was incremented one past `last`, and the loop should be
- *   terminated.
+ *   of the first conditional.  When this condition occurs after the first
+ *   iteration, it will be because `from` was incremented one past `last`, and
+ *   the loop should be terminated.
  * - Pointer comparisons in C are interesting...  Specifically, `last-from+1 <
  *   line_width` seems to cast `last-from+1` to the same type as `line_width`
  *   (`uint8_t`) which causes problems since pointers on this platform are 16
  *   bits.  Casting either side of the expression to `uint16_t` seems to solve
- *   the problem.  It feels cleaner to me to cast the pointer side because
- *   comparisons between pointers and integers is only implementation defined.
+ *   the problem.  It feels cleaner to me to cast the pointer side, because
+ *   comparison between pointers and integers is only implementation defined,
+ *   whereas comparison between two integers ought to be defined by the
+ *   standard.
  */
 static void dump_ihex( uint8_t (*read)(void *),
                        void * from,
