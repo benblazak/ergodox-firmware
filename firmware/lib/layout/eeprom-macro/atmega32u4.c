@@ -21,10 +21,11 @@
  *   with the least significant byte occupying the lowest address.  Protocols,
  *   data formats (including UTF-8), and such are primarily big endian.  I like
  *   little endianness better -- it feels more mathematically consistent to me
- *   -- but after writing a bit of code, it seems that big endian
- *   serializations are slightly easier to work with, at least in C.  For that
- *   reason, this code organizes bytes in a big endian manner whenever it has a
- *   choice between the two.
+ *   -- but after writing a bit of code, it seems that while writing is easier
+ *   to do as little endian, reading is easier to do as big endian; and since
+ *   we'll be reading much more often than writing, big endian seems like the
+ *   logical choice.  For that reason, this code organizes bytes in a big
+ *   endian manner whenever it has a choice between the two.
  *
  * - For a long time, I was going to try to make this library robust in the
  *   event of power loss, but in the end I decided not to.  This feature is
@@ -147,13 +148,13 @@ typedef struct {
 //   the file, as well as the documented order of the bytes for the stored
 //   start and end addresses of the EEPROM
 //
-// - sizes (in bytes):
+// - sizes (in bytes) (with optimizations on):
 //
-//                   function  frame  stack
-//     read  big         170      3     10
-//     read  little      200      3     12
-//     write big         268      0      9
-//     write little      174      0      5
+//                     function  frame  stack
+//       read  big         154      3     10
+//       read  little      200      3     12
+//       write big         208      0      9
+//       write little      172      0      5
 
 /**
  * TODO
@@ -170,12 +171,17 @@ key_action_t read_key_action_big_endian(void * from) {
 
     while (byte >> 7) {
         byte = eeprom__read(from++);
-        k.layer  =  (k.layer  << 2) | (byte >> 4 & 0b11);
-        k.row    =  (k.row    << 2) | (byte >> 2 & 0b11);
-        k.column =  (k.column << 2) | (byte >> 0 & 0b11);
+
+        k.layer  <<= 2;
+        k.row    <<= 2;
+        k.column <<= 2;
+
+        k.layer  |= byte >> 4 & 0b11;
+        k.row    |= byte >> 2 & 0b11;
+        k.column |= byte >> 0 & 0b11;
     }
 
-    return k;
+    return k;  // success
 }
 key_action_t read_key_action_little_endian(void * from) {
     uint8_t byte = eeprom__read(from++);
@@ -187,14 +193,14 @@ key_action_t read_key_action_little_endian(void * from) {
         .column  = byte >> 0 & 0b11,
     };
 
-    for (uint8_t i=1; i<4 && byte>>7; i++) {
+    for (uint8_t i=2; i<8 && byte>>7; i+=2) {
         byte = eeprom__read(from++);
-        k.layer  |= ( byte >> 4 & 0b11 ) << i*2;
-        k.row    |= ( byte >> 2 & 0b11 ) << i*2;
-        k.column |= ( byte >> 0 & 0b11 ) << i*2;
+        k.layer  |= ( byte >> 4 & 0b11 ) << i;
+        k.row    |= ( byte >> 2 & 0b11 ) << i;
+        k.column |= ( byte >> 0 & 0b11 ) << i;
     }
 
-    return k;
+    return k;  // success
 }
 
 /**
@@ -204,23 +210,24 @@ uint8_t write_key_action_big_endian(void * to, key_action_t k) {
     if (to > EEMEM_END-3)
         return 1;  // error: might not be enough space
 
-    int8_t  i = 3;
+    int8_t  i = 0;
     uint8_t byte;
 
     byte = k.layer | k.row | k.column;
-    for (; i>0 && !(byte >> i*2 & 0b11); i--);
+    while (byte >>= 2)
+        i += 2;
 
     byte = (k.pressed ? 1 : 0) << 6;
-    for (; i>=0; i--) {
-        byte = byte | ( i>0      ? 1 : 0       ) << 7
-                    | ( k.layer  >> i*2 & 0b11 ) << 4
-                    | ( k.row    >> i*2 & 0b11 ) << 2
-                    | ( k.column >> i*2 & 0b11 ) << 0 ;
+    for (; i>=0; i-=2) {
+        byte = byte | ( i>0      ? 1 : 0     ) << 7
+                    | ( k.layer  >> i & 0b11 ) << 4
+                    | ( k.row    >> i & 0b11 ) << 2
+                    | ( k.column >> i & 0b11 ) << 0 ;
         eeprom__write(to++, byte);
         byte = 0;
     }
 
-    return 0;
+    return 0;  // success
 }
 uint8_t write_key_action_little_endian(void * to, key_action_t k) {
     if (to > EEMEM_END-3)
@@ -250,7 +257,7 @@ uint8_t write_key_action_little_endian(void * to, key_action_t k) {
 
     eeprom__write(to, byte);
 
-    return 0;
+    return 0;  // success
 }
 
 // TODO: rewriting (yet again) - stopped here
