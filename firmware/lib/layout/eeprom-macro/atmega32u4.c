@@ -21,11 +21,10 @@
  *   with the least significant byte occupying the lowest address.  Protocols,
  *   data formats (including UTF-8), and such are primarily big endian.  I like
  *   little endianness better -- it feels more mathematically consistent to me
- *   -- but after writing a bit of code, it seems that while writing is easier
- *   to do as little endian, reading is easier to do as big endian; and since
- *   we'll be reading much more often than writing, big endian seems like the
- *   logical choice.  For that reason, this code organizes bytes in a big
- *   endian manner whenever it has a choice between the two.
+ *   -- but after writing a bit of code, it seems that big endian
+ *   serializations are easier to work with, at least in C.  For that reason,
+ *   this code organizes bytes in a big endian manner whenever it has a choice
+ *   between the two.
  *
  * - For a long time, I was going to try to make this library robust in the
  *   event of power loss, but in the end I decided not to.  This feature is
@@ -152,8 +151,8 @@ typedef struct {
 //
 //                     function  frame  stack
 //       read  big         154      3     10
-//       read  little      200      3     12
-//       write big         208      0      9
+//       read  little      200      2     10
+//       write big         160      0      6
 //       write little      172      0      5
 
 /**
@@ -187,17 +186,30 @@ key_action_t read_key_action_little_endian(void * from) {
     uint8_t byte = eeprom__read(from++);
 
     key_action_t k = {
-        .pressed = byte >> 6 & 0b01,
-        .layer   = byte >> 4 & 0b11,
-        .row     = byte >> 2 & 0b11,
-        .column  = byte >> 0 & 0b11,
+        .pressed = ( byte & 0x40 ),
+        .layer   = ( byte & 0x30 ) << 2,
+        .row     = ( byte & 0x0C ) << 4,
+        .column  = ( byte & 0x03 ) << 6,
     };
 
-    for (uint8_t i=2; i<8 && byte>>7; i+=2) {
+    uint8_t i = 0;
+
+    for (; byte>>7; i++) {
         byte = eeprom__read(from++);
-        k.layer  |= ( byte >> 4 & 0b11 ) << i;
-        k.row    |= ( byte >> 2 & 0b11 ) << i;
-        k.column |= ( byte >> 0 & 0b11 ) << i;
+
+        k.layer  >>= 2;
+        k.row    >>= 2;
+        k.column >>= 2;
+
+        k.layer  |= ( byte & 0x30 ) << 2;
+        k.row    |= ( byte & 0x0C ) << 4;
+        k.column |= ( byte & 0x03 ) << 6;
+    }
+
+    for (; i<4; i++) {
+        k.layer  >>= 2;
+        k.row    >>= 2;
+        k.column >>= 2;
     }
 
     return k;  // success
@@ -210,21 +222,26 @@ uint8_t write_key_action_big_endian(void * to, key_action_t k) {
     if (to > EEMEM_END-3)
         return 1;  // error: might not be enough space
 
-    int8_t  i = 0;
-    uint8_t byte;
+    uint8_t i = 0;
 
-    byte = k.layer | k.row | k.column;
-    while (byte >>= 2)
-        i += 2;
+    for (; i<3 && !((k.layer|k.row|k.column) & 0xC0); i++) {
+        k.layer  <<= 2;
+        k.row    <<= 2;
+        k.column <<= 2;
+    }
 
-    byte = (k.pressed ? 1 : 0) << 6;
-    for (; i>=0; i-=2) {
-        byte = byte | ( i>0      ? 1 : 0     ) << 7
-                    | ( k.layer  >> i & 0b11 ) << 4
-                    | ( k.row    >> i & 0b11 ) << 2
-                    | ( k.column >> i & 0b11 ) << 0 ;
+    uint8_t byte = (k.pressed ? 1 : 0) << 6;
+
+    for (; i<4; i++) {
+        byte = byte | ( i<3      ? 1 : 0 ) << 7
+                    | ( k.layer  & 0xC0  ) >> 2
+                    | ( k.row    & 0xC0  ) >> 4
+                    | ( k.column & 0xC0  ) >> 6 ;
         eeprom__write(to++, byte);
         byte = 0;
+        k.layer  <<= 2;
+        k.row    <<= 2;
+        k.column <<= 2;
     }
 
     return 0;  // success
