@@ -48,6 +48,10 @@
  * - When macros are recorded, the key they are assigned to does not loose its
  *   functionality, but rather has that functionality masked by this new
  *   definition.
+ * - Timing information may not be recorded, due to the space restrictions of
+ *   the EEPROM.  If it is not, keys which change meaning depending on the
+ *   timing with which they are pressed (and not just the sequence in which
+ *   they are pressed) may not be played back as expected.
  *
  * Implementation notes:
  * - When macros are being recorded or played back, keys should operate with

@@ -19,9 +19,11 @@
  * - GCC and AVR processors (and Intel processors, for that matter) are
  *   primarily little endian: in avr-gcc, multi-byte data types are allocated
  *   with the least significant byte occupying the lowest address.  Protocols,
- *   data formats (including UTF-8), and such are primarily big endian.
- *   Because it feels more consistent, and makes a little more sense to me,
- *   this code organizes bytes in a little endian manner whenever it has a
+ *   data formats (including UTF-8), and such are primarily big endian.  I like
+ *   little endianness better -- it feels more mathematically consistent to me
+ *   -- but after writing a bit of code, it seems that big endian
+ *   serializations are slightly easier to work with, at least in C.  For that
+ *   reason, this code organizes bytes in a big endian manner whenever it has a
  *   choice between the two.
  *
  * - For a long time, I was going to try to make this library robust in the
@@ -81,11 +83,11 @@
  *
  * EEMEM sections:
  * - START_ADDRESS:
- *     - byte 0: LSB of `EEMEM_START`
- *     - byte 1: MSB of `EEMEM_START`
+ *     - byte 0: MSB of `EEMEM_START`
+ *     - byte 1: LSB of `EEMEM_START`
  * - END_ADDRESS:
- *     - byte 0: LSB of `EEMEM_END`
- *     - byte 1: MSB of `EEMEM_END`
+ *     - byte 0: MSB of `EEMEM_END`
+ *     - byte 1: LSB of `EEMEM_END`
  * - VERSION:
  *     - This byte will all be set to `VERSION` as the last step of
  *       initializing our portion of the EEPROM.
@@ -102,7 +104,7 @@
  *   important that any two builds of the firmware that deal with this section
  *   of the EEPROM have the same values for each.
  */
-#define  EEMEM_START                OPT__EEPROM__EEPROM_MACRO__START
+#define  EEMEM_START                ((void *)OPT__EEPROM__EEPROM_MACRO__START)
 #define  EEMEM_START_ADDRESS_START  EEMEM_START
 #define  EEMEM_START_ADDRESS_END    EEMEM_START_ADDRESS_START + 1
 #define  EEMEM_END_ADDRESS_START    EEMEM_START_ADDRESS_END + 1
@@ -111,7 +113,7 @@
 #define  EEMEM_VERSION_END          EEMEM_VERSION_START   + 0
 #define  EEMEM_MACROS_START         EEMEM_VERSION_END + 1
 #define  EEMEM_MACROS_END           EEMEM_END
-#define  EEMEM_END                  OPT__EEPROM__EEPROM_MACRO__END
+#define  EEMEM_END                  ((void *)OPT__EEPROM__EEPROM_MACRO__END)
 
 /**                                             macros/(group) type/description
  * Aliases for valid values of the "type" field in `MACROS`
@@ -137,6 +139,119 @@ typedef struct {
     uint8_t row;
     uint8_t column;
 } key_action_t;
+
+// ----------------------------------------------------------------------------
+// local functions ------------------------------------------------------------
+
+// - if we go back to little endian, need to modify the comments at the top of
+//   the file, as well as the documented order of the bytes for the stored
+//   start and end addresses of the EEPROM
+//
+// - sizes (in bytes):
+//
+//                   function  frame  stack
+//     read  big         170      3     10
+//     read  little      200      3     12
+//     write big         268      0      9
+//     write little      174      0      5
+
+/**
+ * TODO
+ */
+key_action_t read_key_action_big_endian(void * from) {
+    uint8_t byte = eeprom__read(from++);
+
+    key_action_t k = {
+        .pressed = byte >> 6 & 0b01,
+        .layer   = byte >> 4 & 0b11,
+        .row     = byte >> 2 & 0b11,
+        .column  = byte >> 0 & 0b11,
+    };
+
+    while (byte >> 7) {
+        byte = eeprom__read(from++);
+        k.layer  =  (k.layer  << 2) | (byte >> 4 & 0b11);
+        k.row    =  (k.row    << 2) | (byte >> 2 & 0b11);
+        k.column =  (k.column << 2) | (byte >> 0 & 0b11);
+    }
+
+    return k;
+}
+key_action_t read_key_action_little_endian(void * from) {
+    uint8_t byte = eeprom__read(from++);
+
+    key_action_t k = {
+        .pressed = byte >> 6 & 0b01,
+        .layer   = byte >> 4 & 0b11,
+        .row     = byte >> 2 & 0b11,
+        .column  = byte >> 0 & 0b11,
+    };
+
+    for (uint8_t i=1; i<4 && byte>>7; i++) {
+        byte = eeprom__read(from++);
+        k.layer  |= ( byte >> 4 & 0b11 ) << i*2;
+        k.row    |= ( byte >> 2 & 0b11 ) << i*2;
+        k.column |= ( byte >> 0 & 0b11 ) << i*2;
+    }
+
+    return k;
+}
+
+/**
+ * TODO
+ */
+uint8_t write_key_action_big_endian(void * to, key_action_t k) {
+    if (to > EEMEM_END-3)
+        return 1;  // error: might not be enough space
+
+    int8_t  i = 3;
+    uint8_t byte;
+
+    byte = k.layer | k.row | k.column;
+    for (; i>0 && !(byte >> i*2 & 0b11); i--);
+
+    byte = (k.pressed ? 1 : 0) << 6;
+    for (; i>=0; i--) {
+        byte = byte | ( i>0      ? 1 : 0       ) << 7
+                    | ( k.layer  >> i*2 & 0b11 ) << 4
+                    | ( k.row    >> i*2 & 0b11 ) << 2
+                    | ( k.column >> i*2 & 0b11 ) << 0 ;
+        eeprom__write(to++, byte);
+        byte = 0;
+    }
+
+    return 0;
+}
+uint8_t write_key_action_little_endian(void * to, key_action_t k) {
+    if (to > EEMEM_END-3)
+        return 1;  // error: might not be enough space
+
+    uint8_t byte =   ( k.pressed ? 1 : 0 ) << 6
+                   | ( k.layer   & 0b11  ) << 4
+                   | ( k.row     & 0b11  ) << 2
+                   | ( k.column  & 0b11  ) << 0 ;
+
+    k.layer  >>= 2;
+    k.row    >>= 2;
+    k.column >>= 2;
+
+    while (k.layer|k.row|k.column) {
+        byte |= 1 << 7;
+        eeprom__write(to++, byte);
+
+        byte =   ( k.layer   & 0b11  ) << 4
+               | ( k.row     & 0b11  ) << 2
+               | ( k.column  & 0b11  ) << 0 ;
+
+        k.layer  >>= 2;
+        k.row    >>= 2;
+        k.column >>= 2;
+    }
+
+    eeprom__write(to, byte);
+
+    return 0;
+}
 
 // TODO: rewriting (yet again) - stopped here
 #if 0
@@ -373,8 +488,7 @@ static void compress(void) { return;
 // public functions -----------------------------------------------------------
 
 #endif  // 0
-uint8_t eeprom_macro__init(void) { return 0;
-}
+uint8_t eeprom_macro__init(void) { return 0; }
 #if 0
 
 uint8_t eeprom_macro__record_init(void) { return 0;
