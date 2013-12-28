@@ -370,114 +370,23 @@ uint8_t write_key_action(void ** to, key_action_t k) {
 #if 0
 
 // ----------------------------------------------------------------------------
-// variables in EEMEM ---------------------------------------------------------
-
-/**                                                variables/eeprom/description
- * The layout of this library's data in the EEPROM
- *
- * Struct members:
- * - `meta`: For keeping track of layout metadata
- *     - `version`: The version of this layout (`[8]` for fault tolerance and
- *       write balancing)
- * - `table`: To help in quickly returning if the UID we're searching for does
- *   not exist
- *     - `rows`: The number of rows this table has
- *     - `columns`: The number of columns this table has
- *     - `data`:
- *         - For any `eeprom_macro__uid_t uid`
- *             - If `uid.layer > 7`, this table doesn't tell whether a macro
- *               exists for the UID or not
- *             - Otherwise, `! ( (eeprom.table.data[uid.row][uid.column]
- *               >> uid.layer) & 1 )` indicates whether a macro exists with the
- *               given UID (`true`) or not (`false`)
- *             - Note that the expression above will return `true` if
- *               `uid.layer > 7`
- *             - Note that the expression above implies that we are using `1`
- *               bits for `false`
- * - `macros`: To hold a block of memory for storing macros
- *     - `length`: The number of bytes allocated to `macros.data`
- *     - `data`: A (non-padded) list of macros, where a macro (in EEMEM) is
- *         - 1 byte: `type`
- *             - as defined in `enum type`
- *         - 1 byte: `length`
- *             - the number of bytes in the entire macro (i.e.  the number of
- *               bytes to skip over, if one had a pointer to the `type` byte of
- *               this macro, in order to reach the `type` byte of the next
- *               macro)
- *         - (variable length): `key_action`
- *             - as defined in `read_key_action()`
- *             - this is the key action that is being remapped
- *         - (list of 0 or more)
- *             - (variable length): `key_action`
- *                 - as defined in `read_key_action()`
- *                 - these are the key actions to be performed instead of the
- *                   one being remapped
- *
- *
- * Notes:
- *
- * - The struct must be `packed` and `aligned(1)`, or we risk allocating more
- *   than `OPT__EEPROM_MACRO__EEPROM_SIZE` bytes.  This should be the default
- *   when compiling with `avr-gcc`, but it's important to emphasize that we
- *   depend on it.
- *
- * - We keep track of `table.rows`, `table.columns`, and `macros.length`, in
- *   addition to `header.version`, because they all effect the precise layout
- *   of the persistent data; if any of them is different, special handling is
- *   required at the least, and usually the stored data will be unusable.
- */
-struct eeprom {
-    struct meta {
-        uint8_t version[8];
-    } meta;
-
-    struct table {
-        uint8_t rows;
-        uint8_t columns;
-        uint8_t data[OPT__KB__ROWS][OPT__KB__COLUMNS];
-    } table;
-
-    struct macros {
-        uint16_t length;
-        uint8_t data[MACROS_LENGTH];
-    } macros;
-
-} __attribute__((packed, aligned(1))) eeprom EEMEM;
-
-// ----------------------------------------------------------------------------
-// variables in SRAM ----------------------------------------------------------
-
-static void * current_macro;
-uint8_t       current_macro_length;
-
-// ----------------------------------------------------------------------------
 // TODO:
 //
 // - the calling function need not ignore layer shift keys, or any other keys.
-//
-// - use little endian order for the multi-byte encoding. explain why (since
-//   utf-8 is big endian)
 //
 // - 255 bytes (so, on average, about 100 keystrokes = 200 key actions) should
 //   be enough for a macro, i think.  `length` can be 1 byte, and count the
 //   total number of bytes (including `type` and `length`, and anything else)
 //
-// - need to write a function to read, and another to write, multi-byte key
-//   actions
-//
-// - so for now, we have
-//     - macro = `type` `length` uid key_action*
-//     - uid = key_action
-//     - key_action =
-//         - 1 bit  : are the fields in this byte extended by the next?
-//         - 1 bit  : `pressed`
-//         - 2 bits : `layer`
-//         - 2 bits : `row`
-//         - 2 bits : `column`
-//
 // - need to write `kb__layout__exec_key_layer()` (or something)
 //
 // ----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
+
+// variables in SRAM ----------------------------------------------------------
+
+static void * current_macro;
+uint8_t       current_macro_length;
 
 // ----------------------------------------------------------------------------
 // local functions ------------------------------------------------------------
