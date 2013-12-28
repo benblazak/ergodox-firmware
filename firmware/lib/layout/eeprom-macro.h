@@ -237,8 +237,8 @@ void    eeprom_macro__clear_all       (void);
  *     - `column`: The column of the key action
  *
  * Returns:
- * - `true`: if a macro with the given UID exists
- * - `false`: if a macro with the given UID does not exist
+ * - `true`: if a macro remapping the given key-action exists
+ * - `false`: if a macro remapping the given key-action does not exist
  */
 
 // === eeprom_macro__clear() ===
