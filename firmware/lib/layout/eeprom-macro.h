@@ -160,7 +160,7 @@ void    eeprom_macro__clear_all       (void);
  * Arguments:
  * - (group) The key action to remap
  *     - `pressed`: Whether the key action is a press (`true`) or a release
- *     (`false`)
+ *       (`false`)
  *     - `layer`: The layer of the key action
  *     - `row`: The row of the key action
  *     - `column`: The column of the key action

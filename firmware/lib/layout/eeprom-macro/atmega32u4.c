@@ -13,8 +13,8 @@
  *
  * - The default state (the "erased" state) of this EEPROM is all `1`s, which
  *   makes setting a byte to `0xFF` easier and faster in hardware than zeroing
- *   it.  This is reflected in some of our choices for default values, and
- *   such.
+ *   it (and also causes less wear on the memory over time, I think).  This is
+ *   reflected in some of our choices for default values, and such.
  *
  * - GCC and AVR processors (and Intel processors, for that matter) are
  *   primarily little endian: in avr-gcc, multi-byte data types are allocated
@@ -112,11 +112,11 @@
  *         - byte 0: `type == TYPE_VALID_MACRO`
  *             - byte 1: `length`: the total number of bytes used by this
  *               macro, including the bytes for `type` and `length`
- *             - `key-action` 0: the key-action which this macro remaps
- *                 - See below for a description of the bytes making up a
- *                   key-action
- *             - `key-action` 1...: (optional) the key-actions to which
- *               `key-action` 0 is remapped
+ *             - byte 2...: (variable length, as described below)
+ *                 - `key-action` 0: the key-action which this macro remaps
+ *             - byte ...: (optional) (variable length, as described below)
+ *                 - `key-action` 1...: the key-actions to which `key-action` 0
+ *                   is remapped
  *         - byte 0: `type == TYPE_END`
  *             - byte 1...: (optional) undefined
  *
@@ -136,13 +136,17 @@
  *           .----------------------------------------------.
  *           |     7     |    6    | 5 | 4 | 3 | 2 | 1 | 0  |
  *           |----------------------------------------------|
- *           | continued |   n/a   | layer |  row  | column |
+ *           | continued |    1    | layer |  row  | column |
  *           '----------------------------------------------'
  *
  *         - `continued`:
  *             - `1`: The next byte is part of this key-action
  *             - `0`: The next byte is not part of this key-action (i.e. this
  *                    is the last byte in this key-action)
+ *
+ *         - `pressed`:
+ *             - This value is stored *only* in the first byte.  In all
+ *               subsequent bytes the bit should be set to `1`.
  *
  *         - `layer`, `row`, `column`:
  *             - In the first byte of this key-action, these fields contain the
@@ -155,10 +159,10 @@
  *               all equal `0`, then these three fields will all equal `0`, and
  *               there will only be 1 byte written for this key-action.
  *
- *         - Example of an encoded key-action (where `*` means "undefined"):
+ *         - Example of an encoded key-action:
  *
  *               --- as a key_action_t ---
- *               pressed = true
+ *               pressed = false
  *               layer   = 0 b 00 00 01 00
  *               row     = 0 b 00 01 10 01
  *               column  = 0 b 00 10 00 11
@@ -166,13 +170,13 @@
  *                             '- most significant pair of bits
  *
  *               --- in EEMEM ---
- *               byte 0 = 0 b 1 1 00 01 10
- *               byte 1 = 0 b 1 * 01 10 00
- *               byte 2 = 0 b 0 * 00 01 11
+ *               byte 0 = 0 b 1 0 00 01 10
+ *               byte 1 = 0 b 1 1 01 10 00
+ *               byte 2 = 0 b 0 1 00 01 11
  *                            | | |  |  '- column bit pair
  *                            | | |  '- row bit pair
  *                            | | '- layer bit pair
- *                            | '- pressed / n/a
+ *                            | '- pressed / 1
  *                            '- continued
  *
  *
@@ -344,7 +348,8 @@ uint8_t write_key_action(void ** to, key_action_t k) {
     }
 
     // write key-action bytes for all bit pairs that weren't ignored
-    // - the first byte contains the value of `k.pressed`
+    // - the first byte contains the value of `k.pressed`; the same position is
+    //   set to `1` in all subsequent bytes
     // - all bytes except the last one written (containing the least
     //   significant bits) have their first bit set to `1`
 
@@ -356,7 +361,7 @@ uint8_t write_key_action(void ** to, key_action_t k) {
                     | ( k.row    & 0xC0  ) >> 4
                     | ( k.column & 0xC0  ) >> 6 ;
         eeprom__write((*to)++, byte);
-        byte = 0;
+        byte = 1 << 6;
 
         k.layer  <<= 2;
         k.row    <<= 2;
@@ -397,6 +402,16 @@ uint8_t write_key_action(void ** to, key_action_t k) {
 //         - "delay" because it should probably flash a few times, or
 //           something, and i feel like it'd be better overall to not continue
 //           accepting input while that's happening.
+//
+// - how should we handle key-functions, in both their SRAM and EEMEM forms?
+//   it would be very convenient if we could compare the passed key-function
+//   with EEMEM key-functions without having to decode the EEMEM ones (only
+//   read them out - and maybe not even read out them out entirely).  perhaps
+//   there should be different functions for converting from a `uint8_t a[4]`
+//   to a `key_action_t`, and vice versa.  or perhaps `key_action_t`s should
+//   really be `uint8_t a[4]`s, with a different encoding than those
+//   representing EEMEM key-actions (which would be written to EEMEM eliding
+//   zero bytes).  need to think about it some more.
 //
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
@@ -524,35 +539,61 @@ static void compress(void) { return;
     if (! next_deleted) next_deleted = macros_free_begin;
 }
 
+#endif  // 0
+
 // ----------------------------------------------------------------------------
 // public functions -----------------------------------------------------------
 
-#endif  // 0
-uint8_t eeprom_macro__init(void) { return 0; }
-#if 0
-
-uint8_t eeprom_macro__record_init(void) { return 0;
+uint8_t eeprom_macro__init(void) {
+    // TODO
+    return 0;
 }
 
-uint8_t eeprom_macro__record_keystroke( bool    pressed,
-                                        uint8_t row,
-                                        uint8_t column ) { return 0;
+uint8_t eeprom_macro__record_init( bool    pressed,
+                                   uint8_t layer,
+                                   uint8_t row,
+                                   uint8_t column ) {
+    // TODO
+    return 0;
 }
 
-uint8_t eeprom_macro__record_finalize(eeprom_macro__uid_t index) { return 0;
+uint8_t eeprom_macro__record_action( bool    pressed,
+                                     uint8_t layer,
+                                     uint8_t row,
+                                     uint8_t column ) {
+    // TODO
+    return 0;
 }
 
-uint8_t eeprom_macro__exists(eeprom_macro__uid_t index) {
-    return (bool) find_uid(index);
+uint8_t eeprom_macro__record_finalize(void) {
+    // TODO
+    return 0;
 }
 
-uint8_t eeprom_macro__play(eeprom_macro__uid_t index) { return 0;
+uint8_t eeprom_macro__play( bool    pressed,
+                            uint8_t layer,
+                            uint8_t row,
+                            uint8_t column ) {
+    // TODO
+    return 0;
 }
 
-void eeprom_macro__clear(eeprom_macro__uid_t index) { return;
+bool eeprom_macro__exists( bool    pressed,
+                           uint8_t layer,
+                           uint8_t row,
+                           uint8_t column ) {
+    // TODO
+    return false;
 }
 
-void eeprom_macro__clear_all(void) { return;
+void eeprom_macro__clear( bool    pressed,
+                          uint8_t layer,
+                          uint8_t row,
+                          uint8_t column ) {
+    // TODO
 }
-#endif  // 0
+
+void eeprom_macro__clear_all(void) {
+    // TODO
+}
 
