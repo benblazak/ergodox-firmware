@@ -148,9 +148,8 @@ uint8_t eeprom__block_read (void * to, void * from, uint8_t length);
  * - If `to > from`, copying should start with the given addresses, and
  *   decrement for `length - 1` bytes
  *
- * - Undefined behavior will result if any address in either the block you're
- *   copying from (`from`..`from+length-1`) or the block you're copying to
- *   (`to`..`to+length-1`) is invalid.
+ * - Undefined behavior will result if any address in the block of EEMEM you're
+ *   copying from or the block of EEMEM you're copying to is invalid.
  */
 
 // === eeprom__block_read() ===
@@ -170,13 +169,14 @@ uint8_t eeprom__block_read (void * to, void * from, uint8_t length);
  * Notes:
  * - As one would expect, this read is performed sequentially, and all data is
  *   read in before returning.  Delays due to the speed of the EEPROM are
- *   introduced *for every byte* whether one uses this function or
+ *   introduced *for every byte* whether one uses this function or reads each
+ *   byte manually.
  * - Because doing a "block_write" would be either unbearably slow or require
  *   us to work around the fact that the function would return before the data
- *   was actually written (so where would the data to be written stored? we'd
- *   either have to copy it, or make an agreement with the calling functions to
- *   `malloc()` the data and let us `free()` it, or some such), we do not have
- *   any "block" functions that write to the EEPROM (except perhaps
+ *   was actually written (so where would the data to be written be stored?
+ *   we'd either have to copy it, or make an agreement with the calling
+ *   functions to `malloc()` the data and let us `free()` it, or some such), we
+ *   do not have any "block" functions that write to the EEPROM (except perhaps
  *   `eeprom__fill()`, which is a special case).  Better to be careful with
  *   writes, and schedule them one at a time, using `eeprom__write()`.
  */

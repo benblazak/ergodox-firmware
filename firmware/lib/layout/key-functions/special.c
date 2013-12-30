@@ -11,7 +11,7 @@
 
 #include <stdbool.h>
 #include <stdint.h>
-#include <avr/pgmspace.h>
+#include <avr/pgmspace.h>  // for `key_functions__type_string()`
 #include "../../../../firmware/lib/usb.h"
 #include "../../../../firmware/lib/usb/usage-page/keyboard.h"
 #include "../key-functions.h"

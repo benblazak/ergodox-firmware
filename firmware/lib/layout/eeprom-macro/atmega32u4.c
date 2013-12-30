@@ -51,7 +51,7 @@
     #error "OPT__EEPROM__EEPROM_MACRO__END must not be greater than 1023"
 #endif
 
-#if EEMEM_END - EEMEM_START < 300
+#if OPT__EEPROM__EEPROM_MACRO__END - OPT__EEPROM__EEPROM_MACRO__START < 300
     #warn "Only a small space has been allocated for macros"
 #endif
 
@@ -185,14 +185,14 @@
  *   of the EEPROM have the same values for each.
  */
 #define  EEMEM_START                ((void *)OPT__EEPROM__EEPROM_MACRO__START)
-#define  EEMEM_START_ADDRESS_START  EEMEM_START               + 0
-#define  EEMEM_START_ADDRESS_END    EEMEM_START_ADDRESS_START + 1
-#define  EEMEM_END_ADDRESS_START    EEMEM_START_ADDRESS_END + 1
-#define  EEMEM_END_ADDRESS_END      EEMEM_END_ADDRESS_START + 1
-#define  EEMEM_VERSION_START        EEMEM_END_ADDRESS_END + 1
-#define  EEMEM_VERSION_END          EEMEM_VERSION_START   + 0
-#define  EEMEM_MACROS_START         EEMEM_VERSION_END + 1
-#define  EEMEM_MACROS_END           EEMEM_END         - 0
+#define  EEMEM_START_ADDRESS_START  (EEMEM_START               + 0)
+#define  EEMEM_START_ADDRESS_END    (EEMEM_START_ADDRESS_START + 1)
+#define  EEMEM_END_ADDRESS_START    (EEMEM_START_ADDRESS_END + 1)
+#define  EEMEM_END_ADDRESS_END      (EEMEM_END_ADDRESS_START + 1)
+#define  EEMEM_VERSION_START        (EEMEM_END_ADDRESS_END + 1)
+#define  EEMEM_VERSION_END          (EEMEM_VERSION_START   + 0)
+#define  EEMEM_MACROS_START         (EEMEM_VERSION_END + 1)
+#define  EEMEM_MACROS_END           (EEMEM_END         - 0)
 #define  EEMEM_END                  ((void *)OPT__EEPROM__EEPROM_MACRO__END)
 
 /**                                             macros/(group) type/description
@@ -320,7 +320,7 @@ key_action_t read_key_action(void ** from) {
 uint8_t write_key_action(void ** to, key_action_t k) {
 
     // - we need to leave room after this macro (and therefore after this
-    //   key-action) for the `TYPE_END` byte
+    //   key-action) for the `type == TYPE_END` byte
     if ((*to) > EEMEM_END-4)
         return 1;  // error: might not be enough space
 
@@ -372,13 +372,31 @@ uint8_t write_key_action(void ** to, key_action_t k) {
 // ----------------------------------------------------------------------------
 // TODO:
 //
-// - the calling function need not ignore layer shift keys, or any other keys.
+// - i was thinking before that the calling function need not ignore layer
+//   shift keys, or any other keys.  now i think that layer keys (or at least
+//   layer shift keys) really should be ignored.  not doing so may lead to all
+//   sorts of fun problems.  for example, if the "begin/end recording" key is
+//   not on layer 0 (which it probably won't be), the last keys pressed (but
+//   not released) will most likely be layer shift keys -- but since these keys
+//   were not released before we stopped recording, there would be no record of
+//   their release, and the macro would therefore push that layer onto the
+//   layer stack, and never pop it off.
 //
 // - 255 bytes (so, on average, about 100 keystrokes = 200 key actions) should
 //   be enough for a macro, i think.  `length` can be 1 byte, and count the
 //   total number of bytes (including `type` and `length`, and anything else)
 //
-// - need to write `kb__layout__exec_key_layer()` (or something)
+// - need to write something like:
+//     - `kb__layout__exec_key_layer()`
+//         - `kb__layout__exec_key()` could just look up the current layer
+//           (falling through for transparent keys), and then call
+//           `kb__layout__exec_key_layer()`.  this would obviate the need for a
+//           separate `static get_layer(void)` function, since the
+//           functionality would essentially be separated out anyway.
+//     - `kb__led__delay__error()`
+//         - "delay" because it should probably flash a few times, or
+//           something, and i feel like it'd be better overall to not continue
+//           accepting input while that's happening.
 //
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------

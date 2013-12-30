@@ -69,7 +69,7 @@ void KF(transp) (void) {}
 #define  keys__press__transp    KF(transp)
 #define  keys__release__transp  KF(transp)
 
-/**                                                        keys/nop/desctiption
+/**                                                        keys/nop/description
  * no operation
  *
  * This key does nothing (and is not transparent).
