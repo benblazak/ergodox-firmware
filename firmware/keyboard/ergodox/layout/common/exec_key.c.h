@@ -27,8 +27,6 @@ void kb__layout__exec_key(bool pressed, uint8_t row, uint8_t column) {
     // so we can release it on the same layer
     // - if the release is transparent, search through the layer stack for a
     //   non-transparent release in the same position, as normal
-    // - don't need to initialize, since we'll only read from positions that
-    //   we've previously set
     static uint8_t pressed_layer[OPT__KB__ROWS][OPT__KB__COLUMNS];
 
     void (*function)(void);
