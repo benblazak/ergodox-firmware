@@ -3,5 +3,7 @@
 
 *.eep
 *.elf
-*.hex
 *.map
+
+firmware.hex
+

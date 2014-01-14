@@ -25,6 +25,7 @@ KEYBOARD_LAYOUT := qwerty--kinesis-mod
 # default layout for this keyboard
 
 KEYBOARD_LAYOUTS := \
+	test \
 	colemak--kinesis-mod \
 	dvorak--kinesis-mod \
 	qwerty--kinesis-mod

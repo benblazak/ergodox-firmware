@@ -116,7 +116,7 @@ OBJ := $(SRC:%.c=%.o)
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
 
-.PHONY: all clean
+.PHONY: all clean cleanall all-layouts
 
 all: $(TARGET).hex $(TARGET).eep
 	@echo
@@ -137,6 +137,16 @@ clean:
 	@echo
 	@echo '--- cleaning ---'
 	git clean -dX  # remove ignored files and directories
+
+cleanall: clean
+	-rm $(TARGET)--*.hex
+
+all-layouts:
+	for layout in $(KEYBOARD_LAYOUTS); do \
+		make clean all KEYBOARD_LAYOUT=$$layout; \
+		mv $(TARGET).hex $(TARGET)--$$layout.hex; \
+	done
+	make clean
 
 # -----------------------------------------------------------------------------
 
