@@ -1,5 +1,5 @@
 # -----------------------------------------------------------------------------
-# Copyright (c) 2012, 2013 Ben Blazak <benblazak.dev@gmail.com>
+# Copyright (c) 2012, 2013, 2014 Ben Blazak <benblazak.dev@gmail.com>
 # Released under The MIT License (see "doc/license.md")
 # Project located at <https://github.com/benblazak/ergodox-firmware>
 # -----------------------------------------------------------------------------
@@ -57,7 +57,7 @@ INCLUDED :=
 SRC         :=
 CFLAGS      :=
 LDFLAGS     :=
-GENDEPFLAGS :=
+GENDEPFLAGS  =   # need to use delayed evaluation for this one
 # (initialize variables, so we can use `+=` below and in the included files)
 
 
@@ -136,10 +136,15 @@ all: $(TARGET).hex $(TARGET).eep
 clean:
 	@echo
 	@echo '--- cleaning ---'
-	git clean -dX  # remove ignored files and directories
+	-@rm -vf $(OBJ) \
+		 $(OBJ:%=%.dep) \
+		 $(TARGET).eep \
+		 $(TARGET).elf \
+		 $(TARGET).hex \
+		 $(TARGET).map
 
 cleanall: clean
-	-rm $(TARGET)--*.hex
+	-@rm -vf $(KEYBOARD_LAYOUTS:%=firmware--%.hex)
 
 all-layouts:
 	for layout in $(KEYBOARD_LAYOUTS); do \
