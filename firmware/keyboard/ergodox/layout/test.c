@@ -5,11 +5,12 @@
  * ------------------------------------------------------------------------- */
 
 /**                                                                 description
- * TODO
- * - description
- * - update, if i change the semantics `kb__layout__exec_key()`
+ * A layout for testing newly build boards
  *
  * Implements the "layout" section of '.../firmware/keyboard.h'
+ *
+ * TODO:
+ * - update, if i change the semantics `kb__layout__exec_key()`
  */
 
 
