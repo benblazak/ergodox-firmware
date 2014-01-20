@@ -136,22 +136,38 @@ all: $(TARGET).hex $(TARGET).eep
 clean:
 	@echo
 	@echo '--- cleaning ---'
-	-@rm -vf $(OBJ) \
-		 $(OBJ:%=%.dep) \
-		 $(TARGET).eep \
-		 $(TARGET).elf \
-		 $(TARGET).hex \
-		 $(TARGET).map
+	@make clean-all-files KEYBOARD_LAYOUT=$(KEYBOARD_LAYOUT)
 
-cleanall: clean
+cleanall:
+	@echo
+	@echo '--- cleaning ---'
+	@for layout in $(KEYBOARD_LAYOUTS); do \
+		make clean-all-files KEYBOARD_LAYOUT=$$layout; \
+	done
 	-@rm -vf $(KEYBOARD_LAYOUTS:%=firmware--%.hex)
 
 all-layouts:
 	for layout in $(KEYBOARD_LAYOUTS); do \
-		make clean all KEYBOARD_LAYOUT=$$layout; \
+		make clean-target-files all KEYBOARD_LAYOUT=$$layout; \
 		mv $(TARGET).hex $(TARGET)--$$layout.hex; \
 	done
-	make clean
+	make clean-target-files
+
+# -----------------------------------------------------------------------------
+
+.PHONY: clean-all-files clean-object-files clean-target-files
+
+clean-all-files: clean-object-files clean-target-files
+
+clean-object-files:
+	-@rm -vf $(OBJ) \
+		$(OBJ:%=%.dep)
+
+clean-target-files:
+	-@rm -vf $(TARGET).eep \
+		 $(TARGET).elf \
+		 $(TARGET).hex \
+		 $(TARGET).map
 
 # -----------------------------------------------------------------------------
 
