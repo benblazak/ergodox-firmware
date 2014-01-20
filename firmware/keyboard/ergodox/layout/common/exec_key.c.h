@@ -8,6 +8,14 @@
  * A default way to execute keys.
  *
  * Meant to be included *only* by the layout using it.
+ *
+ * TODO:
+ * - should *.c.h functions have macros to guard against multiple includes?
+ * - perhaps think about whether this organization of *.c.h files in
+ *   .../layout/common is the best.  maybe it could be more modular.  maybe
+ *   layers could be included, for use as parts of layouts.  maybe the default
+ *   led functions could as well; or there could be a couple different sets of
+ *   led function, in files with appropriate names.  dunno.
  */
 
 
