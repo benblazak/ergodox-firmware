@@ -147,11 +147,15 @@ cleanall:
 	-@rm -vf $(KEYBOARD_LAYOUTS:%=firmware--%.hex)
 
 all-layouts:
-	for layout in $(KEYBOARD_LAYOUTS); do \
+	@for layout in $(KEYBOARD_LAYOUTS); do \
+		echo; \
+		echo '--- cleaning ---'; \
 		make clean-target-files all KEYBOARD_LAYOUT=$$layout; \
 		mv $(TARGET).hex $(TARGET)--$$layout.hex; \
 	done
-	make clean-target-files
+	@echo
+	@echo '--- cleaning ---'
+	@make clean-target-files
 
 # -----------------------------------------------------------------------------
 

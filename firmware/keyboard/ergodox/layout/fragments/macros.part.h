@@ -1,18 +1,33 @@
 /* ----------------------------------------------------------------------------
- * Copyright (c) 2012, 2013 Ben Blazak <benblazak.dev@gmail.com>
+ * Copyright (c) 2012, 2013, 2014 Ben Blazak <benblazak.dev@gmail.com>
  * Released under The MIT License (see "doc/licenses/MIT.md")
  * Project located at <https://github.com/benblazak/ergodox-firmware>
  * ------------------------------------------------------------------------- */
 
 /**                                                                 description
- * Information about the matrix
+ * Default macro definitions
  */
 
 
-#ifndef ERGODOX_FIRMWARE__FIRMWARE__KEYBOARD__ERGODOX__LAYOUT__COMMON__MATRIX__H
-#define ERGODOX_FIRMWARE__FIRMWARE__KEYBOARD__ERGODOX__LAYOUT__COMMON__MATRIX__H
-// ----------------------------------------------------------------------------
-// ----------------------------------------------------------------------------
+/**                                                        macros/P/description
+ * Expand `name` into the corresponding "press" function name
+ */
+#define  P(name)  keys__press__##name
+
+/**                                                        macros/R/description
+ * Expand `name` into the corresponding "release" function name
+ */
+#define  R(name)  keys__release__##name
+
+/**                                                        macros/K/description
+ * Expand into a "key" suitable for putting into the layout matrix
+ */
+#define  K(name)  { &keys__press__##name, &keys__release__##name }
+
+/**                                                       macros/KF/description
+ * Expand `name` into the corresponding "key_functions" function name
+ */
+#define  KF(name)  key_functions__##name
 
 
 /**                                             macros/MATRIX_LAYER/description
@@ -80,9 +95,4 @@
      { M(k30),M(k31),M(k32),M(k33),M(k34),M(k35),M( na), M( na),M(k38),M(k39),M(k3A),M(k3B),M(k3C),M(k3D) },    \
      { M(k40),M(k41),M(k42),M(k43),M(k44),M(k45),M(k46), M(k47),M(k48),M(k49),M(k4A),M(k4B),M(k4C),M(k4D) },    \
      { M(k50),M(k51),M(k52),M(k53),M(k54),M(k55),M(k56), M(k57),M(k58),M(k59),M(k5A),M(k5B),M(k5C),M(k5D) }}
-
-
-// ----------------------------------------------------------------------------
-// ----------------------------------------------------------------------------
-#endif  // ERGODOX_FIRMWARE__FIRMWARE__KEYBOARD__ERGODOX__LAYOUT__COMMON__MATRIX__H
 

@@ -11,6 +11,7 @@
  */
 
 
+// left hand letter key block
 #define  T_q        quote
 #define  T_w        comma
 #define  T_e        period
@@ -27,6 +28,7 @@
 #define  T_v        k
 #define  T_b        x
 
+// right hand letter key block
 #define  T_y        f
 #define  T_u        g
 #define  T_i        c
@@ -37,12 +39,15 @@
 #define  T_k        t
 #define  T_l        n
 #define  T_semicol  s
-#define  T_quote    slash
 #define  T_n        b
 #define  T_m        m
 #define  T_comma    w
 #define  T_period   v
 #define  T_slash    z
+
+// right hand outer key block
+#define  T_bkslash  slash
+#define  T_quote    bkslash
 
 
 #include "./templates/kinesis-mod.c.h"

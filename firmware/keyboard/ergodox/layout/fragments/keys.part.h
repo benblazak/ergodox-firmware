@@ -1,44 +1,15 @@
 /* ----------------------------------------------------------------------------
- * Copyright (c) 2013 Ben Blazak <benblazak.dev@gmail.com>
+ * Copyright (c) 2013, 2014 Ben Blazak <benblazak.dev@gmail.com>
  * Released under The MIT License (see "doc/licenses/MIT.md")
  * Project located at <https://github.com/benblazak/ergodox-firmware>
  * ------------------------------------------------------------------------- */
 
 /**                                                                 description
- * This file implements and extends the definitions in ".../lib/layout/keys.h"
- * and extends the definitions in ".../lib/layout/key-functions.h"
- *
- * Meant to be included *only* by the layout using it.
+ * This code fragment implements and extends the definitions in
+ * ".../lib/layout/keys.h" and extends the definitions in
+ * ".../lib/layout/key-functions.h"
  */
 
-// TODO: write a chordmak (or asetniop) layout, on top of a standard colemak
-// layout, using chained sticky keys for the modifiers
-
-// TODO: write tutorials
-// - about 
-//   - basic key functions
-//     - mention where people should look for more information; probably, the
-//       usb, key_functions, and keys headers; and others?
-//   - sticky keys
-//   - macros
-//   - chorded keys
-//   - timed keys
-//   - automatic repetition of utf-8 sequence keys
-//   - layers
-//   - making layouts
-//   - changing the meaning of the LEDs
-// - put the tutorials in the readme.md of
-//   ".../firmware/keyboard/ergodox/layout"
-
-#ifndef ERGODOX_FIRMWARE__KEYBOARD__ERGODOX__LAYOUT__COMMON__KEYS__C__H
-#define ERGODOX_FIRMWARE__KEYBOARD__ERGODOX__LAYOUT__COMMON__KEYS__C__H
-// ----------------------------------------------------------------------------
-// ----------------------------------------------------------------------------
-
-
-#include "./definitions.h"
-
-// ----------------------------------------------------------------------------
 
 /**                                            macros/KEYS__DEFAULT/description
  * Define the functions for a default key (i.e. a normal key that presses and
@@ -96,63 +67,8 @@
  *       #define  keys__release__lpo1l1  KF(nop)
  */
 #define  KEYS__LAYER__PUSH_POP(ID, LAYER)                                   \
-    void P(lpupo##ID##l##LAYER) (void) { layer_stack__push(0, ID, LAYER);   \
-                                         _flags.tick_keypresses = false; }  \
-    void R(lpupo##ID##l##LAYER) (void) { layer_stack__pop_id(ID);           \
-                                         _flags.tick_keypresses = false; }
-
-/**                               macros/(group) layer : number pad/description
- * Define functions for pushing and popping the number pad (namely `numPush`,
- * `numPop`, and `numPuPo`)
- *
- * Members:
- * - `KEYS__LAYER__NUM_PU_PO`
- * - `KEYS__LAYER__NUM_PUSH`
- * - `KEYS__LAYER__NUM_POP`
- *
- * These macros are meant to be used (if necessary) in the layout file, since
- * they need to know the layer on which the number pad has been placed.
- *
- * Notes:
- * - `KEYBOARD__LockingNumLock` appears to be the correct keycode for OS X.
- *   For Linux, the correct keycode is reportedly `KEYPAD__NumLock_Clear`.  For
- *   Windows, I haven't heard, but one of them has to work :) .
- */
-#define  KEYS__LAYER__NUM_PU_PO(ID, LAYER)                              \
-    void P(numPuPo) (void) { layer_stack__push(0, ID, LAYER);           \
-                             KF(press)(KEYBOARD__LockingNumLock);       \
-                             KF(press)(KEYPAD__NumLock_Clear);          \
-                             usb__kb__send_report();                    \
-                             KF(release)(KEYBOARD__LockingNumLock);     \
-                             KF(release)(KEYPAD__NumLock_Clear);        \
-                             usb__kb__send_report();                    \
-                             _flags.tick_keypresses = false; }          \
-    void R(numPuPo) (void) { layer_stack__pop_id(ID);                   \
-                             KF(press)(KEYBOARD__LockingNumLock);       \
-                             KF(press)(KEYPAD__NumLock_Clear);          \
-                             usb__kb__send_report();                    \
-                             KF(release)(KEYBOARD__LockingNumLock);     \
-                             KF(release)(KEYPAD__NumLock_Clear);        \
-                             usb__kb__send_report();                    \
-                             _flags.tick_keypresses = false; }
-
-#define  KEYS__LAYER__NUM_PUSH(ID, LAYER)                               \
-    void P(numPush) (void) { layer_stack__push(0, ID, LAYER);           \
-                             KF(press)(KEYBOARD__LockingNumLock);       \
-                             KF(press)(KEYPAD__NumLock_Clear);          \
-                             _flags.tick_keypresses = false; }          \
-    void R(numPush) (void) { KF(release)(KEYBOARD__LockingNumLock);     \
-                             KF(release)(KEYPAD__NumLock_Clear);        \
-                             _flags.tick_keypresses = false; }
-
-#define  KEYS__LAYER__NUM_POP(ID)                                       \
-    void P(numPop) (void) { layer_stack__pop_id(ID);                    \
-                            KF(press)(KEYBOARD__LockingNumLock);        \
-                            KF(press)(KEYPAD__NumLock_Clear);           \
-                            _flags.tick_keypresses = false; }           \
-    void R(numPop) (void) { KF(release)(KEYBOARD__LockingNumLock);      \
-                            KF(release)(KEYPAD__NumLock_Clear);         \
-                            _flags.tick_keypresses = false; }
+    void P(lpupo##ID##l##LAYER) (void) { layer_stack__push(0, ID, LAYER); } \
+    void R(lpupo##ID##l##LAYER) (void) { layer_stack__pop_id(ID); }
 
 // ----------------------------------------------------------------------------
 
@@ -182,6 +98,35 @@ void KF(2_keys_capslock)(bool pressed, uint8_t keycode) {
 // --- default key definitions ------------------------------------------------
 
 #include "../../../../../firmware/lib/layout/keys.h"
+
+
+// --- special meaning --------------------------------------------------------
+
+/**                                                     keys/transp/description
+ * transparent
+ *
+ * This key signals to the firmware (specifically the
+ * `kb__layout__exec_key_location()` function) that it should look for what key
+ * to "press" or "release" by going down the layer-stack until it finds a
+ * non-transparent key at the same position.
+ *
+ * Notes:
+ * - With this scheme, keys may be half transparent; that is, the "press" part
+ *   of a key may be transparent while the "release" part isn't, or vice versa.
+ *   I expect this to be fairly uncommon though.
+ */
+void KF(transp) (void) {}
+#define  keys__press__transp    KF(transp)
+#define  keys__release__transp  KF(transp)
+
+/**                                                        keys/nop/description
+ * no operation
+ *
+ * This key does nothing (and is not transparent).
+ */
+void KF(nop) (void) {}
+#define  keys__press__nop    KF(nop)
+#define  keys__release__nop  KF(nop)
 
 
 // --- special keycode --------------------------------------------------------
@@ -253,8 +198,10 @@ void R(dmp_eepr) (void) {}
 // ----------------------------------------------------------------------------
 // --- layer ------------------------------------------------------------------
 
-// note: these are just some default layer key definitions; no need to stick to
-// them if they're inconvenient
+// - these are just some default layer key definitions; no need to stick to
+//   them if they're inconvenient
+// - the functions for layers 1 and 2 are special here in that they turn on and
+//   off the corresponding LED (the third LED is reserved for capslock)
 
 KEYS__LAYER__PUSH_POP(0, 0);
 #define  keys__press__lpu0l0    P(lpupo0l0)
@@ -262,13 +209,15 @@ KEYS__LAYER__PUSH_POP(0, 0);
 #define  keys__press__lpo0l0    R(lpupo0l0)
 #define  keys__release__lpo0l0  KF(nop)
 
-KEYS__LAYER__PUSH_POP(1, 1);
+void P(lpupo1l1) (void) { layer_stack__push(0, 1, 1); kb__led__on(1); }
+void R(lpupo1l1) (void) { layer_stack__pop_id(1); kb__led__off(1); }
 #define  keys__press__lpu1l1    P(lpupo1l1)
 #define  keys__release__lpu1l1  KF(nop)
 #define  keys__press__lpo1l1    R(lpupo1l1)
 #define  keys__release__lpo1l1  KF(nop)
 
-KEYS__LAYER__PUSH_POP(2, 2);
+void P(lpupo2l2) (void) { layer_stack__push(0, 2, 2); kb__led__on(2); }
+void R(lpupo2l2) (void) { layer_stack__pop_id(2); kb__led__off(2); }
 #define  keys__press__lpu2l2    P(lpupo2l2)
 #define  keys__release__lpu2l2  KF(nop)
 #define  keys__press__lpo2l2    R(lpupo2l2)
@@ -315,9 +264,4 @@ KEYS__LAYER__PUSH_POP(9, 9);
 #define  keys__release__lpu9l9  KF(nop)
 #define  keys__press__lpo9l9    R(lpupo9l9)
 #define  keys__release__lpo9l9  KF(nop)
-
-
-// ----------------------------------------------------------------------------
-// ----------------------------------------------------------------------------
-#endif  // ERGODOX_FIRMWARE__KEYBOARD__ERGODOX__LAYOUT__COMMON__KEYS__C__H
 

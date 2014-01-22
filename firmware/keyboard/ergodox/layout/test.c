@@ -20,6 +20,13 @@
 
 
 // ----------------------------------------------------------------------------
+// LED control
+// ----------------------------------------------------------------------------
+
+#include "./fragments/led-control.part.h"
+
+
+// ----------------------------------------------------------------------------
 // matrix control
 // ----------------------------------------------------------------------------
 
@@ -59,30 +66,5 @@ void kb__layout__exec_key(bool pressed, uint8_t row, uint8_t column) {
     if (count >=3) {
         key_functions__jump_to_bootloader();
     }
-}
-
-
-// ----------------------------------------------------------------------------
-// LED control
-// ----------------------------------------------------------------------------
-
-void kb__led__logical_on(char led) {
-    switch(led) {
-        case 'N': kb__led__on(1); break;  // numlock
-        case 'C': kb__led__on(2); break;  // capslock
-        case 'S': kb__led__on(3); break;  // scroll lock
-        case 'O':                 break;  // compose
-        case 'K':                 break;  // kana
-    };
-}
-
-void kb__led__logical_off(char led) {
-    switch(led) {
-        case 'N': kb__led__off(1); break;  // numlock
-        case 'C': kb__led__off(2); break;  // capslock
-        case 'S': kb__led__off(3); break;  // scroll lock
-        case 'O':                  break;  // compose
-        case 'K':                  break;  // kana
-    };
 }
 

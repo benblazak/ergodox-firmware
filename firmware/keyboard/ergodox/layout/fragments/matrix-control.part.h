@@ -1,33 +1,16 @@
 /* ----------------------------------------------------------------------------
- * Copyright (c) 2013 Ben Blazak <benblazak.dev@gmail.com>
+ * Copyright (c) 2013, 2014 Ben Blazak <benblazak.dev@gmail.com>
  * Released under The MIT License (see "doc/licenses/MIT.md")
  * Project located at <https://github.com/benblazak/ergodox-firmware>
  * ------------------------------------------------------------------------- */
 
 /**                                                                 description
- * A default way to execute keys.
+ * A default way to execute keys
  *
- * Meant to be included *only* by the layout using it.
- *
- * TODO:
- * - should *.c.h functions have macros to guard against multiple includes?
- * - perhaps think about whether this organization of *.c.h files in
- *   .../layout/common is the best.  maybe it could be more modular.  maybe
- *   layers could be included, for use as parts of layouts.  maybe the default
- *   led functions could as well; or there could be a couple different sets of
- *   led function, in files with appropriate names.  dunno.
+ * Usage notes:
+ * - Depends on (must be included after) "variables.part.h" and "keys.part.h"
  */
 
-
-#ifndef ERGODOX_FIRMWARE__KEYBOARD__ERGODOX__LAYOUT__COMMON__EXEC_KEY__C__H
-#define ERGODOX_FIRMWARE__KEYBOARD__ERGODOX__LAYOUT__COMMON__EXEC_KEY__C__H
-// ----------------------------------------------------------------------------
-// ----------------------------------------------------------------------------
-
-
-#include "./definitions.h"
-
-// ----------------------------------------------------------------------------
 
 void kb__layout__exec_key(bool pressed, uint8_t row, uint8_t column) {
 
@@ -55,10 +38,10 @@ void kb__layout__exec_key(bool pressed, uint8_t row, uint8_t column) {
             layer = layer_stack__peek(i-1);
 
         function = (void (*)(void))
-                   pgm_read_word( &( _layout[ layer             ]
-                                            [ row               ]
-                                            [ column            ]
-                                            [ (pressed) ? 0 : 1 ] ) );
+                   pgm_read_word( &( layout[ layer             ]
+                                           [ row               ]
+                                           [ column            ]
+                                           [ (pressed) ? 0 : 1 ] ) );
 
         if (function == &KF(transp))
             function = NULL;
@@ -67,7 +50,7 @@ void kb__layout__exec_key(bool pressed, uint8_t row, uint8_t column) {
             if (pressed)
                 pressed_layer[row][column] = layer;
 
-            _flags.tick_keypresses = (pressed) ? true : false;  // set default
+            flags.tick_keypresses = (pressed) ? true : false;  // set default
 
             (*function)();
 
@@ -75,7 +58,7 @@ void kb__layout__exec_key(bool pressed, uint8_t row, uint8_t column) {
             // TODO: instead of this, set a flag for the type of key pressed,
             // and any functions that execute can check it, and conditionally
             // reschedule themselves to run later, if they so desire
-            if (_flags.tick_keypresses)
+            if (flags.tick_keypresses)
                 timer___tick_keypresses();
 
             return;
@@ -84,9 +67,4 @@ void kb__layout__exec_key(bool pressed, uint8_t row, uint8_t column) {
 
     // if we get here, there was a transparent key in layer 0; do nothing
 }
-
-
-// ----------------------------------------------------------------------------
-// ----------------------------------------------------------------------------
-#endif  // ERGODOX_FIRMWARE__KEYBOARD__ERGODOX__LAYOUT__COMMON__EXEC_KEY__C__H
 
