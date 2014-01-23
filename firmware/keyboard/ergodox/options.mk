@@ -26,6 +26,7 @@ KEYBOARD_LAYOUT := qwerty--kinesis-mod
 
 KEYBOARD_LAYOUTS := \
 	test \
+	arensito--ben \
 	colemak--kinesis-mod \
 	dvorak--kinesis-mod \
 	qwerty--kinesis-mod
