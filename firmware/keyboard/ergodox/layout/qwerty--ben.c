@@ -1,20 +1,14 @@
 /* ----------------------------------------------------------------------------
- * Copyright (c) 2014 Ben Blazak <benblazak.dev@gmail.com>
+ * Copyright (c) 2013, 2014 Ben Blazak <benblazak.dev@gmail.com>
  * Released under The MIT License (see "doc/licenses/MIT.md")
  * Project located at <https://github.com/benblazak/ergodox-firmware>
  * ------------------------------------------------------------------------- */
 
 /**                                                                 description
- * A layout modeled after the [Arensito layout]
- * (http://www.pvv.org/~hakonhal/main.cgi/keyboard)
- * by Håkon Hallingstad
+ * My QWERTY layout, at the moment.  I imagine this will evolve over time.
+ * Once I'm done with the Arensito layout, it may disappear altogether.
  *
  * Implements the "layout" section of '.../firmware/keyboard.h'
- *
- * TODO:
- * - separate most of this into a template (so i can have different versions of
- *   the "ben" layout, just like there are different "kinesis-mod" layouts)?
- *   lol
  */
 
 
@@ -49,8 +43,6 @@
 // layout
 // ----------------------------------------------------------------------------
 
-// TODO: make this Arensito!
-// - add layers with other layouts? arensito, colemak, dvorak, qwerty
 static layout_t layout PROGMEM = {
 // ............................................................................
 
@@ -58,27 +50,51 @@ static layout_t layout PROGMEM = {
 // macro, unused,
        K,    nop,
 // left hand ...... ......... ......... ......... ......... ......... .........
-     nop,        1,        2,        3,        4,        5,      nop,
-     nop,        q,        l,    comma,        p,      nop,      nop,
-     nop,        a,        r,        e,        n,        b,
-     nop,        z,        w,   period,        h,        j,      nop,
-     nop,      nop,      nop,      nop,      nop,
+   equal,        1,        2,        3,        4,        5,      esc,
+     tab,        q,        w,        e,        r,        t,   lpu2l2,
+ bkslash,        a,        s,        d,        f,        g,
+shL2kcap,        z,        x,        c,        v,        b, lpupo2l2,
+    guiL,    grave,  bkslash,   arrowL,   arrowR,
                                                                ctrlL,     altL,
                                                        nop,      nop,     home,
                                                         bs,      del,      end,
 // right hand ..... ......... ......... ......... ......... ......... .........
-               nop,        6,        7,        8,        9,        0,      nop,
-               nop,      nop,        f,        u,        d,        k,      nop,
-                           g,        s,        i,        t,        o,      nop,
-               nop,        v,        c,        y,        m,        x,      nop,
-                                   nop,      nop,      nop,      nop,      nop,
+            lpu1l1,        6,        7,        8,        9,        0,     dash,
+             brktL,        y,        u,        i,        o,        p,    brktR,
+                           h,        j,        k,        l,  semicol,    quote,
+          lpupo2l2,        n,        m,    comma,   period,    slash, shR2kcap,
+                                arrowL,   arrowD,   arrowU,   arrowR,     guiR,
     altR,    ctrlR,
    pageU,      nop,      nop,
    pageD,    enter,    space  ),
 
 // ............................................................................
 
-    MATRIX_LAYER(  // layer TODO : symbols and function keys
+    MATRIX_LAYER(  // layer 1 : number pad
+// macro, unused,
+       K,    nop,
+// left hand ...... ......... ......... ......... ......... ......... .........
+  transp,   transp,   transp,   transp,   transp,   transp,   transp,
+  transp,   transp,   transp,   transp,   transp,   transp,   transp,
+  transp,   transp,   transp,   transp,   transp,   transp,
+  transp,   transp,   transp,   transp,   transp,   transp,   transp,
+  transp,      ins,   transp,   transp,   transp,
+                                                              transp,   transp,
+                                                    transp,   transp,   transp,
+                                                    transp,   transp,   transp,
+// right hand ..... ......... ......... ......... ......... ......... .........
+            lpo1l1,   transp,   lpo1l1,    equal,    slash, asterisk,   transp,
+            transp,   transp,        7,        8,        9,     dash,   transp,
+                      transp,        4,        5,        6,     plus,   transp,
+            transp,   transp,        1,        2,        3,    enter,   transp,
+                                transp,   transp,   period,    enter,   transp,
+  transp,   transp,
+  transp,   transp,   transp,
+  transp,   transp,        0  ),
+
+// ............................................................................
+
+    MATRIX_LAYER(  // layer 2 : symbols and function keys
 // macro, unused,
        K,    nop,
 // left hand ...... ......... ......... ......... ......... ......... .........
@@ -102,7 +118,7 @@ static layout_t layout PROGMEM = {
 
 // ............................................................................
 
-    MATRIX_LAYER(  // layer TODO : keyboard functions
+    MATRIX_LAYER(  // layer 3 : keyboard functions
 // macro, unused,
        K,    nop,
 // left hand ...... ......... ......... ......... ......... ......... .........
