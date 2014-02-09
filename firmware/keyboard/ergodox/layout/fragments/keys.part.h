@@ -209,18 +209,16 @@ KEYS__LAYER__PUSH_POP(0, 0);
 #define  keys__press__lpo0l0    R(lpupo0l0)
 #define  keys__release__lpo0l0  KF(nop)
 
-void P(lpupo1l1) (void) { layer_stack__push(0, 1, 1); kb__led__on(1); }
-void R(lpupo1l1) (void) { layer_stack__pop_id(1); kb__led__off(1); }
-#define  keys__press__lpu1l1    P(lpupo1l1)
+KEYS__LAYER__PUSH_POP(1,1);
+void P(lpu1l1) (void) { layer_stack__push(0, 1, 1); kb__led__on(1); }
 #define  keys__release__lpu1l1  KF(nop)
-#define  keys__press__lpo1l1    R(lpupo1l1)
+void P(lpo1l1) (void) { layer_stack__pop_id(1); kb__led__off(1); }
 #define  keys__release__lpo1l1  KF(nop)
 
-void P(lpupo2l2) (void) { layer_stack__push(0, 2, 2); kb__led__on(2); }
-void R(lpupo2l2) (void) { layer_stack__pop_id(2); kb__led__off(2); }
-#define  keys__press__lpu2l2    P(lpupo2l2)
+KEYS__LAYER__PUSH_POP(2,2);
+void P(lpu2l2) (void) { layer_stack__push(0, 2, 2); kb__led__on(2); }
 #define  keys__release__lpu2l2  KF(nop)
-#define  keys__press__lpo2l2    R(lpupo2l2)
+void P(lpo2l2) (void) { layer_stack__pop_id(2); kb__led__off(2); }
 #define  keys__release__lpo2l2  KF(nop)
 
 KEYS__LAYER__PUSH_POP(3, 3);
