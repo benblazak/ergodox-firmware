@@ -33,6 +33,18 @@
     void R(name) (void) { KF(release)(value);                   \
                           KF(release)(KEYBOARD__LeftShift); }
 
+/**                                            macros/KEYS__ALT_GR/description
+ * Define the functions for a "AltGr" key (i.e. a key that sends a "AltGr"
+ * along with the keycode)
+ *
+ * Needed by ".../lib/layout/keys.h"
+ */
+#define  KEYS__ALT_GR(name, value)                             \
+    void P(name) (void) { KF(press)(KEYBOARD__RightAlt);       \
+                          KF(press)(value); }                  \
+    void R(name) (void) { KF(release)(value);                  \
+                          KF(release)(KEYBOARD__RightAlt); }
+
 /**                                    macros/KEYS__LAYER__PUSH_POP/description
  * Define the functions for a layer push-pop key (i.e. a layer shift key).
  *
