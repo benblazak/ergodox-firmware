@@ -51,12 +51,12 @@
  * Needed by ".../lib/layout/keys.h"
  */
 #define  KEYS__NON_DEAD(name, value)                           \
-    void P(name) (void) { KF(press)(value); }                  \
-    void R(name) (void) { KF(release)(value);                  \
+    void P(name) (void) { KF(press)(value);                    \
+                          KF(press)(KEYBOARD__Spacebar);       \
                           usb__kb__send_report();              \
-                          KF(press)(value);                    \
-                          usb__kb__send_report();              \
-                          KF(release)(value); }
+                          KF(release)(value);                  \
+                          KF(release)(KEYBOARD__Spacebar); }   \
+    void R(name) (void) {}
 
 /**                                            macros/KEYS__NON_DEAD_SHIFTED/description
  * Define the functions for a normally dead key, to be non-dead.
@@ -65,13 +65,13 @@
  */
 #define  KEYS__NON_DEAD_SHIFTED(name, value)                   \
     void P(name) (void) { KF(press)(KEYBOARD__LeftShift);      \
-                          KF(press)(value); }                  \
-    void R(name) (void) { KF(release)(value);                  \
-                          usb__kb__send_report();              \
                           KF(press)(value);                    \
+                          KF(press)(KEYBOARD__Spacebar);       \
                           usb__kb__send_report();              \
                           KF(release)(value);                  \
-                          KF(release)(KEYBOARD__LeftShift); }
+                          KF(release)(KEYBOARD__Spacebar);     \
+                          KF(release)(KEYBOARD__LeftShift); }  \
+    void R(name) (void) {}
 
 /**                                            macros/KEYS__NON_DEAD_ALT_GR/description
  * Define the functions for a normally dead key, to be non-dead.
@@ -80,13 +80,13 @@
  */
 #define  KEYS__NON_DEAD_ALT_GR(name, value)                    \
     void P(name) (void) { KF(press)(KEYBOARD__RightAlt);       \
-                          KF(press)(value); }                  \
-    void R(name) (void) { KF(release)(value);                  \
-                          usb__kb__send_report();              \
                           KF(press)(value);                    \
+                          KF(press)(KEYBOARD__Spacebar);       \
                           usb__kb__send_report();              \
                           KF(release)(value);                  \
-                          KF(release)(KEYBOARD__RightAlt); }
+                          KF(release)(KEYBOARD__Spacebar);     \
+                          KF(release)(KEYBOARD__RightAlt); }   \
+    void R(name) (void) {}
 
 /**                                    macros/KEYS__LAYER__PUSH_POP/description
  * Define the functions for a layer push-pop key (i.e. a layer shift key).
