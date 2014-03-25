@@ -26,7 +26,7 @@
 // in milliseconds
 // TODO: it should probably be noted in a separate document that sometimes
 // changing this to a higher value, say 20, is a workaround to fix keys that
-// seem to unexpectedly double-tap.
+// seem to unexpectedly double-tap (thanks Thanatermesis!).
 
 
 // ----------------------------------------------------------------------------
