@@ -24,6 +24,9 @@
 
 #define  OPT__DEBOUNCE_TIME  5
 // in milliseconds
+// TODO: it should probably be noted in a separate document that sometimes
+// changing this to a higher value, say 20, is a workaround to fix keys that
+// seem to unexpectedly double-tap.
 
 
 // ----------------------------------------------------------------------------
