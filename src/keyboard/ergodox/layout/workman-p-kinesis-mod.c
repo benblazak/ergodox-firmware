@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
-* ergoDOX layout : workman (modified from the Kinesis layout)
+* ergoDOX layout : Workman-P (modified from the Kinesis layout)
 * -----------------------------------------------------------------------------
 * Copyright (c) 2012 Ben Blazak <benblazak.dev@gmail.com>
 * Released under The MIT License (MIT) (see "license.md")

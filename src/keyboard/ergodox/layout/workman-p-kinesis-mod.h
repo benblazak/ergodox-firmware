@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- * ergoDOX : layout : DEFAULT : exports
+ * ergoDOX : layout : Workman-P : exports
  * ----------------------------------------------------------------------------
  * Copyright (c) 2012 Ben Blazak <benblazak.dev@gmail.com>
  * Released under The MIT License (MIT) (see "license.md")
@@ -7,8 +7,8 @@
  * ------------------------------------------------------------------------- */
 
 
-#ifndef KEYBOARD__ERGODOX__LAYOUT__DEFAULT_h
-	#define KEYBOARD__ERGODOX__LAYOUT__DEFAULT_h
+#ifndef KEYBOARD__ERGODOX__LAYOUT__WORKMAN_P_h
+	#define KEYBOARD__ERGODOX__LAYOUT__WORKMAN_P_h
 
 	#include "../controller.h"
 

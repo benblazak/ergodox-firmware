@@ -25,7 +25,7 @@ include src/makefile-options
 # --- default
 LAYOUT := qwerty-kinesis-mod
 # --- all
-LAYOUTS := qwerty-kinesis-mod dvorak-kinesis-mod colemak-symbol-mod
+LAYOUTS := qwerty-kinesis-mod dvorak-kinesis-mod colemak-symbol-mod workman-p-kinesis-mod
 
 # system specific stuff
 UNAME := $(shell uname)
