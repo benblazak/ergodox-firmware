@@ -15,6 +15,18 @@
 #include "../../../lib/key-functions/public.h"
 #include "../matrix.h"
 #include "../layout.h"
+#include "../../../main.h"
+
+#define USING_WORKMAN_P // undef to use standard workman
+
+// convenience macros
+#define  LAYER         main_arg_layer
+#define  LAYER_OFFSET  main_arg_layer_offset
+#define  ROW           main_arg_row
+#define  COL           main_arg_col
+#define  IS_PRESSED    main_arg_is_pressed
+#define  WAS_PRESSED   main_arg_was_pressed
+
 // FUNCTIONS ------------------------------------------------------------------
 void kbfun_layer_pop_all(void) {
   kbfun_layer_pop_1();
@@ -29,9 +41,86 @@ void kbfun_layer_pop_all(void) {
   kbfun_layer_pop_10();
 }
 
+/*
+ * [name]
+ *   invert Shift + press|release
+ *
+ * [description]
+ *   Generate a 'shift' press or release before the normal keypress or
+ *   key release if shift is not pressed.  Generate a normal keypress or
+ *   key release if shift is pressed.
+ */
+// TODO: make pressed a non-inverted key restore the shift state immediately.
+// TODO: also, make media keys not repeat so much, maybe?
+static uint8_t inverted_keys_pressed;
+static bool physical_lshift_pressed;
+static bool physical_rshift_pressed;
+
+void invert_shift_state() {
+  // make lshift's state the inverted shift stated
+  _kbfun_press_release(!(physical_lshift_pressed|physical_rshift_pressed), KEY_LeftShift);
+  // release rshift
+  _kbfun_press_release(false, KEY_RightShift);
+}
+void restore_shift_state() {
+  // restore the state of left and right shift
+  _kbfun_press_release(physical_lshift_pressed, KEY_LeftShift);
+  _kbfun_press_release(physical_rshift_pressed, KEY_RightShift);
+}
+
+void kbfun_invert_shift_press_release(void) {
+  if (IS_PRESSED) {
+    ++inverted_keys_pressed;
+    invert_shift_state();
+  }
+
+  kbfun_press_release();
+
+  if (!IS_PRESSED) {
+    // if this is the last key we're releasing
+    if (inverted_keys_pressed == 1) {
+      restore_shift_state();
+    }
+    // avoid underflow
+    if (inverted_keys_pressed) {
+      --inverted_keys_pressed;
+    }
+  }
+}
+
+void kbfun_fix_shifted_press_release(void) {
+  uint8_t keycode = kb_layout_get(LAYER, ROW, COL);
+  switch (keycode) {
+    // shift state toggles
+    case KEY_LeftShift:
+      physical_lshift_pressed = IS_PRESSED;
+      break;
+    case KEY_RightShift:
+      physical_rshift_pressed = IS_PRESSED;
+      break;
+    // Keys which don't break it
+    case KEY_CapsLock:
+    case KEYPAD_NumLock_Clear:
+      kbfun_press_release();
+      return;
+    default:
+      // If we're not just changing the modifier, we need our true shift state.
+      if (inverted_keys_pressed) {
+        inverted_keys_pressed = 0;
+        restore_shift_state();
+      }
+      kbfun_press_release();
+      return;
+  }
+  // We only get here if we pressed left or right shift
+  if (inverted_keys_pressed) {
+    invert_shift_state();
+  } else {
+    kbfun_press_release();
+  }
+}
 // DEFINITIONS ----------------------------------------------------------------
 // basic
-#define  kprrel   &kbfun_press_release
 #define  mprrel   &kbfun_mediakey_press_release
 #define  ktog     &kbfun_toggle
 #define  ktrans   &kbfun_transparent
@@ -62,10 +151,18 @@ void kbfun_layer_pop_all(void) {
 
 // special
 #define  sshprre  &kbfun_shift_press_release
-#define  ishprre  &kbfun_invert_shift_press_release
 #define  s2kcap   &kbfun_2_keys_capslock_press_release
 #define  slpunum  &kbfun_layer_push_numpad
 #define  slponum  &kbfun_layer_pop_numpad
+
+// custom
+#ifdef USING_WORKMAN_P
+#define  sinvert  &kbfun_invert_shift_press_release
+#define  kprrel   &kbfun_fix_shifted_press_release
+#else
+#define  kprrel   &kbfun_press_release
+#define  sinvert  &kbfun_press_release
+#endif
 // ----------------------------------------------------------------------------
 
 // LAYOUT ---------------------------------------------------------------------
@@ -340,7 +437,7 @@ KB_MATRIX_LAYER(
   // unused
   NULL /*no key*/,  
   // left hand
-  kprrel, ishprre, ishprre, ishprre, ishprre, ishprre,   kprrel,  
+  kprrel, sinvert, sinvert, sinvert, sinvert, sinvert,   kprrel,  
   kprrel, kprrel,  kprrel,  kprrel,  kprrel,  kprrel,    lpush1,  
   kprrel, kprrel,  kprrel,  kprrel,  kprrel,  kprrel,    /*no key*/ 
   kprrel, kprrel,  kprrel,  kprrel,  kprrel,  kprrel,    kprrel,  
@@ -351,7 +448,7 @@ KB_MATRIX_LAYER(
   kprrel,          kprrel,          kprrel,  
 
   // right hand
-  lpush2,    ishprre,   ishprre, ishprre, ishprre, ishprre, kprrel,  
+  lpush2,    sinvert,   sinvert, sinvert, sinvert, sinvert, kprrel,  
   lpush1,    kprrel,    kprrel,  kprrel,  kprrel,  kprrel,  kprrel,  
   /*no key*/ kprrel,    kprrel,  kprrel,  kprrel,  kprrel,  kprrel,  
   kprrel,    kprrel,    kprrel,  kprrel,  kprrel,  kprrel,  kprrel,  
@@ -605,7 +702,7 @@ KB_MATRIX_LAYER(
   // unused
   NULL /*no key*/,  
   // left hand
-  kprrel, ishprre, ishprre, ishprre, ishprre, ishprre,   kprrel,  
+  kprrel, sinvert, sinvert, sinvert, sinvert, sinvert,   kprrel,  
   kprrel, kprrel,  kprrel,  kprrel,  kprrel,  kprrel,    lpop1,  
   kprrel, kprrel,  kprrel,  kprrel,  kprrel,  kprrel,    /*no key*/ 
   kprrel, kprrel,  kprrel,  kprrel,  kprrel,  kprrel,    kprrel,  
@@ -616,7 +713,7 @@ KB_MATRIX_LAYER(
   kprrel,          kprrel,          kprrel,  
 
   // right hand
-  NULL,      ishprre,   ishprre, ishprre, ishprre, ishprre, kprrel,  
+  NULL,      sinvert,   sinvert, sinvert, sinvert, sinvert, kprrel,  
   lpop1,     kprrel,    kprrel,  kprrel,  kprrel,  kprrel,  kprrel,  
   /*no key*/ kprrel,    kprrel,  kprrel,  kprrel,  kprrel,  kprrel,  
   kprrel,    kprrel,    kprrel,  kprrel,  kprrel,  kprrel,  kprrel,  
