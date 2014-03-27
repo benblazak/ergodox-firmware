@@ -58,6 +58,7 @@
 
 	// special
 	void kbfun_shift_press_release           (void);
+	void kbfun_invert_shift_press_release    (void);
 	void kbfun_2_keys_capslock_press_release (void);
 	void kbfun_layer_push_numpad             (void);
 	void kbfun_layer_pop_numpad              (void);

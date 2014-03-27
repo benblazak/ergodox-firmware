@@ -62,6 +62,7 @@ void kbfun_layer_pop_all(void) {
 
 // special
 #define  sshprre  &kbfun_shift_press_release
+#define  ishprre  &kbfun_invert_shift_press_release
 #define  s2kcap   &kbfun_2_keys_capslock_press_release
 #define  slpunum  &kbfun_layer_push_numpad
 #define  slponum  &kbfun_layer_pop_numpad
@@ -111,11 +112,11 @@ KB_MATRIX_LAYER(
   MEDIAKEY_STOP, 0,            0,  
 
   // right hand
-  KEY_F12,   KEY_F6,    KEY_F7,       KEY_F8,         KEY_F9, KEY_F10, KEY_ScrollLock,  
-  0,         0,         0,            0,              0,      0,       0,  
-  /*no key*/ 0,         0,            0,              0,      0,       0,  
-  0,         0,         0,            0,              0,      0,       0,  
-  /*no key*/ /*no key*/ KEY_VolumeUp, KEY_VolumeDown, 0,      0,       3,  
+  KEY_F12,   KEY_F6,    KEY_F7,                KEY_F8,                  KEY_F9,              KEY_F10, KEY_ScrollLock,  
+  0,         0,         0,                     0,                       0,                   0,       0,  
+  /*no key*/ 0,         0,                     0,                       0,                   0,       0,  
+  0,         0,         0,                     0,                       0,                   0,       0,  
+  /*no key*/ /*no key*/ MEDIAKEY_AUDIO_VOL_UP, MEDIAKEY_AUDIO_VOL_DOWN, MEDIAKEY_AUDIO_MUTE, 0,       3,  
   // right thumb
   0, 0,            /*no key*/ 
   0, 0 /*no key*/, 0 /*no key*/,  
@@ -339,7 +340,7 @@ KB_MATRIX_LAYER(
   // unused
   NULL /*no key*/,  
   // left hand
-  kprrel, sshprre, sshprre, sshprre, sshprre, sshprre,   kprrel,  
+  kprrel, ishprre, ishprre, ishprre, ishprre, ishprre,   kprrel,  
   kprrel, kprrel,  kprrel,  kprrel,  kprrel,  kprrel,    lpush1,  
   kprrel, kprrel,  kprrel,  kprrel,  kprrel,  kprrel,    /*no key*/ 
   kprrel, kprrel,  kprrel,  kprrel,  kprrel,  kprrel,    kprrel,  
@@ -350,7 +351,7 @@ KB_MATRIX_LAYER(
   kprrel,          kprrel,          kprrel,  
 
   // right hand
-  lpush2,    sshprre,   sshprre, sshprre, sshprre, sshprre, kprrel,  
+  lpush2,    ishprre,   ishprre, ishprre, ishprre, ishprre, kprrel,  
   lpush1,    kprrel,    kprrel,  kprrel,  kprrel,  kprrel,  kprrel,  
   /*no key*/ kprrel,    kprrel,  kprrel,  kprrel,  kprrel,  kprrel,  
   kprrel,    kprrel,    kprrel,  kprrel,  kprrel,  kprrel,  kprrel,  
@@ -380,7 +381,7 @@ KB_MATRIX_LAYER(
   ktrans,    ktrans,    ktrans, ktrans, ktrans, ktrans, ktrans,  
   /*no key*/ ktrans,    ktrans, ktrans, ktrans, ktrans, ktrans,  
   ktrans,    ktrans,    ktrans, ktrans, ktrans, ktrans, ktrans,  
-  /*no key*/ /*no key*/ kprrel, kprrel, ktrans, ktrans, lpush3,  
+  /*no key*/ /*no key*/ mprrel, mprrel, mprrel, ktrans, lpush3,  
   // right thumb
   ktrans, ktrans,          /*no key*/ 
   ktrans, NULL /*no key*/, NULL /*no key*/,  
@@ -604,7 +605,7 @@ KB_MATRIX_LAYER(
   // unused
   NULL /*no key*/,  
   // left hand
-  kprrel, sshprre, sshprre, sshprre, sshprre, sshprre,   kprrel,  
+  kprrel, ishprre, ishprre, ishprre, ishprre, ishprre,   kprrel,  
   kprrel, kprrel,  kprrel,  kprrel,  kprrel,  kprrel,    lpop1,  
   kprrel, kprrel,  kprrel,  kprrel,  kprrel,  kprrel,    /*no key*/ 
   kprrel, kprrel,  kprrel,  kprrel,  kprrel,  kprrel,    kprrel,  
@@ -615,7 +616,7 @@ KB_MATRIX_LAYER(
   kprrel,          kprrel,          kprrel,  
 
   // right hand
-  NULL,      sshprre,   sshprre, sshprre, sshprre, sshprre, kprrel,  
+  NULL,      ishprre,   ishprre, ishprre, ishprre, ishprre, kprrel,  
   lpop1,     kprrel,    kprrel,  kprrel,  kprrel,  kprrel,  kprrel,  
   /*no key*/ kprrel,    kprrel,  kprrel,  kprrel,  kprrel,  kprrel,  
   kprrel,    kprrel,    kprrel,  kprrel,  kprrel,  kprrel,  kprrel,  
@@ -634,22 +635,22 @@ KB_MATRIX_LAYER(
   ktrans, ktrans, ktrans, ktrans, ktrans, ktrans,    ktrans,  
   ktrans, ktrans, ktrans, ktrans, ktrans, ktrans,    /*no key*/ 
   ktrans, ktrans, ktrans, ktrans, ktrans, ktrans,    ktrans,  
-  NULL,   ktrans, ktrans, ktrans, ktrans, /*no key*/ /*no key*/ 
+  NULL,   ktrans, ktrans, mprrel, mprrel, /*no key*/ /*no key*/ 
   // left thumb
   /*no key*/       ktrans,          ktrans,  
   NULL /*no key*/, NULL /*no key*/, ktrans,  
-  ktrans,          ktrans,          ktrans,  
+  mprrel,          ktrans,          ktrans,  
 
   // right hand
   kprrel,    kprrel,    kprrel, kprrel, kprrel, kprrel, kprrel,  
   ktrans,    ktrans,    ktrans, ktrans, ktrans, ktrans, ktrans,  
   /*no key*/ ktrans,    ktrans, ktrans, ktrans, ktrans, ktrans,  
   ktrans,    ktrans,    ktrans, ktrans, ktrans, ktrans, ktrans,  
-  /*no key*/ /*no key*/ kprrel, kprrel, ktrans, ktrans, NULL,  
+  /*no key*/ /*no key*/ mprrel, mprrel, mprrel, ktrans, NULL,  
   // right thumb
   ktrans, ktrans,          /*no key*/ 
   ktrans, NULL /*no key*/, NULL /*no key*/,  
-  ktrans, ktrans,          ktrans  
+  ktrans, ktrans,          mprrel  
 ),
 // LAYER 2
 KB_MATRIX_LAYER(

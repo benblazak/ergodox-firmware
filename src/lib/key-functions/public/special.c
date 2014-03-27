@@ -45,6 +45,53 @@ void kbfun_shift_press_release(void) {
 
 /*
  * [name]
+ *   invert Shift + press|release
+ *
+ * [description]
+ *   Generate a 'shift' press or release before the normal keypress or
+ *   key release if shift is not pressed.  Generate a normal keypress or
+ *   key release if shift is pressed.
+ */
+// TODO: make pressed a non-inverted key restore the shift state immediately.
+// TODO: also, make media keys not repeat so much, maybe?
+void kbfun_invert_shift_press_release(void) {
+	static uint8_t keys_pressed;
+	static bool lshift_pressed;
+	static bool rshift_pressed;
+
+	if (IS_PRESSED) {
+    ++keys_pressed;
+  } else if (keys_pressed) {
+    --keys_pressed;
+  }
+
+  // if this is our first inverted keypress
+  if (IS_PRESSED && keys_pressed == 1) {
+    // save the state of left and right shift
+    lshift_pressed = _kbfun_is_pressed(KEY_LeftShift);
+    rshift_pressed = _kbfun_is_pressed(KEY_RightShift);
+    // invert the state
+    if (lshift_pressed || rshift_pressed) {
+      // disable both
+      _kbfun_press_release(false, KEY_LeftShift);
+      _kbfun_press_release(false, KEY_RightShift);
+    } else {
+      // press left shift
+      _kbfun_press_release(true, KEY_LeftShift);
+      _kbfun_press_release(false, KEY_RightShift);
+    }
+  }
+	kbfun_press_release();
+  // if no inverted keys are still down
+  if (!IS_PRESSED && !keys_pressed) {
+    // restore the state of left and right shift
+    _kbfun_press_release(lshift_pressed, KEY_LeftShift);
+    _kbfun_press_release(rshift_pressed, KEY_RightShift);
+  }
+}
+
+/*
+ * [name]
  *   Two keys => capslock
  *
  * [description]
