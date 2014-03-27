@@ -41,17 +41,8 @@ void kbfun_layer_pop_all(void) {
   kbfun_layer_pop_10();
 }
 
-/*
- * [name]
- *   invert Shift + press|release
- *
- * [description]
- *   Generate a 'shift' press or release before the normal keypress or
- *   key release if shift is not pressed.  Generate a normal keypress or
- *   key release if shift is pressed.
- */
-// TODO: make pressed a non-inverted key restore the shift state immediately.
-// TODO: also, make media keys not repeat so much, maybe?
+
+
 static uint8_t inverted_keys_pressed;
 static bool physical_lshift_pressed;
 static bool physical_rshift_pressed;
@@ -68,6 +59,15 @@ void restore_shift_state() {
   _kbfun_press_release(physical_rshift_pressed, KEY_RightShift);
 }
 
+/*
+ * [name]
+ *   Invert shift + press|release
+ *
+ * [description]
+ *   Generate a 'shift' press or release before the normal keypress or
+ *   key release if shift is not pressed.  Generate a normal keypress or
+ *   key release if shift is pressed.
+ */
 void kbfun_invert_shift_press_release(void) {
   if (IS_PRESSED) {
     ++inverted_keys_pressed;
@@ -88,6 +88,15 @@ void kbfun_invert_shift_press_release(void) {
   }
 }
 
+/*
+ * [name]
+ *   Shift state fix + press|release
+ *
+ * [description]
+ *   If no inverted keys are pressed, simply perform a press and release.
+ *   If inverted keys are pressed, fix the shift state back to that of the
+ *   physical keys before pressing the key.
+ */
 void kbfun_fix_shifted_press_release(void) {
   uint8_t keycode = kb_layout_get(LAYER, ROW, COL);
   switch (keycode) {
@@ -119,6 +128,7 @@ void kbfun_fix_shifted_press_release(void) {
     kbfun_press_release();
   }
 }
+
 // DEFINITIONS ----------------------------------------------------------------
 // basic
 #define  mprrel   &kbfun_mediakey_press_release
