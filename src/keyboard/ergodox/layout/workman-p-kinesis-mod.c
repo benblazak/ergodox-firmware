@@ -9,8 +9,8 @@
 // TODO: there is a bug where if you hit an inverted key and a normal key, at
 // the same time, when the 6 key buffer and modifier states are sent the
 // inverted key's shift state can be used for the non-inverted key.
-// Example: hit 1 and q at the same time in workman-p, you may end up with "1Q"
-// instead of "1q".  Not sure how to fix this at present, but it may require
+// Example: hit 1 and q at the same time in workman-p, you may end up with "!Q"
+// instead of "!q".  Not sure how to fix this at present, but it may require
 // sending two frames of updates to properly denote an order (shifted in one
 // update, unshifted added in another, as though shift was released).
 
