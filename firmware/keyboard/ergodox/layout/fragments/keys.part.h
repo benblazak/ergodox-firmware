@@ -52,9 +52,11 @@
  */
 #define  KEYS__NON_DEAD(name, value)                           \
     void P(name) (void) { KF(press)(value);                    \
-                          KF(press)(KEYBOARD__Spacebar);       \
                           usb__kb__send_report();              \
                           KF(release)(value);                  \
+                          usb__kb__send_report();              \
+                          KF(press)(KEYBOARD__Spacebar);       \
+                          usb__kb__send_report();              \
                           KF(release)(KEYBOARD__Spacebar); }   \
     void R(name) (void) {}
 
@@ -66,11 +68,13 @@
 #define  KEYS__NON_DEAD_SHIFTED(name, value)                   \
     void P(name) (void) { KF(press)(KEYBOARD__LeftShift);      \
                           KF(press)(value);                    \
-                          KF(press)(KEYBOARD__Spacebar);       \
                           usb__kb__send_report();              \
                           KF(release)(value);                  \
-                          KF(release)(KEYBOARD__Spacebar);     \
-                          KF(release)(KEYBOARD__LeftShift); }  \
+                          KF(release)(KEYBOARD__LeftShift);    \
+                          usb__kb__send_report();              \
+                          KF(press)(KEYBOARD__Spacebar);       \
+                          usb__kb__send_report();              \
+                          KF(release)(KEYBOARD__Spacebar); }   \
     void R(name) (void) {}
 
 /**                                            macros/KEYS__NON_DEAD_ALT_GR/description
@@ -81,11 +85,13 @@
 #define  KEYS__NON_DEAD_ALT_GR(name, value)                    \
     void P(name) (void) { KF(press)(KEYBOARD__RightAlt);       \
                           KF(press)(value);                    \
-                          KF(press)(KEYBOARD__Spacebar);       \
                           usb__kb__send_report();              \
                           KF(release)(value);                  \
-                          KF(release)(KEYBOARD__Spacebar);     \
-                          KF(release)(KEYBOARD__RightAlt); }   \
+                          KF(release)(KEYBOARD__RightAlt);     \
+                          usb__kb__send_report();              \
+                          KF(press)(KEYBOARD__Spacebar);       \
+                          usb__kb__send_report();              \
+                          KF(release)(KEYBOARD__Spacebar); }   \
     void R(name) (void) {}
 
 /**                                    macros/KEYS__LAYER__PUSH_POP/description
