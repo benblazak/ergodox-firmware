@@ -270,9 +270,14 @@
 
 // Media key codes are not real scan codes, they must be translated to a 16
 //  bit number by the consumer key key function
-#define MEDIAKEY_PLAY_PAUSE    0x00
-#define MEDIAKEY_PREV_TRACK    0x01
-#define MEDIAKEY_NEXT_TRACK    0x02
+#define MEDIAKEY_PLAY_PAUSE     0x00
+#define MEDIAKEY_STOP           0x01
+#define MEDIAKEY_PREV_TRACK     0x02
+#define MEDIAKEY_NEXT_TRACK     0x03
+#define MEDIAKEY_AUDIO_MUTE     0x04
+#define MEDIAKEY_AUDIO_VOL_UP   0x05
+#define MEDIAKEY_AUDIO_VOL_DOWN 0x06
+
 
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
