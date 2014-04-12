@@ -22,8 +22,12 @@
  */
 static const uint16_t _media_code_lookup_table[] = {
 	TRANSPORT_PLAY_PAUSE, /* MEDIAKEY_PLAY_PAUSE */
+	TRANSPORT_STOP, /* MEDIAKEY_STOP */
 	TRANSPORT_PREV_TRACK, /* MEDIAKEY_PREV_TRACK */
 	TRANSPORT_NEXT_TRACK, /* MEDIAKEY_NEXT_TRACK */
+	AUDIO_MUTE, /* MEDIAKEY_AUDIO_MUTE */
+	AUDIO_VOL_UP, /* MEDIAKEY_AUDIO_VOL_UP */
+	AUDIO_VOL_DOWN, /* MEDIAKEY_AUDIO_VOL_DOWN */
 };
 
 // ----------------------------------------------------------------------------
