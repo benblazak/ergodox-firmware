@@ -14,7 +14,7 @@
  * - The default state (the "erased" state) of this EEPROM is all `1`s, which
  *   makes setting a byte to `0xFF` easier and faster in hardware than zeroing
  *   it (and also causes less wear on the memory over time, I think).  This is
- *   reflected in some of our choices for default values, and such.
+ *   reflected in some of the choices for default values, and such.
  *
  * - GCC and AVR processors (and Intel processors, for that matter) are
  *   primarily little endian: in avr-gcc, multi-byte data types are allocated
@@ -34,7 +34,6 @@
  */
 
 
-#include <stddef.h>
 #include <stdint.h>
 #include "../../../../firmware/keyboard.h"
 #include "../../../../firmware/lib/eeprom.h"
@@ -91,14 +90,23 @@
  *     - byte 0: MSB of `EEMEM_START`
  *     - byte 1: LSB of `EEMEM_START`
  *
+ *     - Upon initialization, if this block does not have the expected value,
+ *       our portion of the EEPROM should be reinitialized.
+ *
  * - END_ADDRESS:
  *     - byte 0: MSB of `EEMEM_END`
  *     - byte 1: LSB of `EEMEM_END`
  *
+ *     - Upon initialization, if this block does not have the expected value,
+ *       our portion of the EEPROM should be reinitialized.
+ *
  * - VERSION:
  *     - byte 0:
- *         - This byte will all be set to `VERSION` as the last step of
+ *         - This byte will be set to `VERSION` as the last step of
  *           initializing our portion of the EEPROM.
+ *         - This byte will be cleared (to 0xFF) before beginning a
+ *           `compress()` of the macros, and reset to `VERSION` once the
+ *           operation has completed.
  *         - Upon initialization, if this value is not equal to the current
  *           `VERSION`, our portion of the EEPROM should be reinitialized.
  *
@@ -239,12 +247,10 @@ typedef struct {
 // local functions ------------------------------------------------------------
 
 /**                                       functions/read_key_action/description
- * Read and return the key-action beginning at `*from` in the EEPROM, and
- * advance `*from` to one byte past the key-action.
+ * Read and return the key-action beginning at `from` in the EEPROM.
  *
  * Arguments:
- * - `from`: A pointer to a pointer to the location in EEPROM from which to
- *   begin reading
+ * - `from`: A pointer to the location in EEPROM from which to begin reading
  *
  * Returns:
  * - success: The key-action, as a `key_action_t`
@@ -253,14 +259,14 @@ typedef struct {
  * - See the documentation for "(group) EEMEM layout" above for a description
  *   of the layout of key-actions in EEMEM.
  */
-key_action_t read_key_action(void ** from) {
+key_action_t read_key_action(void * from) {
     uint8_t byte;
 
     // handle the first byte
     // - since this byte (and no others) stores the value of `k.pressed`
     // - also, this allows us to avoid `|=` in favor of `=` for this byte
     
-    byte = eeprom__read((*from)++);
+    byte = eeprom__read(from++);
 
     key_action_t k = {
         .pressed = byte >> 6 & 0b01,
@@ -274,7 +280,7 @@ key_action_t read_key_action(void ** from) {
     //   sure that the key-action is no more than 4 bytes long.
 
     while (byte >> 7) {
-        byte = eeprom__read((*from)++);
+        byte = eeprom__read(from++);
 
         // shift up (make more significant) the bits we have so far, to make
         // room for the bits we just read
@@ -293,17 +299,16 @@ key_action_t read_key_action(void ** from) {
 }
 
 /**                                      functions/write_key_action/description
- * Write the given information to a key-action beginning at `*to` in the
- * EEPROM, and advance `*to` to one byte past the newly written key-action.
+ * Write the given information to a key-action beginning at `to` in the
+ * EEPROM, and return the number of bytes written.
  *
  * Arguments:
- * - `to`: A pointer to a pointer to the location in EEPROM at which to begin
- *   writing
+ * - `to`: A pointer to the location in EEPROM at which to begin writing
  * - `k`: The key-action to write
  *
  * Returns:
- * - success: `0`
- * - failure: [other]
+ * - success: The number of bytes written
+ * - failure: 0
  *
  * Notes:
  * - See the documentation for "(group) EEMEM layout" above for a description
@@ -321,12 +326,12 @@ key_action_t read_key_action(void ** from) {
  *       It's probably worthwhile to note that I was looking at the assembly
  *       (though not closely) and function size with optimizations turned on.
  */
-uint8_t write_key_action(void ** to, key_action_t k) {
+uint8_t write_key_action(void * to, key_action_t k) {
 
     // - we need to leave room after this macro (and therefore after this
     //   key-action) for the `type == TYPE_END` byte
-    if ((*to) > EEMEM_END-4)
-        return 1;  // error: might not be enough space
+    if (to > EEMEM_END-4)
+        return 0;  // error: might not be enough space
 
     // ignore the bits we don't need to write
     // - if the leading two bits of all three variables are `0b00`, we don't
@@ -347,20 +352,22 @@ uint8_t write_key_action(void ** to, key_action_t k) {
         k.column <<= 2;
     }
 
+    uint8_t written = 4-i;
+
     // write key-action bytes for all bit pairs that weren't ignored
     // - the first byte contains the value of `k.pressed`; the same position is
     //   set to `1` in all subsequent bytes
     // - all bytes except the last one written (containing the least
     //   significant bits) have their first bit set to `1`
 
-    uint8_t byte = (k.pressed ? 1 : 0) << 6;
+    uint8_t byte = k.pressed << 6;
 
     for (; i<4; i++) {
-        byte = byte | ( i<3      ? 1 : 0 ) << 7
-                    | ( k.layer  & 0xC0  ) >> 2
-                    | ( k.row    & 0xC0  ) >> 4
-                    | ( k.column & 0xC0  ) >> 6 ;
-        eeprom__write((*to)++, byte);
+        byte = byte | ( i<3             ) << 7
+                    | ( k.layer  & 0xC0 ) >> 2
+                    | ( k.row    & 0xC0 ) >> 4
+                    | ( k.column & 0xC0 ) >> 6 ;
+        eeprom__write(to++, byte);
         byte = 1 << 6;
 
         k.layer  <<= 2;
@@ -368,7 +375,87 @@ uint8_t write_key_action(void ** to, key_action_t k) {
         k.column <<= 2;
     }
 
-    return 0;  // success
+    return written;  // success
+}
+
+/**
+ * Find the macro remapping the given key-action (if it exists).
+ *
+ * Arguments:
+ * - `k`: The key-action to search for
+ *
+ * Returns:
+ * - success: The EEMEM address of the beginning of the desired macro
+ * - failure: `0`
+ *
+ * Notes:
+ * - The address `0` (or really `NULL`, which is `#define`ed to `((void *)0)`)
+ *   is a valid address in the EEPROM; but because macros are not placed first
+ *   in the EEPROM, we can still use it to signal nonexistence or failure.
+ * - See the documentation for "(group) EEMEM layout" above for a description
+ *   of the layout of macros in EEMEM.
+ *
+ * Implementation notes:
+ * - It would be more efficient to convert the given key action into the same
+ *   binary representation as used in the EEPROM, once, and then compare that
+ *   directly with the encoded key-action bytes read; but I don't think it'll
+ *   have enough of an impact on performance to justify rewriting the
+ *   ...key_action() functions, and it seems like this solution is a little bit
+ *   cleaner (since it results in slightly fewer functions and keeps the
+ *   representation of a key-function in SRAM consistent).
+ */
+void * find_key_action(key_action_t k) {
+    void * current = EEMEM_MACROS_START;
+
+    for ( uint8_t type = eeprom__read(current);
+          type != TYPE_END;
+          current += eeprom__read(current+1), type = eeprom__read(current) ) {
+
+        if (type == TYPE_DELETED)
+            continue;
+
+        // otherwise we have `type == TYPE_VALID_MACRO`
+
+        key_action_t k_current = read_key_action(current+2);
+
+        if (    k.pressed == k_current.pressed
+             && k.layer   == k_current.layer
+             && k.row     == k_current.row
+             && k.column  == k_current.column )
+
+            return current;
+    }
+
+    return 0;  // key-action not found
+}
+
+/**
+ * TODO
+ * - it might be possible to let in-progress macros keep being written, even
+ *   when a compress() gets called, transparently.  since writes to the eeprom
+ *   (using my wrapper) are scheduled and sequential, all we would have to do
+ *   would be to make sure to copy the in-progress bytes, and adjust the
+ *   necessary variables so future writes to the in-progress macro would be
+ *   scheduled to occur in the appropriate location (and also so that the final
+ *   write validating the macro would occur in the correct location).  then, we
+ *   would only be bound by memory (for scheduling writes), and by the total
+ *   amount of unused EEPROM space for macros.  we would still be vulnerable to
+ *   power loss though... but handling that cleanly would be too much trouble.
+ */
+uint8_t compress(void) {
+    // - find first deleted (or end)
+    // - find next deleted (or end)
+    // - copy everything in between down
+    //
+    // if not done
+    // - calculate beginning of new first deleted (or end)
+    // - find new next deleted (or end)
+    // - copy everything in between down
+    // - repeat
+    //
+
+    // TODO
+    return 0;
 }
 
 // TODO: rewriting (yet again) - stopped here
@@ -423,68 +510,6 @@ uint8_t       current_macro_length;
 
 // ----------------------------------------------------------------------------
 // local functions ------------------------------------------------------------
-
-/**                                              functions/find_uid/description
- * Find the macro with the given `uid`
- *
- * Arguments:
- * - `uid`: The UID of the macro we're trying to find
- *
- * Returns:
- * - success: The EEMEM address of the beginning of the macro
- * - failure: `NULL`
- *
- * Notes:
- * - `NULL` is `#define`ed to `((void *)0)`, which for the EEPROM is a valid
- *   memory address; but because `struct eeprom` does not place
- *   `eeprom.macros.data` first in memory, `NULL` is guaranteed to be before
- *   the beginning of that array, and is therefore usable as a signal that the
- *   macro we're looking for does not exist.
- *
- * Implementation notes:
- * - Using `memcmp()` to compare two structs is bad practice in general (what
- *   if there's uninitialized padding in the struct?); but I'm doing it here
- *   because we're already trusting the binary layout of the struct when we
- *   store and retrieve it from EEMEM, and it saves writing another function
- *   just for that.
- * - It should not be strictly necessary for us to check whether we're
- *   iterating over the bounds of `eeprom.macros.data`, since the list of
- *   macros is supposed to be terminated in a well defined way.  But we may as
- *   well, just to be safer :)
- */
-static void * find_uid(eeprom_macro__uid_t uid) {
-    // if `eeprom.table.data` indicates that the macro does not exist
-    if ( (eeprom.table.data[uid.row][uid.column] >> uid.layer) & 1 )
-        return NULL;
-
-    // otherwise the macro may exist: we must search for it
-    for ( uint8_t * p = &eeprom.macros.data[0];
-                    p < &eeprom.macros.data[MACROS_LENGTH-3]; ) {
-
-        header_t header;
-        eeprom__block_read(&header, p, sizeof(header));
-
-        switch (header.type) {
-            case HEADER_TYPE_VALID:
-                if ( ! memcmp(&uid, &header.uid, sizeof(uid)) )
-                    return p;
-
-                // (do not break)
-
-            case HEADER_TYPE_DELETED:
-                p += sizeof(header_t) + header.length * sizeof(action_t);
-                break;
-
-            // `HEADER_TYPE_END` or invalid value
-            default:
-                // (no more macros to search)
-                return NULL;
-        }
-    }
-
-    // macro does not exist
-    return NULL;
-}
 
 /**                                     functions/find_next_deleted/description
  * Find the first deleted macro at or after the macro at the given position
