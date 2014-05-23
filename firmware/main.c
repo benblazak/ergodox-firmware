@@ -28,6 +28,9 @@
  *
  * Notes:
  * - Cherry MX bounce time <= 5ms (at 16 in/sec actuation speed) (spec)
+ * - From experience (after having this issue brought to my attention by
+ *   Thanatermesis), waiting longer can sometimes fix the issue of having some
+ *   keys unexpectedly seem to double-tap.
  */
 #ifndef OPT__DEBOUNCE_TIME
     #error "OPT__DEBOUNCE_TIME not defined"
