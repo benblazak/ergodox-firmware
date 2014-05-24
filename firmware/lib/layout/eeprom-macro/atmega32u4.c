@@ -31,6 +31,36 @@
  *   during a critical time being fairly low, and the consequence of (detected)
  *   data corruption hopefully more of an annoyance than anything else, I
  *   decided the effort (and extra EEMEM usage) wasn't worth it.
+ *
+ *
+ * TODO:
+ * - i was thinking before that the calling function need not ignore layer
+ *   shift keys, or any other keys.  now i think that layer keys (or at least
+ *   layer shift keys) really should be ignored.  not doing so may lead to all
+ *   sorts of fun problems.  for example, if the "begin/end recording" key is
+ *   not on layer 0 (which it probably won't be), the last keys pressed (but
+ *   not released) will most likely be layer shift keys -- but since these keys
+ *   were not released before we stopped recording, there would be no record of
+ *   their release, and the macro would therefore push that layer onto the
+ *   layer stack, and never pop it off.
+ *
+ * - 255 bytes (so, on average, about 100 keystrokes = 200 key actions) should
+ *   be enough for a macro, i think.  `length` can be 1 byte, and count the
+ *   total number of bytes (including `type` and `length`, and anything else)
+ *     - also, if the following macro has the same UID, perhaps we should
+ *       consider that macro a continuation of the first.
+ *
+ * - need to write something like:
+ *     - `kb__layout__exec_key_layer()`
+ *         - `kb__layout__exec_key()` could just look up the current layer
+ *           (falling through for transparent keys), and then call
+ *           `kb__layout__exec_key_layer()`.  this would obviate the need for a
+ *           separate `static get_layer(void)` function, since the
+ *           functionality would essentially be separated out anyway.
+ *     - `kb__led__delay__error()`
+ *         - "delay" because it should probably flash a few times, or
+ *           something, and i feel like it'd be better overall to not continue
+ *           accepting input while that's happening.
  */
 
 
@@ -83,6 +113,28 @@
  * - `EEMEM_MACROS_END`
  * - `EEMEM_END`: The address of the last byte of our block of EEMEM
  *
+ * Warnings:
+ * - This implementation of macros doesn't leave any room for error checking:
+ *   we must be very careful not to corrupt the data.  Also need to be very
+ *   careful that any pointer into the EEMEM that's supposed to be pointing to
+ *   the beginning of a macro (especially a non-initial macro) actually does
+ *   point to one.  Otherwise, behavior is undefined.
+ *
+ * Terms:
+ * - The "address" of a macro is the EEMEM address of the first byte of that
+ *   macro.
+ * - The "header" of a macro is the part of the macro containing the macro's
+ *   type and length.
+ * - The "data" of a macro is everything following the macro's header.
+ *
+ * Notes:
+ * - `START_ADDRESS` and `END_ADDRESS` are written as part of our effort to
+ *   make sure that the assumptions in place when writing the data don't shift
+ *   (undetected) by the time it gets read.  Either of these values could
+ *   change, legitimately, without `VERSION` being incremented, but it's
+ *   important that any two builds of the firmware that deal with this section
+ *   of the EEPROM have the same values for each.
+ *
  *
  * EEMEM sections:
  *
@@ -104,9 +156,6 @@
  *     - byte 0:
  *         - This byte will be set to `VERSION` as the last step of
  *           initializing our portion of the EEPROM.
- *         - This byte will be cleared (to 0xFF) before beginning a
- *           `compress()` of the macros, and reset to `VERSION` once the
- *           operation has completed.
  *         - Upon initialization, if this value is not equal to the current
  *           `VERSION`, our portion of the EEPROM should be reinitialized.
  *
@@ -125,10 +174,15 @@
  *             - byte ...: (optional) (variable length, as described below)
  *                 - `key-action` 1...: the key-actions to which `key-action` 0
  *                   is remapped
+ *         - byte 0: `type == TYPE_CONTINUED`
+ *             - byte 1: `length`: the total number of bytes used by this
+ *               macro, including the bytes for `type` and `length`
+ *             - byte 2...: (optional) a continuation of the data section of
+ *               the previous macro
  *         - byte 0: `type == TYPE_END`
  *             - byte 1...: (optional) undefined
  *
- *     - The last key-action in this series will have `type == TYPE_END`.
+ *     - The last macro in this series will have `type == TYPE_END`.
  *
  *     - A key-action is a variable length encoding of the information in a
  *       `key_action_t`, with the following format:
@@ -186,15 +240,6 @@
  *                            | | '- layer bit pair
  *                            | '- pressed / 1
  *                            '- continued
- *
- *
- * Notes:
- * - `START_ADDRESS` and `END_ADDRESS` are written as part of our effort to
- *   make sure that the assumptions in place when writing the data don't shift
- *   (undetected) by the time it gets read.  Either of these values could
- *   change, legitimately, without `VERSION` being incremented, but it's
- *   important that any two builds of the firmware that deal with this section
- *   of the EEPROM have the same values for each.
  */
 #define  EEMEM_START                ((void *)OPT__EEPROM__EEPROM_MACRO__START)
 #define  EEMEM_START_ADDRESS_START  (EEMEM_START               + 0)
@@ -213,10 +258,12 @@
  * Members:
  * - `TYPE_DELETED`
  * - `TYPE_VALID_MACRO`
+ * - `TYPE_CONTINUED`
  * - `TYPE_END`
  */
 #define  TYPE_DELETED      0x00
 #define  TYPE_VALID_MACRO  0x01
+#define  TYPE_CONTINUED    0x02
 #define  TYPE_END          0xFF
 
 // ----------------------------------------------------------------------------
@@ -242,6 +289,20 @@ typedef struct {
     uint8_t row;
     uint8_t column;
 } key_action_t;
+
+// ----------------------------------------------------------------------------
+// variables ------------------------------------------------------------------
+
+/**                                             variables/end_macro/description
+ * The EEMEM address of the macro with `type == TYPE_END`
+ */
+void * end_macro;
+
+/**                                         variables/new_end_macro/description
+ * The EEMEM address of where to write the next byte of a new macro (or a macro
+ * in progress)
+ */
+void * new_end_macro;
 
 // ----------------------------------------------------------------------------
 // local functions ------------------------------------------------------------
@@ -378,14 +439,14 @@ uint8_t write_key_action(void * to, key_action_t k) {
     return written;  // success
 }
 
-/**
+/**                                       functions/find_key_action/description
  * Find the macro remapping the given key-action (if it exists).
  *
  * Arguments:
  * - `k`: The key-action to search for
  *
  * Returns:
- * - success: The EEMEM address of the beginning of the desired macro
+ * - success: The EEMEM address of the desired macro
  * - failure: `0`
  *
  * Notes:
@@ -411,26 +472,72 @@ void * find_key_action(key_action_t k) {
           type != TYPE_END;
           current += eeprom__read(current+1), type = eeprom__read(current) ) {
 
-        if (type == TYPE_DELETED)
-            continue;
+        if (type == TYPE_VALID_MACRO) {
 
-        // otherwise we have `type == TYPE_VALID_MACRO`
+            key_action_t k_current = read_key_action(current+2);
 
-        key_action_t k_current = read_key_action(current+2);
+            if (    k.pressed == k_current.pressed
+                 && k.layer   == k_current.layer
+                 && k.row     == k_current.row
+                 && k.column  == k_current.column ) {
 
-        if (    k.pressed == k_current.pressed
-             && k.layer   == k_current.layer
-             && k.row     == k_current.row
-             && k.column  == k_current.column )
-
-            return current;
+                return current;
+            }
+        }
     }
 
     return 0;  // key-action not found
 }
 
-/**
+/**                                     functions/find_next_deleted/description
+ * Find the first deleted macro at or after the given macro.
+ *
+ * Arguments:
+ * - `start`: The EEMEM address of the macro at which to begin searching
+ *
+ * Returns:
+ * - success: The EEMEM address of the first deleted macro at or after `start`
+ * - failure: `0` (no deleted macros were found at or after `start`)
+ */
+void * find_next_deleted(void * start) {
+    for ( uint8_t type = eeprom__read(start);
+          type != TYPE_END;
+          start += eeprom__read(start+1), type = eeprom__read(start) ) {
+
+        if (type == TYPE_DELETED)
+            return start;
+    }
+
+    return 0;  // no deleted macro found
+}
+
+/**                                  functions/find_next_nondeleted/description
+ * Find the first macro at or after the given macro that is not marked as
+ * deleted.
+ *
+ * Arguments:
+ * - `start`: The EEMEM address of the macro at which to begin searching
+ *
+ * Returns:
+ * - success: The EEMEM address of the first non-deleted macro at or after
+ *   `start`
+ *
+ * Notes:
+ * - Since the sequence of macros must end with a `TYPE_END` macro (which is,
+ *   of course, not a deleted macro), this function will always find a
+ *   non-deleted macro at or after the one passed.
+ */
+void * find_next_nondeleted(void * start) {
+    for ( uint8_t type = eeprom__read(start);
+          type == TYPE_DELETED || type == TYPE_CONTINUED;
+          start += eeprom__read(start+1), type = eeprom__read(start) );
+
+    return start;
+}
+
+/**                                              functions/compress/description
  * TODO
+ *
  * - it might be possible to let in-progress macros keep being written, even
  *   when a compress() gets called, transparently.  since writes to the eeprom
  *   (using my wrapper) are scheduled and sequential, all we would have to do
@@ -441,130 +548,29 @@ void * find_key_action(key_action_t k) {
  *   would only be bound by memory (for scheduling writes), and by the total
  *   amount of unused EEPROM space for macros.  we would still be vulnerable to
  *   power loss though... but handling that cleanly would be too much trouble.
+ *
+ * - do we clear the `VERSION` byte?  maybe not... :)
+ *         - This byte will be cleared (to 0xFF) before beginning a
+ *           `compress()` of the macros, and reset to `VERSION` once the
+ *           operation has completed.
+ *
+ * - another advantage of not clearing the version byte is that we can search
+ *   for and play back macros as usual; if we're in the middle of compressing,
+ *   and the macro hasn't been dealt with yet, it will simply appear not to
+ *   exist for a few seconds.
  */
-uint8_t compress(void) {
-    // - find first deleted (or end)
-    // - find next deleted (or end)
-    // - copy everything in between down
-    //
-    // if not done
-    // - calculate beginning of new first deleted (or end)
-    // - find new next deleted (or end)
-    // - copy everything in between down
-    // - repeat
-    //
+void compress(void) {
+//     void * to_overwrite = find_next_deleted(EEMEM_MACROS_START);
+//     void * to_compress  = find_next_nondeleted(to_overwrite);
+//     void * next         = to_compress + eeprom__read(to_compress+1);
+// 
+//     uint8_t type = eeprom__read(to_compress);
+//     eeprom__write(to_overwrite, TYPE_END);
+//     eeprom__copy(to_overwrite+1, to_compress+1, eeprom__read(to_compress+1)-1);
+//     eeprom__write(to_overwrite, type);
 
     // TODO
-    return 0;
 }
-
-// TODO: rewriting (yet again) - stopped here
-#if 0
-
-// ----------------------------------------------------------------------------
-// TODO:
-//
-// - i was thinking before that the calling function need not ignore layer
-//   shift keys, or any other keys.  now i think that layer keys (or at least
-//   layer shift keys) really should be ignored.  not doing so may lead to all
-//   sorts of fun problems.  for example, if the "begin/end recording" key is
-//   not on layer 0 (which it probably won't be), the last keys pressed (but
-//   not released) will most likely be layer shift keys -- but since these keys
-//   were not released before we stopped recording, there would be no record of
-//   their release, and the macro would therefore push that layer onto the
-//   layer stack, and never pop it off.
-//
-// - 255 bytes (so, on average, about 100 keystrokes = 200 key actions) should
-//   be enough for a macro, i think.  `length` can be 1 byte, and count the
-//   total number of bytes (including `type` and `length`, and anything else)
-//
-// - need to write something like:
-//     - `kb__layout__exec_key_layer()`
-//         - `kb__layout__exec_key()` could just look up the current layer
-//           (falling through for transparent keys), and then call
-//           `kb__layout__exec_key_layer()`.  this would obviate the need for a
-//           separate `static get_layer(void)` function, since the
-//           functionality would essentially be separated out anyway.
-//     - `kb__led__delay__error()`
-//         - "delay" because it should probably flash a few times, or
-//           something, and i feel like it'd be better overall to not continue
-//           accepting input while that's happening.
-//
-// - how should we handle key-functions, in both their SRAM and EEMEM forms?
-//   it would be very convenient if we could compare the passed key-function
-//   with EEMEM key-functions without having to decode the EEMEM ones (only
-//   read them out - and maybe not even read out them out entirely).  perhaps
-//   there should be different functions for converting from a `uint8_t a[4]`
-//   to a `key_action_t`, and vice versa.  or perhaps `key_action_t`s should
-//   really be `uint8_t a[4]`s, with a different encoding than those
-//   representing EEMEM key-actions (which would be written to EEMEM eliding
-//   zero bytes).  need to think about it some more.
-//
-// ----------------------------------------------------------------------------
-// ----------------------------------------------------------------------------
-
-// variables in SRAM ----------------------------------------------------------
-
-static void * current_macro;
-uint8_t       current_macro_length;
-
-// ----------------------------------------------------------------------------
-// local functions ------------------------------------------------------------
-
-/**                                     functions/find_next_deleted/description
- * Find the first deleted macro at or after the macro at the given position
- *
- * Arguments:
- * - `start`: The address (in EEMEM) of the first byte of the header of the
- *   macro at which to begin searching
- *
- * Returns:
- * - success: The address (in EEMEM) of the of the beginning of the first
- *   deleted macro found at or after `start`
- * - failure: `NULL` (no deleted macros found)
- */
-static void * find_next_deleted(void * start) {
-    for ( uint8_t * p = start;
-                    p < &eeprom.macros.data[MACROS_LENGTH-3]; ) {
-
-        uint8_t type   = eeprom__read(p);
-        uint8_t length = eeprom__read(p+1);
-
-        switch (type) {
-            case HEADER_TYPE_VALID:
-                p += sizeof(header_t) + length * sizeof(action_t);
-                break;
-
-            case HEADER_TYPE_DELETED:
-                return p;
-
-            // `HEADER_TYPE_END` or invalid value
-            default:
-                // (no more macros to search)
-                return NULL;
-        }
-    }
-
-    // no deleted macros found
-    return NULL;
-}
-
-/**                                              functions/compress/description
- * Compress `macros.data`
- *
- * Shift all macros towards index `0`, overwriting the areas previously
- * occupied by deleted macros.
- */
-static void compress(void) { return;
-    // TODO: this whole thing... just starting.
-
-    uint8_t * current_deleted = find_next_deleted(&eeprom.macros.data[0]);
-
-    uint8_t * next_deleted = find_next_deleted(current_deleted);
-    if (! next_deleted) next_deleted = macros_free_begin;
-}
-
-#endif  // 0
 
 // ----------------------------------------------------------------------------
 // public functions -----------------------------------------------------------
