@@ -28,10 +28,6 @@
 	#error "Expecting different keyboard dimensions"
 #endif
 
-#if  ( OPT__TEENSY__DRIVE_ROWS && OPT__TEENSY__DRIVE_COLUMNS )   \
- || !( OPT__TEENSY__DRIVE_ROWS || OPT__TEENSY__DRIVE_COLUMNS )
-    #error "Teensy pin drive direction incorrectly set"
-#endif
 /**                              macros/(group) pin drive direction/description
  * Select which set of pins (rows or columns) will drive (alternate between
  * hi-Z and drive low), and which will be inputs (hi-Z)
@@ -54,6 +50,10 @@
  * - If the diode cathode is towards the circular solder pad, set
  *   `OPT__TEENSY__DRIVE_ROWS` to `1`
  */
+#if  ( OPT__TEENSY__DRIVE_ROWS && OPT__TEENSY__DRIVE_COLUMNS )   \
+ || !( OPT__TEENSY__DRIVE_ROWS || OPT__TEENSY__DRIVE_COLUMNS )
+    #error "Teensy pin drive direction incorrectly set"
+#endif
 
 // ----------------------------------------------------------------------------
 

@@ -49,7 +49,3 @@ SRC += $(wildcard $(CURDIR)/layout/$(KEYBOARD_LAYOUT)*.c)
 
 CFLAGS += -include $(wildcard $(CURDIR)/options.h)
 
-$(CURDIR)/layout/qwerty-kinesis-mod.o: $(wildcard $(CURDIR)/layout/common/*)
-$(CURDIR)/layout/dvorak-kinesis-mod.o: $(wildcard $(CURDIR)/layout/common/*)
-$(CURDIR)/layout/colemak-symbol-mod.o: $(wildcard $(CURDIR)/layout/common/*)
-
