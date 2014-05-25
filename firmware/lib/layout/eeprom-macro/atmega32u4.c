@@ -559,17 +559,60 @@ void * find_next_nondeleted(void * start) {
  *   and the macro hasn't been dealt with yet, it will simply appear not to
  *   exist for a few seconds.
  */
-void compress(void) {
-//     void * to_overwrite = find_next_deleted(EEMEM_MACROS_START);
-//     void * to_compress  = find_next_nondeleted(to_overwrite);
-//     void * next         = to_compress + eeprom__read(to_compress+1);
-// 
-//     uint8_t type = eeprom__read(to_compress);
-//     eeprom__write(to_overwrite, TYPE_END);
-//     eeprom__copy(to_overwrite+1, to_compress+1, eeprom__read(to_compress+1)-1);
-//     eeprom__write(to_overwrite, type);
+void compress(void) {  // TODO
 
-    // TODO
+    // `to_overwrite` is the first byte of the EEPROM with a value we don't
+    // care about
+    // - this will only point to the beginning of a macro initially
+    void * to_overwrite = find_next_deleted(EEMEM_MACROS_START);
+    if (! to_overwrite)
+        return;
+
+    // set `next` to a value that works when we enter the loop
+    // - on the first iteration, `find_next_nondeleted(next)` will return
+    //   quickly, so this doesn't waste much time
+    // - we should do this before writing the `TYPE_END` byte to the EEPROM
+    //   below.  since writes are delayed until the end of the keyboard scan
+    //   cycle (which can't happen until sometime after this function returns),
+    //   it doesn't really matter -- we could just set `next = to_overwrite` --
+    //   but it's nice to write things so they would work even if writes were
+    //   not delayed.
+    void * next = find_next_nondeleted(to_overwrite);
+
+    eeprom__write(to_overwrite, TYPE_END);
+
+    while (next != new_end_macro) {
+
+        // `to_compress` is the beginning of the data we wish to copy
+        void * to_compress = find_next_nondeleted(next);
+
+        // `next` will be 1 byte beyond the data we wish to copy
+        next = find_next_deleted(to_compress);
+        if (! next)
+            next = new_end_macro;
+
+        uint8_t type = eeprom__read(to_compress);
+        void * type_location = to_overwrite;
+        to_overwrite++;
+        to_compress++;
+
+        for ( uint16_t length = next-to_compress;
+              length;
+              length = next-to_compress ) {
+
+            if (length > UINT8_MAX)
+                length = UINT8_MAX;
+
+            eeprom__copy(to_overwrite, to_compress, length);
+            to_overwrite += length;
+            to_compress += length;
+        }
+
+        if (next != new_end_macro)
+            eeprom__write(to_overwrite, TYPE_END);
+
+        eeprom__write(type_location, type);
+    }
 }
 
 // ----------------------------------------------------------------------------

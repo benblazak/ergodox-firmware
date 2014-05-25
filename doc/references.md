@@ -191,6 +191,11 @@
   (http://stackoverflow.com/questions/6702161/pointer-comparisons-in-c-are-they-signed-or-unsigned)  
   Pointer comparisons in C are interesting...  Have to be careful with them.
 
+* [Saturating Addition in C]
+  (http://stackoverflow.com/a/3431717)  
+  Saturated addition is kind of difficult in C.  This is my favorite of the
+  methods I saw.
+
 ### C++ Stuff
 
 * [Google C++ Style Guide]
