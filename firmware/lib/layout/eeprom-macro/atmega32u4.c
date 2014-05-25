@@ -44,12 +44,6 @@
  *   their release, and the macro would therefore push that layer onto the
  *   layer stack, and never pop it off.
  *
- * - 255 bytes (so, on average, about 100 keystrokes = 200 key actions) should
- *   be enough for a macro, i think.  `length` can be 1 byte, and count the
- *   total number of bytes (including `type` and `length`, and anything else)
- *     - also, if the following macro has the same UID, perhaps we should
- *       consider that macro a continuation of the first.
- *
  * - need to write something like:
  *     - `kb__layout__exec_key_layer()`
  *         - `kb__layout__exec_key()` could just look up the current layer
@@ -301,6 +295,9 @@ void * end_macro;
 /**                                         variables/new_end_macro/description
  * The EEMEM address of where to write the next byte of a new macro (or a macro
  * in progress)
+ *
+ * Notes:
+ * - This is the first unused byte of our portion of the EEPROM
  */
 void * new_end_macro;
 
@@ -536,34 +533,50 @@ void * find_next_nondeleted(void * start) {
 }
 
 /**                                              functions/compress/description
- * TODO
+ * Remove any gaps in the EEPROM caused by deleted macros
  *
- * - it might be possible to let in-progress macros keep being written, even
- *   when a compress() gets called, transparently.  since writes to the eeprom
- *   (using my wrapper) are scheduled and sequential, all we would have to do
- *   would be to make sure to copy the in-progress bytes, and adjust the
- *   necessary variables so future writes to the in-progress macro would be
- *   scheduled to occur in the appropriate location (and also so that the final
- *   write validating the macro would occur in the correct location).  then, we
- *   would only be bound by memory (for scheduling writes), and by the total
- *   amount of unused EEPROM space for macros.  we would still be vulnerable to
- *   power loss though... but handling that cleanly would be too much trouble.
- *
- * - do we clear the `VERSION` byte?  maybe not... :)
- *         - This byte will be cleared (to 0xFF) before beginning a
- *           `compress()` of the macros, and reset to `VERSION` once the
- *           operation has completed.
- *
- * - another advantage of not clearing the version byte is that we can search
- *   for and play back macros as usual; if we're in the middle of compressing,
- *   and the macro hasn't been dealt with yet, it will simply appear not to
- *   exist for a few seconds.
+ * Implementation notes:
+ * - It's important to keep in mind that nothing will be written to the EEPROM
+ *   until after this function returns (since writes are done 1 byte per
+ *   keyboard scan cycle, at the end of each scan cycle).  But the code should
+ *   not depend on that.
+ * - It's also important to remember that this function will not be interrupted
+ *   by the recording of any new key-actions for an in-progress macro (though,
+ *   key-actions may be queued for writing before all `compress()` writes have
+ *   been completed).
+ * - Before performing any copy operation, we invalidate the portion of the
+ *   EEPROM we are going to modify by setting the first byte of it (which is,
+ *   and will be, the beginning of a macro) to `TYPE_END`.  This way, as long
+ *   as writes to the EEPROM are atomic (or, as long as we don't lose power
+ *   while writing one of these crucial `type` bytes) the EEPROM will always be
+ *   in a consistent state.
+ *     - If power is lost before all writes have been committed, the portion of
+ *       the EEPROM that has not yet been compressed will remain invalidated
+ *       (so data will be lost, but the list of macros will not be corrupted).
+ *     - If the user tries to execute a macro before all writes have been
+ *       committed, and the macro is in the portion of the EEPROM that has
+ *       already been compressed, it will be found as normal.  If the macro is
+ *       in the portion of the EEPROM that is still being modified, it will
+ *       temporarily appear not to exist.
+ *     - In any case, this way, no extra checks need to be performed, the
+ *       possibility of data loss is kept very low, and the possibility of data
+ *       corruption (which would, in this scheme, be undetected) is (I think,
+ *       for our purposes) vanishingly small.
+ * - As a general idea of the maximum time it might take for a compress to be
+ *   fully committed to EEMEM: 1024 bytes * 5 ms/byte = 5120 ms ~= 5 seconds.
+ *   For a cycle time of 10ms, our write would take ~10 seconds maximum.  If
+ *   someone were recording a macro very quickly, we might run out of memory
+ *   for caching writes; but I can't think of a better way to do things at the
+ *   moment, so I hope the chance of that is small.
  */
-void compress(void) {  // TODO
+void compress(void) {
 
     // `to_overwrite` is the first byte of the EEPROM with a value we don't
-    // care about
-    // - this will only point to the beginning of a macro initially
+    // need to keep
+    // - after the first iteration of the loop, this is unlikely to still point
+    //   to the beginning of a macro
+    // - after we exit the loop, this will point to the first unused byte of
+    //   our portion of the EEPROM
     void * to_overwrite = find_next_deleted(EEMEM_MACROS_START);
     if (! to_overwrite)
         return;
@@ -579,6 +592,7 @@ void compress(void) {  // TODO
     //   not delayed.
     void * next = find_next_nondeleted(to_overwrite);
 
+    // invalidate the portion of the EEPROM we are going to modify
     eeprom__write(to_overwrite, TYPE_END);
 
     while (next != new_end_macro) {
@@ -591,11 +605,17 @@ void compress(void) {  // TODO
         if (! next)
             next = new_end_macro;
 
+        // we copy this byte (the `type` byte of the first macro in the block
+        // of macros we need to keep) last
         uint8_t type = eeprom__read(to_compress);
         void * type_location = to_overwrite;
         to_overwrite++;
         to_compress++;
 
+        // copy the data in at most `UINT8_MAX` size chunks
+        // - because the `length` argument of `eeprom__write()` is a `uint8_t`
+        // - even though macros (individually) will be at most `UINT8_MAX`
+        //   bytes long, the block of macros we need to save may be longer
         for ( uint16_t length = next-to_compress;
               length;
               length = next-to_compress ) {
@@ -608,11 +628,17 @@ void compress(void) {  // TODO
             to_compress += length;
         }
 
+        // if this is not the last iteration, invalidate the portion of the
+        // EEPROM we are going to modify next
         if (next != new_end_macro)
             eeprom__write(to_overwrite, TYPE_END);
 
+        // revalidate the portion of the EEPROM we are finished with
         eeprom__write(type_location, type);
     }
+
+    end_macro -= (new_end_macro-to_overwrite);
+    new_end_macro = to_overwrite;
 }
 
 // ----------------------------------------------------------------------------
