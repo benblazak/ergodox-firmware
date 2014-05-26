@@ -103,13 +103,6 @@
  * - `EEMEM_MACROS_END`
  * - `EEMEM_END`: The address of the last byte of our block of EEMEM
  *
- * Warnings:
- * - This implementation of macros doesn't leave any room for error checking:
- *   we must be very careful not to corrupt the data.  Also need to be very
- *   careful that any pointer into the EEMEM that's supposed to be pointing to
- *   the beginning of a macro (especially a non-initial macro) actually does
- *   point to one.  Otherwise, behavior is undefined.
- *
  * Terms:
  * - The "address" of a macro is the EEMEM address of the first byte of that
  *   macro.
@@ -311,7 +304,7 @@ void * new_end_macro;
  * - See the documentation for "(group) EEMEM layout" above for a description
  *   of the layout of key-actions in EEMEM.
  */
-uint8_t read_key_action(void * from, key_action_t * k) {
+static uint8_t read_key_action(void * from, key_action_t * k) {
     uint8_t byte;
 
     // handle the first byte
@@ -382,14 +375,7 @@ uint8_t read_key_action(void * from, key_action_t * k) {
  *       It's probably worthwhile to note that I was looking at the assembly
  *       (though not closely) and function size with optimizations turned on.
  */
-uint8_t write_key_action(void * to, key_action_t * k) {
-    uint8_t ret;  // for function return codes (to test for errors)
-
-    // - we need to leave room after this macro (and therefore after this
-    //   key-action) for the `type == TYPE_END` byte
-    if (to > EEMEM_END-4)
-        return 0;  // error: might not be enough space
-
+static uint8_t write_key_action(void * to, key_action_t * k) {
     // ignore the bits we don't need to write
     // - if the leading two bits of all three variables are `0b00`, we don't
     //   need to write a key-action byte containing that pair of bits
@@ -424,8 +410,10 @@ uint8_t write_key_action(void * to, key_action_t * k) {
                     | ( k->layer  & 0xC0 ) >> 2
                     | ( k->row    & 0xC0 ) >> 4
                     | ( k->column & 0xC0 ) >> 6 ;
-        ret = eeprom__write(to++, byte);
-        if (ret) return 0;  // write failed
+
+        if ( to > EEMEM_START || EEMEM_END < to ) return 0;  // out of bounds
+        if ( eeprom__write(to++, byte) )          return 0;  // write failed
+
         byte = 1 << 6;
 
         k->layer  <<= 2;
@@ -440,7 +428,7 @@ uint8_t write_key_action(void * to, key_action_t * k) {
  * Find the macro remapping the given key-action (if it exists).
  *
  * Arguments:
- * - `k`: The key-action to search for
+ * - `k`: A pointer to the key-action to search for
  *
  * Returns:
  * - success: The EEMEM address of the desired macro
@@ -462,7 +450,7 @@ uint8_t write_key_action(void * to, key_action_t * k) {
  *   cleaner (since it results in slightly fewer functions and keeps the
  *   representation of a key-function in SRAM consistent).
  */
-void * find_key_action(key_action_t k) {
+static void * find_key_action(key_action_t * k) {
     void * current = EEMEM_MACROS_START;
 
     for ( uint8_t type = eeprom__read(current);
@@ -474,10 +462,10 @@ void * find_key_action(key_action_t k) {
             key_action_t k_current;
             read_key_action(current+2, &k_current);
 
-            if (    k.pressed == k_current.pressed
-                 && k.layer   == k_current.layer
-                 && k.row     == k_current.row
-                 && k.column  == k_current.column ) {
+            if (    k->pressed == k_current.pressed
+                 && k->layer   == k_current.layer
+                 && k->row     == k_current.row
+                 && k->column  == k_current.column ) {
 
                 return current;
             }
@@ -497,7 +485,7 @@ void * find_key_action(key_action_t k) {
  * - success: The EEMEM address of the first deleted macro at or after `start`
  * - failure: `0` (no deleted macros were found at or after `start`)
  */
-void * find_next_deleted(void * start) {
+static void * find_next_deleted(void * start) {
     for ( uint8_t type = eeprom__read(start);
           type != TYPE_END;
           start += eeprom__read(start+1), type = eeprom__read(start) ) {
@@ -525,7 +513,7 @@ void * find_next_deleted(void * start) {
  *   of course, not a deleted macro), this function will always find a
  *   non-deleted macro at or after the one passed.
  */
-void * find_next_nondeleted(void * start) {
+static void * find_next_nondeleted(void * start) {
     for ( uint8_t type = eeprom__read(start);
           type == TYPE_DELETED || type == TYPE_CONTINUED;
           start += eeprom__read(start+1), type = eeprom__read(start) );
@@ -581,7 +569,7 @@ void * find_next_nondeleted(void * start) {
  *   started writing the public functions and have a better idea of exactly
  *   what it should do.
  */
-uint8_t compress(void) {
+static uint8_t compress(void) {
     uint8_t ret;  // for function return codes (to test for errors)
 
     void * to_overwrite;  // the first byte with a value we don't need to keep
@@ -669,15 +657,54 @@ out:
 // ----------------------------------------------------------------------------
 // public functions -----------------------------------------------------------
 
+/**                                    functions/eeprom_macro__init/description
+ * Implementation notes:
+ * - The initialization of static EEPROM values that this function is supposed
+ *   to do when the EEPROM is not in a valid state (for this build of the
+ *   firmware) is done in `eeprom_macro__clear_all()`.
+ */
 uint8_t eeprom_macro__init(void) {
-    // TODO
-    return 0;
+    #define  TEST(address, offset, expected)                    \
+        if ( eeprom__read((address)+(offset)) != (expected) )   \
+            return eeprom_macro__clear_all()
+
+    TEST( EEMEM_START_ADDRESS_START, 0, (uint16_t)EEMEM_START >> 8   );
+    TEST( EEMEM_START_ADDRESS_START, 1, (uint16_t)EEMEM_START & 0xFF );
+
+    TEST( EEMEM_END_ADDRESS_START,   0, (uint16_t)EEMEM_END >> 8     );
+    TEST( EEMEM_END_ADDRESS_START,   1, (uint16_t)EEMEM_END & 0xFF   );
+
+    TEST( EEMEM_VERSION_START,       0, (uint16_t)VERSION            );
+
+    #undef  TEST
+
+    void * current = EEMEM_MACROS_START;
+    for ( uint8_t type = eeprom__read(current);
+          type != TYPE_END;
+          current += eeprom__read(current+1), type = eeprom__read(current) );
+
+    end_macro = current;
+    new_end_macro = 0;
+
+    return 0;  // success
 }
 
 uint8_t eeprom_macro__record_init( bool    pressed,
                                    uint8_t layer,
                                    uint8_t row,
                                    uint8_t column ) {
+
+    // TODO: check for out of bounds / failed write
+//     new_end_macro = end_macro + 2;
+// 
+//     key_action_t k = {
+//         .pressed = pressed,
+//         .layer   = layer,
+//         .row     = row,
+//         .column  = column,
+//     };
+//     end_macro += write_key_action( new_end_macro, &k ));
+
     // TODO
     return 0;
 }
@@ -711,14 +738,41 @@ bool eeprom_macro__exists( bool    pressed,
     return false;
 }
 
-void eeprom_macro__clear( bool    pressed,
-                          uint8_t layer,
-                          uint8_t row,
-                          uint8_t column ) {
+uint8_t eeprom_macro__clear( bool    pressed,
+                             uint8_t layer,
+                             uint8_t row,
+                             uint8_t column ) {
     // TODO
+    return 0;
 }
 
-void eeprom_macro__clear_all(void) {
-    // TODO
+/**                               functions/eeprom_macro__clear_all/description
+ * Implementation notes:
+ * - Since the `eeprom__...` functions only modify data when necessary, we
+ *   don't need to worry here about excessive EEPROM wear when writing; so it's
+ *   easier to initialize all static EEPROM values every time this function
+ *   runs than to do most of these initializations as a special case in
+ *   `eeprom_macro__init()`.
+ */
+uint8_t eeprom_macro__clear_all(void) {
+    #define  WRITE(address, offset, value)  \
+        if (eeprom__write( (address)+(offset), (value) )) return 1
+
+    WRITE( EEMEM_START_ADDRESS_START, 0, (uint16_t)EEMEM_START >> 8   );
+    WRITE( EEMEM_START_ADDRESS_START, 1, (uint16_t)EEMEM_START & 0xFF );
+
+    WRITE( EEMEM_END_ADDRESS_START,   0, (uint16_t)EEMEM_END >> 8     );
+    WRITE( EEMEM_END_ADDRESS_START,   1, (uint16_t)EEMEM_END & 0xFF   );
+
+    WRITE( EEMEM_VERSION_START,       0, (uint16_t)VERSION            );
+
+    WRITE( EEMEM_MACROS_START,        0, (uint16_t)TYPE_END           );
+
+    #undef  WRITE
+
+    end_macro = EEMEM_MACROS_START;
+    new_end_macro = 0;
+
+    return 0;
 }
 

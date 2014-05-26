@@ -73,15 +73,16 @@ int main(void) {
 
     static uint8_t time_scan_started;
 
-    kb__init();  // initialize hardware (besides USB and timer)
+    if (kb__init()) kb__led__delay__error(); // initialize hardware (besides
+                                             //   USB and timer)
 
     kb__led__state__power_on();
 
-    usb__init();
+    if (usb__init()) kb__led__delay__error();
     while (!usb__is_configured());
     kb__led__delay__usb_init();  // give the OS time to load drivers, etc.
 
-    timer__init();
+    if (timer__init()) kb__led__delay__error();
 
     kb__led__state__ready();
 

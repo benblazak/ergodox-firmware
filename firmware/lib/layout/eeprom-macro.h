@@ -101,8 +101,8 @@ uint8_t eeprom_macro__record_action   ( ARGS );
 uint8_t eeprom_macro__record_finalize (void);
 uint8_t eeprom_macro__play            ( ARGS );
 bool    eeprom_macro__exists          ( ARGS );
-void    eeprom_macro__clear           ( ARGS );
-void    eeprom_macro__clear_all       (void);
+uint8_t eeprom_macro__clear           ( ARGS );
+uint8_t eeprom_macro__clear_all       (void);
 #undef  ARGS
 
 
@@ -252,6 +252,10 @@ void    eeprom_macro__clear_all       (void);
  *     - `layer`: The layer of the key action
  *     - `row`: The row of the key action
  *     - `column`: The column of the key action
+ *
+ * Returns:
+ * - success: `0`
+ * - failure: [other]
  */
 
 // === eeprom_macro__clear_all() ===
@@ -263,5 +267,9 @@ void    eeprom_macro__clear_all       (void);
  *   in such a state that none of the functions declared here will be able to
  *   find a macro for any key action.  This does not necessarily imply that the
  *   EEPROM is in a fully known state.
+ *
+ * Returns:
+ * - success: `0`
+ * - failure: [other]
  */
 

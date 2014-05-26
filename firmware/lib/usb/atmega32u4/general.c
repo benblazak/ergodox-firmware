@@ -16,7 +16,7 @@
 
 // ----------------------------------------------------------------------------
 
-void usb__init(void) { usb_init(); }
+uint8_t usb__init(void) { usb_init(); return 0; }
 
 bool usb__is_configured(void) { return usb_configured(); }
 

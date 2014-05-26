@@ -23,7 +23,8 @@ uint8_t kb__init(void) {
     if (mcp23018__init())  // must be second
         return 2;
 
-    eeprom_macro__init();
+    if (eeprom_macro__init())
+        return 3;
 
     return 0;  // success
 }
