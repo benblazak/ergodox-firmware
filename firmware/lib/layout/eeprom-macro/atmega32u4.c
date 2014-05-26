@@ -350,6 +350,7 @@ static uint8_t read_key_action(void * from, key_action_t * k) {
  * Arguments:
  * - `to`: A pointer to the location in EEPROM at which to begin writing
  * - `k`: A pointer to the key-action to write
+ * - `limit`: A pointer to the last address to which we are allowed to write
  *
  * Returns:
  * - success: The number of bytes written
@@ -375,7 +376,7 @@ static uint8_t read_key_action(void * from, key_action_t * k) {
  *       It's probably worthwhile to note that I was looking at the assembly
  *       (though not closely) and function size with optimizations turned on.
  */
-static uint8_t write_key_action(void * to, key_action_t * k) {
+static uint8_t write_key_action(void * to, key_action_t * k, void * limit) {
     // ignore the bits we don't need to write
     // - if the leading two bits of all three variables are `0b00`, we don't
     //   need to write a key-action byte containing that pair of bits
@@ -411,8 +412,8 @@ static uint8_t write_key_action(void * to, key_action_t * k) {
                     | ( k->row    & 0xC0 ) >> 4
                     | ( k->column & 0xC0 ) >> 6 ;
 
-        if ( to > EEMEM_START || EEMEM_END < to ) return 0;  // out of bounds
-        if ( eeprom__write(to++, byte) )          return 0;  // write failed
+        if ( to > limit )                return 0;  // out of bounds
+        if ( eeprom__write(to++, byte) ) return 0;  // write failed
 
         byte = 1 << 6;
 
@@ -442,7 +443,7 @@ static uint8_t write_key_action(void * to, key_action_t * k) {
  *   of the layout of macros in EEMEM.
  *
  * Implementation notes:
- * - It would be more efficient to convert the given key action into the same
+ * - It would be more efficient to convert the given key-action into the same
  *   binary representation as used in the EEPROM, once, and then compare that
  *   directly with the encoded key-action bytes read; but I don't think it'll
  *   have enough of an impact on performance to justify rewriting the
@@ -657,6 +658,9 @@ out:
 // ----------------------------------------------------------------------------
 // public functions -----------------------------------------------------------
 
+// TODO: go over all these, and make sure they conform to the header
+// documentation
+
 /**                                    functions/eeprom_macro__init/description
  * Implementation notes:
  * - The initialization of static EEPROM values that this function is supposed
@@ -689,23 +693,47 @@ uint8_t eeprom_macro__init(void) {
     return 0;  // success
 }
 
+/**                             functions/eeprom_macro__record_init/description
+ * Implementation notes:
+ * - At minimum, for a normal macro, we will need a `type` byte, `length` byte,
+ *   key-action 0 (the action to remap), key-action 1 (a press), and key-action
+ *   2 (a release).  Key-actions take a minimum of 1 byte, so our minimum macro
+ *   will be 5 bytes.
+ */
 uint8_t eeprom_macro__record_init( bool    pressed,
                                    uint8_t layer,
                                    uint8_t row,
                                    uint8_t column ) {
 
-    // TODO: check for out of bounds / failed write
-//     new_end_macro = end_macro + 2;
-// 
-//     key_action_t k = {
-//         .pressed = pressed,
-//         .layer   = layer,
-//         .row     = row,
-//         .column  = column,
-//     };
-//     end_macro += write_key_action( new_end_macro, &k ));
+    if (new_end_macro)
+        eeprom_macro__record_cancel();
 
-    // TODO
+    if ( end_macro + 5 > EEMEM_MACROS_END )
+        return 1;  // not enough room
+
+    // TODO:
+    // - if a macro remapping the given key-action already exists, delete it.
+
+    uint8_t ret;  // for function return values
+
+    key_action_t k = {
+        .pressed = pressed,
+        .layer   = layer,
+        .row     = row,
+        .column  = column,
+    };
+
+    new_end_macro = end_macro + 2;
+
+    // TODO:
+    // - call compress() if the write fails, to see if that helps
+    // - if compress() succeeds, but the write still fails, we should cancel
+    //   the current macro (if compress() fails, the current macro will be
+    //   canceled anyway)
+    ret = write_key_action(new_end_macro, &k, EEMEM_MACROS_END-1);
+    if (! ret) return 1;  // write failed, or not enough room
+    end_macro += ret;
+
     return 0;
 }
 
@@ -713,12 +741,38 @@ uint8_t eeprom_macro__record_action( bool    pressed,
                                      uint8_t layer,
                                      uint8_t row,
                                      uint8_t column ) {
-    // TODO
+
+    if (! new_end_macro)
+        return 1;  // no macro in progress
+
+    uint8_t ret;  // for function return values
+
+    key_action_t k = {
+        .pressed = pressed,
+        .layer   = layer,
+        .row     = row,
+        .column  = column,
+    };
+
+    // TODO:
+    // - call compress() if the write fails, to see if that helps
+    // - if compress() succeeds, but the write still fails, we should cancel
+    //   the current macro (if compress() fails, the current macro will be
+    //   canceled anyway)
+    ret = write_key_action(new_end_macro, &k, EEMEM_MACROS_END-1);
+    if (! ret) return 1;  // write failed, or not enough room
+    end_macro += ret;
+
     return 0;
 }
 
 uint8_t eeprom_macro__record_finalize(void) {
     // TODO
+    return 0;
+}
+
+uint8_t eeprom_macro__record_cancel(void) {
+    new_end_macro = 0;
     return 0;
 }
 
