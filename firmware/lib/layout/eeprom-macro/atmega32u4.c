@@ -616,7 +616,7 @@ uint8_t compress(void) {
         if (! next)
             next = new_end_macro;
         if (! next)
-            next = end_macro+1
+            next = end_macro+1;
 
         type = eeprom__read(to_compress);
         type_location = to_overwrite;
