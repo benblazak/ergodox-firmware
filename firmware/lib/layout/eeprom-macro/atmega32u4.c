@@ -27,7 +27,7 @@
  *
  * - For a long time, I was going to try to make this library robust in the
  *   event of power loss, but in the end I decided not to.  This feature is
- *   meant to be used for *temporary* macros - so, with the risk of power loss
+ *   meant to be used for *temporary* macros -- so, with the risk of power loss
  *   during a critical time being fairly low, and the consequence of (detected)
  *   data corruption hopefully more of an annoyance than anything else, I
  *   decided the effort (and extra EEMEM usage) wasn't worth it.
@@ -51,10 +51,6 @@
  *           `kb__layout__exec_key_layer()`.  this would obviate the need for a
  *           separate `static get_layer(void)` function, since the
  *           functionality would essentially be separated out anyway.
- *     - `kb__led__delay__error()`
- *         - "delay" because it should probably flash a few times, or
- *           something, and i feel like it'd be better overall to not continue
- *           accepting input while that's happening.
  */
 
 
@@ -293,11 +289,8 @@ typedef struct {
 void * end_macro;
 
 /**                                         variables/new_end_macro/description
- * The EEMEM address of where to write the next byte of a new macro (or a macro
- * in progress)
- *
- * Notes:
- * - This is the first unused byte of our portion of the EEPROM
+ * The EEMEM address of where to write the next byte of a macro in progress (or
+ * `0` if no macro is in progress)
  */
 void * new_end_macro;
 
@@ -305,33 +298,33 @@ void * new_end_macro;
 // local functions ------------------------------------------------------------
 
 /**                                       functions/read_key_action/description
- * Read and return the key-action beginning at `from` in the EEPROM.
+ * Read the key-action beginning at `from` in the EEPROM
  *
  * Arguments:
  * - `from`: A pointer to the location in EEPROM from which to begin reading
+ * - `k`: A pointer to the variable in which to store the key-action
  *
  * Returns:
- * - success: The key-action, as a `key_action_t`
+ * - success: The number of bytes read
  *
  * Notes:
  * - See the documentation for "(group) EEMEM layout" above for a description
  *   of the layout of key-actions in EEMEM.
  */
-key_action_t read_key_action(void * from) {
+uint8_t read_key_action(void * from, key_action_t * k) {
     uint8_t byte;
 
     // handle the first byte
-    // - since this byte (and no others) stores the value of `k.pressed`
+    // - since this byte (and no others) stores the value of `k->pressed`
     // - also, this allows us to avoid `|=` in favor of `=` for this byte
     
     byte = eeprom__read(from++);
+    uint8_t read = 1;
 
-    key_action_t k = {
-        .pressed = byte >> 6 & 0b01,
-        .layer   = byte >> 4 & 0b11,
-        .row     = byte >> 2 & 0b11,
-        .column  = byte >> 0 & 0b11,
-    };
+    k->pressed = byte >> 6 & 0b01;
+    k->layer   = byte >> 4 & 0b11;
+    k->row     = byte >> 2 & 0b11;
+    k->column  = byte >> 0 & 0b11;
 
     // handle all subsequent bytes
     // - we assume the stream is valid.  especially, we do not check to make
@@ -339,21 +332,22 @@ key_action_t read_key_action(void * from) {
 
     while (byte >> 7) {
         byte = eeprom__read(from++);
+        read++;
 
         // shift up (make more significant) the bits we have so far, to make
         // room for the bits we just read
-        k.layer  <<= 2;
-        k.row    <<= 2;
-        k.column <<= 2;
+        k->layer  <<= 2;
+        k->row    <<= 2;
+        k->column <<= 2;
 
         // logical or the bits we just read into the lowest (least significant)
         // positions
-        k.layer  |= byte >> 4 & 0b11;
-        k.row    |= byte >> 2 & 0b11;
-        k.column |= byte >> 0 & 0b11;
+        k->layer  |= byte >> 4 & 0b11;
+        k->row    |= byte >> 2 & 0b11;
+        k->column |= byte >> 0 & 0b11;
     }
 
-    return k;  // success
+    return read;  // success
 }
 
 /**                                      functions/write_key_action/description
@@ -362,11 +356,15 @@ key_action_t read_key_action(void * from) {
  *
  * Arguments:
  * - `to`: A pointer to the location in EEPROM at which to begin writing
- * - `k`: The key-action to write
+ * - `k`: A pointer to the key-action to write
  *
  * Returns:
  * - success: The number of bytes written
- * - failure: 0
+ * - failure: `0`
+ *
+ * Warnings:
+ * - Writes are not atomic: if there are 4 bytes to be written, and the first
+ *   three writes succeed, the 4th may still fail.
  *
  * Notes:
  * - See the documentation for "(group) EEMEM layout" above for a description
@@ -384,7 +382,8 @@ key_action_t read_key_action(void * from) {
  *       It's probably worthwhile to note that I was looking at the assembly
  *       (though not closely) and function size with optimizations turned on.
  */
-uint8_t write_key_action(void * to, key_action_t k) {
+uint8_t write_key_action(void * to, key_action_t * k) {
+    uint8_t ret;  // for function return codes (to test for errors)
 
     // - we need to leave room after this macro (and therefore after this
     //   key-action) for the `type == TYPE_END` byte
@@ -404,33 +403,34 @@ uint8_t write_key_action(void * to, key_action_t k) {
 
     uint8_t i = 0;
 
-    for (; i<3 && !((k.layer|k.row|k.column) & 0xC0); i++) {
-        k.layer  <<= 2;
-        k.row    <<= 2;
-        k.column <<= 2;
+    for (; i<3 && !((k->layer|k->row|k->column) & 0xC0); i++) {
+        k->layer  <<= 2;
+        k->row    <<= 2;
+        k->column <<= 2;
     }
 
     uint8_t written = 4-i;
 
     // write key-action bytes for all bit pairs that weren't ignored
-    // - the first byte contains the value of `k.pressed`; the same position is
-    //   set to `1` in all subsequent bytes
+    // - the first byte contains the value of `k->pressed`; the same position
+    //   is set to `1` in all subsequent bytes
     // - all bytes except the last one written (containing the least
     //   significant bits) have their first bit set to `1`
 
-    uint8_t byte = k.pressed << 6;
+    uint8_t byte = k->pressed << 6;
 
     for (; i<4; i++) {
         byte = byte | ( i<3             ) << 7
-                    | ( k.layer  & 0xC0 ) >> 2
-                    | ( k.row    & 0xC0 ) >> 4
-                    | ( k.column & 0xC0 ) >> 6 ;
-        eeprom__write(to++, byte);
+                    | ( k->layer  & 0xC0 ) >> 2
+                    | ( k->row    & 0xC0 ) >> 4
+                    | ( k->column & 0xC0 ) >> 6 ;
+        ret = eeprom__write(to++, byte);
+        if (ret) return 0;  // write failed
         byte = 1 << 6;
 
-        k.layer  <<= 2;
-        k.row    <<= 2;
-        k.column <<= 2;
+        k->layer  <<= 2;
+        k->row    <<= 2;
+        k->column <<= 2;
     }
 
     return written;  // success
@@ -471,7 +471,8 @@ void * find_key_action(key_action_t k) {
 
         if (type == TYPE_VALID_MACRO) {
 
-            key_action_t k_current = read_key_action(current+2);
+            key_action_t k_current;
+            read_key_action(current+2, &k_current);
 
             if (    k.pressed == k_current.pressed
                  && k.layer   == k_current.layer
@@ -535,6 +536,18 @@ void * find_next_nondeleted(void * start) {
 /**                                              functions/compress/description
  * Remove any gaps in the EEPROM caused by deleted macros
  *
+ * Returns:
+ * - success: `0`
+ * - failure:
+ *     - `1`: write failed; data unchanged
+ *     - `2`: write failed; data lost
+ *         - `end_macro` set to the new last macro
+ *         - `new_end_macro` set to `0`
+ *
+ * Notes:
+ * - As a rough idea of the time it might take for a compress to be fully
+ *   committed to EEMEM: 1024 bytes * 5 ms/byte = 5120 ms ~= 5 seconds.
+ *
  * Implementation notes:
  * - It's important to keep in mind that nothing will be written to the EEPROM
  *   until after this function returns (since writes are done 1 byte per
@@ -562,53 +575,51 @@ void * find_next_nondeleted(void * start) {
  *       possibility of data loss is kept very low, and the possibility of data
  *       corruption (which would, in this scheme, be undetected) is (I think,
  *       for our purposes) vanishingly small.
- * - As a general idea of the maximum time it might take for a compress to be
- *   fully committed to EEMEM: 1024 bytes * 5 ms/byte = 5120 ms ~= 5 seconds.
- *   For a cycle time of 10ms, our write would take ~10 seconds maximum.  If
- *   someone were recording a macro very quickly, we might run out of memory
- *   for caching writes; but I can't think of a better way to do things at the
- *   moment, so I hope the chance of that is small.
+ *
+ * TODO:
+ * - I feel like this still needs to be read over a bit more; maybe after I've
+ *   started writing the public functions and have a better idea of exactly
+ *   what it should do.
  */
-void compress(void) {
+uint8_t compress(void) {
+    uint8_t ret;  // for function return codes (to test for errors)
 
-    // `to_overwrite` is the first byte of the EEPROM with a value we don't
-    // need to keep
-    // - after the first iteration of the loop, this is unlikely to still point
-    //   to the beginning of a macro
-    // - after we exit the loop, this will point to the first unused byte of
-    //   our portion of the EEPROM
-    void * to_overwrite = find_next_deleted(EEMEM_MACROS_START);
+    void * to_overwrite;  // the first byte with a value we don't need to keep
+    void * to_compress;   // the first byte of the data we need to keep
+    void * next;          // the next macro after the data to keep (usually)
+
+    uint8_t type;           // the type of the first macro in `to_compress`
+    void *  type_location;  // the final location of this `type` byte in EEMEM
+
+    to_overwrite = find_next_deleted(EEMEM_MACROS_START);
     if (! to_overwrite)
-        return;
+        return 0;  // success: nothing to compress
 
     // set `next` to a value that works when we enter the loop
     // - on the first iteration, `find_next_nondeleted(next)` will return
     //   quickly, so this doesn't waste much time
-    // - we should do this before writing the `TYPE_END` byte to the EEPROM
-    //   below.  since writes are delayed until the end of the keyboard scan
-    //   cycle (which can't happen until sometime after this function returns),
-    //   it doesn't really matter -- we could just set `next = to_overwrite` --
-    //   but it's nice to write things so they would work even if writes were
-    //   not delayed.
-    void * next = find_next_nondeleted(to_overwrite);
+    // - since writes to the EEPROM are delayed, we could just set `next =
+    //   to_overwrite`; but it's nicer to write things so they would work even
+    //   if writes were immediate.
+    next = find_next_nondeleted(to_overwrite);
 
-    // invalidate the portion of the EEPROM we are going to modify
-    eeprom__write(to_overwrite, TYPE_END);
+    ret = eeprom__write(to_overwrite, TYPE_END);
+    if (ret) return 1;  // write failed; data unchanged
 
-    while (next != new_end_macro) {
+    while (next < end_macro) {
+        to_compress = find_next_nondeleted(next);
 
-        // `to_compress` is the beginning of the data we wish to copy
-        void * to_compress = find_next_nondeleted(next);
-
-        // `next` will be 1 byte beyond the data we wish to copy
+        // `next` will always be 1 byte beyond the data we wish to copy
+        // - since the EEPROM is only 2^10 bytes, and pointers are 16 bits, we
+        //   don't have to worry about overflow
         next = find_next_deleted(to_compress);
         if (! next)
             next = new_end_macro;
+        if (! next)
+            next = end_macro+1
 
-        // we copy this byte (the `type` byte of the first macro in the block
-        // of macros we need to keep) last
-        uint8_t type = eeprom__read(to_compress);
-        void * type_location = to_overwrite;
+        type = eeprom__read(to_compress);
+        type_location = to_overwrite;
         to_overwrite++;
         to_compress++;
 
@@ -623,22 +634,36 @@ void compress(void) {
             if (length > UINT8_MAX)
                 length = UINT8_MAX;
 
-            eeprom__copy(to_overwrite, to_compress, length);
+            ret = eeprom__copy(to_overwrite, to_compress, length);
+            if (ret) goto out;
             to_overwrite += length;
             to_compress += length;
         }
 
-        // if this is not the last iteration, invalidate the portion of the
-        // EEPROM we are going to modify next
-        if (next != new_end_macro)
-            eeprom__write(to_overwrite, TYPE_END);
+        if (next < end_macro) {
+            ret = eeprom__write(to_overwrite, TYPE_END);
+            if (ret) goto out;
+        }
 
-        // revalidate the portion of the EEPROM we are finished with
-        eeprom__write(type_location, type);
+        ret = eeprom__write(type_location, type);
+        if (ret) goto out;
     }
 
-    end_macro -= (new_end_macro-to_overwrite);
-    new_end_macro = to_overwrite;
+    if (new_end_macro) {
+        end_macro -= (new_end_macro-to_overwrite);
+        new_end_macro = to_overwrite;
+    } else {
+        end_macro = to_overwrite-1;
+    }
+
+    return 0;  // success: compression finished
+
+out:
+
+    end_macro = type_location;
+    new_end_macro = 0;
+
+    return 2;  // write failed; data lost
 }
 
 // ----------------------------------------------------------------------------

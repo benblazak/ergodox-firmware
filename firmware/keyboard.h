@@ -50,6 +50,7 @@ void kb__led__all_set (float percent);
 // -------
 void kb__led__state__power_on (void);
 void kb__led__state__ready    (void);
+void kb__led__delay__error    (void);
 void kb__led__delay__usb_init (void);
 
 // layout
@@ -215,6 +216,12 @@ void kb__layout__exec_key (bool pressed, uint8_t row, uint8_t column);
 /**                                 functions/kb__led__state__ready/description
  * Set the LEDs to the state that indicates the keyboard is ready to receive
  * keystrokes.
+ */
+
+
+// === kb__led__delay__error() ===
+/**                                 functions/kb__led__delay__error/description
+ * Signal a generic error (delays for a total of ~1 second)
  */
 
 // === kb__led__delay__usb_init() ===
