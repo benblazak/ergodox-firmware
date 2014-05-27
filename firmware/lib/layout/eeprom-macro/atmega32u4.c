@@ -9,6 +9,29 @@
  * the ATMega32U4
  *
  *
+ * Warnings:
+ *
+ * - A worst case `compress()` operation might take too much memory.  Not sure
+ *   what (if anything) to do about this right now.
+ *     - Max EEPROM space for macros: 1024-5 = 1019 bytes
+ *     - Min space for a macro: 5 bytes
+ *     - Approximate space for a copy object in ".../lib/eeprom": 5 bytes
+ *     - Worst case would be EEMEM filled with the smallest possible macros,
+ *       alternating between valid and deleted.  This would give us 1019/5/2 ~=
+ *       100 noncontiguous deleted macros, which would be about as many copy
+ *       objects (plus a few write objects) in ".../lib/eeprom", so about 500
+ *       bytes.  SRAM is 2kB.  Because of the way ".../lib/eeprom" is written,
+ *       much of this data would have to be contiguous.
+ *     - At some point, I should probably consider changing how
+ *       ".../lib/eeprom" (and the layer-stack code, and everything else that
+ *       needs a variable amount of memory) manages its memory.  Again, not
+ *       quite sure how, at the moment.  For common cases, the current solution
+ *       might be sufficient.
+ *     - If this turns out to be a problem, the easiest solution (at the
+ *       expense of extra EEPROM wear in lower memory locations) would probably
+ *       be to simply call `compress()` more often.
+ *
+ *
  * Implementation notes:
  *
  * - The default state (the "erased" state) of this EEPROM is all `1`s, which
@@ -278,11 +301,13 @@ void * end_macro;
  * The EEMEM address of where to write the next byte of a macro in progress (or
  * `0` if no macro is in progress)
  *
+ * Mnemonic:
+ * - This macro will become the new `end_macro` when the macro currently being
+ *   written is finalized.
+ *
  * Note:
  * - This variable should be the primary indicator of whether a macro is in
  *   progress or not.
- * - When a macro is finalized, this byte will be written with the value
- *   `TYPE_END`, and become the new `end_macro`; hence the name.
  */
 void * new_end_macro;
 
@@ -711,10 +736,6 @@ static inline uint8_t delete_macro_if_exists(key_action_t * k) {
 // ----------------------------------------------------------------------------
 // public functions -----------------------------------------------------------
 
-// TODO: go over all these, and make sure they conform to the header
-// documentation (and that they work properly; i'm pretty sure some don't; but
-// this is hopefully a good start :) ).
-
 /**                                    functions/eeprom_macro__init/description
  * Implementation notes:
  * - The initialization of static EEPROM values that this function is supposed
@@ -732,10 +753,11 @@ uint8_t eeprom_macro__init(void) {
     TEST( EEMEM_END_ADDRESS_START,   0, (uint16_t)EEMEM_END >> 8     );
     TEST( EEMEM_END_ADDRESS_START,   1, (uint16_t)EEMEM_END & 0xFF   );
 
-    TEST( EEMEM_VERSION_START,       0, (uint16_t)VERSION            );
+    TEST( EEMEM_VERSION_START,       0, VERSION );
 
     #undef  TEST
 
+    // find the end macro
     void * current = EEMEM_MACROS_START;
     for ( uint8_t type = eeprom__read(current);
           type != TYPE_END;
@@ -785,14 +807,14 @@ uint8_t eeprom_macro__record_init( bool    pressed,
  *   least 4 bytes left before exceeding that limit (since 4 bytes is the
  *   maximum length of a key-action), we simply stop recording actions.  This
  *   is certainly not optimal behavior... but I think it'll end up being the
- *   least surprising (where our other options are to either finalize the
- *   macro, or return an error code).
- *     - If long macros were desired, there are several ways one might modify
+ *   least surprising, where our other options are to either finalize the
+ *   macro, or return an error code.
+ *     - If longer macros are desired, there are several ways one might modify
  *       the implementation to allow them.  The simplest method would be to
  *       make `length` a 2 byte variable.  That would reduce the number of
  *       small macros one could have, however.  Alternately, one could steal 2
- *       bits from the `type` byte, which would save space, but be more
- *       difficult to read.  Another method would be to introduce a
+ *       bits from the `type` byte, which would save space, but make things
+ *       more difficult to read.  Another method would be to introduce a
  *       `TYPE_CONTINUED`, or something similar, where the data section of a
  *       macro of this type would continue the data section of the previous
  *       macro.  That would make the logic of recording macros (and playing
@@ -858,7 +880,8 @@ uint8_t eeprom_macro__play( bool    pressed,
     k_location += 2;
     while (length) {
         uint8_t read = read_key_action(k_location, &k);
-        // TODO: kb__layout__exec_key_layer()  // function not written yet
+//         // TODO: function not written yet
+//         kb__layout__exec_key_layer()
         length -= read;
         k_location += read;
     }
@@ -914,9 +937,9 @@ uint8_t eeprom_macro__clear_all(void) {
     WRITE( EEMEM_END_ADDRESS_START,   0, (uint16_t)EEMEM_END >> 8     );
     WRITE( EEMEM_END_ADDRESS_START,   1, (uint16_t)EEMEM_END & 0xFF   );
 
-    WRITE( EEMEM_VERSION_START,       0, (uint16_t)VERSION            );
+    WRITE( EEMEM_VERSION_START,       0, VERSION  );
 
-    WRITE( EEMEM_MACROS_START,        0, (uint16_t)TYPE_END           );
+    WRITE( EEMEM_MACROS_START,        0, TYPE_END );
 
     #undef  WRITE
 

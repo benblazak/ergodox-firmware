@@ -168,7 +168,7 @@ uint8_t eeprom_macro__clear_all       (void);
  *
  * Returns:
  * - success: `0`
- * - failure: [other] (not enough memory left to record)
+ * - failure: [other]
  *
  * Notes:
  * - Only one macro may be recorded at a time.  If another macro is being
@@ -193,11 +193,11 @@ uint8_t eeprom_macro__clear_all       (void);
  *
  * Returns:
  * - success: `0`
- * - failure: [other] (not enough memory left to record)
+ * - failure: [other]
  *
  * Notes:
- * - If this function fails, the current key-action may be canceled (thrown
- *   away).
+ * - If this function fails, the macro currently being written may be canceled
+ *   (thrown away).
  */
 
 // === eeprom_macro__record_finalize() ===
@@ -213,8 +213,8 @@ uint8_t eeprom_macro__clear_all       (void);
  *   written) should not be readable, or referenced anywhere in the EEPROM.
  *
  * Notes:
- * - If this function fails, the current key-action may be canceled (thrown
- *   away).
+ * - If this function fails, the macro currently being written may be canceled
+ *   (thrown away).
  */
 
 // === eeprom_macro__record_cancel() ===
