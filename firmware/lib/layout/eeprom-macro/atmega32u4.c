@@ -281,6 +281,8 @@ void * end_macro;
  * Note:
  * - This variable should be the primary indicator of whether a macro is in
  *   progress or not.
+ * - When a macro is finalized, this byte will be written with the value
+ *   `TYPE_END`, and become the new `end_macro`; hence the name.
  */
 void * new_end_macro;
 
@@ -526,15 +528,12 @@ static void * find_next_nondeleted(void * start) {
  * - success: `0`
  * - failure:
  *     - `1`: write failed; data unchanged
- *     - `2`: write failed; data lost
- *         - `end_macro` set to the new last macro
- *         - `new_end_macro` set to `0`
+ *     - `2`: write failed; data lost; any macro currently being written is
+ *       cancelled
  *
  * Notes:
  * - As a rough idea of the time it might take for a compress to be fully
  *   committed to EEMEM: 1024 bytes * 5 ms/byte = 5120 ms ~= 5 seconds.
- *
- * Implementation notes:
  * - It's important to keep in mind that nothing will be written to the EEPROM
  *   until after this function returns (since writes are done 1 byte per
  *   keyboard scan cycle, at the end of each scan cycle).  But the code should
@@ -543,6 +542,8 @@ static void * find_next_nondeleted(void * start) {
  *   by the recording of any new key-actions for an in-progress macro (though,
  *   key-actions may be queued for writing before all `compress()` writes have
  *   been completed).
+ *
+ * Implementation notes:
  * - Before performing any copy operation, we invalidate the portion of the
  *   EEPROM we are going to modify by setting the first byte of it (which is,
  *   and will be, the beginning of a macro) to `TYPE_END`.  This way, as long
@@ -557,53 +558,44 @@ static void * find_next_nondeleted(void * start) {
  *       already been compressed, it will be found as normal.  If the macro is
  *       in the portion of the EEPROM that is still being modified, it will
  *       temporarily appear not to exist.
- *     - In any case, this way, no extra checks need to be performed, the
- *       possibility of data loss is kept very low, and the possibility of data
- *       corruption (which would, in this scheme, be undetected) is (I think,
- *       for our purposes) vanishingly small.
- *
- * TODO:
- * - I feel like this still needs to be read over a bit more; maybe after I've
- *   started writing the public functions and have a better idea of exactly
- *   what it should do.
+ *     - In any case, no extra checks need to be performed, the possibility of
+ *       data loss is kept very low, and the possibility of data corruption
+ *       (which would, in this scheme, be undetected...) is (I think, for our
+ *       purposes) vanishingly small.
  */
 static uint8_t compress(void) {
     uint8_t ret;  // for function return codes (to test for errors)
 
     void * to_overwrite;  // the first byte with a value we don't need to keep
-    void * to_compress;   // the first byte of the data we need to keep
+    void * to_compress;   // the first byte of the data we do need to keep
     void * next;          // the next macro after the data to keep (usually)
 
     uint8_t type;           // the type of the first macro in `to_compress`
     void *  type_location;  // the final location of this `type` byte in EEMEM
 
     to_overwrite = find_next_deleted(EEMEM_MACROS_START);
-    if (! to_overwrite)
-        return 0;  // success: nothing to compress
+    if (! to_overwrite) return 0;  // success: nothing to compress
 
-    // set `next` to a value that works when we enter the loop
-    // - on the first iteration, `find_next_nondeleted(next)` will return
-    //   quickly, so this doesn't waste much time
-    // - since writes to the EEPROM are delayed, we could just set `next =
-    //   to_overwrite`; but it's nicer to write things so they would work even
-    //   if writes were immediate.
-    next = find_next_nondeleted(to_overwrite);
+    // - here `next` is the next macro to consider keeping
+    // - we could set `next = to_overwrite`, but then this would depend on
+    //   writes being delayed
+    next = to_overwrite + eeprom__read(to_overwrite+1);
 
+    // invalidate the portion of the EEPROM we'll be working on
     ret = eeprom__write(to_overwrite, TYPE_END);
     if (ret) return 1;  // write failed; data unchanged
 
-    while (next < end_macro) {
+    while (next <= end_macro) {
         to_compress = find_next_nondeleted(next);
 
         // `next` will always be 1 byte beyond the data we wish to copy
         // - since the EEPROM is only 2^10 bytes, and pointers are 16 bits, we
         //   don't have to worry about overflow
         next = find_next_deleted(to_compress);
-        if (! next)
-            next = new_end_macro;
-        if (! next)
-            next = end_macro+1;
+        if (! next) next = new_end_macro;
+        if (! next) next = end_macro+1;
 
+        // save the `type` so we can write it last
         type = eeprom__read(to_compress);
         type_location = to_overwrite;
         to_overwrite++;
@@ -621,20 +613,25 @@ static uint8_t compress(void) {
                 length = UINT8_MAX;
 
             ret = eeprom__copy(to_overwrite, to_compress, length);
-            if (ret) goto out;
+            if (ret) goto out;  // write failed; data lost
             to_overwrite += length;
             to_compress += length;
         }
 
-        if (next < end_macro) {
+        // invalidate the portion of the EEPROM we'll be working on next
+        // - no need to do this if there's nothing more to compress
+        if (next <= end_macro) {
             ret = eeprom__write(to_overwrite, TYPE_END);
-            if (ret) goto out;
+            if (ret) goto out;  // write failed; data lost
         }
 
+        // lastly, write the `type` we saved earlier
+        // (revalidate the portion of the EEPROM we're done with)
         ret = eeprom__write(type_location, type);
-        if (ret) goto out;
+        if (ret) goto out;  // write failed; data lost
     }
 
+    // update state variables
     if (new_end_macro) {
         end_macro -= (new_end_macro-to_overwrite);
         new_end_macro = to_overwrite;
@@ -645,10 +642,8 @@ static uint8_t compress(void) {
     return 0;  // success: compression finished
 
 out:
-
     end_macro = type_location;
     new_end_macro = 0;
-
     return 2;  // write failed; data lost
 }
 
