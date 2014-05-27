@@ -157,11 +157,6 @@
  *             - byte ...: (optional) (variable length, as described below)
  *                 - `key-action` 1...: the key-actions to which `key-action` 0
  *                   is remapped
- *         - byte 0: `type == TYPE_CONTINUED`
- *             - byte 1: `length`: the total number of bytes used by this
- *               macro, including the bytes for `type` and `length`
- *             - byte 2...: (optional) a continuation of the data section of
- *               the previous macro
  *         - byte 0: `type == TYPE_END`
  *             - byte 1...: (optional) undefined
  *
@@ -241,12 +236,10 @@
  * Members:
  * - `TYPE_DELETED`
  * - `TYPE_VALID_MACRO`
- * - `TYPE_CONTINUED`
  * - `TYPE_END`
  */
 #define  TYPE_DELETED      0x00
 #define  TYPE_VALID_MACRO  0x01
-#define  TYPE_CONTINUED    0x02
 #define  TYPE_END          0xFF
 
 // ----------------------------------------------------------------------------
@@ -284,6 +277,10 @@ void * end_macro;
 /**                                         variables/new_end_macro/description
  * The EEMEM address of where to write the next byte of a macro in progress (or
  * `0` if no macro is in progress)
+ *
+ * Note:
+ * - This variable should be the primary indicator of whether a macro is in
+ *   progress or not.
  */
 void * new_end_macro;
 
@@ -516,7 +513,7 @@ static void * find_next_deleted(void * start) {
  */
 static void * find_next_nondeleted(void * start) {
     for ( uint8_t type = eeprom__read(start);
-          type == TYPE_DELETED || type == TYPE_CONTINUED;
+          type == TYPE_DELETED;
           start += eeprom__read(start+1), type = eeprom__read(start) );
 
     return start;
@@ -675,7 +672,7 @@ out:
  * Notes:
  * - We make sure to leave 1 empty byte for the end macro.
  * - We update the value of `new_end_macro` (either to indicate the bytes that
- *   were written, or to cancel the current macro if writing failed).
+ *   were written, or to cancel the new macro if writing failed).
  */
 static inline uint8_t write_key_action_for_new_macro(key_action_t * k) {
     uint8_t ret;  // for function return values
@@ -696,7 +693,7 @@ out:
     return 1;
 }
 
-/**
+/**                                functions/delete_macro_if_exists/description
  * Deletes the macro remapping the given key-action, if it exists
  *
  * Arguments:
@@ -720,7 +717,8 @@ static inline uint8_t delete_macro_if_exists(key_action_t * k) {
 // public functions -----------------------------------------------------------
 
 // TODO: go over all these, and make sure they conform to the header
-// documentation (and that they work properly)
+// documentation (and that they work properly; i'm pretty sure some don't; but
+// this is hopefully a good start :) ).
 
 /**                                    functions/eeprom_macro__init/description
  * Implementation notes:
@@ -786,6 +784,25 @@ uint8_t eeprom_macro__record_init( bool    pressed,
     return write_key_action_for_new_macro(&k);
 }
 
+/**                           functions/eeprom_macro__record_action/description
+ * Implementation notes:
+ * - Macros can only be `UINT8_MAX` bytes long in total.  If we don't have at
+ *   least 4 bytes left before exceeding that limit (since 4 bytes is the
+ *   maximum length of a key-action), we simply stop recording actions.  This
+ *   is certainly not optimal behavior... but I think it'll end up being the
+ *   least surprising (where our other options are to either finalize the
+ *   macro, or return an error code).
+ *     - If long macros were desired, there are several ways one might modify
+ *       the implementation to allow them.  The simplest method would be to
+ *       make `length` a 2 byte variable.  That would reduce the number of
+ *       small macros one could have, however.  Alternately, one could steal 2
+ *       bits from the `type` byte, which would save space, but be more
+ *       difficult to read.  Another method would be to introduce a
+ *       `TYPE_CONTINUED`, or something similar, where the data section of a
+ *       macro of this type would continue the data section of the previous
+ *       macro.  That would make the logic of recording macros (and playing
+ *       them back) a little more complicated though.
+ */
 uint8_t eeprom_macro__record_action( bool    pressed,
                                      uint8_t layer,
                                      uint8_t row,
@@ -794,26 +811,15 @@ uint8_t eeprom_macro__record_action( bool    pressed,
     if (! new_end_macro)
         return 1;  // no macro in progress
 
+    if ( new_end_macro - end_macro > UINT8_MAX - 4 )
+        return 0;  // macro too long, ignoring further actions
+
     key_action_t k = {
         .pressed = pressed,
         .layer   = layer,
         .row     = row,
         .column  = column,
     };
-
-    // TODO: if length is too long, finalize this macro, and start a
-    // continuation one
-    //
-    // - key-actions are at most 4 bytes long, so we make sure there are at
-    //   least 4 bytes left in the allowable length of this macro; not worth it
-    //   to calculate the encoded length of the key-action to be written
-    if ( new_end_macro - end_macro > UINT8_MAX - 4 ) {
-        if ( eeprom_macro__record_finalize() ) return 1;  // failure
-
-        // TODO: we can't just call ...init().  we probably need a file-local
-        // variable too, to keep track of whether the new macro is
-        // `TYPE_VALID_MACRO` or `TYPE_CONTINUED`.
-    }
 
     return write_key_action_for_new_macro(&k);
 }
@@ -823,6 +829,8 @@ uint8_t eeprom_macro__record_finalize(void) {
     if ( eeprom__write( end_macro+1, new_end_macro - end_macro ) ) goto out;
     if ( eeprom__write( end_macro, TYPE_VALID_MACRO ) ) goto out;
 
+    end_macro = new_end_macro;
+    new_end_macro = 0;
     return 0;
 
 out:
@@ -839,7 +847,27 @@ uint8_t eeprom_macro__play( bool    pressed,
                             uint8_t layer,
                             uint8_t row,
                             uint8_t column ) {
-    // TODO
+
+    key_action_t k = {
+        .pressed = pressed,
+        .layer   = layer,
+        .row     = row,
+        .column  = column,
+    };
+
+    void * k_location = find_key_action(&k);
+    if (! k_location) return 1;  // macro does not exist
+
+    uint8_t length = eeprom__read(k_location+1);
+    length -= 2;
+    k_location += 2;
+    while (length) {
+        uint8_t read = read_key_action(k_location, &k);
+        // TODO: kb__layout__exec_key_layer()  // function not written yet
+        length -= read;
+        k_location += read;
+    }
+
     return 0;
 }
 
