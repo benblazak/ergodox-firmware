@@ -656,10 +656,71 @@ out:
 }
 
 // ----------------------------------------------------------------------------
+// helper functions -----------------------------------------------------------
+
+/**                        functions/write_key_action_for_new_macro/description
+ * Write the given key-action to the next empty space in the macros block of
+ * the EEPROM
+ *
+ * Arguments:
+ * - `k`: A pointer to the key-action to write
+ *
+ * Returns:
+ * - success: `0`
+ * - failure: [other]
+ *
+ * Assumptions:
+ * - A macro is currently in progress (i.e. `new_end_macro` is not `0`).
+ *
+ * Notes:
+ * - We make sure to leave 1 empty byte for the end macro.
+ * - We update the value of `new_end_macro` (either to indicate the bytes that
+ *   were written, or to cancel the current macro if writing failed).
+ */
+static inline uint8_t write_key_action_for_new_macro(key_action_t * k) {
+    uint8_t ret;  // for function return values
+
+    ret = write_key_action(new_end_macro, k, EEMEM_MACROS_END-1);
+    if (! ret) {
+        if ( compress() ) goto out;  // compress failed (macro cancelled)
+
+        ret = write_key_action(new_end_macro, k, EEMEM_MACROS_END-1);
+        if (! ret) goto out;  // write failed again, or not enough room
+    }
+
+    new_end_macro += ret;
+    return 0;
+
+out:
+    new_end_macro = 0;
+    return 1;
+}
+
+/**
+ * Deletes the macro remapping the given key-action, if it exists
+ *
+ * Arguments:
+ * - `k`: A pointer to the key-action to delete
+ *
+ * Returns:
+ * - success: `0`
+ * - failure: [other]
+ */
+static inline uint8_t delete_macro_if_exists(key_action_t * k) {
+    void * k_location = find_key_action(k);
+
+    if (k_location)
+        if ( eeprom__write(k_location, TYPE_DELETED) )
+            return 1;  // write failed
+
+    return 0;  // success
+}
+
+// ----------------------------------------------------------------------------
 // public functions -----------------------------------------------------------
 
 // TODO: go over all these, and make sure they conform to the header
-// documentation
+// documentation (and that they work properly)
 
 /**                                    functions/eeprom_macro__init/description
  * Implementation notes:
@@ -695,10 +756,10 @@ uint8_t eeprom_macro__init(void) {
 
 /**                             functions/eeprom_macro__record_init/description
  * Implementation notes:
- * - At minimum, for a normal macro, we will need a `type` byte, `length` byte,
- *   key-action 0 (the action to remap), key-action 1 (a press), and key-action
- *   2 (a release).  Key-actions take a minimum of 1 byte, so our minimum macro
- *   will be 5 bytes.
+ * - At minimum, for a normal macro, we will need a `type` byte, a `length`
+ *   byte, and 3 key-actions (the key-action to remap, 1 press, and 1 release).
+ *   Key-actions take a minimum of 1 byte, so our minimum macro will be 5
+ *   bytes.
  */
 uint8_t eeprom_macro__record_init( bool    pressed,
                                    uint8_t layer,
@@ -711,11 +772,6 @@ uint8_t eeprom_macro__record_init( bool    pressed,
     if ( end_macro + 5 > EEMEM_MACROS_END )
         return 1;  // not enough room
 
-    // TODO:
-    // - if a macro remapping the given key-action already exists, delete it.
-
-    uint8_t ret;  // for function return values
-
     key_action_t k = {
         .pressed = pressed,
         .layer   = layer,
@@ -723,18 +779,11 @@ uint8_t eeprom_macro__record_init( bool    pressed,
         .column  = column,
     };
 
+    if ( delete_macro_if_exists(&k) ) return 1;  // failure
+
     new_end_macro = end_macro + 2;
 
-    // TODO:
-    // - call compress() if the write fails, to see if that helps
-    // - if compress() succeeds, but the write still fails, we should cancel
-    //   the current macro (if compress() fails, the current macro will be
-    //   canceled anyway)
-    ret = write_key_action(new_end_macro, &k, EEMEM_MACROS_END-1);
-    if (! ret) return 1;  // write failed, or not enough room
-    end_macro += ret;
-
-    return 0;
+    return write_key_action_for_new_macro(&k);
 }
 
 uint8_t eeprom_macro__record_action( bool    pressed,
@@ -745,8 +794,6 @@ uint8_t eeprom_macro__record_action( bool    pressed,
     if (! new_end_macro)
         return 1;  // no macro in progress
 
-    uint8_t ret;  // for function return values
-
     key_action_t k = {
         .pressed = pressed,
         .layer   = layer,
@@ -754,21 +801,33 @@ uint8_t eeprom_macro__record_action( bool    pressed,
         .column  = column,
     };
 
-    // TODO:
-    // - call compress() if the write fails, to see if that helps
-    // - if compress() succeeds, but the write still fails, we should cancel
-    //   the current macro (if compress() fails, the current macro will be
-    //   canceled anyway)
-    ret = write_key_action(new_end_macro, &k, EEMEM_MACROS_END-1);
-    if (! ret) return 1;  // write failed, or not enough room
-    end_macro += ret;
+    // TODO: if length is too long, finalize this macro, and start a
+    // continuation one
+    //
+    // - key-actions are at most 4 bytes long, so we make sure there are at
+    //   least 4 bytes left in the allowable length of this macro; not worth it
+    //   to calculate the encoded length of the key-action to be written
+    if ( new_end_macro - end_macro > UINT8_MAX - 4 ) {
+        if ( eeprom_macro__record_finalize() ) return 1;  // failure
 
-    return 0;
+        // TODO: we can't just call ...init().  we probably need a file-local
+        // variable too, to keep track of whether the new macro is
+        // `TYPE_VALID_MACRO` or `TYPE_CONTINUED`.
+    }
+
+    return write_key_action_for_new_macro(&k);
 }
 
 uint8_t eeprom_macro__record_finalize(void) {
-    // TODO
+    if ( eeprom__write( new_end_macro, TYPE_END ) ) goto out;
+    if ( eeprom__write( end_macro+1, new_end_macro - end_macro ) ) goto out;
+    if ( eeprom__write( end_macro, TYPE_VALID_MACRO ) ) goto out;
+
     return 0;
+
+out:
+    new_end_macro = 0;
+    return 1;
 }
 
 uint8_t eeprom_macro__record_cancel(void) {
@@ -788,16 +847,30 @@ bool eeprom_macro__exists( bool    pressed,
                            uint8_t layer,
                            uint8_t row,
                            uint8_t column ) {
-    // TODO
-    return false;
+
+    key_action_t k = {
+        .pressed = pressed,
+        .layer   = layer,
+        .row     = row,
+        .column  = column,
+    };
+
+    return find_key_action(&k);
 }
 
 uint8_t eeprom_macro__clear( bool    pressed,
                              uint8_t layer,
                              uint8_t row,
                              uint8_t column ) {
-    // TODO
-    return 0;
+
+    key_action_t k = {
+        .pressed = pressed,
+        .layer   = layer,
+        .row     = row,
+        .column  = column,
+    };
+
+    return delete_macro_if_exists(&k);
 }
 
 /**                               functions/eeprom_macro__clear_all/description
