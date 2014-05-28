@@ -145,7 +145,11 @@
 
 * [Why do we need C Unions?]
   (http://stackoverflow.com/questions/252552/why-do-we-need-c-unions)  
-  Some good examples of what Unions are good for.
+  Some examples of what unions are good for.
+
+* [Using and Abusing Unions]
+  (http://critical.eschertech.com/2010/03/12/using-and-abusing-unions/)  
+  A good discussion on when to use unions and when not to.
 
 * [C preprocessor, recursive macros]
   (http://stackoverflow.com/questions/5641836/c-preprocessor-recursive-macros)  
@@ -728,7 +732,7 @@
 
 -------------------------------------------------------------------------------
 
-Copyright &copy; 2012, 2013 Ben Blazak <benblazak.dev@gmail.com>  
+Copyright &copy; 2012, 2013, 2014 Ben Blazak <benblazak.dev@gmail.com>  
 Released under The MIT License (see "doc/licenses/MIT.md")  
 Project located at <https://github.com/benblazak/ergodox-firmware>
 

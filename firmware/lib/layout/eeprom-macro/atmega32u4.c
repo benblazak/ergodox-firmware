@@ -20,8 +20,9 @@
  *       alternating between valid and deleted.  This would give us 1019/5/2 ~=
  *       100 noncontiguous deleted macros, which would be about as many copy
  *       objects (plus a few write objects) in ".../lib/eeprom", so about 500
- *       bytes.  SRAM is 2kB.  Because of the way ".../lib/eeprom" is written,
- *       much of this data would have to be contiguous.
+ *       bytes.  SRAM is 2560 bytes (per the PJRC website).  Because of the way
+ *       ".../lib/eeprom" is written, much of this data would have to be
+ *       contiguous.
  *     - At some point, I should probably consider changing how
  *       ".../lib/eeprom" (and the layer-stack code, and everything else that
  *       needs a variable amount of memory) manages its memory.  Again, not

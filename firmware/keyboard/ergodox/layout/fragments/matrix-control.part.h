@@ -12,59 +12,102 @@
  */
 
 
+/**                                  functions/kb__layout__exec_key/description
+ * Assumptions:
+ * - All arguments are valid.
+ *
+ * Implementation notes:
+ * - The default layer is layer 0.
+ * - This function is only responsible for layer resolution (which includes the
+ *   handling of transparent keys).  Everything else, it passes to
+ *   `kb__layout__exec_key_layer()`.
+ */
 void kb__layout__exec_key(bool pressed, uint8_t row, uint8_t column) {
 
-    // if we press a key, we need to keep track of the layer it was pressed on,
-    // so we can release it on the same layer
-    // - if the release is transparent, search through the layer stack for a
-    //   non-transparent release in the same position, as normal
+    // - to keep track of the layer a key was pressed on, so we can release on
+    //   the same layer
     static uint8_t pressed_layer[OPT__KB__ROWS][OPT__KB__COLUMNS];
 
-    void (*function)(void);
     uint8_t layer;
+    void (*function)(void);
 
-    // - add 1 to the stack size because we spend the first iteration checking
-    //   to see if we need to release on a previously stored layer
-    // - add 1 to the stack size in order to peek out of bounds on the last
-    //   iteration (if we get that far), so that layer 0 is our default (see
-    //   the documentation for ".../firmware/lib/layout/layer-stack.h")
-    for (uint8_t i=0; i < layer_stack__size()+1+1; i++) {  // i = offset+1
-        if (i == 0)
-            if (!pressed)
-                layer = pressed_layer[row][column];
-            else
-                continue;
-        else
-            layer = layer_stack__peek(i-1);
+    // handle the case that a key is released, and the layer it was pressed on
+    // has a non-transparent release function in the given location
 
+    if (! pressed) {
+        layer = pressed_layer[row][column];
         function = (void (*)(void))
-                   pgm_read_word( &( layout[ layer             ]
-                                           [ row               ]
-                                           [ column            ]
-                                           [ (pressed) ? 0 : 1 ] ) );
+                   pgm_read_word( &( layout[ layer    ]
+                                           [ row      ]
+                                           [ column   ]
+                                           [ !pressed ] ) );
 
-        if (function == &KF(transp))
-            function = NULL;
+        if (function != &KF(transp)) {
+            kb__layout__exec_key_layer( pressed, layer, row, column );
+            return;
+        }
+    }
 
-        if (function) {
+    // otherwise, search through the layer stack for a layer with a
+    // non-transparent key-function in the given location
+
+    // - altogether, unless we find a non-transparent key-function earlier, we
+    //   want to peek at offsets `0` through `layer_stack__size()`.  this will
+    //   cause us to peek out of bounds on the last iteration, so that layer 0
+    //   will be the default (see the documentation for
+    //   ".../lib/layout/layer-stack")
+    for (uint8_t i=0; i <= layer_stack__size(); i++) {
+        layer = layer_stack__peek(i);
+        function = (void (*)(void))
+                   pgm_read_word( &( layout[ layer    ]
+                                           [ row      ]
+                                           [ column   ]
+                                           [ !pressed ] ) );
+
+        if (function != &KF(transp)) {
             if (pressed)
                 pressed_layer[row][column] = layer;
 
-            flags.tick_keypresses = (pressed) ? true : false;  // set default
-
-            (*function)();
-
-            // TODO: *always* tick keypresses
-            // TODO: instead of this, set a flag for the type of key pressed,
-            // and any functions that execute can check it, and conditionally
-            // reschedule themselves to run later, if they so desire
-            if (flags.tick_keypresses)
-                timer___tick_keypresses();
-
+            kb__layout__exec_key_layer( pressed, layer, row, column );
             return;
         }
     }
 
     // if we get here, there was a transparent key in layer 0; do nothing
+}
+
+/**                            functions/kb__layout__exec_key_layer/description
+ * Assumptions:
+ * - All arguments are valid.
+ *
+ * TODO:
+ * - take care of the recording and such of macros :)
+ */
+void kb__layout__exec_key_layer( bool    pressed,
+                                 uint8_t layer,
+                                 uint8_t row,
+                                 uint8_t column ) {
+
+    void (*function)(void) = (void (*)(void)) 
+                             pgm_read_word( &( layout[ layer    ]
+                                                     [ row      ]
+                                                     [ column   ]
+                                                     [ !pressed ] ) );
+    if (! function) return;
+
+    // set default values
+    // - the key-function will not be able to see the values set previously
+    // - any function scheduled to run will be able to see the values set
+    //   previously; but that may change in the future, so it shouldn't be
+    //   relied on.  if functions need to communicate with each other, they
+    //   should share a file-local or global variable.
+    flags.key_type.sticky      = false;
+    flags.key_type.layer_shift = false;
+    flags.key_type.layer_lock  = false;
+
+    (*function)();
+
+    if (pressed)
+        timer___tick_keypresses();
 }
 
