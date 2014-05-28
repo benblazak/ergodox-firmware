@@ -28,18 +28,15 @@
 
 // ----------------------------------------------------------------------------
 
-#if OPT__TWI__FREQUENCY > 400000
-    #error "OPT__TWI__FREQUENCY must be <= 400000"
-#endif
 /**                                      macros/OPT__TWI__FREQUENCY/description
  * Implementation notes:
  * - The max speed for the ATmega32U4 is 400kHz (datasheet sec. 20.1)
  * - The max speed for the MCP23017 is 1.7MHz (datasheet pg. 1)
  * - The max speed for the MCP23018 is 3.4MHz (datasheet pg. 1)
- *
- * TODO: do these implementation notes belong in the keyboard "options.h",
- * where they're set?
  */
+#if OPT__TWI__FREQUENCY > 400000
+    #error "OPT__TWI__FREQUENCY must be <= 400000"
+#endif
 
 // ----------------------------------------------------------------------------
 

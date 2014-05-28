@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- * Copyright (c) 2013 Ben Blazak <benblazak.dev@gmail.com>
+ * Copyright (c) 2013, 2014 Ben Blazak <benblazak.dev@gmail.com>
  * Released under The MIT License (see "doc/licenses/MIT.md")
  * Project located at <https://github.com/benblazak/ergodox-firmware>
  * ------------------------------------------------------------------------- */
@@ -112,13 +112,20 @@ void kb__led__state__ready(void) {
 }
 
 void kb__led__delay__error(void) {
+    // make sure LED states have stabilized
+    // - i'm not quite sure how long this takes; i would think it'd be nearly
+    //   instant, but a bit of testing seemed to show that even 5ms isn't quite
+    //   long enough; 10ms seems to work; at least we can afford the time here
+    _delay_ms(10);
+
     struct led_state state = {
         .led_1 = kb__led__read(1),
         .led_2 = kb__led__read(2),
         .led_3 = kb__led__read(3),
     };
 
-    // delay for a total of ~1 second
+    kb__led__all_off();
+    _delay_ms(167);
     kb__led__all_on();
     _delay_ms(167);
     kb__led__all_off();

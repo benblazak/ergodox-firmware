@@ -227,7 +227,7 @@ void kb__layout__exec_key_layer ( bool    pressed,
 
 // === kb__led__delay__error() ===
 /**                                 functions/kb__led__delay__error/description
- * Signal a generic error (delays for a total of ~1 second)
+ * Signal a generic error
  */
 
 // === kb__led__delay__usb_init() ===

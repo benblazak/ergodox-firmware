@@ -881,8 +881,7 @@ uint8_t eeprom_macro__play( bool    pressed,
     k_location += 2;
     while (length) {
         uint8_t read = read_key_action(k_location, &k);
-//         // TODO: function not written yet
-//         kb__layout__exec_key_layer()
+        kb__layout__exec_key_layer( k.pressed, k.layer, k.row, k.column );
         length -= read;
         k_location += read;
     }
