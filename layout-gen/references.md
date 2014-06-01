@@ -19,6 +19,28 @@
   Haskell is very similar to Elm in some ways, so I think this applies.
 
 
+
+## JavaScript Stuff
+
+* [How to include a JavaScript file in another JavaScript file?]
+  (http://stackoverflow.com/questions/950087/how-to-include-a-javascript-file-in-another-javascript-file)  
+
+
+### Libraries
+
+* [Raphaël]
+  (http://raphaeljs.com)  
+  Cool graphics library :)
+
+
+
+## HTML Stuff
+
+* [W3C Documentation]
+  (http://www.w3schools.com/html/html5_intro.asp)
+
+
+
 -------------------------------------------------------------------------------
 
 Copyright &copy; 2014 Ben Blazak <benblazak.dev@gmail.com>  
