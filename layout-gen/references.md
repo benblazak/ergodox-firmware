@@ -44,7 +44,11 @@
 
 * [A Plain English Guide to JavaScript Prototypes]
   (http://sporto.github.io/blog/2013/02/22/a-plain-english-guide-to-javascript-prototypes/)  
-  About the JavaScript object model.
+  About the JavaScript object model.  I guess objects can have defaults?
+
+* [Do You Really Need jQuery?]
+  (http://www.sitepoint.com/do-you-really-need-jquery/)  
+  For this project I can probably get away without it...
 
 
 #### Libraries
