@@ -264,6 +264,7 @@ keyboards['ErgoDox'] = {
 // TODO:
 // - need to actually plan the organization of the key data...
 // - how shall we handle switching between different layers?
+// - we should probably do all the styling in css...
 
 var drawKey = function(key) {
   var size     = key.size     || 1;
