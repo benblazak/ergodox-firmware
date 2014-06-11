@@ -261,47 +261,101 @@ keyboards['ErgoDox'] = {
 // test: functions and event bindings
 // ----------------------------------------------------------------------------
 
+// TODO:
+// - need to actually plan the organization of the key data...
+// - how shall we handle switching between different layers?
+
+var drawKey = function(key) {
+  var size     = key.size     || 1;
+  var position = key.position || [0,0];
+  var rotation = key.rotation || 0;
+
+  key.raphael = {};
+
+  key.raphael.rect =
+    paper.rect( position[0]*keysize,
+                position[1]*keysize,
+                size*keysize,
+                keysize )
+         .attr({ 'fill': tango.lightBlue,
+                 'stroke': tango.lightGray })
+         .transform('r'+rotation);
+
+  key.raphael.text =
+    paper.text( position[0]*keysize + size*keysize/2,
+                position[1]*keysize + keysize/2,
+                key.value )
+         .attr({ 'font-family': 'monospace' })
+         .transform( 'r' + rotation +
+                     's' + Math.min( size*8/key.value.length, 8/3) );
+
+  key.raphael.button =
+    paper.rect( position[0]*keysize,
+                position[1]*keysize,
+                size*keysize,
+                keysize )
+         .attr({ 'fill': '#fff',
+                 'stroke': 'none',
+                 'opacity': 0 })
+         .transform('r'+rotation)
+         .mouseover(function() {
+           key.raphael.button.attr({ 'opacity': .1 });
+         })
+         .mouseout(function() {
+           key.raphael.button.attr({ 'opacity': 0 });
+         })
+         .mouseup(function() {
+           key.raphael.rect.attr({ 'fill': tango.lightOrange });
+         });
+}
+
+var updateKey = function(key) {
+  var size     = key.size || 1;
+  var rotation = key.rotation || 0;
+
+  key.raphael.text
+    .attr({'text': key.value})
+    .transform( 'r' + rotation +
+                's' + Math.min( size*8/key.value.length, 8/3) );
+}
+
+
+// main() (kind of) -----------------------------------------------------------
+
 window.onload = function() {
   // style
   document.body.style.background = tango.lightGray;
 
   // setup
-  var keysize = 55;
-  var keyboard = keyboards['ErgoDox'];
-  var configuration = 'Long Thumbs';
+  keyboard = keyboards['ErgoDox'];
+  configuration = 'Long Thumbs';
 
-  var paper = Raphael( 0, 0, keyboard.size[0]*keysize,
-                             keyboard.size[1]*keysize );
+  keysize = 990/keyboard['size'][0];
+
+  paper = Raphael( 0, 0, keyboard.size[0]*keysize+10,
+                         keyboard.size[1]*keysize+10 );
 
   // draw bounding box
-  paper.rect( 0, 0, keyboard.size[0]*keysize,
-                    keyboard.size[1]*keysize )
+  paper.rect( 0, 0,
+              keyboard.size[0]*keysize+10,
+              keyboard.size[1]*keysize+10,
+              5 )
        .attr('stroke', tango.lightBlue);
 
   // draw keys
-  var drawKey = function(id, key) {
-    var size     = key.size     || 1;
-    var position = key.position || [0,0];
-    var rotation = key.rotation || 0;
-
-    var rect = paper.rect( position[0]*keysize,
-                           position[1]*keysize,
-                           size*keysize,
-                           keysize )
-                    .attr({ 'fill': tango.lightBlue,
-                            'stroke': tango.lightGray })
-                    .transform('r'+rotation);
-
-    var text = paper.text( position[0]*keysize + size*keysize/2,
-                           position[1]*keysize + keysize/2,
-                           id )
-                    .attr({ 'font-family': 'monospace' })
-                    .transform( 'r' + rotation +
-                                's' + Math.min( size*8/id.length, 8/3) );
+  for (var id in keyboard.keys[configuration]) {
+    var key = keyboard.keys[configuration][id];
+    key.position[0] += 5/keysize;
+    key.position[1] += 5/keysize;
+    key.value = id;
+    drawKey(key);
   }
-  for (var id in keyboard.keys[configuration])
-    drawKey(id, keyboard.keys[configuration][id]);
-  for (var id in keyboard.keys.all)
-    drawKey(id, keyboard.keys.all[id]);
+  for (var id in keyboard.keys.all) {
+    var key = keyboard.keys['all'][id];
+    key.position[0] += 5/keysize;
+    key.position[1] += 5/keysize;
+    key.value = id;
+    drawKey(key);
+  }
 }
 
