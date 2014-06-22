@@ -32,6 +32,16 @@ static layout_t layout PROGMEM;
  * - `key_type.sticky`
  * - `key_type.layer_shift`
  * - `key_type.layer_lock`
+ *
+ * Terms:
+ * - A "sticky key" is one which, once pressed, remains pressed in software
+ *   (whether or not the user holds it down) ... TODO
+ *
+ * TODO:
+ * - finish terms
+ * - change other code (in "./matrix-control.part.h") to actually use the fact
+ *   that we have 2 of these now (so that there is an "old" version, and a
+ *   version to update)
  */
 static struct {
     struct {
@@ -39,5 +49,5 @@ static struct {
         bool layer_shift : 1;
         bool layer_lock  : 1;
     } key_type;
-} flags;
+} flags[2];
 

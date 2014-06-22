@@ -55,26 +55,6 @@
  *   during a critical time being fairly low, and the consequence of (detected)
  *   data corruption hopefully more of an annoyance than anything else, I
  *   decided the effort (and extra EEMEM usage) wasn't worth it.
- *
- *
- * TODO:
- * - i was thinking before that the calling function need not ignore layer
- *   shift keys, or any other keys.  now i think that layer keys (or at least
- *   layer shift keys) really should be ignored.  not doing so may lead to all
- *   sorts of fun problems.  for example, if the "begin/end recording" key is
- *   not on layer 0 (which it probably won't be), the last keys pressed (but
- *   not released) will most likely be layer shift keys -- but since these keys
- *   were not released before we stopped recording, there would be no record of
- *   their release, and the macro would therefore push that layer onto the
- *   layer stack, and never pop it off.
- *
- * - need to write something like:
- *     - `kb__layout__exec_key_layer()`
- *         - `kb__layout__exec_key()` could just look up the current layer
- *           (falling through for transparent keys), and then call
- *           `kb__layout__exec_key_layer()`.  this would obviate the need for a
- *           separate `static get_layer(void)` function, since the
- *           functionality would essentially be separated out anyway.
  */
 
 

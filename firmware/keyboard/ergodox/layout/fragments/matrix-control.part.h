@@ -82,6 +82,7 @@ void kb__layout__exec_key(bool pressed, uint8_t row, uint8_t column) {
  *
  * TODO:
  * - take care of the recording and such of macros :)
+ *   - need to ignore layer-shift keys when recording
  */
 void kb__layout__exec_key_layer( bool    pressed,
                                  uint8_t layer,
@@ -98,12 +99,13 @@ void kb__layout__exec_key_layer( bool    pressed,
     // set default values
     // - the key-function will not be able to see the values set previously
     // - any function scheduled to run will be able to see the values set
-    //   previously; but that may change in the future, so it shouldn't be
-    //   relied on.  if functions need to communicate with each other, they
-    //   should share a file-local or global variable.
-    flags.key_type.sticky      = false;
-    flags.key_type.layer_shift = false;
-    flags.key_type.layer_lock  = false;
+    //   by the immediately preceding function; but that may change in the
+    //   future, so it shouldn't be relied on.  if functions need to
+    //   communicate with each other, they should share a file-local or global
+    //   variable.
+    flags[0].key_type.sticky      = false;
+    flags[0].key_type.layer_shift = false;
+    flags[0].key_type.layer_lock  = false;
 
     (*function)();
 
