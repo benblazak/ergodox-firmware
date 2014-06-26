@@ -190,7 +190,7 @@ void timer___tick_keypresses   (void);
 
 // === timer___tick_keypresses() ===
 /**                               functions/timer___tick_keypresses/description
- * Increment the counter for the number of keypresses, and perform scheduled
+ * Increment the counter for the number of key-presses, and perform scheduled
  * tasks
  *
  * Meant to be used only by `kb__layout__exec_key()`

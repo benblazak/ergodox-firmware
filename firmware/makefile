@@ -165,7 +165,7 @@ clean-all-files: clean-object-files clean-target-files
 
 clean-object-files:
 	-@rm -vf $(OBJ) \
-		$(OBJ:%=%.dep)
+		 $(OBJ:%=%.dep)
 
 clean-target-files:
 	-@rm -vf $(TARGET).eep \

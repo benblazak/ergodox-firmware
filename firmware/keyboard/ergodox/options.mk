@@ -21,7 +21,7 @@ F_CPU := 16000000
 # processor speed, in Hz; max value is 16000000 (16MHz); must match
 # initialization in source
 
-KEYBOARD_LAYOUT := qwerty--kinesis-mod
+KEYBOARD_LAYOUT := qwerty--ben
 # default layout for this keyboard
 
 KEYBOARD_LAYOUTS := \
@@ -48,8 +48,4 @@ SRC += $(wildcard $(CURDIR)/controller/*.c)
 SRC += $(wildcard $(CURDIR)/layout/$(KEYBOARD_LAYOUT)*.c)
 
 CFLAGS += -include $(wildcard $(CURDIR)/options.h)
-
-$(CURDIR)/layout/qwerty-kinesis-mod.o: $(wildcard $(CURDIR)/layout/common/*)
-$(CURDIR)/layout/dvorak-kinesis-mod.o: $(wildcard $(CURDIR)/layout/common/*)
-$(CURDIR)/layout/colemak-symbol-mod.o: $(wildcard $(CURDIR)/layout/common/*)
 

@@ -28,9 +28,8 @@ Notes:
   (written by "hasu") to the ErgoDox!
 
 Status:
-* School is starting again late August 2013.  It looks to be a busy semester,
-  so I may not have that much time to work on it.  I wasn't able to get nearly
-  the amount done this summer that I had hoped, other things taking precedence,
-  but I still plan to finish everything I've already talked about: macro
-  recording, (attempt) USB features, layout examples, and other documentation.
+* (updated 2014-04-12)  School and chores and life in general still taking most
+  of my time.  I still plan to finish everything I've already talked about
+  though: macro recording, (attempt) USB features, layout examples, and other
+  documentation.
 

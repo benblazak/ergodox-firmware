@@ -24,8 +24,8 @@
 
 // --- general ---
 
-void usb__init          (void);
-bool usb__is_configured (void);
+uint8_t usb__init          (void);
+bool    usb__is_configured (void);
 
 // --- keyboard ---
 
@@ -52,6 +52,10 @@ uint8_t usb__kb__send_report (void);
 // === usb__init() ===
 /**                                             functions/usb__init/description
  * Initialize USB for this device
+ *
+ * Returns:
+ * - success: `0`
+ * - failure: [other]
  *
  * Notes:
  * - Should be called exactly once by `main()`, and nothing else USB related

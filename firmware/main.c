@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- * Copyright (c) 2013 Ben Blazak <benblazak.dev@gmail.com>
+ * Copyright (c) 2013, 2014 Ben Blazak <benblazak.dev@gmail.com>
  * Released under The MIT License (see "doc/licenses/MIT.md")
  * Project located at <https://github.com/benblazak/ergodox-firmware>
  * ------------------------------------------------------------------------- */
@@ -28,6 +28,9 @@
  *
  * Notes:
  * - Cherry MX bounce time <= 5ms (at 16 in/sec actuation speed) (spec)
+ * - From experience (after having this issue brought to my attention by
+ *   Thanatermesis), waiting longer can sometimes fix the issue of having some
+ *   keys unexpectedly seem to double-tap.
  */
 #ifndef OPT__DEBOUNCE_TIME
     #error "OPT__DEBOUNCE_TIME not defined"
@@ -70,17 +73,25 @@ int main(void) {
 
     static uint8_t time_scan_started;
 
-    kb__init();  // initialize hardware (besides USB and timer)
+    {
+        // initialize everything; signal an error (at the end) if one occurs
 
-    kb__led__state__power_on();
+        bool error;
 
-    usb__init();
-    while (!usb__is_configured());
-    kb__led__delay__usb_init();  // give the OS time to load drivers, etc.
+        error = kb__init(); // initialize hardware (besides USB and timer)
 
-    timer__init();
+        kb__led__state__power_on();
 
-    kb__led__state__ready();
+        error |= usb__init();
+        while (!usb__is_configured());
+        kb__led__delay__usb_init();  // give the OS time to load drivers, etc.
+
+        error |= timer__init();
+
+        kb__led__state__ready();
+
+        if (error) kb__led__delay__error();
+    }
 
     time_scan_started  // on the first iteration, scan immediately
         = timer__get_milliseconds() - OPT__DEBOUNCE_TIME;

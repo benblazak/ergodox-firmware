@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- * Copyright (c) 2013 Ben Blazak <benblazak.dev@gmail.com>
+ * Copyright (c) 2013, 2014 Ben Blazak <benblazak.dev@gmail.com>
  * Released under The MIT License (see "doc/licenses/MIT.md")
  * Project located at <https://github.com/benblazak/ergodox-firmware>
  * ------------------------------------------------------------------------- */
@@ -18,13 +18,24 @@
 
 // ----------------------------------------------------------------------------
 
-#ifndef OPT__LED_BRIGHTNESS
-    #error "OPT__LED_BRIGHTNESS not defined"
-#endif
 /**                                      macros/OPT__LED_BRIGHTNESS/description
  * A percentage of maximum brightness, with '1' being greatest and '0' being
  * not quite off
  */
+#ifndef OPT__LED_BRIGHTNESS
+    #error "OPT__LED_BRIGHTNESS not defined"
+#endif
+
+// ----------------------------------------------------------------------------
+
+/**                                          types/struct led_state/description
+ * For holding the state of the LEDs (if we ever need to save/restore them)
+ */
+struct led_state {
+    bool led_1 : 1;
+    bool led_2 : 1;
+    bool led_3 : 1;
+};
 
 // ----------------------------------------------------------------------------
 
@@ -98,6 +109,39 @@ void kb__led__state__power_on(void) {
 void kb__led__state__ready(void) {
     kb__led__all_off();
     kb__led__all_set( OPT__LED_BRIGHTNESS );
+}
+
+void kb__led__delay__error(void) {
+    // make sure LED states have stabilized
+    // - i'm not quite sure how long this takes; i would think it'd be nearly
+    //   instant, but a bit of testing seemed to show that even 5ms isn't quite
+    //   long enough; 10ms seems to work; at least we can afford the time here
+    _delay_ms(10);
+
+    struct led_state state = {
+        .led_1 = kb__led__read(1),
+        .led_2 = kb__led__read(2),
+        .led_3 = kb__led__read(3),
+    };
+
+    kb__led__all_off();
+    _delay_ms(167);
+    kb__led__all_on();
+    _delay_ms(167);
+    kb__led__all_off();
+    _delay_ms(167);
+    kb__led__all_on();
+    _delay_ms(167);
+    kb__led__all_off();
+    _delay_ms(167);
+    kb__led__all_on();
+    _delay_ms(167);
+    kb__led__all_off();
+    _delay_ms(167);
+
+    if (state.led_1) kb__led__on(1);
+    if (state.led_2) kb__led__on(2);
+    if (state.led_3) kb__led__on(3);
 }
 
 void kb__led__delay__usb_init(void) {

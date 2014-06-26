@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- * Copyright (c) 2012 Ben Blazak <benblazak.dev@gmail.com>
+ * Copyright (c) 2012, 2014 Ben Blazak <benblazak.dev@gmail.com>
  * Released under The MIT License (see "doc/licenses/MIT.md")
  * Project located at <https://github.com/benblazak/ergodox-firmware>
  * ------------------------------------------------------------------------- */
@@ -50,13 +50,20 @@ void kb__led__all_set (float percent);
 // -------
 void kb__led__state__power_on (void);
 void kb__led__state__ready    (void);
+void kb__led__delay__error    (void);
 void kb__led__delay__usb_init (void);
 
 // layout
 void kb__led__logical_on  (char led);
 void kb__led__logical_off (char led);
 // -------
-void kb__layout__exec_key (bool pressed, uint8_t row, uint8_t column);
+void kb__layout__exec_key       ( bool    pressed,
+                                  uint8_t row,
+                                  uint8_t column );
+void kb__layout__exec_key_layer ( bool    pressed,
+                                  uint8_t layer,
+                                  uint8_t row,
+                                  uint8_t column );
 
 
 // ----------------------------------------------------------------------------
@@ -217,6 +224,12 @@ void kb__layout__exec_key (bool pressed, uint8_t row, uint8_t column);
  * keystrokes.
  */
 
+
+// === kb__led__delay__error() ===
+/**                                 functions/kb__led__delay__error/description
+ * Signal a generic error
+ */
+
 // === kb__led__delay__usb_init() ===
 /**                              functions/kb__led__delay__usb_init/description
  * Delay for a total of ~1 second, to allow the host to load drivers and such.
@@ -271,5 +284,24 @@ void kb__layout__exec_key (bool pressed, uint8_t row, uint8_t column);
  *   functionality.  It needs to be implemented at this level in order to hide
  *   the actual representation of layers, keys, how and where they are stored,
  *   etc. from `main()`.
+ */
+
+// === kb__layout__exec_key_layer ===
+/**                            functions/kb__layout__exec_key_layer/description
+ * Perform the appropriate actions for a "press" or "release" of the key at the
+ * given position, on the given layer.
+ *
+ * Arguments:
+ * - `pressed`:
+ *     - `true`: Indicates that the key to be "executed" has been pressed
+ *     - `false`: Indicates that the key to be "executed" has been released
+ * - `layer`: The layer of the key to be "executed"
+ * - `row`: The row of the key to be "executed"
+ * - `column`: The column of the key to be "executed"
+ *
+ * Notes:
+ * - If the implementation does not support layers, the `layer` argument should
+ *   be ignored, and this function will be equivalent to
+ *   `kb__layout__exec_key()`.
  */
 

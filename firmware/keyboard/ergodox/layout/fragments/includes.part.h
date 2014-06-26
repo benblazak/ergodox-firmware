@@ -20,6 +20,7 @@
 #include "../../../../../firmware/lib/timer.h"
 #include "../../../../../firmware/lib/usb.h"
 #include "../../../../../firmware/lib/usb/usage-page/keyboard.h"
+#include "../../../../../firmware/lib/layout/eeprom-macro.h"
 #include "../../../../../firmware/lib/layout/key-functions.h"
 #include "../../../../../firmware/lib/layout/layer-stack.h"
 #include "../../../../../firmware/keyboard.h"

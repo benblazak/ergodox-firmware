@@ -20,17 +20,34 @@ static layout_t layout PROGMEM;
 /**                                                 variables/flags/description
  * A collection of flags pertaining to the operation of `...exec_key()`
  *
+ * Notes:
+ * - These should be set within key-functions, but only read inside
+ *   `...exec_key()`.  The ability to read them outside that function should
+ *   not be counted on.
+ *
  * Struct members:
- * - `tick_keypresses`: A predicate indicating whether or not to "tick"
- *   keypresses on this run of the function (see the documentation in
- *   ".../firmware/lib/timer.h" for more precisely what this means)
- *     - This is useful for defining things like sticky keys, if, e.g., you
- *       want to make it so that you can press more than one and have none of
- *       them release until the press of the next normal key.
+ * - `key_type`: To indicate the type of key most recently pressed
+ *     - More than one type flag may be set (e.g. a key may be both a
+ *       layer-shift key and a sticky key).
+ * - `key_type.sticky`
+ * - `key_type.layer_shift`
+ * - `key_type.layer_lock`
+ *
+ * Terms:
+ * - A "sticky key" is one which, once pressed, remains pressed in software
+ *   (whether or not the user holds it down) ... TODO
+ *
+ * TODO:
+ * - finish terms
+ * - change other code (in "./matrix-control.part.h") to actually use the fact
+ *   that we have 2 of these now (so that there is an "old" version, and a
+ *   version to update)
  */
 static struct {
-    bool tick_keypresses : 1;
-} flags = {
-    .tick_keypresses = true,
-};
+    struct {
+        bool sticky      : 1;
+        bool layer_shift : 1;
+        bool layer_lock  : 1;
+    } key_type;
+} flags[2];
 

@@ -108,7 +108,7 @@ shL2kcap,        z,        x,        c,        v,        b, lpupo2l2,
                                                     transp,   transp,   transp,
 // right hand ..... ......... ......... ......... ......... ......... .........
                F12,       F6,       F7,       F8,       F9,      F10,    power,
-            lpo2l2,      nop,  undersc, lessThan, grtrThan,   dollar,  volumeU,
+            lpo2l2,    caret,  undersc, lessThan, grtrThan,   dollar,  volumeU,
                      bkslash,        1,   parenL,   parenR,    equal,  volumeD,
           lpupo3l3, asterisk,        2,        3,        4,        5,     mute,
                                 transp,   transp,   transp,   transp,   transp,
