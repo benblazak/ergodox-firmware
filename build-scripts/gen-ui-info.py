@@ -142,80 +142,82 @@ def gen_static(current_date=None, git_commit_date=None, git_commit_id=None):
 	}
 
 def gen_derived(data):
-	"""
-	Generate derived information
-	Should be called last
-	"""
-	return {
-		'miscellaneous': {
-			'number-of-layers':
-				int( data['layout-matrices']['_kb_layout']['length']/(6*14) ),
-				# because 6*14 is the number of bytes/layer for '_kb_layout'
-				# (which is a uint8_t matrix)
-		},
-	}
+    return {}  # don't really need this info anymore
+# 	"""
+# 	Generate derived information
+# 	Should be called last
+# 	"""
+# 	return {
+# 		'miscellaneous': {
+# 			'number-of-layers':
+# 				int( data['layout-matrices']['_kb_layout']['length']/(6*14) ),
+# 				# because 6*14 is the number of bytes/layer for '_kb_layout'
+# 				# (which is a uint8_t matrix)
+# 		},
+# 	}
 
 # -----------------------------------------------------------------------------
 
 def parse_mapfile(map_file_path):
-	"""Parse the '.map' file"""
-
-	def parse_keyboard_function(f, line):
-		"""Parse keyboard-functions in the '.map' file"""
-
-		search = re.search(r'(0x\S+)\s+(0x\S+)', next(f))
-		position = int( search.group(1), 16 )
-		length = int( search.group(2), 16 )
-
-		search = re.search(r'0x\S+\s+(\S+)', next(f))
-		name = search.group(1)
-
-		return {
-			'keyboard-functions': {
-				name: {
-					'position': position,
-					'length': length,
-				},
-			},
-		}
-
-	def parse_layout_matrices(f, line):
-		"""Parse layout matrix information in the '.map' file"""
-
-		name = re.search(r'.progmem.data.(_kb_layout\S*)', line).group(1)
-
-		search = re.search(r'(0x\S+)\s+(0x\S+)', next(f))
-		position = int( search.group(1), 16 )
-		length = int( search.group(2), 16 )
-
-		return {
-			'layout-matrices': {
-				name: {
-					'position': position,
-					'length': length,
-				},
-			},
-		}
-
-	# --- parse_mapfile() ---
-
-	# normalize paths
-	map_file_path = os.path.abspath(map_file_path)
-	# check paths
-	if not os.path.exists(map_file_path):
-		raise ValueError("invalid 'map_file_path' given")
-
-	output = {}
-
-	f = open(map_file_path)
-
-	for line in f:
-		if re.search(r'^\s*\.text\.kbfun_', line):
-			dict_merge(output, parse_keyboard_function(f, line))
-		elif re.search(r'^\s*\.progmem\.data.*layout', line):
-			dict_merge(output, parse_layout_matrices(f, line))
-
-	return output
+    return {}  # don't really need this info anymore
+# 	"""Parse the '.map' file"""
+# 
+# 	def parse_keyboard_function(f, line):
+# 		"""Parse keyboard-functions in the '.map' file"""
+# 
+# 		search = re.search(r'(0x\S+)\s+(0x\S+)', next(f))
+# 		position = int( search.group(1), 16 )
+# 		length = int( search.group(2), 16 )
+# 
+# 		search = re.search(r'0x\S+\s+(\S+)', next(f))
+# 		name = search.group(1)
+# 
+# 		return {
+# 			'keyboard-functions': {
+# 				name: {
+# 					'position': position,
+# 					'length': length,
+# 				},
+# 			},
+# 		}
+# 
+# 	def parse_layout_matrices(f, line):
+# 		"""Parse layout matrix information in the '.map' file"""
+# 
+# 		name = re.search(r'.progmem.data.(_kb_layout\S*)', line).group(1)
+# 
+# 		search = re.search(r'(0x\S+)\s+(0x\S+)', next(f))
+# 		position = int( search.group(1), 16 )
+# 		length = int( search.group(2), 16 )
+# 
+# 		return {
+# 			'layout-matrices': {
+# 				name: {
+# 					'position': position,
+# 					'length': length,
+# 				},
+# 			},
+# 		}
+# 
+# 	# --- parse_mapfile() ---
+# 
+# 	# normalize paths
+# 	map_file_path = os.path.abspath(map_file_path)
+# 	# check paths
+# 	if not os.path.exists(map_file_path):
+# 		raise ValueError("invalid 'map_file_path' given")
+# 
+# 	output = {}
+# 
+# 	f = open(map_file_path)
+# 
+# 	for line in f:
+# 		if re.search(r'^\s*\.text\.kbfun_', line):
+# 			dict_merge(output, parse_keyboard_function(f, line))
+# 		elif re.search(r'^\s*\.progmem\.data.*layout', line):
+# 			dict_merge(output, parse_layout_matrices(f, line))
+# 
+# 	return output
 
 
 def find_keyboard_functions(source_code_path):
