@@ -254,8 +254,10 @@ This guide walks you through building the firmware itself:
 * First, read the [Dependencies] (#dependencies-for-building-from-source) section.
 * Once the dependencies are setup, compiling is as easy as running:
 
+```
     make firmware        # Compiles the default layout
     make firmware-all    # Compiles all available layouts
+```    
 
 You can specify a layout like this:
 
