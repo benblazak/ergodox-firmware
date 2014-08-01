@@ -23,7 +23,7 @@ include src/makefile-options
 
 # which layouts to compile (will override the variable in src/makefile-options)
 # --- default
-LAYOUT := workman-p-kinesis-mod
+LAYOUT := qwerty-kinesis-mod
 # --- all
 LAYOUTS := qwerty-kinesis-mod dvorak-kinesis-mod colemak-symbol-mod workman-p-kinesis-mod
 
