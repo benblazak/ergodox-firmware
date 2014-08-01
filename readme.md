@@ -246,26 +246,42 @@ That is, how to change whether the rows or the columns are being driven.  This c
 
 
 ### Compile the Source Code
+
+*It is easy to build the `.eep` and `.hex` files, but the html layout description is trickier*
+
+This guide walks you through building the firmware itself:
+
+* First, read the [Dependencies] (#dependencies-for-building-from-source) section.
+* Once the dependencies are setup, compiling is as easy as running:
+
+    make firmware        # Compiles the default layout
+    make firmware-all    # Compiles all available layouts
+
+You can specify a layout like this:
+
+    make LAYOUT=dvorak-kinesis-mod firmware
+
+See the LAYOUTS variable near the top of the make file for a list of available layouts
+
+* If everything worked, the '.hex' and '.eep' files will be in a subdirectory of
+  the [build] (build) directory, like this:
+
+  `build/ergodox-firmware--master--20140731T155009--e330dbd--dvorak-kinesis-mod/`
+
+####Building the ui-info Layout Documentation
+
 (brief notes)
 
-Note: This relates to compiling in the [src] (src) directory.  The toplevel
-build process (for generating the ui-info file and such) isn't really intended
-to be portable; but you could probably get it working without *too* much
-trouble, if you're familiar with programming in a Unix environment.  I'd
-suggest looking through the toplevel Makefile, as a staring point, if that's
-your goal.
+Note: This process (for generating the ui-info file and such) isn't really intended
+to be portable; it depends on a platform specific layout of the .map file, but you
+could probably get it working without *too* much trouble, if you're familiar with
+programming in a Unix environment.  I'd suggest looking through the toplevel Makefile,
+as a staring point, if that's your goal. The `dist` target should get you started.
 
-* Read the [Dependencies] (#dependencies-for-building-from-source) section.
+#### Getting Started With the Code
 
 * Take a quickish glance at the [About This Project (more technical)]
   (#about-this-project-more-technical) section.
-
-* Navigate to the [src] (src) directory (*not* the toplevel directory) in a
-  terminal, and type `make`.
-
-* If everything worked, the '.hex' and '.eep' files will be in the [src] (src)
-  directory (where you currently are).
-
 
 ### Create a New Keymap
 
@@ -330,7 +346,7 @@ your goal.
   code should be in the following files (using the ergodox code as an example):
     * [controller.h] (src/keyboard/ergodox/controller.h)
     * [layout.h] (src/keyboard/ergodox/layout.h) (which in the ergodox code
-      only exists to include 
+      only exists to include
       [layout/default--led-control.h]
       (src/keyboard/ergodox/layout/default--led-control.h) and
       [layout/default--matrix-control.h]
@@ -371,4 +387,3 @@ your goal.
 Copyright &copy; 2012 Ben Blazak <benblazak.dev@gmail.com>  
 Released under The MIT License (MIT) (see "license.md")  
 Project located at <https://github.com/benblazak/ergodox-firmware>
-
