@@ -104,16 +104,16 @@ void kbfun_transparent(void) {
 static uint8_t layer_ids[1 + MAX_LAYER_PUSH_POP_FUNCTIONS];
 
 static void layer_pop(uint8_t local_id) {
-  uint8_t id = layer_ids[local_id];
-  if (id != 0) {
-    main_layers_pop_id(id);
-	  layer_ids[local_id] = 0;
-  }
+	uint8_t id = layer_ids[local_id];
+	if (id != 0) {
+		main_layers_pop_id(id);
+		layer_ids[local_id] = 0;
+	}
 }
 
 static void layer_push(uint8_t local_id) {
 	uint8_t keycode = kb_layout_get(LAYER, ROW, COL);
-  layer_pop(local_id);
+	layer_pop(local_id);
 	// Only the topmost layer on the stack should be in sticky once state, pop
 	//  the top layer if it is in sticky once state
 	uint8_t topSticky = main_layers_peek_sticky(0);
@@ -128,7 +128,7 @@ static void layer_sticky(uint8_t local_id) {
 	if (IS_PRESSED) {
 		uint8_t topLayer = main_layers_peek(0);
 		uint8_t topSticky = main_layers_peek_sticky(0);
-    layer_pop(local_id);
+		layer_pop(local_id);
 		if (topLayer == local_id) {
 			if (topSticky == eStickyOnceUp)
 				layer_ids[local_id] = main_layers_push(keycode, eStickyLock);
@@ -137,7 +137,7 @@ static void layer_sticky(uint8_t local_id) {
 		{
 			// only the topmost layer on the stack should be in sticky once state
 			if (topSticky == eStickyOnceDown || topSticky == eStickyOnceUp) {
-        layer_pop(topLayer);
+				layer_pop(topLayer);
 			}
 			layer_ids[local_id] = main_layers_push(keycode, eStickyOnceDown);
 			// this should be the only place we care about this flag being cleared
@@ -151,7 +151,7 @@ static void layer_sticky(uint8_t local_id) {
 		if (topLayer == local_id) {
 			if (topSticky == eStickyOnceDown) {
 				// When releasing this sticky key, pop the layer always
-        layer_pop(local_id);
+				layer_pop(local_id);
 				if (!main_arg_any_non_trans_key_pressed) {
 					// If no key defined for this layer (a non-transparent key)
 					//  was pressed, push the layer again, but in the
@@ -164,13 +164,13 @@ static void layer_sticky(uint8_t local_id) {
 }
 
 static void layer_toggle(uint8_t local_id) {
-  if (layer_ids[local_id] != 0) {
-    layer_pop(local_id);
-  }
-  else
-  {
-    layer_push(local_id);
-  }
+	if (layer_ids[local_id] != 0) {
+		layer_pop(local_id);
+	}
+	else
+	{
+		layer_push(local_id);
+	}
 }
 
 /*

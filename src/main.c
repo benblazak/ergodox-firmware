@@ -253,19 +253,19 @@ void main_layers_pop_id(uint8_t id) {
 	for (uint8_t element=1; element<=layers_head; element++) {
 		// if we find it
 		if (layers[element].id == id) {
-            for(; element<layers_head; ++element) {
-                layers[element].layer = layers[element+1].layer;
-                layers[element].id = layers[element+1].id;
-            }
-            // reinitialize the topmost (now unused) slot
-            layers[layers_head].layer = 0;
-            layers[layers_head].id = 0;
-            // record keeping
-            layers_ids_in_use[id] = false;
-            layers_head--;
-            return;
-        }
-    }
+			for(; element<layers_head; ++element) {
+				layers[element].layer = layers[element+1].layer;
+				layers[element].id = layers[element+1].id;
+			}
+			// reinitialize the topmost (now unused) slot
+			layers[layers_head].layer = 0;
+			layers[layers_head].id = 0;
+			// record keeping
+			layers_ids_in_use[id] = false;
+			layers_head--;
+			return;
+		}
+	}
 }
 
 /* ----------------------------------------------------------------------------
