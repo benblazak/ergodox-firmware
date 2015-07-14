@@ -103,9 +103,17 @@ void kbfun_transparent(void) {
 //  layer 0 even if we will never have a push or pop function for it
 static uint8_t layer_ids[1 + MAX_LAYER_PUSH_POP_FUNCTIONS];
 
+static void layer_pop(uint8_t local_id) {
+  uint8_t id = layer_ids[local_id];
+  if (id != 0) {
+    main_layers_pop_id(id);
+	  layer_ids[local_id] = 0;
+  }
+}
+
 static void layer_push(uint8_t local_id) {
 	uint8_t keycode = kb_layout_get(LAYER, ROW, COL);
-	main_layers_pop_id(layer_ids[local_id]);
+  layer_pop(local_id);
 	// Only the topmost layer on the stack should be in sticky once state, pop
 	//  the top layer if it is in sticky once state
 	uint8_t topSticky = main_layers_peek_sticky(0);
@@ -120,7 +128,7 @@ static void layer_sticky(uint8_t local_id) {
 	if (IS_PRESSED) {
 		uint8_t topLayer = main_layers_peek(0);
 		uint8_t topSticky = main_layers_peek_sticky(0);
-		main_layers_pop_id(layer_ids[local_id]);
+    layer_pop(local_id);
 		if (topLayer == local_id) {
 			if (topSticky == eStickyOnceUp)
 				layer_ids[local_id] = main_layers_push(keycode, eStickyLock);
@@ -129,7 +137,7 @@ static void layer_sticky(uint8_t local_id) {
 		{
 			// only the topmost layer on the stack should be in sticky once state
 			if (topSticky == eStickyOnceDown || topSticky == eStickyOnceUp) {
-				main_layers_pop_id(layer_ids[topLayer]);
+        layer_pop(topLayer);
 			}
 			layer_ids[local_id] = main_layers_push(keycode, eStickyOnceDown);
 			// this should be the only place we care about this flag being cleared
@@ -143,7 +151,7 @@ static void layer_sticky(uint8_t local_id) {
 		if (topLayer == local_id) {
 			if (topSticky == eStickyOnceDown) {
 				// When releasing this sticky key, pop the layer always
-				main_layers_pop_id(layer_ids[local_id]);
+        layer_pop(local_id);
 				if (!main_arg_any_non_trans_key_pressed) {
 					// If no key defined for this layer (a non-transparent key)
 					//  was pressed, push the layer again, but in the
@@ -155,9 +163,14 @@ static void layer_sticky(uint8_t local_id) {
 	}
 }
 
-static void layer_pop(uint8_t local_id) {
-	main_layers_pop_id(layer_ids[local_id]);
-	layer_ids[local_id] = 0;
+static void layer_toggle(uint8_t local_id) {
+  if (layer_ids[local_id] != 0) {
+    layer_pop(local_id);
+  }
+  else
+  {
+    layer_push(local_id);
+  }
 }
 
 /*
@@ -197,7 +210,7 @@ void kbfun_layer_push_1(void) {
  *   for each state:
  *  1) One time down (set on key press) - The layer was not active and the key
  *      has been pressed but not yet released. The layer is pushed in the one
- *      time down state. 
+ *      time down state.
  *  2) One time up (set on key release) - The layer was active when the layer
  *      sticky key was released. If a key on this layer (not set to
  *      transparent) was pressed before the key was released, the layer will be
@@ -226,11 +239,22 @@ void kbfun_layer_pop_1(void) {
 
 /*
  * [name]
+ *   Layer toggle #1
+ *
+ * [description]
+ *   If the layer element is already in the layer stack, pop it.  Otherwise,
+ *   push the layer element to the top of the stack.
+ */
+void kbfun_layer_toggle_1(void) {
+	layer_toggle(1);
+}
+
+/*
+ * [name]
  *   Layer push #2
  *
  * [description]
- *   Push a layer element containing the layer value specified in the keymap to
- *   the top of the stack, and record the id of that layer element
+ *   See the description of kbfun_layer_push_1()
  */
 void kbfun_layer_push_2(void) {
 	layer_push(2);
@@ -252,9 +276,7 @@ void kbfun_layer_sticky_2  (void) {
  *   Layer pop #2
  *
  * [description]
- *   Pop the layer element created by the corresponding "layer push" function
- *   out of the layer stack (no matter where it is in the stack, without
- *   touching any other elements)
+ *   See the description of kbfun_layer_pop_1()
  */
 void kbfun_layer_pop_2(void) {
 	layer_pop(2);
@@ -262,11 +284,21 @@ void kbfun_layer_pop_2(void) {
 
 /*
  * [name]
+ *   Layer toggle #2
+ *
+ * [description]
+ *   See the description of kbfun_layer_toggle_1()
+ */
+void kbfun_layer_toggle_2(void) {
+	layer_toggle(2);
+}
+
+/*
+ * [name]
  *   Layer push #3
  *
  * [description]
- *   Push a layer element containing the layer value specified in the keymap to
- *   the top of the stack, and record the id of that layer element
+ *   See the description of kbfun_layer_push_1()
  */
 void kbfun_layer_push_3(void) {
 	layer_push(3);
@@ -288,9 +320,7 @@ void kbfun_layer_sticky_3  (void) {
  *   Layer pop #3
  *
  * [description]
- *   Pop the layer element created by the corresponding "layer push" function
- *   out of the layer stack (no matter where it is in the stack, without
- *   touching any other elements)
+ *   See the description of kbfun_layer_pop_1()
  */
 void kbfun_layer_pop_3(void) {
 	layer_pop(3);
@@ -298,11 +328,21 @@ void kbfun_layer_pop_3(void) {
 
 /*
  * [name]
+ *   Layer toggle #3
+ *
+ * [description]
+ *   See the description of kbfun_layer_toggle_1()
+ */
+void kbfun_layer_toggle_3(void) {
+	layer_toggle(3);
+}
+
+/*
+ * [name]
  *   Layer push #4
  *
  * [description]
- *   Push a layer element containing the layer value specified in the keymap to
- *   the top of the stack, and record the id of that layer element
+ *   See the description of kbfun_layer_push_1()
  */
 void kbfun_layer_push_4(void) {
 	layer_push(4);
@@ -324,9 +364,7 @@ void kbfun_layer_sticky_4  (void) {
  *   Layer pop #4
  *
  * [description]
- *   Pop the layer element created by the corresponding "layer push" function
- *   out of the layer stack (no matter where it is in the stack, without
- *   touching any other elements)
+ *   See the description of kbfun_layer_pop_1()
  */
 void kbfun_layer_pop_4(void) {
 	layer_pop(4);
@@ -334,11 +372,21 @@ void kbfun_layer_pop_4(void) {
 
 /*
  * [name]
+ *   Layer toggle #4
+ *
+ * [description]
+ *   See the description of kbfun_layer_toggle_1()
+ */
+void kbfun_layer_toggle_4(void) {
+	layer_toggle(4);
+}
+
+/*
+ * [name]
  *   Layer push #5
  *
  * [description]
- *   Push a layer element containing the layer value specified in the keymap to
- *   the top of the stack, and record the id of that layer element
+ *   See the description of kbfun_layer_push_1()
  */
 void kbfun_layer_push_5(void) {
 	layer_push(5);
@@ -360,9 +408,7 @@ void kbfun_layer_sticky_5  (void) {
  *   Layer pop #5
  *
  * [description]
- *   Pop the layer element created by the corresponding "layer push" function
- *   out of the layer stack (no matter where it is in the stack, without
- *   touching any other elements)
+ *   See the description of kbfun_layer_pop_1()
  */
 void kbfun_layer_pop_5(void) {
 	layer_pop(5);
@@ -370,11 +416,21 @@ void kbfun_layer_pop_5(void) {
 
 /*
  * [name]
+ *   Layer toggle #5
+ *
+ * [description]
+ *   See the description of kbfun_layer_toggle_1()
+ */
+void kbfun_layer_toggle_5(void) {
+	layer_toggle(5);
+}
+
+/*
+ * [name]
  *   Layer push #6
  *
  * [description]
- *   Push a layer element containing the layer value specified in the keymap to
- *   the top of the stack, and record the id of that layer element
+ *   See the description of kbfun_layer_push_1()
  */
 void kbfun_layer_push_6(void) {
 	layer_push(6);
@@ -396,9 +452,7 @@ void kbfun_layer_sticky_6  (void) {
  *   Layer pop #6
  *
  * [description]
- *   Pop the layer element created by the corresponding "layer push" function
- *   out of the layer stack (no matter where it is in the stack, without
- *   touching any other elements)
+ *   See the description of kbfun_layer_pop_1()
  */
 void kbfun_layer_pop_6(void) {
 	layer_pop(6);
@@ -406,11 +460,21 @@ void kbfun_layer_pop_6(void) {
 
 /*
  * [name]
+ *   Layer toggle #6
+ *
+ * [description]
+ *   See the description of kbfun_layer_toggle_1()
+ */
+void kbfun_layer_toggle_6(void) {
+	layer_toggle(6);
+}
+
+/*
+ * [name]
  *   Layer push #7
  *
  * [description]
- *   Push a layer element containing the layer value specified in the keymap to
- *   the top of the stack, and record the id of that layer element
+ *   See the description of kbfun_layer_push_1()
  */
 void kbfun_layer_push_7(void) {
 	layer_push(7);
@@ -432,9 +496,7 @@ void kbfun_layer_sticky_7  (void) {
  *   Layer pop #7
  *
  * [description]
- *   Pop the layer element created by the corresponding "layer push" function
- *   out of the layer stack (no matter where it is in the stack, without
- *   touching any other elements)
+ *   See the description of kbfun_layer_pop_1()
  */
 void kbfun_layer_pop_7(void) {
 	layer_pop(7);
@@ -442,11 +504,21 @@ void kbfun_layer_pop_7(void) {
 
 /*
  * [name]
+ *   Layer toggle #7
+ *
+ * [description]
+ *   See the description of kbfun_layer_toggle_1()
+ */
+void kbfun_layer_toggle_7(void) {
+	layer_toggle(7);
+}
+
+/*
+ * [name]
  *   Layer push #8
  *
  * [description]
- *   Push a layer element containing the layer value specified in the keymap to
- *   the top of the stack, and record the id of that layer element
+ *   See the description of kbfun_layer_push_1()
  */
 void kbfun_layer_push_8(void) {
 	layer_push(8);
@@ -468,9 +540,7 @@ void kbfun_layer_sticky_8  (void) {
  *   Layer pop #8
  *
  * [description]
- *   Pop the layer element created by the corresponding "layer push" function
- *   out of the layer stack (no matter where it is in the stack, without
- *   touching any other elements)
+ *   See the description of kbfun_layer_pop_1()
  */
 void kbfun_layer_pop_8(void) {
 	layer_pop(8);
@@ -478,11 +548,21 @@ void kbfun_layer_pop_8(void) {
 
 /*
  * [name]
+ *   Layer toggle #8
+ *
+ * [description]
+ *   See the description of kbfun_layer_toggle_1()
+ */
+void kbfun_layer_toggle_8(void) {
+	layer_toggle(8);
+}
+
+/*
+ * [name]
  *   Layer push #9
  *
  * [description]
- *   Push a layer element containing the layer value specified in the keymap to
- *   the top of the stack, and record the id of that layer element
+ *   See the description of kbfun_layer_push_1()
  */
 void kbfun_layer_push_9(void) {
 	layer_push(9);
@@ -504,9 +584,7 @@ void kbfun_layer_sticky_9  (void) {
  *   Layer pop #9
  *
  * [description]
- *   Pop the layer element created by the corresponding "layer push" function
- *   out of the layer stack (no matter where it is in the stack, without
- *   touching any other elements)
+ *   See the description of kbfun_layer_pop_1()
  */
 void kbfun_layer_pop_9(void) {
 	layer_pop(9);
@@ -514,11 +592,21 @@ void kbfun_layer_pop_9(void) {
 
 /*
  * [name]
+ *   Layer toggle #9
+ *
+ * [description]
+ *   See the description of kbfun_layer_toggle_1()
+ */
+void kbfun_layer_toggle_9(void) {
+	layer_toggle(9);
+}
+
+/*
+ * [name]
  *   Layer push #10
  *
  * [description]
- *   Push a layer element containing the layer value specified in the keymap to
- *   the top of the stack, and record the id of that layer element
+ *   See the description of kbfun_layer_push_1()
  */
 void kbfun_layer_push_10(void) {
 	layer_push(10);
@@ -540,12 +628,21 @@ void kbfun_layer_sticky_10  (void) {
  *   Layer pop #10
  *
  * [description]
- *   Pop the layer element created by the corresponding "layer push" function
- *   out of the layer stack (no matter where it is in the stack, without
- *   touching any other elements)
+ *   See the description of kbfun_layer_pop_1()
  */
 void kbfun_layer_pop_10(void) {
 	layer_pop(10);
+}
+
+/*
+ * [name]
+ *   Layer toggle #10
+ *
+ * [description]
+ *   See the description of kbfun_layer_toggle_1()
+ */
+void kbfun_layer_toggle_10(void) {
+	layer_toggle(10);
 }
 
 /* ----------------------------------------------------------------------------
