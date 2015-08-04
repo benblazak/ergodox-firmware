@@ -233,7 +233,7 @@ KB_MATRIX_LAYER(
   // left thumb
   /* no key*/    0,            0,
   0 /*no key*/,  0 /*no key*/, 0,
-  MEDIAKEY_STOP, 0,            0,
+  MEDIAKEY_STOP, KEY_Insert,   0,
 
   // right hand
   KEY_F12,   KEY_F6,    KEY_F7,                KEY_F8,                  KEY_F9,              KEY_F10, KEY_ScrollLock,
@@ -498,7 +498,7 @@ KB_MATRIX_LAYER(
   // left thumb
   /*no key*/       ktrans,          ktrans,
   NULL /*no key*/, NULL /*no key*/, ktrans,
-  mprrel,          ktrans,          ktrans,
+  mprrel,          kprrel,          ktrans,
 
   // right hand
   kprrel,    kprrel,    kprrel, kprrel, kprrel, kprrel, kprrel,
@@ -763,7 +763,7 @@ KB_MATRIX_LAYER(
   // left thumb
   /*no key*/       ktrans,          ktrans,
   NULL /*no key*/, NULL /*no key*/, ktrans,
-  mprrel,          ktrans,          ktrans,
+  mprrel,          kprrel,          ktrans,
 
   // right hand
   kprrel,    kprrel,    kprrel, kprrel, kprrel, kprrel, kprrel,
