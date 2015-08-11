@@ -250,11 +250,10 @@ uint8_t main_layers_push(uint8_t layer, uint8_t sticky) {
  */
 void main_layers_pop_id(uint8_t id) {
 	// look for the element with the id we want to pop
-	for (uint8_t element=1; element<=layers_head; element++)
+	for (uint8_t element=1; element<=layers_head; element++) {
 		// if we find it
 		if (layers[element].id == id) {
-			// move all layers above it down one
-			for (; element<layers_head; element++) {
+			for(; element<layers_head; ++element) {
 				layers[element].layer = layers[element+1].layer;
 				layers[element].id = layers[element+1].id;
 			}
@@ -264,29 +263,9 @@ void main_layers_pop_id(uint8_t id) {
 			// record keeping
 			layers_ids_in_use[id] = false;
 			layers_head--;
+			return;
 		}
-}
-
-/*
- * get_offset_id()
- *
- * Arguments
- * - 'id': the id of the element you want the offset of
- *
- * Returns
- * - success: the offset (down the stack from the head element) of the element
- *   with the given id
- * - failure: 0 (default) (id unassigned)
- */
-uint8_t main_layers_get_offset_id(uint8_t id) {
-	// look for the element with the id we want to get the offset of
-	for (uint8_t element=1; element<=layers_head; element++)
-		// if we find it
-		if (layers[element].id == id)
-			return (layers_head - element);
-
-	return 0;  // default, or error
-
+	}
 }
 
 /* ----------------------------------------------------------------------------
