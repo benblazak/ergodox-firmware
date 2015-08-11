@@ -132,9 +132,7 @@ static void layer_sticky(uint8_t local_id) {
 		if (topLayer == local_id) {
 			if (topSticky == eStickyOnceUp)
 				layer_ids[local_id] = main_layers_push(keycode, eStickyLock);
-		}
-		else
-		{
+		} else {
 			// only the topmost layer on the stack should be in sticky once state
 			if (topSticky == eStickyOnceDown || topSticky == eStickyOnceUp) {
 				layer_pop(topLayer);
@@ -143,9 +141,7 @@ static void layer_sticky(uint8_t local_id) {
 			// this should be the only place we care about this flag being cleared
 			main_arg_any_non_trans_key_pressed = false;
 		}
-	}
-	else
-	{
+	} else {
 		uint8_t topLayer = main_layers_peek(0);
 		uint8_t topSticky = main_layers_peek_sticky(0);
 		if (topLayer == local_id) {
@@ -166,9 +162,7 @@ static void layer_sticky(uint8_t local_id) {
 static void layer_toggle(uint8_t local_id) {
 	if (layer_ids[local_id] != 0) {
 		layer_pop(local_id);
-	}
-	else
-	{
+	} else {
 		layer_push(local_id);
 	}
 }
