@@ -37,6 +37,8 @@ changed since this document was last properly updated:
 * Jacob McIntosh ([nacitar](https://github.com/nacitar)) implemented 4 more
   media keys (stop, mute, vol_up, and vol_down) in rev-1, fixed a media key
   bug, and implemented workman-p.
+* Jacob McIntosh ([nacitar](https://github.com/nacitar)) added
+  `kbfun_layer_toggle` functions.
 
 
 
