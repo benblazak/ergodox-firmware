@@ -9,6 +9,15 @@
  * ------------------------------------------------------------------------- */
 
 
+/*
+generate json from source :
+./gen-ui-info.py --current-date "2015-10-14 14:36:51+02:00" --git-commit-date "2015-10-14 14:36:51+02:00" --git-commit-id '6bdd71b' --map-file-path '../src/firmware.map' --source-code-path '../src/' --matrix-file-path '../src/keyboard/ergodox/matrix.h' --layout-file-path '../src/keyboard/ergodox/layout/colemak-raph.c' > layout.json
+
+generate html from json : must be called in root
+./build-scripts/gen-layout.py --ui-info-file ./build-scripts/layout.json > layout.html
+*/
+
+
 #include <stdint.h>
 #include <stddef.h>
 #include <avr/pgmspace.h>
@@ -42,9 +51,9 @@ const uint8_t PROGMEM _kb_layout[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
     0,          _K,         _M,         _comma,     _period,    _slash,     _shiftR,
                             _arrowL,    _arrowU,    _arrowD,    _arrowR,    0,
 
-    0,          0,
-    0,          0,          0,
-    0,          _del,       _bs ),
+    _arrowU,    _arrowR,
+    _arrowD,    0,          0,
+    _arrowL,    _del,       _bs ),
 };
 
 // ----------------------------------------------------------------------------
@@ -112,9 +121,9 @@ const void_funptr_t PROGMEM _kb_layout_press[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
     NULL,       kprrel,     kprrel,     kprrel,     kprrel,     kprrel,     kprrel,
                             kprrel,     kprrel,     kprrel,     kprrel,     NULL,
 
-    NULL,       NULL,
-    NULL,       NULL,       NULL,
-    NULL,       kprrel,     kprrel ),
+    kprrel,     kprrel,
+    kprrel,     NULL,       NULL,
+    kprrel,     kprrel,     kprrel ),
 };
 
 // ----------------------------------------------------------------------------
@@ -141,8 +150,7 @@ const void_funptr_t PROGMEM _kb_layout_release[KB_LAYERS][KB_ROWS][KB_COLUMNS] =
     NULL,       kprrel,     kprrel,     kprrel,     kprrel,     kprrel,     kprrel,
                             kprrel,     kprrel,     kprrel,     kprrel,     NULL,
 
-    NULL,       NULL,
-    NULL,       NULL,       NULL,
-    NULL,       kprrel,     kprrel ),
-
+    kprrel,     kprrel,
+    kprrel,     NULL,       NULL,
+    kprrel,     kprrel,     kprrel ),
 };
