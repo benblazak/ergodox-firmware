@@ -31,24 +31,24 @@ generate html from json : must be called in root
 // ----------------------------------------------------------------------------
 
 const uint8_t PROGMEM _kb_layout[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
-    // LAYOUT L0: COLEMAK
+    // LAYOUT L0: SOFT CODED COLEMAK (OS IN colemak)
     KB_MATRIX_LAYER( 0,
     // left hand
-    _grave,     _1,         _2,         _3,         _4,         _5,         _dash,
-    _tab,       _Q,         _W,         _F,         _P,         _G,         _bracketL,
-    _esc,       _A,         _R,         _S,         _T,         _D,
-    _shiftL,    _Z,         _X,         _C,         _V,         _B,         0,
-    0,          0,          _ctrlL,     _altL,      _guiL,
+    _esc,      _1,         _2,         _3,         _4,         _5,         _grave,
+    _tab,      _Q,         _W,         _E,         _R,         _T,         0,
+    0,         _A,         _S,         _D,         _F,         _G,
+    _shiftL,   _Z,         _X,         _C,         _V,         _B,         0,
+    _bracketL, _bracketR,  _ctrlL,     _altL,      _guiL,
 
-                                                                0,          0,
-                                                    0,          0,          0,
-                                                    _space,     _enter,     0,
+                                                               0,          0,
+                                                   0,          0,          0,
+                                                   _space,     _enter,     0,
 
     // right hand
-    _equal,     _6,         _7,         _8,         _9,         _0,         0,
-    _bracketR,  _J,         _L,         _U,         _Y,         _semicolon, _backslash,
-                _H,         _N,         _E,         _I,         _O,         _quote,
-    0,          _K,         _M,         _comma,     _period,    _slash,     _shiftR,
+    _equal,     _6,         _7,         _8,         _9,         _0,         _dash,
+    0,          _Y,         _U,         _I,         _O,         _P,         _backslash,
+                _H,         _J,         _K,         _L,         _semicolon, _quote,
+    0,          _N,         _M,         _comma,     _period,    _slash,     _shiftR,
                             _arrowL,    _arrowU,    _arrowD,    _arrowR,    0,
 
     _arrowU,    _arrowR,
@@ -102,21 +102,21 @@ const uint8_t PROGMEM _kb_layout[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
 
 const void_funptr_t PROGMEM _kb_layout_press[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
 
-    // PRESS L0: COLEMAK
+    // LAYOUT L0: SOFT CODED COLEMAK (OS IN colemak)
     KB_MATRIX_LAYER( NULL,
     // left hand
     kprrel,     kprrel,     kprrel,     kprrel,     kprrel,     kprrel,     kprrel,
-    kprrel,     kprrel,     kprrel,     kprrel,     kprrel,     kprrel,     kprrel,
-    kprrel,     kprrel,     kprrel,     kprrel,     kprrel,     kprrel,
-    s2kcap,     kprrel,     kprrel,     kprrel,     kprrel,     kprrel,     NULL,
-    NULL,       NULL,       kprrel,     kprrel,     kprrel,
+    kprrel,     kprrel,     kprrel,     kprrel,     kprrel,     kprrel,     NULL,
+    NULL,       kprrel,     kprrel,     kprrel,     kprrel,     kprrel,
+    kprrel,     kprrel,     kprrel,     kprrel,     kprrel,     kprrel,     NULL,
+    kprrel,     kprrel,     kprrel,     kprrel,     kprrel,
 
                                                                 NULL,       NULL,
                                                     NULL,       NULL,       NULL,
                                                     kprrel,     kprrel,     NULL,
     // right hand
-    kprrel,     kprrel,     kprrel,     kprrel,     kprrel,     kprrel,     NULL,
     kprrel,     kprrel,     kprrel,     kprrel,     kprrel,     kprrel,     kprrel,
+    NULL,       kprrel,     kprrel,     kprrel,     kprrel,     kprrel,     kprrel,
                 kprrel,     kprrel,     kprrel,     kprrel,     kprrel,     kprrel,
     NULL,       kprrel,     kprrel,     kprrel,     kprrel,     kprrel,     kprrel,
                             kprrel,     kprrel,     kprrel,     kprrel,     NULL,
@@ -131,21 +131,21 @@ const void_funptr_t PROGMEM _kb_layout_press[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
 
 const void_funptr_t PROGMEM _kb_layout_release[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
 
-    // RELEASE L0: COLEMAK
+    // LAYOUT L0: SOFT CODED COLEMAK (OS IN colemak)
     KB_MATRIX_LAYER( NULL,
     // left hand
     kprrel,     kprrel,     kprrel,     kprrel,     kprrel,     kprrel,     kprrel,
-    kprrel,     kprrel,     kprrel,     kprrel,     kprrel,     kprrel,     kprrel,
-    kprrel,     kprrel,     kprrel,     kprrel,     kprrel,     kprrel,
-    s2kcap,     kprrel,     kprrel,     kprrel,     kprrel,     kprrel,     NULL,
-    NULL,       NULL,       kprrel,     kprrel,     kprrel,
+    kprrel,     kprrel,     kprrel,     kprrel,     kprrel,     kprrel,     NULL,
+    NULL,       kprrel,     kprrel,     kprrel,     kprrel,     kprrel,
+    kprrel,     kprrel,     kprrel,     kprrel,     kprrel,     kprrel,     NULL,
+    kprrel,     kprrel,     kprrel,     kprrel,     kprrel,
 
                                                                 NULL,       NULL,
                                                     NULL,       NULL,       NULL,
                                                     kprrel,     kprrel,     NULL,
     // right hand
-    kprrel,     kprrel,     kprrel,     kprrel,     kprrel,     kprrel,     NULL,
     kprrel,     kprrel,     kprrel,     kprrel,     kprrel,     kprrel,     kprrel,
+    NULL,       kprrel,     kprrel,     kprrel,     kprrel,     kprrel,     kprrel,
                 kprrel,     kprrel,     kprrel,     kprrel,     kprrel,     kprrel,
     NULL,       kprrel,     kprrel,     kprrel,     kprrel,     kprrel,     kprrel,
                             kprrel,     kprrel,     kprrel,     kprrel,     NULL,
