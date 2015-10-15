@@ -35,14 +35,14 @@ const uint8_t PROGMEM _kb_layout[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
     KB_MATRIX_LAYER( 0,
     // left hand
     _esc,      _1,         _2,         _3,         _4,         _5,         _grave,
-    _tab,      _Q,         _W,         _E,         _R,         _T,         0,
+    _tab,      _Q,         _W,         _E,         _R,         _T,         1,
     0,         _A,         _S,         _D,         _F,         _G,
     _shiftL,   _Z,         _X,         _C,         _V,         _B,         0,
     _bracketL, _bracketR,  _ctrlL,     _altL,      _guiL,
 
                                                                0,          0,
                                                    0,          0,          0,
-                                                   _space,     _enter,     0,
+                                                   _space,     _del,       0,
 
     // right hand
     _equal,     _6,         _7,         _8,         _9,         _0,         _dash,
@@ -53,7 +53,31 @@ const uint8_t PROGMEM _kb_layout[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
 
     _arrowU,    _arrowR,
     _arrowD,    0,          0,
-    _arrowL,    _del,       _bs ),
+    _arrowL,    _bs,        _enter),
+
+    // LAYOUT L1: Programing (OS IN colemak)
+    KB_MATRIX_LAYER( 0,
+    // left hand
+    0,      0,         0,         0,         0,         0,         0,
+    0,      0,         0,         0,         0,         0,         0,
+    0,      0,         0,         0,         0,         0,
+    0,      0,         0,         0,         0,         0,         0,
+    0,      0,         0,         0,         0,
+
+                                                        0,         0,
+                                             0,         0,         0,
+                                             0,         0,         0,
+
+    // right hand
+    0,      0,         0,         0,         0,         0,         0,
+    0,      0,         0,         0,         0,         0,         0,
+            0,         _bracketL, _bracketR, 0,         0,         0,
+    0,      0,         0,         0,         0,         0,         0,
+                       0,         0,         0,         0,         0,
+
+    0,      0,
+    0,      0,         0,
+    0,      0,         0 ),
 };
 
 // ----------------------------------------------------------------------------
@@ -106,7 +130,7 @@ const void_funptr_t PROGMEM _kb_layout_press[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
     KB_MATRIX_LAYER( NULL,
     // left hand
     kprrel,     kprrel,     kprrel,     kprrel,     kprrel,     kprrel,     kprrel,
-    kprrel,     kprrel,     kprrel,     kprrel,     kprrel,     kprrel,     NULL,
+    kprrel,     kprrel,     kprrel,     kprrel,     kprrel,     kprrel,     lpush1,
     NULL,       kprrel,     kprrel,     kprrel,     kprrel,     kprrel,
     kprrel,     kprrel,     kprrel,     kprrel,     kprrel,     kprrel,     NULL,
     kprrel,     kprrel,     kprrel,     kprrel,     kprrel,
@@ -124,6 +148,29 @@ const void_funptr_t PROGMEM _kb_layout_press[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
     kprrel,     kprrel,
     kprrel,     NULL,       NULL,
     kprrel,     kprrel,     kprrel ),
+
+    // LAYOUT L1: Programing (OS IN colemak)
+    KB_MATRIX_LAYER( NULL,
+    // left hand
+    NULL,     NULL,     NULL,     NULL,     NULL,     NULL,     NULL,
+    NULL,     NULL,     NULL,     NULL,     NULL,     NULL,     NULL,
+    NULL,     NULL,     NULL,     NULL,     NULL,     NULL,
+    NULL,     NULL,     NULL,     NULL,     NULL,     NULL,     NULL,
+    NULL,     NULL,     NULL,     NULL,     NULL,
+
+                                                      NULL,     NULL,
+                                            NULL,     NULL,     NULL,
+                                            NULL,     NULL,     NULL,
+    // right hand
+    NULL,     NULL,     NULL,     NULL,     NULL,     NULL,     NULL,
+    NULL,     NULL,     NULL,     NULL,     NULL,     NULL,     NULL,
+              NULL,     kprrel,   kprrel,   NULL,     NULL,     NULL,
+    NULL,     NULL,     NULL,     NULL,     NULL,     NULL,     NULL,
+                        NULL,     NULL,     NULL,     NULL,     NULL,
+
+    NULL,     NULL,
+    NULL,     NULL,     NULL,
+    NULL,     NULL,     NULL ),
 };
 
 // ----------------------------------------------------------------------------
@@ -135,7 +182,7 @@ const void_funptr_t PROGMEM _kb_layout_release[KB_LAYERS][KB_ROWS][KB_COLUMNS] =
     KB_MATRIX_LAYER( NULL,
     // left hand
     kprrel,     kprrel,     kprrel,     kprrel,     kprrel,     kprrel,     kprrel,
-    kprrel,     kprrel,     kprrel,     kprrel,     kprrel,     kprrel,     NULL,
+    kprrel,     kprrel,     kprrel,     kprrel,     kprrel,     kprrel,     lpop1,
     NULL,       kprrel,     kprrel,     kprrel,     kprrel,     kprrel,
     kprrel,     kprrel,     kprrel,     kprrel,     kprrel,     kprrel,     NULL,
     kprrel,     kprrel,     kprrel,     kprrel,     kprrel,
@@ -153,4 +200,27 @@ const void_funptr_t PROGMEM _kb_layout_release[KB_LAYERS][KB_ROWS][KB_COLUMNS] =
     kprrel,     kprrel,
     kprrel,     NULL,       NULL,
     kprrel,     kprrel,     kprrel ),
+
+    // LAYOUT L1: Programing (OS IN colemak)
+    KB_MATRIX_LAYER( NULL,
+    // left hand
+    NULL,     NULL,     NULL,     NULL,     NULL,     NULL,     NULL,
+    NULL,     NULL,     NULL,     NULL,     NULL,     NULL,     NULL,
+    NULL,     NULL,     NULL,     NULL,     NULL,     NULL,
+    NULL,     NULL,     NULL,     NULL,     NULL,     NULL,     NULL,
+    NULL,     NULL,     NULL,     NULL,     NULL,
+
+                                                      NULL,     NULL,
+                                            NULL,     NULL,     NULL,
+                                            NULL,     NULL,     NULL,
+    // right hand
+    NULL,     NULL,     NULL,     NULL,     NULL,     NULL,     NULL,
+    NULL,     NULL,     NULL,     NULL,     NULL,     NULL,     NULL,
+              NULL,     kprrel,   kprrel,   NULL,     NULL,     NULL,
+    NULL,     NULL,     NULL,     NULL,     NULL,     NULL,     NULL,
+                        NULL,     NULL,     NULL,     NULL,     NULL,
+
+    NULL,     NULL,
+    NULL,     NULL,     NULL,
+    NULL,     NULL,     NULL ),
 };
