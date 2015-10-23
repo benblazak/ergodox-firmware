@@ -20,8 +20,8 @@
  * - Multiple names concatenated in CamelCase indicate a single value
  * - Multiple names separated by `_`s indicate shifted or alternate values
  *
- * [1]: http://www.usb.org/developers/devclass_docs/Hut1_12v2.pdf
- * [2]: http://www.usb.org/developers/hidpage
+ * [1]: http://www.usb.org/developers/hidpage/Hut1_12v2.pdf
+ * [2]: http://www.usb.org/developers/hidpage#HID_Usage
  */
 
 
