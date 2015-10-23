@@ -12,8 +12,8 @@
  * - Multiple names concatenated in CamelCase indicate a single value
  * - Multiple names separated by `_`s indicate shifted or alternate values
  *
- * [1]: http://www.usb.org/developers/devclass_docs/Hut1_12v2.pdf
- * [2]: http://www.usb.org/developers/hidpage
+ * [1]: http://www.usb.org/developers/hidpage/Hut1_12v2.pdf
+ * [2]: http://www.usb.org/developers/hidpage#HID_Usage
  * ----------------------------------------------------------------------------
  * Copyright (c) 2012 Ben Blazak <benblazak.dev@gmail.com>
  * Released under The MIT License (MIT) (see "license.md")
