@@ -17,7 +17,6 @@ generate html from json : must be called in root
 ./build-scripts/gen-layout.py --ui-info-file ./build-scripts/layout.json > layout.html
 */
 
-
 #include <stdint.h>
 #include <stddef.h>
 #include <avr/pgmspace.h>
@@ -26,6 +25,31 @@ generate html from json : must be called in root
 #include "../../../lib/key-functions/public.h"
 #include "../matrix.h"
 #include "../layout.h"
+#include "../../../main.h"
+
+void kbfun_command_press_release(void) {
+	_kbfun_press_release(main_arg_is_pressed, KEY_LeftGUI);
+	kbfun_press_release();
+}
+
+void kbfun_command_alt_press_release(void) {
+	_kbfun_press_release(main_arg_is_pressed, KEY_LeftGUI);
+  _kbfun_press_release(main_arg_is_pressed, KEY_LeftAlt);
+	kbfun_press_release();
+}
+
+void kbfun_command_alt_shift_press_release(void) {
+	_kbfun_press_release(main_arg_is_pressed, KEY_LeftGUI);
+  _kbfun_press_release(main_arg_is_pressed, KEY_LeftAlt);
+  _kbfun_press_release(main_arg_is_pressed, KEY_LeftShift);
+	kbfun_press_release();
+}
+
+void kbfun_command_shift_press_release(void) {
+	_kbfun_press_release(main_arg_is_pressed, KEY_LeftGUI);
+  _kbfun_press_release(main_arg_is_pressed, KEY_LeftShift);
+	kbfun_press_release();
+}
 
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
@@ -79,7 +103,7 @@ const uint8_t PROGMEM _kb_layout[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
     0,      0,         0,
     0,      0,         0 ),
 
-    // LAYOUT L2: Arrows and movement (OS IN colemak)
+    // LAYOUT L2: Arrows/Xcode (OS IN colemak)
     KB_MATRIX_LAYER( 0,
     // left hand
     0,      0,         0,         0,         0,         0,         0,
@@ -97,11 +121,11 @@ const uint8_t PROGMEM _kb_layout[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
     0,      0,         0,         _arrowU,   0,         0,         0,
             0,         _arrowL,   _arrowD,   _arrowR,   0,         0,
     0,      0,         0,         0,         0,         0,         0,
-                       0,         0,         0,         0,         0,
+                       KEY_F6,    KEY_F7,    KEY_F8,    0,         0,
 
-    0,      0,
-    0,      0,         0,
-    0,      0,         0 ),
+    _enter, _O,
+    _enter, 0,         0,
+    _enter, _0,        _0),
 };
 
 // ----------------------------------------------------------------------------
@@ -145,6 +169,12 @@ const uint8_t PROGMEM _kb_layout[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
 #define  slpunum  &kbfun_layer_push_numpad
 #define  slponum  &kbfun_layer_pop_numpad
 
+// custom
+#define ccoprre     &kbfun_command_press_release
+#define ccoalprre   &kbfun_command_alt_press_release
+#define ccoalshprre &kbfun_command_alt_shift_press_release
+#define ccoshprre   &kbfun_command_shift_press_release
+
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 
@@ -157,7 +187,7 @@ const void_funptr_t PROGMEM _kb_layout_press[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
     kprrel,     kprrel,     kprrel,     kprrel,     kprrel,     kprrel,     lpush1,
     kprrel,     kprrel,     kprrel,     kprrel,     kprrel,     kprrel,
     kprrel,     kprrel,     kprrel,     kprrel,     kprrel,     kprrel,     NULL,
-    lpush2,       kprrel,     kprrel,     kprrel,     lpush1,
+    lpush2,     kprrel,     kprrel,     kprrel,     lpush1,
 
                                                                 NULL,       NULL,
                                                     NULL,       NULL,       NULL,
@@ -196,7 +226,7 @@ const void_funptr_t PROGMEM _kb_layout_press[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
     NULL,     NULL,     NULL,
     NULL,     NULL,     NULL ),
 
-    // LAYOUT L2: Arrows (OS IN colemak)
+    // LAYOUT L2: Arrows/Xcode (OS IN colemak)
     KB_MATRIX_LAYER( NULL,
     // left hand
     NULL,     NULL,     NULL,     NULL,     NULL,     NULL,     NULL,
@@ -213,11 +243,11 @@ const void_funptr_t PROGMEM _kb_layout_press[KB_LAYERS][KB_ROWS][KB_COLUMNS] = {
     NULL,     NULL,     NULL,     kprrel,   NULL,     NULL,     NULL,
               NULL,     kprrel,   kprrel,   kprrel,   NULL,     NULL,
     NULL,     NULL,     NULL,     NULL,     NULL,     NULL,     ktrans,
-                        NULL,     NULL,     NULL,     NULL,     NULL,
+                        kprrel,   kprrel,   kprrel,   NULL,     NULL,
 
-    NULL,     NULL,
-    NULL,     NULL,     NULL,
-    NULL,     NULL,     ktrans),
+    ccoprre,     ccoshprre,
+    ccoalprre,   NULL,     NULL,
+    ccoalshprre, ccoprre,  ccoalprre),
 };
 
 // ----------------------------------------------------------------------------
@@ -271,7 +301,7 @@ const void_funptr_t PROGMEM _kb_layout_release[KB_LAYERS][KB_ROWS][KB_COLUMNS] =
     NULL,     NULL,     NULL,
     NULL,     NULL,     NULL ),
 
-    // LAYOUT L2: Arrows (OS IN colemak)
+    // LAYOUT L2: Arrows/Xcode (OS IN colemak)
     KB_MATRIX_LAYER( NULL,
     // left hand
     NULL,     NULL,     NULL,     NULL,     NULL,     NULL,     NULL,
@@ -288,9 +318,9 @@ const void_funptr_t PROGMEM _kb_layout_release[KB_LAYERS][KB_ROWS][KB_COLUMNS] =
     NULL,     NULL,     NULL,     kprrel,   NULL,     NULL,     NULL,
               NULL,     kprrel,   kprrel,   kprrel,   NULL,     NULL,
     NULL,     NULL,     NULL,     NULL,     NULL,     NULL,     ktrans,
-                        NULL,     NULL,     NULL,     NULL,     NULL,
+                        kprrel,   kprrel,   kprrel,   NULL,     NULL,
 
-    NULL,     NULL,
-    NULL,     NULL,     NULL,
-    NULL,     NULL,     ktrans),
+    ccoprre,     ccoshprre,
+    ccoalprre,   NULL,     NULL,
+    ccoalshprre, ccoprre,  ccoalprre),
 };
