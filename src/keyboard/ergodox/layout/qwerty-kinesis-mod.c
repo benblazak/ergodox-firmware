@@ -49,7 +49,7 @@ _pageD, _enter, _space ),
 0,
 // left hand
   0,        _F1,        _F2,       _F3,       _F4,       _F5, _F11,
-  0,  _bracketL,  _bracketR, _bracketL, _bracketR,         0,    1,
+  0,  _bracketL,  _bracketR, _bracketL, _bracketR,         0,    0,
   0, _semicolon,     _slash,     _dash,     _0_kp,_semicolon,
   0,      _6_kp,      _7_kp,     _8_kp,     _9_kp,    _equal,    2,
   0,          0,          0,         0,         0,
