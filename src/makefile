@@ -20,6 +20,7 @@ MCU    := atmega32u4  # processor type (for teensy 2.0); must match real life
 BOARD  := teensy-2-0  # see the libraries you're using for what's available
 F_CPU  := 16000000    # processor speed, in Hz
 
+#if set to true, the num,scroll,caps LED's will display current layer number in binary
 # firmware stuff
 SRC  := $(wildcard *.c)
 # keyboard and layout stuff
@@ -47,9 +48,10 @@ SRC += $(wildcard lib-other/*/*/*.c)
 
 OBJ = $(SRC:%.c=%.o)
 
+CFLAGS := -DLEDS_SHOW_LAYER_IN_BINARY=
 
 # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-CFLAGS := -mmcu=$(MCU)      # processor type (teensy 2.0); must match real
+CFLAGS += -mmcu=$(MCU)      # processor type (teensy 2.0); must match real
 			    #   life
 CFLAGS += -DF_CPU=$(F_CPU)  # processor frequency; must match initialization
 			    #   in source

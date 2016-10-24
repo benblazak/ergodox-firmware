@@ -24,6 +24,8 @@
 
 // ----------------------------------------------------------------------------
 
+uint8_t layers_head = 0;
+
 static bool _main_kb_is_pressed[KB_ROWS][KB_COLUMNS];
 bool (*main_kb_is_pressed)[KB_ROWS][KB_COLUMNS] = &_main_kb_is_pressed;
 
@@ -131,6 +133,30 @@ int main(void) {
 		else { kb_led_compose_off(); }
 		if (keyboard_leds & (1<<4)) { kb_led_kana_on(); }
 		else { kb_led_kana_off(); }
+
+
+#ifdef LEDS_SHOW_LAYER_IN_BINARY
+		if (layers_head!=0) {
+
+		  kb_led_num_off();
+		  kb_led_caps_off();
+		  kb_led_scroll_off();
+
+		  if (layers_head&(1<<0))
+		    kb_led_scroll_on();
+		  if (layers_head&(1<<1))
+		    kb_led_caps_on();
+		  if (layers_head&(1<<2))
+		    kb_led_num_on();
+		  
+		}
+		else {
+		  kb_led_num_off();
+		  kb_led_caps_off();
+		  kb_led_scroll_off();
+		}
+#endif
+
 	}
 
 	return 0;
@@ -168,7 +194,6 @@ struct layers {
 // ----------------------------------------------------------------------------
 
 struct layers layers[MAX_ACTIVE_LAYERS];
-uint8_t       layers_head = 0;
 uint8_t       layers_ids_in_use[MAX_ACTIVE_LAYERS] = {true};
 
 /*
