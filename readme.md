@@ -1,6 +1,6 @@
 # [Firmware][ergodox-firmware] for the [ErgoDox keyboard][]
 
-The official website is [ergodox.org] (http://www.ergodox.org).  
+The official website is [ergodox.io] (http://www.ergodox.io).  
 Also see the [geekhack]
 (http://geekhack.org/showthread.php?22780-Interest-Check-Custom-split-ergo-keyboard)
 and [deskthority]
