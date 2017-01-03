@@ -13,6 +13,7 @@
 #include "../../../lib/key-functions/public.h"
 #include "../matrix.h"
 #include "../layout.h"
+#include "../../../main.h"
 // FUNCTIONS ------------------------------------------------------------------
 void kbfun_layer_pop_all(void) {
   kbfun_layer_pop_1();
@@ -29,6 +30,7 @@ void kbfun_layer_pop_all(void) {
 
 // DEFINITIONS ----------------------------------------------------------------
 #define  kprrel   &kbfun_press_release
+#define  mprrel   &kbfun_mediakey_press_release
 #define  ktog     &kbfun_toggle
 #define  ktrans   &kbfun_transparent
 #define  lpush1   &kbfun_layer_push_1
@@ -70,7 +72,7 @@ KB_MATRIX_LAYER(
 	KEY_Tab,	KEY_q_Q,	KEY_w_W,	KEY_e_E,	KEY_r_R,	KEY_t_T,	KEY_LeftBracket_LeftBrace,	
 	KEY_LeftControl,	KEY_a_A,	KEY_s_S,	KEY_d_D,	KEY_f_F,	KEY_g_G,	
 	KEY_LeftShift,	KEY_z_Z,	KEY_x_X,	KEY_c_C,	KEY_v_V,	KEY_b_B,	KEY_RightBracket_RightBrace,	
-	2,	KEY_LeftControl,	KEY_LeftControl,	KEY_LeftAlt,	KEY_LeftGUI,	
+	2,	3,	KEY_LeftControl,	KEY_LeftAlt,	KEY_LeftGUI,	
 	KEY_LeftArrow,	KEY_RightArrow,	
 	0,	0,	KEY_LeftControl,	
 	KEY_Spacebar,	KEY_Escape,	KEY_DeleteBackspace,	
@@ -146,12 +148,12 @@ KB_MATRIX_LAYER(
 	// right hand
 	0,	0,	0,	0,	0,	0,	0,	
 	0,	0,	0,	0,	0,	0,	0,	
-	0,	0,	0,	0,	0,	0,	
+	MEDIAKEY_PREV_TRACK,	MEDIAKEY_AUDIO_VOL_DOWN,	MEDIAKEY_AUDIO_VOL_UP,	MEDIAKEY_NEXT_TRACK,	0,	0,	
 	0,	0,	0,	0,	0,	0,	0,	
 	0,	0,	0,	0,	0,	
 	0,	0,	
 	0,	0,	0,	
-	0,	0,	0	
+	0,	MEDIAKEY_AUDIO_MUTE,	MEDIAKEY_PLAY_PAUSE	
 ),
 // LAYER 4
 KB_MATRIX_LAYER(
@@ -305,7 +307,7 @@ KB_MATRIX_LAYER(
 	kprrel,	kprrel,	kprrel,	kprrel,	kprrel,	kprrel,	kprrel,	
 	kprrel,	kprrel,	kprrel,	kprrel,	kprrel,	kprrel,	
 	kprrel,	kprrel,	kprrel,	kprrel,	kprrel,	kprrel,	kprrel,	
-	lpush2,	kprrel,	kprrel,	kprrel,	kprrel,	
+	lpush2,	lpush3,	kprrel,	kprrel,	kprrel,	
 	kprrel,	kprrel,	
 	NULL,	NULL,	kprrel,	
 	kprrel,	kprrel,	kprrel,	
@@ -381,12 +383,12 @@ KB_MATRIX_LAYER(
 	// right hand
 	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	
 	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	
-	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	
+	mprrel,	mprrel,	mprrel,	mprrel,	NULL,	NULL,	
 	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	
 	NULL,	NULL,	NULL,	NULL,	NULL,	
 	NULL,	NULL,	
 	NULL,	NULL,	NULL,	
-	NULL,	NULL,	NULL	
+	NULL,	mprrel,	mprrel	
 ),
 // LAYER 4
 KB_MATRIX_LAYER(
@@ -540,7 +542,7 @@ KB_MATRIX_LAYER(
 	kprrel,	kprrel,	kprrel,	kprrel,	kprrel,	kprrel,	kprrel,	
 	kprrel,	kprrel,	kprrel,	kprrel,	kprrel,	kprrel,	
 	kprrel,	kprrel,	kprrel,	kprrel,	kprrel,	kprrel,	kprrel,	
-	lpop2,	kprrel,	kprrel,	kprrel,	kprrel,	
+	lpop2,	lpop3,	kprrel,	kprrel,	kprrel,	
 	kprrel,	kprrel,	
 	NULL,	NULL,	kprrel,	
 	kprrel,	kprrel,	kprrel,	
@@ -616,12 +618,12 @@ KB_MATRIX_LAYER(
 	// right hand
 	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	
 	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	
-	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	
+	mprrel,	mprrel,	mprrel,	mprrel,	NULL,	NULL,	
 	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	
 	NULL,	NULL,	NULL,	NULL,	NULL,	
 	NULL,	NULL,	
 	NULL,	NULL,	NULL,	
-	NULL,	NULL,	NULL	
+	NULL,	mprrel,	mprrel	
 ),
 // LAYER 4
 KB_MATRIX_LAYER(
