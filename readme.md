@@ -1,5 +1,17 @@
 # rev-2 (`partial-rewrite`)
 
+-------------------------------------------------------------------------------
+
+**Update 2017-01-29**
+It's been long enough now that, looking at the code as a for-fun project, I
+honestly would rather rewrite the whole thing than finish it, lol.
+
+Pull requests will now be happily considered.
+
+(previous version of the readme left unchanged below)
+
+-------------------------------------------------------------------------------
+
 This branch is currently under development, and all parts are subject to
 change.  I'll do my very best to keep the latest commit working properly
 though.
