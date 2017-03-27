@@ -9,7 +9,7 @@
 
 TARGET   := firmware  # the name we want for our program binary
 KEYBOARD := ergodox   # keyboard model; see "src/keyboard" for what's available
-LAYOUT   := qwerty-kinesis-mod  # keyboard layout
+LAYOUT   := colemak-raph  # keyboard layout
 				# see "src/keyboard/*/layout" for what's
 				# available
 
@@ -23,4 +23,3 @@ TARGET        := $(strip $(TARGET))
 KEYBOARD      := $(strip $(KEYBOARD))
 LAYOUT        := $(strip $(LAYOUT))
 DEBOUNCE_TIME := $(strip $(DEBOUNCE_TIME))
-
