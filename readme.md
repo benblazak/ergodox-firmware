@@ -102,7 +102,7 @@ If you're just trying to compile, jump to the How To: [Compile the Source Code]
 
 ### Issues and Feature Requests
 Open issues, feature requests, and such are tracked [on github]
-(/benblazak/ergodox-firmware/issues).
+(https://github.com/benblazak/ergodox-firmware/issues).
 
 ### Features (on the ErgoDox)
 * 6KRO (conforms to the USB boot specification)
