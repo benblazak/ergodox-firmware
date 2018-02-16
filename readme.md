@@ -366,7 +366,7 @@ your goal.
 
 [dropbox-download-page]: https://www.dropbox.com/sh/8bbol6fkvydmtmg/QLudrdEyc9
 [ergodox-firmware]: https://github.com/benblazak/ergodox-firmware
-[ergodox keyboard]: http://ergodox.org/
+[ergodox keyboard]: http://www.ergodox.io
 
 -------------------------------------------------------------------------------
 
