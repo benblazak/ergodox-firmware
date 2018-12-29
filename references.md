@@ -203,7 +203,7 @@
     * HID = Human Interface Device
 
 * [HID Usage Tables]
-  (http://www.usb.org/developers/devclass_docs/Hut1_12v2.pdf)
+  (https://www.usb.org/document-library/hid-usage-tables-112)
   : pdf (from <http://www.usb.org/developers/hidpage>)
 
 
