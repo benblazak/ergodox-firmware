@@ -341,7 +341,7 @@
     * HID = Human Interface Device
 
 * [HID Usage Tables]
-  (http://www.usb.org/developers/devclass_docs/Hut1_12v2.pdf)
+  (https://www.usb.org/document-library/hid-usage-tables-112)
   : pdf (from <http://www.usb.org/developers/hidpage>)
 
 ### UTF-8
@@ -727,7 +727,12 @@
 * [Plover, the Open Source Steno Program]
   (http://plover.stenoknight.com)  
   One of the only good reasons I've seen to want NKRO ;)
-
+  
+* [Computer Science Education Resource Guide]
+  (http://www.smartscholar.com/computer-science-guide/)  
+  General info for those starting out with computer science (recommended by
+  Tessie Hargrove; i looked at it briefly, and it looks like a nice collection
+  of links)
 
 
 -------------------------------------------------------------------------------
