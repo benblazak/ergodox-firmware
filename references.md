@@ -461,6 +461,14 @@
   see the link; as that tool improves it will hopefully become much better),
   but it works and I like it :) .
 
+### Some Random Stuff
+
+* [Computer Science Education Resource Guide]
+  (http://www.smartscholar.com/computer-science-guide/)  
+  General info for those starting out with computer science (recommended by
+  Tessie Hargrove; i looked at it briefly, and it looks like a nice collection
+  of links)
+
 
 -------------------------------------------------------------------------------
 
