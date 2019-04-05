@@ -58,7 +58,7 @@ SCRIPTS := build-scripts
 all: dist
 
 clean:
-	git clean -dX  # remove ignored files and directories
+	git clean -dXf  # remove ignored files and directories
 	-rm -r '$(BUILD)'
 
 checkin:
@@ -68,10 +68,10 @@ build-dir:
 	-rm -r '$(BUILD)/$(TARGET)'*
 	-mkdir -p '$(BUILD)/$(TARGET)'
 
-firmware:
+firmware-compile:
 	cd src; $(MAKE) LAYOUT=$(LAYOUT) all
 
-$(ROOT)/firmware.%: firmware
+$(ROOT)/firmware.%: firmware-compile
 	cp 'src/firmware.$*' '$@'
 
 
@@ -95,13 +95,15 @@ $(ROOT)/firmware--layout.html: \
 		--ui-info-file '$(ROOT)/firmware--ui-info.json' \
 	) > '$@'
 
-
-dist: \
-	checkin \
+firmware: \
 	build-dir \
 	$(ROOT)/firmware.hex \
 	$(ROOT)/firmware.eep \
-	$(ROOT)/firmware.map \
+	$(ROOT)/firmware.map
+
+dist: \
+	checkin \
+	firmware \
 	$(ROOT)/firmware--ui-info.json \
 	$(ROOT)/firmware--layout.html
 
@@ -114,5 +116,10 @@ zip: dist
 zip-all:
 	for layout in $(LAYOUTS); do \
 		make LAYOUT=$$layout zip; \
+	done
+
+firmware-all:
+	for layout in $(LAYOUTS); do \
+		make LAYOUT=$$layout firmware; \
 	done
 
