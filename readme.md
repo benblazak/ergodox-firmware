@@ -6,7 +6,7 @@
 It's been long enough now that, looking at the code as a for-fun project, I
 honestly would rather rewrite the whole thing than finish it, lol.
 
-Pull requests will now be happily considered.
+Hopefully it's still useful as is though :)
 
 (previous version of the readme left unchanged below)
 
