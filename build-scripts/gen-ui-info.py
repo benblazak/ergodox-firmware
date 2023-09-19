@@ -16,6 +16,7 @@ Depends on:
 import argparse
 import json
 import os
+import pathlib
 import re
 import subprocess
 import sys
@@ -260,6 +261,7 @@ def gen_mappings(matrix_file_path, layout_file_path):
     # normalize paths
     matrix_file_path = os.path.abspath(matrix_file_path)
     layout_file_path = os.path.abspath(layout_file_path)
+    layout_name = pathlib.Path(layout_file_path).with_suffix('').name
 
     def parse_matrix_file(matrix_file_path):
         match = re.search(  # find the whole 'KB_MATRIX_LAYER' macro
@@ -275,9 +277,12 @@ def gen_mappings(matrix_file_path, layout_file_path):
         }
 
     def parse_layout_file(layout_file_path):
+        output = subprocess.check_output(
+            ['avr-gcc', f'-DMAKEFILE_KEYBOARD_LAYOUT={layout_name}',
+             '-E', layout_file_path], encoding='UTF-8')
         match = re.findall(  # find each whole '_kb_layout*' matrix definition
             r"(_kb_layout\w*)[^=]*=((?:[^{}]*\{){3}[^=]*(?:[^{}]*\}){3})",
-            subprocess.getoutput("gcc -E '" + layout_file_path + "'"),
+            output,
         )
 
         layout = {}
