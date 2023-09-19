@@ -59,14 +59,14 @@ all: dist
 
 clean:
 	git clean -fdX  # remove ignored files and directories
-	-rm -r '$(BUILD)'
+	rm -rf '$(BUILD)'
 
 checkin:
 	-git commit -a
 
 build-dir:
-	-rm -r '$(BUILD)/$(TARGET)'*
-	-mkdir -p '$(BUILD)/$(TARGET)'
+	rm -rf '$(BUILD)/$(TARGET)'*
+	mkdir -p '$(BUILD)/$(TARGET)'
 
 firmware:
 	cd src; $(MAKE) LAYOUT=$(LAYOUT) all
