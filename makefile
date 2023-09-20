@@ -71,11 +71,14 @@ build-dir:
 firmware:
 	cd src; $(MAKE) LAYOUT=$(LAYOUT) all
 
-$(ROOT)/firmware.%: firmware
+$(ROOT):
+	mkdir -p '$@'
+
+$(ROOT)/firmware.%: firmware $(ROOT)
 	cp 'src/firmware.$*' '$@'
 
 
-$(ROOT)/firmware--ui-info.json: $(SCRIPTS)/gen-ui-info.py checkin
+$(ROOT)/firmware--ui-info.json: $(SCRIPTS)/gen-ui-info.py checkin firmware
 	( ./'$<' \
 		--current-date '$(shell $(DATE_PROG) --rfc-3339 s)' \
 		--git-commit-date '$(GIT_COMMIT_DATE)' \
